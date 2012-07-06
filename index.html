@@ -1,0 +1,876 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>
+			Nutcracker: RGB Effects Builder
+		</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta http-equiv="last-modified" content="Tue, 17 Jan 2012 09:57:45 GMT"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
+		<meta name="robots" content="index,follow"/>
+		<meta name="googlebot" content="noarchive"/>
+		<link rel="shortcut icon" href="nutcracker.ico" type="image/x-icon"/>
+		<meta name="description" content="Nutcracker RGB effects builderRGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
+		<meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/rgbsb.png"/>
+				</td>
+				<td>
+					<h2>
+						Nutcracker: RGB Effects Builder
+					</h2>
+					<h3>
+						Project proposal:
+					</h3>
+					Develop a web based tool that will allow
+					the easy creation of animations for RGB devices. 
+					There will be a number of target models:
+					mega-Trees, matrixes, rays and other shapes. 
+					A library of animations (spirals, text, pictures, 
+					meteors and many more) 
+					can be selected to project onto the target models.
+					The final animation will be exported as an XML file for input for the 
+					major sequencing software: 	Light Show Pro, Vixen or Light-O-Rama.
+				</td>
+				<td>
+					<div >
+						<div id="813129850920471582" align="center" style="width: 100%; overflow-y: hidden;" class="wcustomhtml">
+							<!-- Begin of mycountdown.org script -->
+							<div align="center" style="margin:15px 0px 0px 0px">
+								<noscript>
+									<div align="center" style="width:140px;border:1px solid #ccc; background: #040244; color: #F9F9FF;font-weight:bold;font-size:12px;">
+										<a style="text-decoration: none; color:#F9F9FF;" href="http://mycountdown.org/My_Countdown/Going_On_Holiday/">
+											Going On Holiday Countdown
+										</a>
+									</div>
+								</noscript>
+								<script type="text/javascript" src="http://mycountdown.org/countdown.php?cp3_Hex=0F0200&amp;cp2_Hex=040244&amp;cp1_Hex=F9F9FF&amp;ham=0&amp;img=1&amp;hbg=0&amp;hfg=0&amp;sid=0&amp;fwdt=200&amp;lab=1&amp;text1=Christmas&amp;text2=Merry Christmas&amp;group=My Countdown&amp;countdown=Going On Holiday&amp;widget_number=3015&amp;event_time=1356393600&amp;timezone=America/Denver">
+								</script>
+							</div>
+							<!-- End of mycountdown.org script -->
+						</div>
+						<br/>
+						<div id="clustrmaps-widget">
+						</div>
+						<script type="text/javascript">
+							var _clustrmaps = {'url' : 'http://meighan.net/nutcracker', 'user' : 1008530, 'server' : '4', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2012-04-25', 'lang' : 'en', 'corners' : 'square' };(function (){ var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'http://www4.clustrmaps.com/counter/map.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);})();
+						</script>
+						<noscript>
+							<a href="http://www4.clustrmaps.com/user/542f6392">
+								<img src="http://www4.clustrmaps.com/stats/maps-no_clusters/meighan.net-nutcracker-thumb.jpg" alt="Locations of visitors to this page" />
+							</a>
+						</noscript>
+				</td>
+			</tr>
+		</table>
+		<h3>
+			Method:
+		</h3>
+		The design is platform independent . The plan is for the user to use our models or allow the user to upload their own math models
+		and target models. It is planned to keep this as an open source tool.
+		<h1>
+			<a href=login/login-form.php>
+				Click here to login
+			</a>
+		</h1>
+		<h2>
+			<br/>
+			<h2>
+				Nutcracker Tutorials
+			</h2>
+			<ul>
+				<li>
+					<a href="tutorials/tutorial1.swf">
+						Tutorial #1. Overview of Nutcracker and creating an account
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial2.swf">
+						Tutorial #2. Creating a target model
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial3.swf">
+						Tutorial #3. Creating a target model (continued)
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial4.swf">
+						Tutorial #4. Creating an Effect, BUTTERFLY (Part 1)
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial5.swf">
+						Tutorial #5. Creating an Effect, BUTTERFLY (Part 2)
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial6.swf">
+						Tutorial #6. Exporting your sequence
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial7.swf">
+						Tutorial #7. Creating an Effect, SPIRALS (Part 1)
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial8.swf">
+						Tutorial #8. Creating an Effect, SPIRALS (Part 2)
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/tutorial9.swf">
+						Tutorial #9.  Creating an Effect, TEXT
+					</a>
+				</li>
+			</ul>
+			<br/>
+			<h2>
+				Nutcracker Presentations: The Ultimate Academy, Conroe, Texas. June 16, 2012
+			</h2>
+			<h3>
+				Here are the pdf documents from thet two talks I gave at the Academy 2012
+			</h3>
+			<ol>
+				<li>
+					<a href="tutorials/nutcracker.pdf">
+						Talk #1.  Nutcracker: Introduction
+					</a>
+				</li>
+				<li>
+					<a href="tutorials/nutcracker_advanced.pdf">
+						Talk #2.  Nutcracker: Advanced Programming. How to write a Macro
+					</a>
+				</li>
+			</ol>
+			<br/>
+				
+				
+				Are you new to  Christmas Lights? Try looking at these excellent general Tutorials
+			<br/>
+			<ul>
+				<li>
+					PDF:
+					<a href="http://auschristmaslighting.com/forums/index.php?action=dlattach;topic=1889.0;attach=1907">
+						Fast Eddy's Chistmas lights 101
+					</a>
+					.
+					<h5>
+						You will need to register on the ausChristmasLighting site to download this 10mbyte pdf document. Registration is free and the document is very good.
+					</h5>
+				</li>
+				<br/>
+					David Moore, from holidayCoro.com, has made these videos describing RGB lights and how they work.
+				<li>
+					Video:
+					<a href="//vimeo.com/moogaloop.swf?clip_id=19152886&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1">
+						David Moore's RGB tutorial#1
+					</a>
+				</li>
+				<li>
+					Video:
+					<a href="//vimeo.com/moogaloop.swf?clip_id=19200105&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1">
+						David Moore's RGB tutorial#2
+					</a>
+				</li>
+				<li>
+					Video:
+					<a href="//vimeo.com/moogaloop.swf?clip_id=19367640&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" >
+						David Moore's RGB tutorial#3
+					</a>
+				</li>
+				<li>
+					Video:
+					<a href="//vimeo.com/moogaloop.swf?clip_id=19587484&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1">
+						David Moore's RGB tutorial#4
+					</a>
+				</li>
+			</ul>
+			<br/>
+				Where do I post on Christmas Forums? Since Nutcracker works will all sequencers, you will find Nutcracker info here:
+			<ul>
+				<li>
+					<a href="http://auschristmaslighting.com/forums/index.php/board,61.0.html">
+						ausChristmasLighting Forum
+					</a>
+					. Found in Nutcracker Forum
+				</li>
+				<li>
+					<a href="http://diylightanimation.com/index.php?board=48.0">
+						diyLightAnimation Forum
+					</a>
+					. Found in Nutcracker Forum
+				</li>
+				<li>
+					<a href="http://doityourselfchristmas.com/forums/forumdisplay.php?102-Nutcracker">
+						doitYourselfChristmas forum
+					</a>
+					. Found in Nutcracker forum
+				</li>
+				<li>
+					<a href="http://forums.planetchristmas.com/index.php?/forum/208-rgb-based-lights/">
+						planetChristmas forum.
+					</a>
+					Found under the
+					<b>
+						RGB based lights
+					</b>
+					section
+				</li>
+				<li>
+					<a href="http://forums.lightorama.com/forum81/">
+						Light-O-Rama forum
+					</a>
+					. Found under the Coffee Shop
+				</li>
+			</ul>
+			<br/>
+				The Nutcracker tool has four parts.
+		</h2>
+		</div>
+		<!--  YELLOW #F3E34E
+		RED #F44E5F
+		GREEN #5FF44E
+		LIME GREEN #A2E15B
+		-->
+		<table border=1>
+			<tr>
+				<th>
+					Phase#
+				</th>
+				<th>
+					Phase Name
+				</th>
+				<th>
+					Phase Description
+				</th>
+			</tr>
+			<tr>
+				<td>
+					1
+				</td>
+				<td>
+					Target Modeler.
+					<br/>
+				</td>
+				<td>
+					This tool allows the user to model their RGB device (megatree.ray, matrix) and save it to a mysql database. It is very
+					important that your particular tree be defined. This is the only way that an effect can be mapped to your particular
+					display.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					2
+				</td>
+				<td>
+					Effect Generator
+				</td>
+				<td>
+					Here you select an effect from the Library and modify it. effects will be spirals, snowflakes, meteors, scrolling text .etc. Once an effect
+					has been designed it is available to be used on all target sequencers
+				</td>
+			</tr>
+			<tr>
+				<td>
+					3
+				</td>
+				<td>
+					Create a sequence and get an animated GIF.
+				</td>
+				<td>
+					You now select your target model (you might have more than one in your yard) and pick the effects that you
+					want mapped to your display. You will be asked for how long of a duration you want the sequence to run.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					4
+				</td>
+				<td>
+					Create an XML file for a sequencer
+				</td>
+				<td>
+					The last thing you do is select the target sequencer. Currently we have Vixen vir files and LOR S2 lms and lcb files.
+				</td>
+			</tr>
+		</table>
+		<br />
+			Sean meighan
+		<br />
+		<br/>
+		<a href="mailto:sean.meighan@oracle.com">
+			Mail to sean meighan
+		</a>
+		<br />
+		<h2>
+			Here are the target models that have been created so far. The target mega-tree was 16 strings of 64 pixels. The 
+			strings have been folded over to give 32 pixels per strand
+		</h2>
+		<br />
+		<table border=1>
+			<tr>
+				<th>
+					Model Class
+				</th>
+				<th>
+					3 Spirals
+					<br/>
+						100ms frame timing
+					<br/>
+						1 pixel wide
+				</th>
+				<th>
+					3 Spirals
+					<br/>
+						100ms frame timing
+					<br/>
+						Rotate CCW
+					<br/>
+						1 pixel wide
+					<br/>
+						RGB = RED (hue .972) to ORANGE (hue .083)
+				</th>
+				<th>
+					3 Spirals
+					<br/>
+						50ms frame timing
+					<br/>
+						Rotate CW
+					<br/>
+						1 pixel wide
+					<br/>
+						RGB = RED (hue .972) to ORANGE (hue .083)
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Spirals
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/s3_4_1_t1_3232_50ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/r_s3_4_1_t1_3232_ccw_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/r_s3_t1_3232_cw.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					3 Spirals
+					<br/>
+						100ms frame timing
+					<br/>
+						4 pixels wide
+				</th>
+				<th>
+					2 Spirals
+					<br/>
+						50ms frame timing
+					<br/>
+						Rotate CW
+					<br/>
+						Only show front half of mega-tree
+					<br/>
+						1 pixel wide
+					<br/>
+						RGB = RED (hue .972) to ORANGE (hue .083)
+				</th>
+				<th>
+					Barber Pole
+					<br/>
+						150ms frame timing
+					<br/>
+						Only show front half of mega-tree
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Spirals
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/r_s3_t1_3232_tri_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/r_s2_4_1_t1_3232_50ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/s2_t1_3232_barber_150ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					6 Spirals
+					<br/>
+						1 pixel wide
+					<br/>
+						200ms frame timing
+					<br/>
+				</th>
+				<th>
+					6 Spirals
+					<br/>
+						1 pixel wide
+					<br/>
+						50ms frame timing
+					<br/>
+						Rotate CCW
+					<br/>
+						RGB = RED (hue .972) to ORANGE (hue .083)
+				</th>
+				<th>
+					6 Spirals
+					<br/>
+						1 pixel wide
+					<br/>
+						50ms frame timing
+					<br/>
+						Rotate CW
+					<br/>
+						RGB = RED (hue .972) to ORANGE (hue .083)
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Spirals
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/s6_t1_3232.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/r_s6_t1_3232.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/spirals/s6_t1_48_60_100ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					3 Vertical Bands
+					<br/>
+						100ms frame timing
+					<br/>
+						Half of a megatree
+				</th>
+				<th>
+					6 Vertical Bands
+					<br/>
+						100ms frame timing
+					<br/>
+						Half of a megatree
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Vertical Bands
+							<br/>
+								Chase Sequences
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/bands/b_3_t1_3232_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/bands/b_t1_3232_100ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					1 line text
+					<br/>
+						100ms frame timing
+					<br/>
+						Half of a megatree
+				</th>
+				<th>
+					2 lines of text
+					<br/>
+						50ms frame timing
+					<br/>
+						Half of a megatree
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Scrolling text
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/text/text_t1_3232_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/text/text_dual_t1_3232_50ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/text/text_48_60.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Snowflakes
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/snowflakes/sf_snow_100ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					png file projected to tree
+					<br/>
+						100ms frame timing
+					<br/>
+				</th>
+				<th>
+					png file
+					<br/>
+						100ms frame timing
+					<br/>
+				</th>
+				<th>
+					png file
+					<br/>
+						100ms frame timing
+					<br/>
+						Photo edit out background
+				</th>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					Random White dots
+					<br/>
+						50ms frame timing
+					<br/>
+						It may not show clearly, but i am also randomly
+					<br/>
+						changing the intensity of the white dots
+				</th>
+				<th>
+					Random Color dots
+					<br/>
+						50ms frame timing
+				</th>
+				<th>
+					Random Color dots
+					<br/>
+						200ms frame timing
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Random dots
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/dots/t1_3232_dots.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/dots/t1_3232_dots_color_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/dots/t1_3232_dots_color_200ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Meteors
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/meteors/t1_3232_meteors_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/models/falling_stars/fallStars_t1_3232_120ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/picture_4_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head_black.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/picture_black_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/picture_48_60_50ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/14578.jpg"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/14578_100ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/14578.jpg"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/14578_48_60.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/grinch.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/grinch.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/grinch.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/grinch_48_60_50ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/snoopy.jpg"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/snoopy.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/snoopy.jpg"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/snoopy_48_60_100ms.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/grinch2.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/grinch2.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/snoopy2.jpg"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/snoopy2.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/kezw_small.jpg"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/kezw_small.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+				<th>
+					dots drawn 0.3 inch
+					<br/>
+						50ms frame timing
+					<br/>
+				</th>
+				<th>
+					dots drawn 0.6 inch
+					<br/>
+						50ms frame timing
+					<br/>
+				</th>
+				<th>
+					dots drawn 1.0 inch
+					<br/>
+						50ms frame timing
+					<br/>
+				</th>
+				<th>
+					dots drawn gnuplot default inch
+					<br/>
+						50ms frame timing
+					<br/>
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<h3>
+						<b>
+							Pictures
+							<br/>
+								to be realistic, how large should the pixels be drawn
+								using the gnuplot program?
+							<br/>
+								here the same image is drawn 4 times with different size dots.
+						</b>
+					</h3>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/point_0_3_50ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/point_0_6_50ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/point_1_0_50ms.gif"/>
+				</td>
+				<td>
+					<img src="http://meighan.net/nutcracker/images/IMG_7965_head.png"/>
+					<br/>
+					<img src="http://meighan.net/nutcracker/models/pictures/point_default_50ms.gif"/>
+				</td>
+			</tr>
+		</table>
+		<br/>
+		<h3>
+			To install the nutcracker software on your local PC , you need to follow these steps
+		</h3>
+		<br/>
+		<h4>
+			I have tested this with a 32bit wamp for Windows XP and a 64 bit wamp for Windows 7
+			<br/>
+				NOTE!! 90% of users will NOT need to install the Nutcracker to their local machine, just
+				run it from the httpp://meighan.net/nutcracker web page. If you install Nutcracker locally, you will be
+				able to bypass the 30 second limit that the meighan.net web site has. If you choose to go ahead and install
+				the Nutcracker locally (even though it probably is not necessary), follow the next steps below.
+		</h4>
+		<br/>
+		<ul>
+			<li>
+				Download the WAMP server software,
+				<a href="http://www.wampserver.com/en/">
+					Click here to download wamp server
+				</a>
+				<li>
+					Download the gnuplot graphing program,
+					<a href="http://sourceforge.net/projects/gnuplot/files/gnuplot/4.6.0/gp460-win32-setup.exe/download">
+						Click here to download Gnuplot 4.6
+					</a>
+					<br/>
+						Note! Be sure you click the last option in this screen, "Add Application dreictory to your Path environment variable"
+					<br/>
+					<img src="http://meighan.net/nutcracker/images/gnuplot_setup.png"/>
+					<li>
+						After you have installed WAMP , go get the install script for Nutcracker.
+						<a href="install.txt">
+							Rick click this link Download install.txt
+						</a>
+						After you downloaded it, move it
+						to C:\wamp\www and rename it as install.php
+						</a>
+						<br/>
+						<li>
+							Run install.php you just downloaded.  enter
+							<b>
+								localhost/install.php
+							</b>
+							into a web window.
+							Installation should take 45 seconds. This process will create a database in your local mySql that is called nutcracker. It will 
+							also create a user nc_user/nutcracker123 in your local mySql database. This current version is installing nto the directory
+							nutcracker. This process will also copy down all files needed for Nutcracker to run.
+							<li>
+								launch nutcracker: enter
+								<b>
+									localhost/nutcracker
+								</b>
+								into a web browser. Log in with the same user/password as 
+								the meighan.net/nutcracker website.
+								<li>
+									Note! you MUST resave your target models. Do this by clicking on a target and clicking on the submit button. This way a target.dat file is created in the local file system.
+									<li>
+										Now , go to the effects screen and try one of the effects. Try butterfly or spiral. You should see an animated gif.
+										<li>
+											Congratulations, you now have a local copy of Nutcracker. The 30 second limit has been removed.
+											<li>
+												If you want to update your website with the latest code, enter "localhost/nutcracker/update.php"
+											</li>
+		</ul>
+		<br/>
+	</body>
+</html>
