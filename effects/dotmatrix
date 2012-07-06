@@ -1,0 +1,630 @@
+=a
+.
+.
+ xxx
+x  x
+x  x
+x xx
+ x x
+.
+.
+=b
+x
+x
+xxxx
+x   x
+x   x
+x   x
+xxxx
+.
+.
+=c
+.
+.
+ xxx
+x
+x
+x
+ xxx
+.
+.
+=d
+   x
+   x
+ xxx
+x  x
+x  x
+ xxx
+.
+.
+=e
+.
+.
+ xxx
+x   x
+xxxxx
+x
+ xxx
+.
+.
+
+=f
+ xx
+ x
+xxx
+ x
+ x
+ x
+xxx
+.
+.
+=g
+.
+.
+ xxx
+x   x
+x   x
+x   x
+ xxxx
+    x
+ xxx
+=h
+x
+x
+x xx
+xx  x
+x   x
+x   x
+x   x
+.
+.
+=i
+  x
+.
+ xx
+  x
+  x
+  x
+ xxx
+.
+.
+=j
+  x
+.
+ xx
+  x
+  x
+  x
+  x
+  x
+xx
+=k
+x
+x
+x  x
+x x
+xx
+x x
+x  x
+.
+.
+=l
+ xx
+  x
+  x
+  x
+  x
+  x
+ xxx
+.
+.
+=m
+.
+.
+xxxx
+x x x
+x x x
+x x x
+x x x
+.
+.
+=n
+.
+.
+x xx
+xx  x
+x   x
+x   x
+x   x
+.
+.
+=o
+.
+.
+ xxx
+x   x
+x   x
+x   x
+ xxx
+.
+.
+=p
+.
+.
+xxx
+x  x
+x  x
+x  x
+xxx
+x
+x
+=q
+.
+.
+ xxx
+x  x
+x  x
+x  x
+ xxx
+   x
+   x
+=r
+.
+.
+x xx
+xx
+x
+x
+x
+.
+.
+=s
+.
+.
+ xxxx
+x
+ xxx
+    x
+xxxx
+.
+.
+=t
+ x
+ x
+xxx
+ x
+ x
+ x
+ xx
+.
+.
+=u
+.
+.
+x   x
+x   x
+x   x
+x  xx
+ xx x
+.
+.
+=v
+.
+.
+x   x
+x   x
+x   x
+ x x
+  x
+.
+.
+=w
+.
+.
+x   x
+x   x
+x   x
+x x x
+x   x
+.
+.
+=x
+.
+.
+x   x
+ x x
+  x
+ x x
+x   x
+.
+.
+=y
+.
+.
+x   x
+x   x
+x   x
+x  xx
+ xx x
+    x
+  xx
+=z
+.
+.
+xxxxx
+   x
+  x
+ x
+xxxxx
+.
+.
+=A
+  x
+ x x
+x   x
+x   x
+xxxxx
+x   x 
+x   x
+.
+.
+=B
+xxxx
+x   x
+x   x
+x xx
+x   x
+x   x
+xxxx
+.
+.
+=C
+ xxx
+x   x
+x
+x
+x
+x   x
+ xxx
+.
+.
+=D
+xxxx
+x   x
+x   x
+x   x
+x   x
+x   x
+xxxx
+.
+.
+=E
+xxxxx
+x
+x
+xxxx
+x
+x
+xxxxx
+.
+.
+=F
+xxxxx
+x
+x
+xxxx
+x
+x
+x
+.
+.
+=G
+ xxx
+x   x
+x
+x  xx
+x   x
+x   x
+ xxx
+.
+.
+=H
+x   x
+x   x
+x   x
+xxxxx
+x   x
+x   x
+x   x
+.
+.
+=I
+ xxx
+  x
+  x
+  x
+  x
+  x
+ xxx
+.
+.
+=J
+  xxx
+   x
+   x
+   x
+x  x
+x  x
+ xx
+.
+.
+=K
+x   x
+x  x
+x x
+xx
+x x
+x  x
+x   x
+.
+.
+=L
+x
+x
+x
+x
+x
+x
+xxxxx
+.
+.
+=M
+x   x
+xx xx
+x x x
+x x x
+x   x
+x   x
+x   x
+.
+.
+=N
+x   x
+xx  x
+x x x
+x  xx
+x   x
+x   x
+x   x
+.
+.
+=O
+ xxx
+x   x
+x   x
+x   x
+x   x
+x   x
+ xxx
+.
+.
+=P
+xxxx
+x   x
+x   x
+xxxx
+x
+x
+x
+.
+.
+=Q
+ xxx
+x   x
+x   x
+x   x
+x   x
+x x x
+ xxx
+    x
+.
+=R
+xxxx
+x   x
+x   x
+xxxx
+x x 
+x  x
+x   x
+.
+.
+=S
+ xxx
+x   x
+x
+ xxx
+    x
+x   x
+ xxx
+.
+.
+=T
+xxxxx
+  x
+  x
+  x
+  x
+  x
+  x
+.
+.
+=U
+x   x    
+x   x    
+x   x    
+x   x    
+x   x    
+x   x    
+ xxx
+.
+.
+=V
+x   x
+x   x
+x   x
+x   x
+x   x
+ x x
+  x
+.
+.
+=W
+x   x
+x   x
+x   x
+x   x
+x x x
+xx xx
+x   x
+.
+.
+=X
+x   x
+x   x
+ x x
+  x
+ x x
+x   x
+x   x
+.
+.
+=Y
+x   x
+x   x
+x   x
+ x x
+  x
+  x
+  x
+.
+.
+=Z
+xxxxx
+    x
+   x
+  x
+ x
+x
+xxxxx
+.
+.
+=0
+ xxx
+x   x
+x  xx
+x x x
+xx  x
+x   x
+ xxx
+.
+.
+=1
+  x
+ xx
+  x
+  x
+  x
+  x
+xxxxx
+.
+.
+=2
+ xxx
+x   x
+    x
+   x
+  x
+ x
+xxxxx
+.
+.
+=3
+ xxx
+x   x
+    x
+  xx
+    x
+x   x
+ xxx
+.
+.
+=4
+x  x
+x  x
+x  x
+xxxxx
+   x
+   x
+   x
+.
+.
+=5
+xxxxx
+x
+xxxx
+    x
+    x
+x   x
+ xxx
+.
+.
+=6
+ xxxx
+x
+x
+xxxx
+x   x
+x   x
+ xxx
+.
+.
+=7
+xxxxx
+    x
+   x
+  x
+ x
+x
+x
+.
+.
+=8
+ xxx
+x   x
+x   x
+ xxx
+x   x
+x   x
+ xxx
+.
+.
+=9
+ xxx
+x   x
+x   x
+ xxxx
+    x
+   x
+xxx
+.
+.
+=.
+.
+.
+.
+.
+.
+xx
+xx
+.
+.

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<sequence saveFileVersion="7" createdAt="8/10/2006 12:16:28 AM" >
+<channels>
+<channel name="S0-P0-R" color="255" centiseconds="0" deviceType="LOR" unit="1" circuit="-2" network="1" savedIndex="0">
+</channel>
+<channel name="S0-P0-G" color="65280" centiseconds="0" deviceType="LOR" unit="1" circuit="-1" network="1" savedIndex="1">
+</channel>
+<channel name="S0-P0-B" color="16711680" centiseconds="0" deviceType="LOR" unit="1" circuit="0" network="1" savedIndex="2">
+</channel>
+</channels>
+<timingGrids>
+		<timingGrid saveID="0" name="Fixed Grid:  0.05" type="fixed" spacing="10"/>
+	</timingGrids>
+	<tracks>
+		<track totalCentiseconds="0" timingGrid="0">
+			<channels>
+			</channels>
+		<loopLevels/>
+	</track>
+   </tracks>
+   <animation rows="40" columns="60" image="" hideControls="false"/>
+</sequence>
