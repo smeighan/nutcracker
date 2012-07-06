@@ -1,0 +1,130 @@
+<form action="process.php" method="POST">
+	<table border=1>
+		<tr>
+			<td><b>
+					<font color=blue>**Your name for this object (up to 8 characters):</b></font>
+				<input type="text" size="8" maxlength="" name="OBJECT_NAME"><br/>
+				You may be building many objects. Big meg-tree, a grid, a small mega-tree. This name is going to allow you to have a set of objects
+				under your account name. Examples: MT1, MTREE1, TREE, GRID1, MT12, MT32
+			</td>
+		</tr>
+		<tr>
+			<td><b>Description of your object (up to 80 characters):</b><input type="text" size="80" maxlength="" name="OBJECT_DESC"><br/>
+				Example: 16 strand megatree made of Smart Strings. Used in front yard.
+			</td>
+		</tr>
+		<tr>
+			<td><font color=blue><b>**Model Type:</b></font> <br/>
+				<blockquote>
+					<input type="radio" value="MTREE" checked="checked" name="MODEL_TYPE"> Mega-Tree <br />
+					<input type="radio" value="MTREE_HALF" name="MODEL_TYPE"> Mega-Tree, Half <br />
+					<input type="radio" value="MATRIX" name="MODEL_TYPE"> 	Matrix(Grid) <br />
+					<input type="radio" value="RAY" name="MODEL_TYPE">	Ray <br />
+				</blockquote>
+				<table border=1>
+					<tr>
+						<th colspan=2>3D Models</th>
+						<th colspan=2>2D Models</th>
+					</tr>
+					<tr>
+
+						<td><img src="mega_tree.png" alt="bottom_to_top"  /></td>
+						<td><img src="mega_tree_half.png" alt="bottom_to_top"  /></td>
+						<td><img src="matrix.png" alt="up_down_next"  /></td>
+						<td><img src="ray.png" alt="up_down_180"  /></td>
+						<td>NOTE: Currently, i only have the mega-tree models working.</td>
+					</tr>
+				</table>
+			</td> </tr >
+			<tr>
+				<td><font color=blue><b>**What Strings (a.k.a. devices, bundles) are you building with:</b></font><br/>
+					<blockquote>
+						<input type="radio" value="CCR" name="STRING_TYPE"> 	LOR CCR (50 Pixels, 197 in between 1st and last)<br />
+						<input type="radio" value="SS" checked="checked" name="STRING_TYPE">	Lynx Smart Strings <br />
+					</blockquote>
+				</td>
+			</tr>
+			<tr>
+				<td><b><font color=blue>**How many Strings will be in your tree:</b>
+			</font>					<input type="text" size="5" maxlength="6" name="TOTAL_STRINGS"></td></tr>
+			<tr>
+				<td><b><font color=blue>**Which direction will they wrap:</b><br /> 
+						</font><blockquote>
+						<input type="radio" value="CW"  checked="checked" name="DIRECTION">CW
+						<input type="radio" value="CCW"   name="DIRECTION">	CCW
+					</blockquote>
+					<br />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>Orientation. 
+						The closet point on the bottom of your tree nearest the street would be zero degrees. 
+						Where will your first string start (0-359 degrees).
+					       	Degrees are measured CW around base of tree.:</b>
+					<input type="text" size="9" maxlength="9" name="ORIENTATION">
+				</td>
+			</tr>
+			<tr>
+				<td><b><font color=blue>**Total number of Pixels on this string:</b>
+					</font><input type="text" size="5" maxlength="5" name="PIXEL_COUNT"><br />
+					This is the number of pixels from your string that will be used on the tree. If you have an 84 pixel string and plan on using 80 of them, put 80 here.
+				</td>
+			</tr>
+			<tr>
+				<td><b><font color=blue>**Length between 1st and last pixel (in inches):</b>
+					</font><input type="text" size="9" maxlength="9" name="PIXEL_LENGTH"><br/>
+
+					again if you are not using all of the pixels, put the length between the ones you are using.<br/>
+				</td>
+			</tr>
+
+			<tr>
+				<td><b><font color=blue>**How Will you build your tree :</b><br />
+						</font><blockquote>
+						<input type="radio" value="BOT_TOP"  checked="checked" name="TOPOGRAPHY">Bottom to Top (LOR calls this Edge to Center)<br />
+						<input type="radio" value="UP_DOWN_NEXT" name="TOPOGRAPHY">Up/Down Next (LOR calls this Wedge)<br />
+						<input type="radio" value="UP_DOWN_180" name="TOPGORAPHY">Up/Down 180 (LOR calls this Up and Over)<br />
+					</blockquote>
+					<br/>
+					<h4>Here are examples of the three choices. The numbers are the pixel numbers on your strings. 
+						Bottom-to-Top will create the tallest tree but use the most strings. Up/Down-Next and Up/Down-180 folds your strings in half. 
+						This allows more strands on your tree with less strings.  The following examples are using a 50 pixel string. Each color represents
+						a different string.
+					</h4>
+					<table border=1>
+						<tr>
+							<td><img src="bottom_to_top.png" alt="bottom_to_top"  /></td>
+							<td><img src="up_down_next.png" alt="up_down_next"  /></td>
+							<td><img src="up_down_180.png" alt="up_down_180"  /></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><img src="../images/mega_tree_side_view.png" alt="bottom_to_top" height=400 width=400 /><br />
+					<font color=blue>**<b>How high will your mega-tree be (in inches) H1:</b>
+					</font><input type="text" size="9" maxlength="9" name="H1"><br />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<font color=blue>**<b>What will be the bottom diameter of your tree (in inches) D1:</b>
+			</font><input type="text" size="9" maxlength="9" name="D1"></td></tr>
+			<tr><td>
+					<font color=blue>**<b>What will be the top diameter of your tree (in inches) zero is valid choice. D2:</b>
+					</font><input type="text" size="9" maxlength="9" name="D2"><br />
+					Enter zero for the next 3 questions if you are not going to have a bottom to your tree.<br/>
+					<b>&nbsp;&nbsp;&nbsp;What will be the trunk diameter of your tree (in inches) D3:</b>
+					<input type="text" size="9" maxlength="9" name="D3"><br />
+					<b>&nbsp;&nbsp;&nbsp;What will be the height of the trunk of your tree (in inches) H2:</b>
+					<input type="text" size="9" maxlength="9" name="H2"><br />
+					<b>&nbsp;&nbsp;&nbsp;What will be the radius of your tree branches (in inches) D4:</b>
+					<input type="text" size="9" maxlength="9" name="D4"><br />
+
+				</td>
+			</tr>
+		</table>
+
+		<input type="submit" name="submit" value="Submit Form to create your target model" />
+	</form>
