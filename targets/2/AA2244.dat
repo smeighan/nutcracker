@@ -5,9 +5,12 @@
 #    Col 4: X location in world coordinates
 #    Col 5: Y location in world coordinates
 #    Col 6: Z location in world coordinates
-#    Col 7: User string
-#    Col 8: User pixel
-# 
+#    Col 7: RESERVED
+#    Col 8: User string
+#    Col 9: User pixel
+#    Col 10: **User login who created target
+#    Col 11: **Your TARGET_MODEL_NAME
+#            ** Optional fields
 AA2244   1   1   0.000   0.728  37.339 0     1    15 f AA2244
 AA2244   1   2   0.000   1.455  34.428 0     1    14 f AA2244
 AA2244   1   3   0.000   2.183  31.518 0     1    13 f AA2244

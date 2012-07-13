@@ -250,6 +250,7 @@ while (!feof($fh_buff))
 		$channel_savedIndex[$string][$pixel]['2']=$savedIndex+1;
 		$channel_savedIndex[$string][$pixel]['3']=$savedIndex+2;
 		$rgbChannel_name[$string][$pixel]=sprintf("S%d-P%d",$string,$pixel);
+		$loop++;
 		$array_write_buffer=write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$savedIndex,$loop,$pixel_count);
 		//$savedIndex=$array_write_buffer[0];
 		//$channel_savedIndex=$array_write_buffer[1];
@@ -440,6 +441,7 @@ function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$Inputsaved
 	$old_string=$string;
 	$old_pixel=$pixel;
 	$rgbChannel_name[$string][$pixel]=sprintf("S%d-P%d",$string,$pixel); // save for later use
+//	printf("<pre>S%d-P%d</pre>\n",$string,$pixel);
 	$cnt=count($tok);
 	for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++)
 	{
@@ -475,9 +477,11 @@ function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$Inputsaved
 		$circuit=($circuit_tmp%340);
 		//	echo "<pre>unit0,circuit = $unit0,$circuit. pixel_count,loop = $pixel_count,$loop channels_per_string=$channels_per_string</pre>\n";
 		$channelName=sprintf("S%d-P%d",$old_string,$old_pixel);
+		$unit=$old_string;
+		$circuit=$rgbLoop+($old_pixel-1)*3;
 		if($file_type=="lms")
 		{
-			fwrite($fh_lor,sprintf("<channel name=\"%s-%s\" color=\"%d\" centiseconds=\"%d\" deviceType=\"LOR\" unit=\"%s\" circuit=\"%d\" network=\"%d\" savedIndex=\"%d\">\n",$channelName,$c,$color,$centiseconds,$circuit,$unit,$network,$savedIndex));
+			fwrite($fh_lor,sprintf("<channel name=\"%s-%s\" color=\"%d\" centiseconds=\"%d\" deviceType=\"LOR\" unit=\"%s\" circuit=\"%d\" network=\"%d\" savedIndex=\"%d\">\n",$channelName,$c,$color,$centiseconds,$unit,$circuit,$network,$savedIndex));
 			//	printf("<pre>channel name=\"%s-%s\" color=\"%d\" centiseconds=\"%d\" deviceType=\"LOR\" unit=\"%s\" circuit=\"%d\" network=\"%d\" savedIndex=\"%d\"</pre>\n",$channelName,$c,$color,$centiseconds,$circuit,$unit,$network,$savedIndex);
 		}
 		if($file_type=="lcb") fwrite($fh_lor,sprintf("<channel>\n"));

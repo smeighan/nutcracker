@@ -127,6 +127,9 @@ name="MODEL_TYPE"> Mega-Tree (If you want a half mega tree, choose this and then
 <input type="radio" value="MATRIX"
 <?php if( $row['model_type']=="MATRIX") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> 	Matrix(Grid) <br />
+<input type="radio" value="HORIZ_MATRIX"
+<?php if( $row['model_type']=="HORIZ_MATRIX") echo "checked=\"checked\""; ?>
+name="MODEL_TYPE"> 	Horizontal Matrix(Grid) <br />
 <input type="radio" value="RAY" 
 <?php if( $row['model_type']=="RAY") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE">	Ray <br />

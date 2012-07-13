@@ -363,8 +363,8 @@ function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees
 						$rgb_val=0;
 					}
 					//if($s==1) $rgb_val=hexdec("#00FFFF"); // debug to mark strand 1
-					if($s==5) $rgb_val=hexdec("#FF0000");
-					if($p==5) $rgb_val=hexdec("#00FF00");
+				//	if($s==5) $rgb_val=hexdec("#FF0000");
+				//	if($p==5) $rgb_val=hexdec("#00FF00");
 					
 					$tree_rgb[$s][$p]=$rgb_val;
 					

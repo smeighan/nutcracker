@@ -435,9 +435,13 @@ function gp_header($fh,$min_max,$target_info)
 	fwrite($fh,"set object 1 rectangle from screen 0,0 to screen 1,1 fillcolor rgb \"black\" behind\n");
 	fwrite($fh,"unset key\n" );
 	if($model_type=='MTREE')
+	{
 		fwrite($fh,"set view 105,270, 2.0, 1\n");  // old: fwrite($fh,"set view 105, 0, 2.0, 1\n");
+	}
 	else
-	fwrite($fh,"set view 105, 0, 2.0, 1\n"); 
+	{
+		fwrite($fh,"set view 105, 180, 2.0, 1\n");
+	}
 	fwrite($fh,"set style data lines\n" );
 	fwrite($fh,"set noxtics\n" );
 	fwrite($fh,"set noytics\n" );
@@ -510,13 +514,12 @@ function display_gif($dir,$model,$gp_file,$out_file_array,$frame_delay,$script_s
 		else
 		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
 		$return=system($shellCommand,$output); 
-	//	echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
+		//	echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
 	}
 	else
 	{
 		echo "ERROR! The file $gp_file does not exist\n";
 	}
-
 	/*
 	$aniGif = new Imagick();
 	$aniGif->setFormat("gif");
@@ -549,7 +552,6 @@ function display_gif($dir,$model,$gp_file,$out_file_array,$frame_delay,$script_s
 	//$thumb->writeImage($gif_file_th);
 	*/
 	show_elapsed_time($script_start,"Finished  Imagick to make animated GIF:");
-	
 	printf ("<img src=\"%s\"/>",$gif_file);
 }
 
@@ -757,7 +759,6 @@ function show_srt_file($file,$maxFrame,$frame_delay,$maxPixel,$pixel_count)
 {
 	echo "<h2>Channel Preview</h2>";
 	echo "<h3>To save space, only the first 5 strings are displayed</h3>";
-
 	/* 1     25     10    589617 # 40  t1    1   26     0.000    18.918    58.493 589617 0 0 1 25
 	1     25     15    589617 # 36  t1    1   26     0.000    18.918    58.493 589617 0 0 1 25
 	1     25     16    589617 # 34  t1    1   26     0.000    18.918    58.493 589617 0 0 1 25
@@ -769,7 +770,6 @@ function show_srt_file($file,$maxFrame,$frame_delay,$maxPixel,$pixel_count)
 	1     25     28    589617 # 19  t1    1   26     0.000    18.918    58.493 589617 0 0 1 25*/
 	$fh = fopen($file, 'r') or die("can't open file $file");
 	$linecounter=$oldString=$oldPixel=0;
-	
 	echo "<table border=1>";
 	for($i=1;$i<=$maxFrame;$i++)
 		$buff[$i]=0;
@@ -1368,11 +1368,9 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 	printf ("<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=vixen?pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
 	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lors2?pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
 	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lor_lcb?pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
-printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count\">Left Click here to make *.msq file</a></td><td>2.0 and 2.5</td></tr>\n");
-
+	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count\">Left Click here to make *.msq file</a></td><td>2.0 and 2.5</td></tr>\n");
 	printf ("<tr><td>LSP</td><td>No Native support yet. Click above to make a *.lms file</td><td>2.0, 2.5, 3.0</td></tr>\n");
 	printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=hls?pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
-	
 	echo "</table>\n";
 }
 
@@ -1529,7 +1527,6 @@ function get_effect_user_hdr($username,$effect_name)
 
 function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 {
-
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	$tokens=explode("+",$base);
@@ -1558,7 +1555,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	{
 		if($row_array['param_name']=="window_degrees") $window_degrees=$row_array['param_value'];
 	}
-	
 	//
 	/*[11] => Array
 	(
@@ -1657,7 +1653,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	$script_end = (float) $sec + (float) $usec;
 	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 	$maxFrame=count($dat_file_array); // max frames in one animation sequence
-
 	/*
 	#    workspaces/f/AA+SEAN3_18.dat
 	t1   20    1    -0.225     0.692   113.090 16716932 18 18
@@ -1684,7 +1679,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	//---------------------------------------------------------------------------------------
 	//
 	$minStrand=1; // we always start at 1
-	
 	$window_array = getWindowArray(1,$total_strings,$window_degrees);
 	/*echo "<pre>";
 	print_r($window_array);
@@ -1824,7 +1818,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 		$outBuffer[$f]=0;
 	}
 	$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);
-	
 	$Sec2=-1;
 	$old_string=$old_pixel=0;
 	$i=0;
@@ -1917,7 +1910,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 
 function get_target_model($username,$model_name)
 {
-	
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -1964,7 +1956,6 @@ function get_target_model($username,$model_name)
 		*/
 	//	
 	$query ="select * from models where username='$username' and object_name='$model_name'";
-	
 	$result=mysql_query($query) or die ("Error on $query");
 	if (!$result)
 	{
