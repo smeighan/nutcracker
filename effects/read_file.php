@@ -1218,6 +1218,7 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 	//
 	$height=$max_z; 
 	$width=$max_x-$min_x;
+	if($width<1) $width=1;
 	$aspect_ratio = $height/$width;
 	$max=intval(max($height,$width)*5);	// max pixels in the biggest direction for output size
 	/*echo "<pre>h=$height,w=$width, aspect=$aspect_ratio,max=$max\n";
@@ -1527,6 +1528,7 @@ function get_effect_user_hdr($username,$effect_name)
 
 function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 {
+	echo "<pre>function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)</pr>\n";
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	$tokens=explode("+",$base);
@@ -1636,7 +1638,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	{
 		$dat=strpos($file, '.dat',1);
 		$m=strpos($file,$base,0);
-		//echo "file =$file. dat,m=$dat,$m \n"; 
+		//	echo "<pre>file =$file. dat,m=$dat,$m </pre>\n"; 
 		if (strpos($file, '.dat',1) and strpos($file,$base,0)===0 )
 		{
 			$basen=basename($file,".dat");
@@ -1646,6 +1648,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 			{
 				$i=$tokens[1];
 				$dat_file_array[$i]=$file;
+				//	echo "<pre>dat_file_array[$i]=$file;</pre>\n";
 			}
 		}
 	}
@@ -1817,7 +1820,16 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	{
 		$outBuffer[$f]=0;
 	}
-	$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);
+	if($TotalFrames<$maxFrame)
+	{
+		$MaxFrameLoops=$TotalFrames;
+	}
+	else
+	{
+		$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);
+	}
+	echo "<pre>$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);</pre>\n";
+	echo "<pre>MaxFrameLoops = $MaxFrameLoops</pre>\n";
 	$Sec2=-1;
 	$old_string=$old_pixel=0;
 	$i=0;
@@ -1846,10 +1858,12 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 			//echo "<pre>string=$string,$pixel frame=$frame, rgb=$rgb\n";
 			//echo "<pre>loop=i   if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
 			//echo "<pre>loop=$i   if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";
+		/*	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
+			echo "<pre>if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";*/
 			if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
 			{
 				fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
-				//	printf("<pre>S %d P %d ",$old_string,$old_pixel);
+				printf("<pre>S %d P %d ",$old_string,$old_pixel);
 				$frameCounter=0;
 				for($loop=1;$loop<=$MaxFrameLoops;$loop++)
 					for($f=1;$f<=$maxFrame;$f++)
@@ -1857,9 +1871,12 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 					$frameCounter++;
 					if($frameCounter<=$TotalFrames)
 						fwrite ($fh_buff,sprintf(" %d",$outBuffer[$f]));
-					//printf(" %d",$outBuffer[$f]);
+					printf(" %d",$outBuffer[$f]);
 				}
 				fwrite ($fh_buff,sprintf("\n"));
+				printf("\n");
+				
+				
 				for($f=1;$f<=$maxFrame;$f++)
 				{
 					$outBuffer[$f]=0;
@@ -1902,7 +1919,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	//printf("</pre>\n");
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
-	unlink($seq_file);
+	//unlink($seq_file);
 	//unlink ($seq_srt);
 	fclose($fh_buff);
 	return ($filename_buff);

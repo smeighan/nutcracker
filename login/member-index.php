@@ -129,7 +129,7 @@ name="MODEL_TYPE"> Mega-Tree (If you want a half mega tree, choose this and then
 name="MODEL_TYPE"> 	Matrix(Grid) <br />
 <input type="radio" value="HORIZ_MATRIX"
 <?php if( $row['model_type']=="HORIZ_MATRIX") echo "checked=\"checked\""; ?>
-name="MODEL_TYPE"> 	Horizontal Matrix(Grid) <br />
+name="MODEL_TYPE"> 	Horizontal Matrix(Grid) (UNDER DEVELOPMENT, DOES NOT WORK YET)<br />
 <input type="radio" value="RAY" 
 <?php if( $row['model_type']=="RAY") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE">	Ray <br />
@@ -142,6 +142,7 @@ name="MODEL_TYPE">	Ray <br />
 <tr>
 <td><img src="../images/mega_tree.png" alt="bottom_to_top"  ></td>
 <td><img src="../images/matrix.png" alt="up_down_next"  ></td>
+<td><img src="../images/horiz_matrix.png" alt="up_down_next"  ></td>
 <td><img src="../images/ray.png" alt="up_down_180"  ></td>
 </tr>
 </table>
@@ -246,7 +247,7 @@ function show_my_models($username,$model_name)
 	echo "<th>total<br/>Strings<br/><font color=green>1-100</font></th>";
 	//	echo "<th>direction</th>";
 	//	echo "<th>Where does<br/>String#1 start <br/>(in degreees)</th>";
-	echo "<th>pixel count<br/>per string<br/><font color=green>40-130</font></th>";
+	echo "<th>pixel count<br/>per string<br/><font color=green>10-10000</font></th>";
 	echo "<th>Number of<br/>folds</th>";
 	echo "<th>Unit of<br/>measure</th>";
 	echo "<th>H1 . height</th>";
@@ -284,7 +285,7 @@ function show_my_models($username,$model_name)
 			echo "<td><font color=$warn>($total_strings)</font></td>";
 			$strands=$total_strings;
 			$warn="green";
-			if($pixel_count < 10 or $pixel_count>130) $warn="red";
+			if($pixel_count < 10 or $pixel_count>10000) $warn="red";
 			echo "<td><font color=$warn>($pixel_count)</font></td>";
 			//$pixel_spacing = $pixel_length/$pixel_count;
 			$pixel_length = $pixel_spacing*$pixel_count; // PIXEL FIX

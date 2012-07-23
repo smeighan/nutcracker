@@ -277,8 +277,7 @@ function get_models($username,$model_name)
 	echo "</table>";
 	$target_array2= array($target_array,$username,$model_name) ;
 	if($model_type=="MTREE") $full_path=megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
-	else if($model_type=="MATRIX" or $model_type="RAY") $full_path=matrix($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
-	else if($model_type=="HORIZ_MATRIX") $full_path=horiz_matrix($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+	else if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY") $full_path=matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
 	else
 	echo "<pre>ERROR! Model type $model_type is unknown</pre>\n";
 	echo "<pre>";
@@ -426,7 +425,7 @@ function megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$t
 	return $dat_file;
 }
 
-function matrix($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
+function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
 {
 	#
 	#	output files are created for each segment
@@ -468,6 +467,7 @@ function matrix($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$mod
 	if($model_type=="RAY")
 		$x_spacing_top=$width_top/$maxStrands;
 	echo "<pre>";
+	echo "model_type=$model_type";
 	for ($s=1;$s<=$maxStrands;$s++)
 	{
 		$hyp=0;
@@ -491,83 +491,22 @@ function matrix($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$mod
 				$h= ($mod2*$x_spacing) - $x_spacing;
 			if(isset($target_array[$s][$p]['string']))
 			{
+				$s_orig=$s; $p_orig=$p;
+				if($model_type=="HORIZ_MATRIX")
+				{
+					if($s_orig%$folds==1)
+					{
+						$s=$p;
+					}
+					else{
+						$s=$maxPixels-$p+1;
+					}
+					$p=$s_orig;
+				}
+				$x2=$s*3 - $s2*3;
+				$h=$mod2*3;
 				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
 				//	printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
-			}
-		}
-		fwrite($fh, "\n" );
-	}
-	fclose($fh);
-	echo "</pre>\n";
-	return $dat_file;
-}
-
-function horiz_matrix($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
-{
-	#
-	#	output files are created for each segment
-	#	8 segment = t1_8.dat output file
-	#	16 segment = t1_16.dat output file
-	#	32 segment = t1_32.dat output file
-	#
-	#
-	#
-	#	Build a mega-Tree with arbitray strands
-	$PI = pi();
-	$DTOR = $PI/180;
-	$RTOD = 180/$PI;
-	$pixel_spacing=3.0;
-	$width_bottom = $pixel_count*3.0;	// assume 3" spacing between nodes.
-	$width_top = $pixel_count*3.0;	// assume 3" spacing between nodes.
-	if($model_type=="RAY") $width_top=$width_bottom/5;
-	$height = $pixel_spacing*$maxPixels;
-	$target_array=$target_array2[0];
-	$username=$target_array2[1];
-	$model_name=$target_array2[2];
-	$member_id=get_member_id($username);
-	$path="../targets/" . $member_id ;
-	##	passed in now thru runtime arg, 	strands=16;
-	$dat_file = $path . "/" . $model_name . ".dat";
-	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
-	fwrite($fh,"#    $dat_file\n");
-	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
-	fwrite($fh,"#    Col 2: Strand number.\n");
-	fwrite($fh,"#    Col 3: Nutcracker Pixel#\n");
-	fwrite($fh,"#    Col 4: X location in world coordinates\n");
-	fwrite($fh,"#    Col 5: Y location in world coordinates\n");
-	fwrite($fh,"#    Col 6: Z location in world coordinates\n");
-	fwrite($fh,"#    Col 7: User string\n");
-	fwrite($fh,"#    Col 8: User pixel\n");
-	fwrite($fh,"# \n");
-	$pixels=$maxPixels;
-	$x_spacing=$x_spacing_top=$pixel_spacing;
-	if($model_type=="RAY")
-		$x_spacing_top=$width_top/$maxStrands;
-	echo "<pre>";
-	for ($s=1;$s<=$maxStrands;$s++)
-	{
-		$hyp=0;
-		$s2=$maxStrands/2;
-		$s_delta = $s2-$s;
-		$x2=$s_delta*$x_spacing;
-		$x2_top=$s_delta*$x_spacing;
-		if($model_type=="RAY")
-		{
-			$x2_top= $s_delta*$x_spacing_top;
-		}
-		$y2=0;
-		for ($p=1;$p<=$maxPixels;$p++)
-		{
-			$mod=($p%$maxStrands)+1;
-			$mod2 = $maxPixels-$mod+1;
-			$mod2 = $maxPixels-$p;
-			if($model_type=="MATRIX")
-				$h= ($mod2*$x_spacing);
-			else 	if($model_type=="RAY")
-				$h= ($mod2*$x_spacing) - $x_spacing;
-			if(isset($target_array[$s][$p]['string']))
-			{
-				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
 			}
 		}
 		fwrite($fh, "\n" );
