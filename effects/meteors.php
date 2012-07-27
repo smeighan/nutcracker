@@ -107,7 +107,8 @@ $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 // function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
-	
+	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+
 function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$script_start,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type)
 {
 	$minStrand =$arr[0];  // lowest strand seen on target
@@ -120,11 +121,7 @@ function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$w
 	$file      =$arr[7];
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
-	
 	$arr_orig=$arr;
-	
-	
-	
 	srand(time());
 	$maxFrame=120;
 	//$maxMeteors=6;	// how many meteors to draw at one time

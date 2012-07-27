@@ -159,8 +159,8 @@ foreach($effect_user_dtl_array as $i=>$effect_array)
 }
 //
 //
-//	Here we read all *.dayt's, sort them , fill in any mising cells and write it out to a *.buff file.
-//	we return a file handle to the *.buff file in read mode
+//	Here we read all *.dayt's, sort them , fill in any mising cells and write it out to a *.nc file.
+//	we return a file handle to the *.nc file in read mode
 //
 $full_path= "workspaces/$member_id/$base";
 $path_parts = pathinfo($full_path);
@@ -173,7 +173,8 @@ $fh_lor=fopen($lor_lms,"w") or die("Unable to open $lor_lms");
 //
 
 $name_clip=$base;
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+// uneeded now, eacf effect builds buff file:   $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff= $dirname . "/" . $base . ".nc";
 $old_pixel=$old_string=0;
 if($frame_delay>0)
 	$maxFrame= ($seq_duration*1000)/$frame_delay;
@@ -242,7 +243,7 @@ while (!feof($fh_buff))
 	$l=strlen($line);
 	$c= count($tok);
 	//echo "c=$c line=$line\n";
-	if($c>=3)
+	if($tok[0]=='S' and $tok[2]=='P')
 	{
 		$string=$tok[1];
 		$pixel=$tok[3];

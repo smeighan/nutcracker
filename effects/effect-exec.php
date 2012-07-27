@@ -202,6 +202,7 @@ $cnt=count($effect_details);
 print_r($effect_details);
 echo "</pre>\n";*/
 $textarea="123 test ...";
+$file1=$file2=$layer_method="";
 for($i=0;$i<$cnt;$i++)
 {
 	echo "<tr>";
@@ -260,6 +261,98 @@ for($i=0;$i<$cnt;$i++)
 	echo "</td><td><br/>" . $effect_details[$i]['param_prompt'] . " (" . $effect_details[$i]['param_range'] . "):";
 	echo "<br/>" . $effect_details[$i]['param_desc'] . "</td>\n";
 	echo "</tr>\n";
+	$param_name=$effect_details[$i]['param_name'];
+	if($param_name=='file1' or $param_name=='file2')
+	{
+		if($param_name=='file1' ) $file1=$value[$param_name];
+		if($param_name=='file2' ) $file2=$value[$param_name];
+	}
+	if($param_name=='layer_method' ) $layer_method=$value[$param_name];
+	if($effect_details[$i]['effect_class']=='layer' and $effect_details[$i]['param_name']=='file2')
+	{
+		echo "<tr><td>Select two effects to layer together</td>";
+		echo "<td><table border=1>";
+		echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th></tr>";
+		$dir="workspaces/2";
+		$files=getFilesFromDir($dir);
+		foreach($files as $filename)
+		{
+			$tok=explode("/",$filename); //workspaces/2/AA+FLY.nc
+			$file=$tok[2];
+			$tok2=explode("+",$file);  // AA+FLY.nc
+			$target=$tok2[0];
+			$tok3=explode(".",$tok2[1]);
+			$effect=$tok3[0];
+			$checked="";
+			if($file==$file1) $checked="CHECKED";
+			if($file==$file2) $checked="CHECKED";
+			$effect_details2=get_target_model($username,$target);
+			/*	 [15] => Array
+			(
+			[username] => f
+			[effect_name] => BARBERPOLE_180
+			[param_name] => window_degrees
+			[param_value] => 180array2
+			[created] => 
+			[last_upd] => 2012-07-26 19:07:49
+			)
+				*/
+				
+				echo "<pre>";
+				print_r($effect_details2);
+				echo "</pre>";
+			foreach($effect_details2 as $array2)
+			{
+				foreach($array2 as $value2)
+				{
+					/*Array
+					(
+					[username] => f
+					[effect_name] => BARBERPOLE_180
+					[param_name] => window_degrees
+					[param_value] => 180
+					[created] => 
+					[last_upd] => 2012-07-26 19:07:49
+					)*/
+					if($array2['param_name']=='window_degrees') $window_degrees=$array2['param_value'];
+					if($array2['param_name']=='layer_method') $layer_method=$array2['param_value'];
+				}
+			}
+			
+			echo "<tr><td><input type=\"checkbox\" name=\"LAYER_EFFECTS[]\" value=\"$file\"  $checked /> $file<br /></td>";
+			echo "<td>$target</td>";
+			echo "<td>$window_degrees</td></tr>";
+			//	echo "<tr><td>$filename</td></tr>";
+		}
+		echo "</table>";
+		echo "</td></tr>";
+		echo "<tr><td>How should layers be joined</td><td>";
+		if($layer_method=="Pri-1")
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\" CHECKED >Priority to first effect<BR>";
+		else
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\"         >Priority to first effect<BR>";
+		//
+		if($layer_method=="Pri-2")
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\" CHECKED >Priority to second effect<BR>";
+		else
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\"         >Priority to second effect<BR>";
+		//
+		if($layer_method=="Avg")
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\" CHECKED >Average two pixels together<BR>";
+		else
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\"         >Average two pixels together<BR>";
+		//
+		if($layer_method=="Mask-1")
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\" CHECKED >First effect is mask against second effect<BR>";
+		else
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\"         >First effect is mask against second effect<BR>";
+		//
+		if($layer_method=="Mask-2")
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\" CHECKED >Second effect is mask against first effect<BR>";
+		else
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\"         >Second effect is mask against first effect<BR>";
+		echo "</td></tr>";
+	}
 }
 ?>
 </table>
@@ -268,6 +361,49 @@ for($i=0;$i<$cnt;$i++)
 </body>
 </html>
 <?php
+
+function getFilesFromDir($dir)
+{
+	$files = array(); 
+	$n=0;
+	if ($handle = opendir($dir))
+	{
+		while (false !== ($file = readdir($handle)))
+		{
+			if ($file != "." && $file != ".." )
+			{
+				if(is_dir($dir.'/'.$file))
+				{
+					$dir2 = $dir.'/'.$file; 
+					$files[] = getFilesFromDir($dir2);
+				}
+				else 
+				{ 
+					$path_parts = pathinfo($file);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
+					$dirname   = $path_parts['dirname']; // workspaces/nuelemma
+					$basename  = $path_parts['basename']; // MEGA_001+SEAN_d_22.dat
+					$extension =$path_parts['extension']; // .dat
+					$filename  = $path_parts['filename']; // MEGA_001+SEAN_d_22
+					$cnt=count($files);
+					$tokens=explode("/",$dirname);
+					//	0 = workspaces
+					//	1 = nuelemma or id
+					//
+					$pos=strpos($file,"_amp.gif");
+					$th =strpos($file,"_th.gif");
+					if($extension=="nc" )
+					{
+						$files[] = $dir.'/'.$file; 
+						$n++;
+						//echo "<pre>$cnt $n $file</pre>\n";
+					}
+					} 
+				} 
+			} 
+		closedir($handle);
+	}
+	return ($files);
+}
 
 function get_effect_hdr($effect_class)
 {
@@ -432,8 +568,6 @@ function show_my_effects($username,$user_targets)
 	mysql_close();
 	return ($query_rows);
 }
-
-
 
 function  get_value_effect_user_dtl($username,$effect_name,$param_name)
 {

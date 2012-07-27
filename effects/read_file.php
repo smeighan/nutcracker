@@ -926,7 +926,9 @@ function show_array($array,$title)
 	foreach($array AS $key => $value)
 	{
 		echo "<tr>";
-		if(substr($value,0,1)=="#")
+		if(is_array($value))
+			$color="white";
+		else if(substr($value,0,1)=="#")
 			$color=$value;
 		else
 		$color="white";
@@ -1727,14 +1729,18 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 				$rgb=$tok[6];
 				//
 				//	$string_array[$string][$user_pixel][$frame]=$rgb;
+				//	echo "<pre>string,s,p=$string,$s,$p</pre>\n";
 				if(in_array($string,$window_array)) // Is this strand in our window?, 
 				{
 					fwrite($fh_seq,sprintf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line));
-					//printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);
+					//	printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);
 				}
 			}
 		}
+		fclose($fh);
+		unlink($full_path);
 	}
+	
 	fclose($fh_seq);
 	//
 	//---------------------------------------------------------------------------------------
@@ -1834,8 +1840,14 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	$old_string=$old_pixel=0;
 	$i=0;
 	$frame=0;
-	$filename_buff= $dirname . "/" . $base . ".buff";
+	$filename_buff= $dirname . "/" . $base . ".nc";
 	$fh_buff=fopen($filename_buff,"w") or die("Unable to open $filename_buff");
+	fwrite ($fh_buff,sprintf("# window_degrees %s\n",$window_degrees));
+	fwrite ($fh_buff,sprintf("# target_name %s\n",$target_name));
+	fwrite ($fh_buff,sprintf("# effect_name %s\n",$effect_name));
+	//
+	//
+	$echo=0; // echo=1, see the buff file on screen
 	while (!feof($fh)) // read *.srt file
 	{
 		$line = fgets($fh);
@@ -1858,12 +1870,12 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 			//echo "<pre>string=$string,$pixel frame=$frame, rgb=$rgb\n";
 			//echo "<pre>loop=i   if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
 			//echo "<pre>loop=$i   if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";
-		/*	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
+			/*	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
 			echo "<pre>if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";*/
 			if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
 			{
 				fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
-				printf("<pre>S %d P %d ",$old_string,$old_pixel);
+				if($echo==1) printf("<pre>S %d P %d ",$old_string,$old_pixel);
 				$frameCounter=0;
 				for($loop=1;$loop<=$MaxFrameLoops;$loop++)
 					for($f=1;$f<=$maxFrame;$f++)
@@ -1871,12 +1883,10 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 					$frameCounter++;
 					if($frameCounter<=$TotalFrames)
 						fwrite ($fh_buff,sprintf(" %d",$outBuffer[$f]));
-					printf(" %d",$outBuffer[$f]);
+					if($echo==1)printf(" %d",$outBuffer[$f]);
 				}
 				fwrite ($fh_buff,sprintf("\n"));
-				printf("\n");
-				
-				
+				if($echo==1)printf("\n");
 				for($f=1;$f<=$maxFrame;$f++)
 				{
 					$outBuffer[$f]=0;
@@ -1919,8 +1929,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	//printf("</pre>\n");
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
-	//unlink($seq_file);
-	//unlink ($seq_srt);
+	unlink($seq_file);
+	unlink ($seq_srt);
 	fclose($fh_buff);
 	return ($filename_buff);
 }

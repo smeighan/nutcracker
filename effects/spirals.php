@@ -89,6 +89,7 @@ $script_end = (float) $sec + (float) $usec;
 $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 //if($description = 'Total Elapsed time for this effect:')
 	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 
 function spiral($arr,$path,$t_dat,$numberSpirals,$numberRotations,$spiralThickness,$base,$start_color,$end_color,$direction,$frame_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type)
 {
@@ -175,8 +176,6 @@ function spiral($arr,$path,$t_dat,$numberSpirals,$numberRotations,$spiralThickne
 				if (  $p>$maxPixel) $p-=$maxPixel;
 				if($strand<1) $strand=1;
 				if($p<1) $p=1;
-				
-				
 				if($p==null)
 					echo "<pre>pixel is null, p=[$p]</pre>";
 				else if($tree_xyz[$strand][$p]==null)

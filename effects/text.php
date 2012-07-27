@@ -104,6 +104,7 @@ text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees,$seq_dur
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for  effect text:");
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 
 function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees,$seq_duration,$topPixel,$show_frame,$text1_color,$text2_color,$username,$script_start)
 {
@@ -363,12 +364,9 @@ function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees
 						$rgb_val=0;
 					}
 					//if($s==1) $rgb_val=hexdec("#00FFFF"); // debug to mark strand 1
-				//	if($s==5) $rgb_val=hexdec("#FF0000");
-				//	if($p==5) $rgb_val=hexdec("#00FF00");
-					
+					//	if($s==5) $rgb_val=hexdec("#FF0000");
+					//	if($p==5) $rgb_val=hexdec("#00FF00");
 					$tree_rgb[$s][$p]=$rgb_val;
-					
-					
 					$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
 					//		fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val));
 					$seq_number++;
@@ -430,7 +428,6 @@ function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees
 	//	echo "make_gp($path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);\n";
 	$full_path = "workspaces/2/AA+TEXT2_d_8.dat";
 	//fill_in_zeros($arr,$dat_file_array);
-	
 	make_gp($arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 }
 
@@ -536,7 +533,7 @@ function create_library($link,$username,$base,$MaxFrames)
 
 function store_into_library_dtl($link,$username,$library_id,$base,$string,$pixel,$frame,$rgb_val)
 {
-return 0;
+	return 0;
 	$tokens2=explode("+",$base); // AA+CIRCLE1
 	$t_dat=$tokens2[0];	// AA
 	$effect_name=$tokens2[1];	// CIRCLE1

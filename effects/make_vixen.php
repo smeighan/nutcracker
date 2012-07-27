@@ -142,7 +142,8 @@ if($TotalFrames>1000)
 	echo "<font color=red><h2>Limiting current sequences to 1000 frames</h2></font>\n";
 	$TotalFrames=1000;
 }
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+// uneeded , each effect file makes this now:  $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff= "workspaces/" . $member_id . "/" . $base . ".nc";
 /*$create_srt_file_array=create_srt_file($full_path,$base,$username,$frame_delay,$TotalFrames);
 $maxFrame=$create_srt_file_array[0];
 $seq_srt=$create_srt_file_array[1];
@@ -181,7 +182,7 @@ while (!feof($fh_buff))
 	$cnt= count($tok);
 	$MaxFrame=$cnt-4;
 	//echo "cnt=$cnt MaxFrame=$MaxFrame, line=$line\n";
-	if($cnt>4)
+	if($tok[0]=='S' and $tok[2]=='P')
 	{
 		$string=$tok[1];
 		$pixel=$tok[3];
