@@ -270,11 +270,13 @@ for($i=0;$i<$cnt;$i++)
 	if($param_name=='layer_method' ) $layer_method=$value[$param_name];
 	if($effect_details[$i]['effect_class']=='layer' and $effect_details[$i]['param_name']=='file2')
 	{
-		echo "<tr><td>Select two effects to layer together</td>";
+		echo "<tr><td>Select two effects to layer together.<br/></td>";
 		echo "<td><table border=1>";
-		echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th></tr>";
+		echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th>";
+		echo "<th>Seq_Duration</th></tr>";
 		$dir="workspaces/2";
 		$files=getFilesFromDir($dir);
+		sort($files);
 		foreach($files as $filename)
 		{
 			$tok=explode("/",$filename); //workspaces/2/AA+FLY.nc
@@ -286,7 +288,7 @@ for($i=0;$i<$cnt;$i++)
 			$checked="";
 			if($file==$file1) $checked="CHECKED";
 			if($file==$file2) $checked="CHECKED";
-			$effect_details2=get_target_model($username,$target);
+			$effect_details2=get_effect_user_dtl2($username,$effect);
 			/*	 [15] => Array
 			(
 			[username] => f
@@ -297,36 +299,35 @@ for($i=0;$i<$cnt;$i++)
 			[last_upd] => 2012-07-26 19:07:49
 			)
 				*/
-				
-				echo "<pre>";
-				print_r($effect_details2);
-				echo "</pre>";
-			foreach($effect_details2 as $array2)
-			{
-				foreach($array2 as $value2)
-				{
-					/*Array
-					(
-					[username] => f
-					[effect_name] => BARBERPOLE_180
-					[param_name] => window_degrees
-					[param_value] => 180
-					[created] => 
-					[last_upd] => 2012-07-26 19:07:49
-					)*/
-					if($array2['param_name']=='window_degrees') $window_degrees=$array2['param_value'];
-					if($array2['param_name']=='layer_method') $layer_method=$array2['param_value'];
-				}
-			}
-			
+			/*echo "<pre>effect_details2:";
+			print_r($effect_details2);
+			echo "</pre>";*/
+			if(isset($effect_details2['window_degrees'])) 	$window_degrees=$effect_details2['window_degrees'];
+			$seq_duration=	$effect_details2['seq_duration'];
 			echo "<tr><td><input type=\"checkbox\" name=\"LAYER_EFFECTS[]\" value=\"$file\"  $checked /> $file<br /></td>";
 			echo "<td>$target</td>";
-			echo "<td>$window_degrees</td></tr>";
+			//if(!isset($window_degrees) or $window_degrees==null) $window_degrees=0;
+			echo "<td>$window_degrees</td>";
+			echo "<td>$seq_duration</td></tr>";
 			//	echo "<tr><td>$filename</td></tr>";
 		}
 		echo "</table>";
-		echo "</td></tr>";
-		echo "<tr><td>How should layers be joined</td><td>";
+		echo "</td>";
+		echo "<td><table><tr>";
+		$cols=0;
+		foreach($files as $filename)
+		{
+			$tok=explode(".",$filename); //workspaces/2/AA+FLY.nc
+			$gifname = $tok[0] . "_th.gif";
+			$tok2=explode("/",$filename); //workspaces/2/AA+FLY.nc
+			$fname = $tok2[2];
+			echo "<td>$fname<br/><img src=\"$gifname\"/></td>";
+			$cols++;
+			if($cols%6==0) echo "</tr><tr>";
+			}
+			echo "</tr></table></td>";
+		echo "</tr>";
+		echo "<tr><td>How should layers be joined. </td><td>";
 		if($layer_method=="Pri-1")
 			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\" CHECKED >Priority to first effect<BR>";
 		else

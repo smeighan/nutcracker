@@ -68,6 +68,7 @@ list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $t_dat = $user_target . ".dat";
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
+echo "<pre>arr=read_file($t_dat,$path);</pre>\n";
 $member_id=get_member_id($username);
 $path ="workspaces/" . $member_id;
 $directory=$path;
@@ -309,6 +310,7 @@ function spiral($arr,$path,$t_dat,$numberSpirals,$numberRotations,$spiralThickne
 	}
 	show_elapsed_time($script_start,"Finished  Effect, spirals class:");
 	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	echo "<pre>make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
 	?>
 	<br/>
 	<br/>

@@ -1482,6 +1482,55 @@ function get_effect_user_dtl($username,$effect_name)
 	return $effects_user_dtl;
 }
 
+function get_effect_user_dtl2($username,$effect_name)
+{
+//echo "<pre>function get_effect_user_dtl2($username,$effect_name)</pre>\n";
+	//Include database connection details
+	require_once('../conf/config.php');
+	$effect_name=str_replace("%20"," ",$effect_name);
+	$username=str_replace("%20"," ",$username);
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	$query ="select * from effects_user_dtl where effect_name='$effect_name' and username = '$username'";
+	//echo "<pre>get_effect_user_dtl: query=$query</pre>\n";
+	$result=mysql_query($query) or die ("Error on $query");
+	if (!$result)
+	{
+		$message  = 'Invalid query: ' . mysql_error() . "\n";
+		$message .= 'Whole query: ' . $query;
+		die($message);
+	}
+	$NO_DATA_FOUND=0;
+	if (mysql_num_rows($result) == 0)
+	{
+		$NO_DATA_FOUND=1;
+	}
+	$effects_user_dtl=array();
+	if(!$NO_DATA_FOUND)
+	{
+		// LSP1_8	LSP2_0	LOR_S2	LOR_S3	VIXEN211	VIXEN25	VIXEN3	OTHER	
+		while ($row = mysql_fetch_assoc($result))
+		{
+			extract($row);
+			/*echo "<pre>";
+			print_r($row);
+			echo "</pre>\n";*/
+			$effects_user_dtl[$param_name]=$param_value;
+		}
+	}
+	return $effects_user_dtl;
+}
+
 function get_effect_user_hdr($username,$effect_name)
 {
 	//Include database connection details
@@ -1677,6 +1726,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	echo "</pre>\n";*/
 	$seq_file = $dirname . "/" . $base . ".dat";
 	$seq_srt = $dirname . "/" . $base . ".srt";
+	$gp_file = $dirname . "/" . $base . ".gp";
+	$amp_gp_file = $dirname . "/" . $base . "_amp.gp";
 	$fh_seq=fopen($seq_file,"w") or die ("unable to open $seq_file");
 	//---------------------------------------------------------------------------------------
 	//	Loop thru all dat files, and process them 1 by 1 and append them into seq_file. 
@@ -1740,7 +1791,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 		fclose($fh);
 		unlink($full_path);
 	}
-	
+	unlink($gp_file);
+	unlink($amp_gp_file);
 	fclose($fh_seq);
 	//
 	//---------------------------------------------------------------------------------------
