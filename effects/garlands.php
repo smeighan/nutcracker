@@ -86,7 +86,7 @@ show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 
-
+echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); </pre>\n";
 
 
 

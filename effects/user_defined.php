@@ -119,7 +119,7 @@ $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
-
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 
 // function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 
