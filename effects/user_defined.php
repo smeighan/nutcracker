@@ -149,6 +149,7 @@ function ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window
 	write_user_defined($php_program,$include_file);
 	ob_start();
 	include $include_file;
+	echo "<pre>include $include_file</pre>\n";
 	ob_get_clean();
 
 
@@ -218,33 +219,6 @@ function write_user_defined($php_program,$file)
 	fclose($fh);
 	return;
 }
-
-/*	
-	function user_defined($s,$p,$maxS,$maxP,$frame,$param1)
-{
-	$rgb=0;
-	$delta_s=$delta_p=2;
-
-	$s_col0=intval(($frame+$s-1)/$delta_s);
-	$p_row0=intval(($p-1)/$delta_p);
-	$s_col=$s_col0%2;
-	$p_row=$p_row0%2;
-	if($s_col==0 and $p_row==0)
-	{
-		$rgb=hexdec("#FF0000");
-	}
-	else if($s_col==1 and $p_row==1)
-	{
-		$rgb=hexdec("#0000FF");
-	}
-	if($frame%4==0) $rgb=hexdec("#FFFFFF");
-	if($frame%4==1) $rgb=hexdec("#FF0000");
-	if($frame%4==2) $rgb=hexdec("#00FF00");
-	if($frame%4==3) $rgb=hexdec("#0000FF");
-
-	return $rgb;	 // don't change this line
-}
- */
 
 
 /*

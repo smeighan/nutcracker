@@ -72,6 +72,7 @@ $script_start = (float) $sec + (float) $usec;
 $file1 = $path . "/" . $array_to_save['file1'];
 $file2 = $path . "/" . $array_to_save['file2'];
 $layer_method =$array_to_save['layer_method'];
+$seq_duration =$array_to_save['seq_duration'];
 $fh1=fopen($file1,"r");
 $fh2=fopen($file2,"r");
 $nc_file=$path . "/" . $base . ".nc";
@@ -118,12 +119,17 @@ while (!feof($fh1))
 		if($tok1[0]=="S")
 			if($tok2[0]==$tok1[0]  and $tok2[1]==$tok1[1] and $tok2[3]==$tok1[3])
 		{
-			$line++;
+		$line++;
+			$seq_duration = ($c-3) * $frame_delay/1000;
+			echo "<pre>line=$line, c=$c, seq_duration=$seq_duration, frame_delay=$frame_delay</pre>\n";
+			
 			$cols=0;
 			fprintf($fh_nc,sprintf ("S %d P %d ",$tok1[1],$tok1[3]));
 			//printf ("S %d P %d ",$tok1[1],$tok1[3]);
 			for($i=4;$i<$c;$i++)
 			{
+				if(!isset($tok1[$i]) or $tok1[$i]==null) $tok1[$i]=0;
+				if(!isset($tok2[$i]) or $tok2[$i]==null) $tok2[$i]=0;
 				if($line==1) // only open files on first line
 				{
 					$n=$i-3;
