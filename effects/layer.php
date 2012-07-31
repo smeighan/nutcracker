@@ -119,10 +119,12 @@ while (!feof($fh1))
 		if($tok1[0]=="S")
 			if($tok2[0]==$tok1[0]  and $tok2[1]==$tok1[1] and $tok2[3]==$tok1[3])
 		{
-		$line++;
-			$seq_duration = ($c-3) * $frame_delay/1000;
-			echo "<pre>line=$line, c=$c, seq_duration=$seq_duration, frame_delay=$frame_delay</pre>\n";
-			
+			$line++;
+			if($line==1)
+			{
+				$seq_duration = ($c-3) * $frame_delay/1000;
+				echo "<pre>line=$line, c=$c, seq_duration=$seq_duration, frame_delay=$frame_delay</pre>\n";
+			}
 			$cols=0;
 			fprintf($fh_nc,sprintf ("S %d P %d ",$tok1[1],$tok1[3]));
 			//printf ("S %d P %d ",$tok1[1],$tok1[3]);
