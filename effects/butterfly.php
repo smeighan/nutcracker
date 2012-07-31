@@ -180,6 +180,7 @@ function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_d
 					if($H<0) $H= -$v;
 					if($background_chunk>0 and $background_chunk>0)
 					{
+					if($background_skip<1) $background_skip=1;
 						//$background_chunk=4;
 						//$background_skip=3;
 						//$background_color="#FFFFFF";

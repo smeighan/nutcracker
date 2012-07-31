@@ -48,26 +48,35 @@ print_r($_SERVER);
 echo "</pre>\n";*/
 $tokens=explode("?",$_SERVER['QUERY_STRING']);
 $c=count($tokens);
+//http://meighan.net/nutcracker_sean/effects/make_lor.php?base=AA+BARBERPOLE_180?full_path=workspaces/2/AA+BARBERPOLE_180_d_1.dat?frame_delay=50?member_id=2?seq_duration=9?sequencer=lors2?pixel_count=100
+$tokens=explode("?",$_SERVER['QUERY_STRING']);
+$c=count($tokens);
+$tokens2=explode("base=",$tokens[0]);
+$base=$tokens2[1];
 /*echo "<pre>";
 print_r($tokens);
 echo "</pre>\n";*/
 $c=count($tokens);
 $group=1;
+$INSERT_NEW_GIFS=0;
 if($c>0)
 {
-	$tokens2=explode("=",$tokens[0]);
+	// http://meighan.net/nutcracker_sean/effects/gallery.php???e=120
+	$tokens2=explode("group=",$tokens[0]);
 	$group=$tokens2[1];
-		/*echo "<pre>c=$c";
-		print_r($tokens);
-		echo "</pre>\n";*/
-		
-		$tokens2=explode("=",$tokens[1]);
-		$group_size=$tokens2[1];
+	/*echo "<pre>c=$c";
+	print_r($tokens);
+	echo "</pre>\n";*/
+	$tokens2=explode("group_size=",$tokens[1]);
+	$group_size=$tokens2[1];
+	// http://meighan.net/nutcracker_sean/effects/gallery.php???INSERT_NEW_GIFS=1
+	$tokens2=explode("INSERT_NEW_GIFS=",$tokens[2]);
+	$INSERT_NEW_GIFS=$tokens2[1];
 }
 if(!isset($group) or $group<1) $group=1;
 if(!isset($group_size) or $group_size<1) $group_size=40;
 $pics_in_group=$group_size;
-gallery($group,$pics_in_group);
+gallery($group,$pics_in_group,$INSERT_NEW_GIFS);
 
 function getFilesFromDir($dir)
 {
@@ -129,19 +138,22 @@ function array_flat($array)
 	return $tmp;
 }
 
-function gallery($group,$pics_in_group)
+function gallery($group,$pics_in_group,$INSERT_NEW_GIFS)
 {
-
-echo "<pre>gallery($group,$pics_in_group)</pre>\n";
-
-	// Usage find all gif files under the workspaces subdirectory 
-	echo "<br/>";
-	echo "<br/>";
-	echo "<br/>";
-	echo "<h1>Gallery of Effects by all users of Nutcracker</h1>";
 	$dir = 'workspaces'; 
-	$foo = getFilesFromDir($dir); 
-	$cnt=count($foo);
+	if($INSERT_NEW_GIFS)
+	{
+		$array_of_gifs = getFilesFromDir($dir); 
+		insert_into_gallery($array_of_gifs);
+	}
+	else
+	{
+		$array_of_gifs=get_from_gallery();
+	}
+	/*echo "<pre>";
+	print_r($array_of_gifs);
+	echo "<pre>";*/
+	$cnt=count($array_of_gifs);
 	$line=0;
 	/*
 	[939] => workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
@@ -154,30 +166,55 @@ echo "<pre>gallery($group,$pics_in_group)</pre>\n";
 	[946] => workspaces/28/SGMEG24F+_d_23.dat
 	[947] => workspaces/28/SGMEG24F+_d_6.dat
 	*/
+	$arr=get_max_date_gallery();
+	$max_date=$arr[0];
+	$cnt=$arr[1];
+	
+	// Usage find all gif files under the workspaces subdirectory 
+	echo "<br/>";
+	echo "<br/>";
+	echo "<br/>";
+	echo "<h1>Gallery of Effects by all users of Nutcracker. $cnt User Effects gathered on $max_date</h1>";
 	$effect_class="xx";
 	$pics=0;
-	
-	$pics_per_row=8;
+	$pics_per_row=6;
 	$max_rows=($pics_in_group/$pics_per_row);
 	$last_pic=$pics_per_row-1;
 	$group_to_show=$group;
 	$pics_col=0; $pics_row=$start_pic=$end_pic=0;
 	$pic_group=0;
-	echo "<table border=1>";
-	foreach ($foo as $i => $file)
+	$array_effect_classes=get_effect_class_gallery();
+	//sort($array_effect_classes);
+	?>
+	<form action="<?php echo "gallery-exec.php"; ?>" method="post">
+	<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
+	<input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
+	<input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
+	<?php
+	/*echo "FILTER:&nbsp;<INPUT TYPE=\"RADIO\" NAME=\"effect_class_array\" VALUE=\"All\" CHECKED >Any effect class";
+	foreach($array_effect_classes as $effect_cl)
 	{
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"effect_class_array\" VALUE=\"$effect_cl\"  >$effect_cl";
+	}
+	*/
+	echo "<table border=\"1\">\n";
+	foreach ($array_of_gifs as $i => $array2)
+	{
+		$file=$array2[0];
+		$effect_class=$array2[1];
 		$path_parts = pathinfo($file);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
-		$dirname   = $path_parts['dirname']; // workspaces/nuelemma
-		$basename  = $path_parts['basename']; // MEGA_001+SEAN_d_22.dat
-		$extension =$path_parts['extension']; // .dat
-		$filename  = $path_parts['filename']; // MEGA_001+SEAN_d_22
+		$dirname   = $path_parts ['dirname']; // workspaces/nuelemma
+		$basename  = $path_parts ['basename']; // MEGA_001+SEAN_d_22.dat
+		$extension =$path_parts  ['extension']; // .dat
+		$filename  = $path_parts ['filename']; // MEGA_001+SEAN_d_22
 		$tokens=explode("/",$dirname);
 		//	0 = workspaces
 		//	1 = nuelemma or id
 		//
 		$member_id=$tokens[1];
 		$pos=strpos($file,"_amp.gif");
-		$th=strpos($file,"_th.gif");		
+		$th=strpos($file,"_th.gif");	
+		$checked="";	
 		//echo "<pre>$file member=$member_id pos=$pos, th=$th</pre>\n";
 		if($extension=="gif" and $pos === false and $th>1 and $member_id>=1 and $member_id < 99999999)
 		{
@@ -187,41 +224,20 @@ echo "<pre>gallery($group,$pics_in_group)</pre>\n";
 			$tok3=explode("_th",$tok2[1]);
 			$effect_name=$tok3[0];
 			$username = get_username($member_id);
-			//$effect_class=get_eff_class($username,$effect_name);
-			//if($username=='f' or $effect_class <> 'text')
+			$pics++;
+			if($pics%$pics_per_row==1) // check if we should advance row
 			{
-				$pics++;
-				if($pics%$pics_in_group == 1) // check if should output group header
-				{
-					$pic_group++;
-					if($pic_group>=1)
-					{
-						echo "</tr>";
-						// $pic_group
-						// $max_rows=4;
-						// $pics_per_row=8;
-						$start = $pics_in_group * ($pic_group-1) + 1;
-						$end=$start + $pics_in_group -1;
-						echo "<tr><td><a href=gallery.php?group=$pic_group>($start - $end)<br/> qty40</a></td>";
-						$start = $pics_in_group*2 * ($pic_group-1) + 1;
-						$end=$start + $pics_in_group*2 -1;
-						echo "<td><a href=gallery.php?group=$pic_group?group_size=80>($start - $end) qty80</a></td>";
-						$start = $pics_in_group*3 * ($pic_group-1) + 1;
-						$end=$start + $pics_in_group*3 -1;
-						echo "<td><a href=gallery.php?group=$pic_group?group_size=120>($start - $end)qty120</a></td>";
-							echo "</tr>";
-					}
-					$start_pic=$pics;
-				}
-				if($pics%$pics_per_row==1) // check if we should advance row
-				{
-					echo "</tr><tr>";
-					$pics_row++;
-				}
-				if($pic_group==$group_to_show or $group_to_show==0) // should we show gif?
-				echo "<td><a href=\"copy_model.php?filename=$filename?member_id=$member_id\"><img src=\"$file\"/></a>$pics</td>\n";
-				$end_pic=$pics;
+				echo "</tr><tr>";
+				$pics_row++;
 			}
+			//	if($pic_group==$group_to_show or $group_to_show==0) // should we show gif?
+			{
+				echo "<td><b>$effect_class</b>&nbsp;&nbsp;File#$i. &nbsp;&nbsp;Select:<input type=\"checkbox\" name=\"fullpath_array[$i]\" value=\"$file\"  $checked /> ";
+				echo "<br/>Your name for this effect:<input type=\"text\" name=\"user_effect_name[$i]\" size=\"25\" value=\"\">";
+				echo "<br/>Your Description:<input type=\"text\" name=\"desc[$i]\" size=\"25\" >";
+				echo "<br/>$file<br /><img src=\"$file\"/></a></td>\n";
+			}
+			$end_pic=$pics;
 		}
 	}
 	if($pics%$pics_per_row!=1)
@@ -232,11 +248,12 @@ echo "<pre>gallery($group,$pics_in_group)</pre>\n";
 		echo "<tr><td><a href=gallery.php?group=$pic_group>($start - $end)</a></td></tr>";
 		$start_pic=$pics;
 	}
-	
-	echo "<table border=1>";
-	/*echo "<pre>gif_array:";
-	print_r($gif_array);
-	echo "</pre>\n";*/
+	//echo "<table border=1>";
+	?>
+	</table>
+	<input type="submit" name="submit" value="Submit Form to copy your checked effects"  class="button" />
+	</form>
+	<?php
 }
 
 function get_eff_class($username,$effect_name)
@@ -263,4 +280,136 @@ function get_eff_class($username,$effect_name)
 	}
 	mysql_close();
 	return ($effect_class);
+}
+
+function insert_into_gallery($array_of_gifs)
+{
+	//
+	/*CREATE TABLE `seqbuilder`.`gallery` (`fullpath` VARCHAR(100) NOT NULL, `effect_class` VARCHAR(25) NULL, `username` VARCHAR(25) NULL, `effect_name` VARCHAR(25) NULL, PRIMARY KEY (`fullpath`)) ENGINE = MyISAM COMMENT = 'Gallery of thumbnail gifs'*/
+	//
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	// effect_class	username	effect_name	effect_desc	created	last_upd
+	$query = "delete from  gallery where 1=1";
+	$result=mysql_query($query) or die ("Error on $query");
+	$line=0;
+	foreach($array_of_gifs as $fullpath)
+	{
+		$line++;
+		// workspaces/2/AA+LAYER2_th.gif
+		$tok=explode("/",$fullpath);
+		$member_id=$tok[1];
+		$username=get_username($member_id);
+		$effect_class="spiral";
+		$tok2=explode("+",$tok[2]);
+		$tok3=explode("_th.",$tok2[1]);
+		$effect_name=$tok3[0];
+		$ar=get_effect_user_hdr($username,$effect_name);
+		$effect_class = $ar[0]['effect_class'];
+		$query = "replace into gallery (fullpath,effect_class,username,effect_name,linenumber,member_id) values 
+		('$fullpath','$effect_class','$username','$effect_name',$line,$member_id)";
+		echo "<pre>$line $fullpath.";
+		/*print_r($ar);
+		foreach($ar as $arr)
+		{
+			print_r($arr);
+		}
+		*/
+		echo "</pre>\n";
+		$result=mysql_query($query);
+		if (mysql_errno() == 1062)
+		{
+			echo "<pre>Got duplicate error on $query</pre>\n";
+		}
+	}
+}
+
+function get_from_gallery()
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	// effect_class	username	effect_name	effect_desc	created	last_upd
+	$query = "select * from gallery order by member_id,effect_class, fullpath";
+	$result=mysql_query($query) or die ("Error on $query");
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+		$array_of_gifs[$linenumber]=array($fullpath,$effect_class);
+	}
+	mysql_close();
+	return ($array_of_gifs);
+}
+
+function get_effect_class_gallery()
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	// effect_class	username	effect_name	effect_desc	created	last_upd
+	$query = "SELECT effect_class,count(*) cnt
+	from gallery
+	group by effect_class
+	order by effect_class";
+	$result=mysql_query($query) or die ("Error on $query");
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+		$array_effect_classes[]=$effect_class;
+	}
+	return $array_effect_classes;
+}
+function get_max_date_gallery()
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD); 
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	// effect_class	username	effect_name	effect_desc	created	last_upd
+	$query = "SELECT max(created) created, count(*) cnt from gallery";
+	$result=mysql_query($query);
+	$row = mysql_fetch_assoc($result);
+	extract ($row);
+	$arr=array($created,$cnt);
+	return $arr;
 }

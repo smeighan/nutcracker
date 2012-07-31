@@ -1139,7 +1139,7 @@ function get_username($member_id)
 	{
 		extract($row);
 	}
-	mysql_close();
+	
 	return ($username);
 }
 
@@ -1789,6 +1789,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 			}
 		}
 		fclose($fh);
+		echo "<pre>unlink($full_path)</pre>\n";
 		unlink($full_path);
 	}
 	unlink($gp_file);
