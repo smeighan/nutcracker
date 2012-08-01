@@ -76,28 +76,7 @@ $t_dat = $user_target . ".dat";
 $xdat = $user_target ."+".  $effect_name . ".dat";
 $target_path="../targets/". $member_id;
 $arr=read_file($t_dat,$target_path); //  target megatree 32 strands, all 32 being used. read data into an array
-//	remove old ong and dat files
-$mask = $directory . "/*.png";
-//array_map( "unlink", glob( $mask ) );
-$mask = $directory . "/*.dat";
-//array_map( "unlink", glob( $mask ) );
-/*
-_POST
-username	f
-user_target	AA
-effect_class	text
-text1	TEXT1
-effect_name	TEXT1
-text2	TUNE to 88
-window_degrees	180
-start_color	#FF4912
-end_color	#1212FF
-frame_delay	11
-sparkles	11
-seq_duration	11
-submit	Submit Form to create your target model
-*/
-purge_files();
+
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees,$seq_duration,$topPixel,$show_frame,$text1_color,$text2_color,$username,$script_start);

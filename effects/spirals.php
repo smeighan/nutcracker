@@ -79,7 +79,7 @@ if (file_exists($directory))
 	mkdir($directory, 0777);
 }
 $x_dat = $user_target . "+" . $effect_name . ".dat";
-//purge_files();
+
 $base = $user_target . "+" . $effect_name;
 spiral($arr,$path,$t_dat,$number_spirals,$number_rotations,$spiral_thickness,$base,$start_color,$end_color,$direction,$frame_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type); 
 $target_info=get_info_target($username,$t_dat);

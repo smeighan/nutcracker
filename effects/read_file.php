@@ -438,6 +438,10 @@ function gp_header($fh,$min_max,$target_info)
 	{
 		fwrite($fh,"set view 105,270, 2.0, 1\n");  // old: fwrite($fh,"set view 105, 0, 2.0, 1\n");
 	}
+	else if($model_type=='HORIZ_MATRIX')
+	{
+		fwrite($fh,"set view 105, 0, 2.0, 1\n");
+	}
 	else
 	{
 		fwrite($fh,"set view 105, 180, 2.0, 1\n");
@@ -1139,7 +1143,6 @@ function get_username($member_id)
 	{
 		extract($row);
 	}
-	
 	return ($username);
 }
 
@@ -1484,7 +1487,7 @@ function get_effect_user_dtl($username,$effect_name)
 
 function get_effect_user_dtl2($username,$effect_name)
 {
-//echo "<pre>function get_effect_user_dtl2($username,$effect_name)</pre>\n";
+	//echo "<pre>function get_effect_user_dtl2($username,$effect_name)</pre>\n";
 	//Include database connection details
 	require_once('../conf/config.php');
 	$effect_name=str_replace("%20"," ",$effect_name);
@@ -1789,11 +1792,14 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 			}
 		}
 		fclose($fh);
-		echo "<pre>unlink($full_path)</pre>\n";
-		unlink($full_path);
+		//echo "<pre>unlink($full_path)</pre>\n";
+		if (file_exists($full_path))
+		{
+			unlink($full_path);
+		}
 	}
-	unlink($gp_file);
-	unlink($amp_gp_file);
+	if (file_exists($gp_file)) unlink($gp_file);
+	if (file_exists($amp_gp_file)) unlink($amp_gp_file);
 	fclose($fh_seq);
 	//
 	//---------------------------------------------------------------------------------------
@@ -1883,9 +1889,13 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	{
 		$MaxFrameLoops=$TotalFrames;
 	}
-	else
+	else if($maxFrame>0)
 	{
 		$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);
+	}
+	else
+	{
+		$MaxFrameLoops=1;
 	}
 	echo "<pre>$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);</pre>\n";
 	echo "<pre>MaxFrameLoops = $MaxFrameLoops</pre>\n";

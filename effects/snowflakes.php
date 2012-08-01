@@ -98,7 +98,7 @@ sparkles	10
 seq_duration	5
 submit	Submit Form to create your target model
 */
-purge_files();
+
 $path="workspaces/". $member_id;
 snowflakes($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$show_frame,$maxSnowFlakes,$maxPhase);
 $target_info=get_info_target($username,$t_dat);

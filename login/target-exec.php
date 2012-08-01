@@ -464,10 +464,14 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	fwrite($fh,"# \n");
 	$pixels=$maxPixels;
 	$x_spacing=$x_spacing_top=$pixel_spacing;
+	echo "<pre>";
+	echo "x_spacing=x_spacing_top=pixel_spacing;\n";
+	echo "$x_spacing=$x_spacing_top=$pixel_spacing;\n";
 	if($model_type=="RAY")
 		$x_spacing_top=$width_top/$maxStrands;
 	echo "<pre>";
 	echo "model_type=$model_type";
+	echo "maxStrands=$maxStrands,maxPixels=$maxPixels\n ";
 	for ($s=1;$s<=$maxStrands;$s++)
 	{
 		$hyp=0;
@@ -485,28 +489,31 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 			$mod=($p%$maxStrands)+1;
 			$mod2 = $maxPixels-$mod+1;
 			$mod2 = $maxPixels-$p;
-			if($model_type=="MATRIX")
+			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")
 				$h= ($mod2*$x_spacing);
 			else 	if($model_type=="RAY")
 				$h= ($mod2*$x_spacing) - $x_spacing;
 			if(isset($target_array[$s][$p]['string']))
 			{
 				$s_orig=$s; $p_orig=$p;
+				$s0=$s; $p0=$p;
 				if($model_type=="HORIZ_MATRIX")
 				{
 					if($s_orig%$folds==1)
 					{
-						$s=$p;
+						$s0=$p;
 					}
 					else{
-						$s=$maxPixels-$p+1;
+						$s0=$maxPixels-$p+1;
 					}
-					$p=$s_orig;
+					$p0=$s_orig;
+					$s2=$maxPixels/2;
+					$mod2 = $maxStrands-$p0;
 				}
-				$x2=$s*3 - $s2*3;
+				$x2=$s0*3 - $s2*3;
 				$h=$mod2*3;
-				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
-				//	printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+				printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
 			}
 		}
 		fwrite($fh, "\n" );

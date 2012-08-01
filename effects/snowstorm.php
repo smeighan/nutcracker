@@ -82,7 +82,7 @@ seq_duration	5
 submit	Submit Form to create your target model
 */
 if(!isset($show_frame)) $show_frame='N';
-purge_files();
+
 $path="workspaces/". $member_id;
 snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$maxSnowflakes,$seq_duration,$show_frame,$start_color,$end_color,$username,$trail_length);
 $target_info=get_info_target($username,$t_dat);

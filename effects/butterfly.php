@@ -112,7 +112,7 @@ sparkles	10
 seq_duration	5
 submit	Submit Form to create your target model
 */
-purge_files();
+
 $path="workspaces/". $member_id;
 if(empty($show_frame)) $show_frame='N';
 if(empty($background_color)) $background_color='#FFFFFF';
