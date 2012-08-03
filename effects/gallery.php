@@ -233,8 +233,8 @@ function gallery($group,$pics_in_group,$INSERT_NEW_GIFS)
 			//	if($pic_group==$group_to_show or $group_to_show==0) // should we show gif?
 			{
 				echo "<td><b>$effect_class</b>&nbsp;&nbsp;File#$i. &nbsp;&nbsp;Select:<input type=\"checkbox\" name=\"fullpath_array[$i]\" value=\"$file\"  $checked /> ";
-				echo "<br/>Your name for this effect:<input type=\"text\" name=\"user_effect_name[$i]\" size=\"25\" value=\"\">";
-				echo "<br/>Your Description:<input type=\"text\" name=\"desc[$i]\" size=\"25\" >";
+				echo "<br/>Your name for this effect:<input type=\"text\" name=\"user_effect_name[$i]\" size=\"25\" value=\"\"/>";
+				echo "<br/>Your Description:<input type=\"text\" name=\"desc[$i]\" size=\"25\" />";
 				echo "<br/>$file<br /><img src=\"$file\"/></a></td>\n";
 			}
 			$end_pic=$pics;
