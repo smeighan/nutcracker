@@ -102,7 +102,6 @@ $path=$dirname . "/" . $basename;
 list($usec, $sec) = explode(' ', microtime());
 $script_end = (float) $sec + (float) $usec;
 $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-
 list($usec, $sec) = explode(' ', microtime());
 $script_end = (float) $sec + (float) $usec;
 $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
@@ -181,72 +180,104 @@ if($TotalFrames>1000)
 	echo "<font color=red><h2>Limiting current sequences to 1000 frames</h2></font>\n";
 	$TotalFrames=1000;
 }
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 /*$create_srt_file_array=create_srt_file($full_path,$base,$username,$frame_delay,$TotalFrames);
 $maxFrame=$create_srt_file_array[0];
 $seq_srt=$create_srt_file_array[1];
 $fh = fopen($seq_srt, 'r') or die("can't open file $seq_srt");*/
-$loop=$msq_loop=0;
+$loop=$xml_loop=0;
 $outBuffer=array();
 $old_string=-1;
 $full_path= "workspaces/$member_id/$base";
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname'];
 $basename  = $path_parts['basename'];
-$msq= $dirname . "/" . $base . ".msq";
-$fh_msq=fopen($msq,"w") or die("Unable to open $msq");
-$fh_buff=fopen($filename_buff,"r") or die("Unable to open $filename_buff");
-/*$fh_vixen_csv=fopen($vixen_csv,"w") or die("Unable to open $vixen_csv");*/
-//	how many frames should we do?
-//
-//	seq_duration = 9.5 seconds
-//	frame_delay = 50  (ms)
-	//
-//	TotalFrames = (9.5*1000)/50
-//	Totalframes = 190
-//
-$old_pixel=$channels=0;
-echo "<h3>$seq_duration seconds of animation with a $frame_delay ms frame timing = $TotalFrames frames of animation</h3>\n";
-while (!feof($fh_buff))
-{
-	$line = fgets($fh_buff);
-	$tok=preg_split("/ +/", $line);
-	$l=strlen($line);
-	$cnt= count($tok);
-	$MaxFrame=$cnt-4;
-	//echo "cnt=$cnt MaxFrame=$MaxFrame, line=$line\n";
-	if($cnt>4)
-	{
-		$string=$tok[1];
-		$pixel=$tok[3];
-		for($f=1;$f<$MaxFrame;$f++)
-		{
-			fwrite($fh_msq,sprintf("%d ",$tok[$f+3]));
-		}
-		$channels++;
-		fwrite($fh_msq,sprintf("\n"));
-	}
-}
-fclose($fh_msq);
-/*fclose($fh_vixen_csv);
-fclose($fh_msq);*/
-/*$TotalFrames= ($seq_duration*1000)/$frame_delay;*/
-$duration = $seq_duration*1000;
-if($sequencer=="lsp")
-{
-echo "<table border=1>";
-	printf ("<tr><td bgcolor=lightgreen><h2>$channels channels have been created for HLS</h2></td>\n");
-	echo "<td>Instructions</td></tr>";
-	printf ("<tr><td bgcolor=#98FF73><h2><a href=\"%s\">Right Click here for msq file. %s</a>.</h2></td>\n",$msq,$msq);
-	echo "<td>Save msq file into your HLS directory </td></tr>\n";
-	echo "</table>";
-}
-$description ="Total Elapsed time for this effect:";
-list($usec, $sec) = explode(' ', microtime());
-$script_end = (float) $sec + (float) $usec;
-$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-//if($description = 'Total Elapsed time for this effect:')
-	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
+$xml= $dirname . "/" . $base . ".xm";
+$files_array=getFilesFromDir($dirname,$base);
+sort($files_array);
+/*echo "<pre>";
+print_r($files_array);
+echo "</pre>\n";*/
+$username="f";
+$user_targets="AA";
+$effect_class="FLY";
+$checked="";
 ?>
-<a href="../index.html">Home</a> | <a href="../login/member-index.php">Target Generator</a> | 
-<a href="effect-form.php">Effects Generator</a> | <a href="../login/logout.php">Logout</a>
+<form action="<?php echo "make_lsp-exec.php"; ?>" method="post">
+<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
+<input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
+<input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
+<?php
+$i=0;
+echo "<ol>";
+foreach($files_array as $file)
+{
+	$i++;
+	echo "<li><input type=\"checkbox\" name=\"fullpath_array[$i]\" value=\"$file\"  $checked /> $file ";
+}
+echo "</ol>";
+?>
+
+	<input type="submit" name="submit" value="Submit Form to create a UserPatterns.xml from checked effects"  class="button" />
+	</form>
+	<?php
+
+function getFilesFromDir($dir,$base)
+{
+	$files = array(); 
+	$n=0;
+	$tok=explode("+",$base);
+	$target=$tok[0];
+	$len=strlen($target);
+	if ($handle = opendir($dir))
+	{
+		while (false !== ($file = readdir($handle)))
+		{
+			if ($file != "." && $file != ".." )
+			{
+				if(is_dir($dir.'/'.$file))
+				{
+					$dir2 = $dir.'/'.$file; 
+					$files[] = getFilesFromDir($dir2);
+				}
+				else 
+				{ 
+					$path_parts = pathinfo($file);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
+					$dirname   = $path_parts['dirname']; // workspaces/nuelemma
+					$basename  = $path_parts['basename']; // MEGA_001+SEAN_d_22.dat
+					$extension =$path_parts['extension']; // .dat
+					$filename  = $path_parts['filename']; // MEGA_001+SEAN_d_22
+					$cnt=count($files);
+					$tokens=explode("/",$dirname);
+					//	0 = workspaces
+					//	1 = nuelemma or id
+					//
+					if($extension=="nc" and substr($file,0,$len) == $target)
+					{
+						$files[] = $dir.'/'.$file; 
+						$n++;
+						//echo "<pre>$cnt $n $file</pre>\n";
+					}
+					} 
+				} 
+			} 
+		closedir($handle);
+	}
+	return array_flat($files);
+}
+
+function array_flat($array)
+{
+	$tmp=array();
+	foreach($array as $a)
+	{
+		if(is_array($a))
+		{
+			$tmp = array_merge($tmp, array_flat($a));
+		}
+		else 
+		{ 
+			$tmp[] = $a;
+		}
+		} 
+	return $tmp;
+}

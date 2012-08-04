@@ -329,29 +329,29 @@ for($i=0;$i<$cnt;$i++)
 		echo "</tr>";
 		echo "<tr><td>How should layers be joined. </td><td>";
 		if($layer_method=="Pri-1")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\" CHECKED >Priority to first effect<BR>";
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\" CHECKED />Priority to first effect<BR>";
 		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\"         >Priority to first effect<BR>";
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\"         />Priority to first effect<BR>";
 		//
 		if($layer_method=="Pri-2")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\" CHECKED >Priority to second effect<BR>";
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\" CHECKED />Priority to second effect<BR>";
 		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\"         >Priority to second effect<BR>";
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\"         />Priority to second effect<BR>";
 		//
 		if($layer_method=="Avg")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\" CHECKED >Average two pixels together<BR>";
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\" CHECKED />Average two pixels together<BR>";
 		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\"         >Average two pixels together<BR>";
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\"         />Average two pixels together<BR>";
 		//
 		if($layer_method=="Mask-1")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\" CHECKED >First effect is mask against second effect<BR>";
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\" CHECKED />First effect is mask against second effect<BR>";
 		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\"         >First effect is mask against second effect<BR>";
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\"         />First effect is mask against second effect<BR>";
 		//
 		if($layer_method=="Mask-2")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\" CHECKED >Second effect is mask against first effect<BR>";
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\" CHECKED />Second effect is mask against first effect<BR>";
 		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\"         >Second effect is mask against first effect<BR>";
+		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\"         />Second effect is mask against first effect<BR>";
 		echo "</td></tr>";
 	}
 }

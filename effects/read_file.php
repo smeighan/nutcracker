@@ -1374,8 +1374,8 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 	printf ("<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=vixen?pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
 	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lors2?pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
 	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lor_lcb?pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
-	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count\">Left Click here to make *.msq file</a></td><td>2.0 and 2.5</td></tr>\n");
-	printf ("<tr><td>LSP</td><td>No Native support yet. Click above to make a *.lms file</td><td>2.0, 2.5, 3.0</td></tr>\n");
+	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 and 2.5</td></tr>\n");
+	
 	printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=hls?pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
 	echo "</table>\n";
 }
