@@ -204,7 +204,7 @@ echo "</pre>\n";*/
 	//
 // make_gp(Array,workspaces/2,AA+LAYER.dat,AA.dat,,,f,100,1343436549.48,,4,)
 	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function read_file2($file,$path)
 {

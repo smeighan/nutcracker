@@ -32,6 +32,8 @@ set_time_limit(60*60);
 // base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
 //
 //echo "<pre>sequencer=$sequencer</pre>\n";
+echo "<pre>";
+print_r($_POST);
 extract($_POST);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
@@ -42,8 +44,18 @@ $script_start = (float) $sec + (float) $usec;
 [1] => workspaces/2/AA+BARBERPOLE_180.nc
 [9] => workspaces/2/AA+TEXT1.nc
 )*/
-$seq_duration=5.5;
-$frame_delay=100;
+/*[username] => f
+[user_target] => AA
+[effect_class] => FLY
+[type] => 
+[seq_duration] => 8
+[frame_delay] => 100*/
+$username=$_POST['username'];
+$user_target=$_POST['user_target'];
+$effect_class=$_POST['effect_class'];
+$type=$_POST['type'];
+$seq_duration=$_POST['seq_duration'];
+$frame_delay=$_POST['frame_delay'];
 $files_array=$_POST['fullpath_array'];
 $cnt=count($files_array);
 foreach($files_array as $i=>$file0)
@@ -61,7 +73,7 @@ make_HdrPattern_header($fh_xml,$base);
 //
 foreach($files_array as $i=>$filename_buff)
 {
-	make_xml($fh_xml,$filename_buff);
+	make_xml($fh_xml,$filename_buff,$type,$frame_delay);
 }
 fwrite($fh_xml,sprintf("</ArrayOfPattern>\n"));
 fclose($fh_xml);
@@ -73,7 +85,7 @@ echo "<table border=1>";
 printf ("<tr>\n");
 echo "<td>Instructions</td></tr>";
 printf ("<tr><td bgcolor=#98FF73><h2><a href=\"%s\">Right Click here for %s</a>.</h2></td>\n",$xml,$xml);
-echo "<td>Save this file into your LSP Sequencer directory on top of c:=>Programs(x86)>=GraphXPros=>LSP Sequencer>=UserPatterns.xml) </td></tr>\n";
+echo "<td>gui type=$type. Save this file into your LSP Sequencer directory on top of c:=>Programs(x86)>=GraphXPros=>LSP Sequencer>=UserPatterns.xml) </td></tr>\n";
 echo "</table>";
 $description ="Total Elapsed time for this effect:";
 list($usec, $sec) = explode(' ', microtime());
@@ -82,7 +94,7 @@ $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 //if($description = 'Total Elapsed time for this effect:')
 	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
 
-function make_xml($fh_xml,$filename_buff)
+function make_xml($fh_xml,$filename_buff,$type,$frame_delay)
 {
 	$tok=explode("/",$filename_buff);
 	$dir = $tok[0] . "/" . $tok[1];
@@ -91,7 +103,7 @@ function make_xml($fh_xml,$filename_buff)
 	$fh_buff=fopen($filename_buff,"r") or die("Unable to open $filename_buff");
 	/*$fh_vixen_csv=fopen($vixen_csv,"w") or die("Unable to open $vixen_csv");*/
 	//	how many frames should we do?
-	make_UserPattern_header($fh_xml,$base,$filename_buff);
+	make_UserPattern_header($fh_xml,$base,$filename_buff,$type);
 	//
 	$maxTime=0;
 	$channels=$lines=0;
@@ -108,16 +120,45 @@ function make_xml($fh_xml,$filename_buff)
 			$string=$tok[1];
 			$pixel=$tok[3];
 			$lines++;
-			track_header($fh_xml);
+			track_header($fh_xml,$type);
+			$last_rgb=0;
 			for($f=1;$f<$MaxFrame;$f++)
 			{
 				//fwrite($fh_xml,sprintf("%d ",$tok[$f+3]));
 				$time=$f*50000;
+				$time=$f*$frame_delay*1000;
+				$time = $time * .882;	// just imperical measurement that one second timing = 88200
 				$maxTime=$time+100000;
 				$rgb=$tok[$f+3];
 				//	fwrite($fh_xml,sprintf("            <TimeInterval eff=\"3\" dat=\"&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ec&gt;&#xD;&#xA;  &lt;in&gt;100&lt;/in&gt;&#xD;&#xA;  &lt;out&gt;100&lt;/out&gt;&#xD;&#xA;&lt;/ec&gt;\" gui=\"\" in=\"100\" out=\"100\" pos=\"%d\" sin=\"-1\" att=\"0\" bst=\"%d\" ben=\"%d\" />\n",$time,$rgb,$rgb));
-				//if($rgb<>0)
-					fwrite($fh_xml,sprintf("            <TimeInterval eff=\"3\" dat=\"&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ec&gt;&#xD;&#xA;  &lt;in&gt;100&lt;/in&gt;&#xD;&#xA;  &lt;out&gt;100&lt;/out&gt;&#xD;&#xA;&lt;/ec&gt;\" gui=\"{DA98BD5D-9C00-40fe-A11C-AD3242573443}\" in=\"100\" out=\"100\" pos=\"%d\" sin=\"-1\" att=\"0\" bst=\"%d\" ben=\"%d\" />\n",$time,$rgb,$rgb));
+				$gui="{DA98BD5D-9C00-40fe-A11C-AD3242573443}";
+				if($type==2)
+				{
+					$gui="{1B0F1B59-7161-4782-B068-98E021A6E048}";
+				}
+				else if($type==3)
+				{
+					$gui="{09A9DFBE-9833-413c-95FA-4FFDFEBF896F}";
+				}
+				else if($type==4)
+				{
+					$gui="{09A9DFBE-9833-413c-95FA-4FFDFEBF896F}";
+				}
+				if($last_rgb==$rgb)
+				{
+					$eff=7;
+					$dat="";
+					$gui="";
+					fwrite($fh_xml,sprintf("            <TimeInterval eff=\"%d\" dat=\"%s\" gui=\"%s\" in=\"100\" out=\"100\" pos=\"%d\" sin=\"-1\" att=\"0\" />\n",$eff,$dat,$gui,$time));
+				}
+				else 
+				{
+					$eff=3;
+					$dat="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ec&gt;&#xD;&#xA;  &lt;in&gt;100&lt;/in&gt;&#xD;&#xA;  &lt;out&gt;100&lt;/out&gt;&#xD;&#xA;&lt;/ec&gt;";
+					fwrite($fh_xml,sprintf("            <TimeInterval eff=\"%d\" dat=\"%s\" gui=\"%s\" in=\"100\" out=\"100\" pos=\"%d\" sin=\"-1\" att=\"0\" bst=\"%d\" ben=\"%d\" />\n",$eff,$dat,$gui,$time,$rgb,$rgb));
+				}
+				//
+				$last_rgb=$rgb;
 			}
 			$channels++;
 			//	fwrite($fh_xml,sprintf("\n"));
@@ -139,10 +180,10 @@ function make_HdrPattern_header($fh_xml,$base)
 	fwrite($fh_xml,sprintf("<ArrayOfPattern xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n"));
 }
 
-function make_UserPattern_header($fh_xml,$base,$filename_buff)
+function make_UserPattern_header($fh_xml,$base,$filename_buff,$type)
 {
 	fwrite($fh_xml,sprintf("  <Pattern>\n"));
-	fwrite($fh_xml,sprintf(" <GroupName>Nutcracker</GroupName>\n"));
+	fwrite($fh_xml,sprintf(" <GroupName>Nutcracker-%d</GroupName>\n",$type));
 	fwrite($fh_xml,sprintf("    <Name>%s</Name>\n",$base));
 	fwrite($fh_xml,sprintf("    <Image>\n"));
 	fwrite($fh_xml,sprintf("      <Width>999</Width>\n"));
@@ -158,10 +199,23 @@ function make_UserPattern_header($fh_xml,$base,$filename_buff)
 	fwrite($fh_xml,sprintf("    <Tracks>\n"));
 }
 
-function track_header($fh_xml)
+function track_header($fh_xml,$type)
 {
 	fwrite($fh_xml,sprintf("      <Track>\n"));
-	fwrite($fh_xml,sprintf("        <TrackGuid>60cc0c76-f458-4e67-abb4-5d56a9c1d97c</TrackGuid>\n"));
+	$TrackGuid="60cc0c76-f458-4e67-abb4-5d56a9c1d97c";
+	if($type==2)
+	{
+		$TrackGuid="4e2556ac-d294-490c-8b40-a40dc6504946";
+	}
+	else if($type==3)
+	{
+		$TrackGuid="ba459d0f-ce08-42d1-b660-5162ce521997";
+	}
+	else if($type==4)
+	{
+		$TrackGuid="a69f7e39-e70d-4f70-8173-b3b2dbeea350";
+	}
+	fwrite($fh_xml,sprintf("        <TrackGuid>%s</TrackGuid>\n",$TrackGuid));
 	fwrite($fh_xml,sprintf("        <IsHidden>false</IsHidden>\n"));
 	fwrite($fh_xml,sprintf("        <IsPrimaryTrack>false</IsPrimaryTrack>\n"));
 	fwrite($fh_xml,sprintf("        <TrackColorName>Gainsboro</TrackColorName>\n"));
@@ -203,6 +257,7 @@ function create_bmp($filename_buff)
 		imagebmp($im2, $bmp);
 		$string = file_get_contents($bmp);
 		$base64=base64_encode($string);
+		unlink($bmp);
 	}
 	return $base64;
 }

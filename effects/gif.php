@@ -158,7 +158,7 @@ echo "make_gp($path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, 
 make_gp($arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay, $script_start, $amperage, $seq_duration, $show_frame);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float)$sec + (float)$usec;
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness)
 {

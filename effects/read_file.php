@@ -250,6 +250,16 @@ function fill_in_zeros($arr,$dat_file_array)
 	}
 }
 
+function RGBVAL_TO_HSV($rgb_val)
+{
+	$rgb = $rgb_val;
+	$r = ($rgb >> 16) & 0xFF;
+	$g = ($rgb >> 8) & 0xFF;
+	$b = $rgb & 0xFF;
+	$HSL=RGB_TO_HSV ($r, $g, $b);
+	return $HSL;
+}
+
 function RGB_TO_HSV ($R, $G, $B)  // RGB Values:Number 0-255 
 {                                 // HSV Results:Number 0-1 
 	$HSL = array(); 
@@ -297,8 +307,11 @@ function HSV_TO_RGB ($H, $S, $V)  // HSV Values:Number 0-1
 	{ 
 		$var_H = $H * 6; 
 		$var_i = floor( $var_H ); 
+		// M 
 		$var_1 = $V * ( 1 - $S ); 
+		// N 
 		$var_2 = $V * ( 1 - $S * ( $var_H - $var_i ) ); 
+		// K
 		$var_3 = $V * ( 1 - $S * (1 - ( $var_H - $var_i ) ) ); 
 		if       ($var_i == 0)
 		{
@@ -1245,7 +1258,7 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 		if($loop==1)
 		{
 			$pointsize="0.6";
-			fwrite($fh_gp_file,sprintf("\n\nset terminal gif animate notransparent noenhanced  delay %d size %d,%d\n",$gif_delay,$w,$h));
+			fwrite($fh_gp_file,sprintf("\n\nset terminal gif animate notransparent noenhanced optimize  delay %d size %d,%d\n",$gif_delay,$w,$h));
 			fwrite($fh_gp_file,sprintf("set output '%s'\n",$gif_file));
 			if($AMPERAGE==1)
 			{
@@ -1370,12 +1383,22 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 	$base=$base_tmp;
 	echo "<br/><br/><table border=2>";
 	echo "<tr><th colspan=3 bgcolor=lightgreen><b>EXPORT OPTIONS: Now That You Have created a sequence, you need to export it</b></th></tr>";
+	//	make_vixen
 	echo "<tr><th>Sequencer</th><th>Left Click This column to create export file</th><th>Versions</th></tr>";
 	printf ("<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=vixen?pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
+	//	make_lor *.lms
 	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lors2?pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
+	//	make_lor *.lcb
 	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lor_lcb?pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
-	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 and 2.5</td></tr>\n");
-	
+	//	make_lsp GUI I
+	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=1\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type I gui. This is the normal file. &lt;TrackGuid&gt;60cc0c76-f458-4e67-abb4-5d56a9c1d97c&lt;/TrackGuid&gt;</td></tr>\n");
+	//	make_lsp GUI II
+	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=2\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type II gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;4e2556ac-d294-490c-8b40-a40dc6504946&lt;/TrackGuid&gt;</td></tr>\n");
+	//	make_lsp GUI III
+	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=3\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type III gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;ba459d0f-ce08-42d1-b660-5162ce521997&lt;/TrackGuid&gt;</td></tr>\n");
+	//	make_lsp GUI IV
+	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=4\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type IV gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;a69f7e39-e70d-4f70-8173-b3b2dbeea350&lt;/TrackGuid&gt;</td></tr>\n");
+	//	make_hls
 	printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=hls?pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
 	echo "</table>\n";
 }
@@ -1580,7 +1603,7 @@ function get_effect_user_hdr($username,$effect_name)
 	return $effects_user_hdr;
 }
 
-function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
+function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in_secs,$fade_out_secs)
 {
 	echo "<pre>function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)</pr>\n";
 	list($usec, $sec) = explode(' ', microtime());
@@ -1858,6 +1881,10 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	else
 	die ("frame_delay = 0, unable to create any output");
 	//	should we show 5 string mini channel preview?
+	echo "<pre>";
+	echo "TotalFrames= (seq_duration*1000)/frame_delay;\n";
+	echo "$TotalFrames= ($seq_duration*1000)/$frame_delay;\n";
+	echo "</pre>\n";
 	$preview=0; // for now, no
 	if($preview==1)
 	{
@@ -1891,7 +1918,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	}
 	else if($maxFrame>0)
 	{
-		$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);
+		$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+1);
 	}
 	else
 	{
@@ -1910,6 +1937,10 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	fwrite ($fh_buff,sprintf("# effect_name %s\n",$effect_name));
 	//
 	//
+	$fade_in=$fade_out=0;
+	if($fade_in_secs>0) $fade_in  =intval((1000*$fade_in_secs)/$frame_delay);
+	if($fade_out_secs>0) $fade_out=intval((1000*$fade_out_secs)/$frame_delay);
+	//	echo "<pre>fade_in_secs=$fade_in_secs,fade_in=$fade_in</pre>\n";
 	$echo=0; // echo=1, see the buff file on screen
 	while (!feof($fh)) // read *.srt file
 	{
@@ -1941,12 +1972,22 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 				if($echo==1) printf("<pre>S %d P %d ",$old_string,$old_pixel);
 				$frameCounter=0;
 				for($loop=1;$loop<=$MaxFrameLoops;$loop++)
-					for($f=1;$f<=$maxFrame;$f++)
 				{
-					$frameCounter++;
-					if($frameCounter<=$TotalFrames)
-						fwrite ($fh_buff,sprintf(" %d",$outBuffer[$f]));
-					if($echo==1)printf(" %d",$outBuffer[$f]);
+					for($f=1;$f<=$maxFrame;$f++)
+					{
+						$frameCounter++;
+						if($frameCounter<=$TotalFrames)
+						{
+							$rgb=$outBuffer[$f];
+							$rgb_val=$rgb;
+							$fade_out_start = $TotalFrames-$fade_out+1;
+							if(($fade_in>0 and $frameCounter<=$fade_in) or ($fade_out>0 and $frameCounter>=$fade_out_start))
+							$rgb=fade($fade_in,$fade_out,$frameCounter,$TotalFrames,$rgb_val);
+							//echo "<pre>loop,f = $loop,$f  rgb_val,rgb $rgb_val,$rgb</pre>\n";
+							fwrite ($fh_buff,sprintf(" %d",$rgb));
+							if($echo==1)printf(" %d",$rgb);
+						}
+					}
 				}
 				fwrite ($fh_buff,sprintf("\n"));
 				if($echo==1)printf("\n");
@@ -1960,22 +2001,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 			$outBuffer[$frame]=$rgb;
 		}
 	}
-	/*for($FrameLoops=1;$FrameLoops<=$MaxFrameLoops;$FrameLoops++)
-	{
-		echo "<pre>FrameLoops=$FrameLoops,TotalFrame=$TotalFrames,maxframe=$maxFrame,FrameLoops=$MaxFrameLoops</pre>\n";
-		$frame_offset=($FrameLoops-1)*$maxFrame;
-		rewind($fh);
-	}
-	*/
-	/*fwrite ($fh_buff2,sprintf("S %d P %d ",$old_string,$old_pixel));
-	printf("<pre>S %d P %d ",$old_string,$old_pixel);
-	for($f=1;$f<=$maxFrame;$f++)
-	{
-		fwrite ($fh_buff2,sprintf(" %d",$outBuffer[$f]));
-		printf(" %d",$outBuffer[$f]);
-	}
-	fwrite ($fh_buff2,sprintf("\n"));
-	*/
 	fclose($fh);
 	fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
 	//printf("<pre>S %d P %d ",$old_string,$old_pixel);
@@ -1996,6 +2021,31 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)
 	unlink ($seq_srt);
 	fclose($fh_buff);
 	return ($filename_buff);
+}
+
+function fade($fade_in,$fade_out,$f,$maxFrame,$rgb)
+{
+	$fade_out_start = $maxFrame-$fade_out+1;
+	$per=1.0;
+	$rgb_val=$rgb;
+	if($fade_in>0 and $f<=$fade_in)
+	{
+		$per=$f/$fade_in;
+		if($f==1) $per=0.0;
+	}
+	if($fade_out>0 and $f>=$fade_out_start)
+	{
+		$per=($maxFrame-$f+1)/$fade_out;
+		if($f==$maxFrame) $per=0.0;
+	}
+	$HSV=RGBVAL_TO_HSV($rgb);
+	$H=$HSV['H'];
+	$S=$HSV['S'];
+	$V0=$HSV['V'];
+	$V=$V0*$per; // we adjust brightness
+	$rgb_val=HSV_TO_RGB ($H, $S, $V);
+	//echo "<pre>HSV V0 $H,$S,$V V0=$V0  per=$per  rgb=$rgb : rgb_val=$rgb_val</pre>\n";
+	return $rgb_val;
 }
 
 function get_target_model($username,$model_name)

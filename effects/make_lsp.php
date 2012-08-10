@@ -28,9 +28,7 @@ set_time_limit(60*60);
 //echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
 //echo "</pre>";
 //show_array($_SERVER,"SERVER");
-// [QUERY_STRING] => make_lor.php?base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-// base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-//
+// [QUERY_STRING] => make_lsp.php?base=AA+BARBERPOLE_180?full_path=workspaces/2/AA+BARBERPOLE_180_d_1.dat?frame_delay=100?member_id=2?seq_duration=8?sequencer=lsp?pixel_count=100?type=1
 $tokens=explode("?",$_SERVER['QUERY_STRING']);
 $c=count($tokens);
 $tokens2=explode("base=",$tokens[0]);
@@ -47,6 +45,8 @@ $tokens2=explode("sequencer=",$tokens[5]);
 $sequencer=$tokens2[1];
 $tokens2=explode("pixel_count=",$tokens[6]);
 $pixel_count=$tokens2[1];
+$tokens2=explode("type=",$tokens[7]);
+$type=$tokens2[1];
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname']; // workspaces/2
 $basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
@@ -206,6 +206,9 @@ $checked="";
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
 <input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
+<input type="hidden" name="type" value="<?php echo "$type"; ?>"/>
+<input type="hidden" name="seq_duration" value="<?php echo "$seq_duration"; ?>"/>
+<input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>
 <?php
 $i=0;
 echo "<ol>";

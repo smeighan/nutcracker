@@ -76,14 +76,13 @@ $t_dat = $user_target . ".dat";
 $xdat = $user_target ."+".  $effect_name . ".dat";
 $target_path="../targets/". $member_id;
 $arr=read_file($t_dat,$target_path); //  target megatree 32 strands, all 32 being used. read data into an array
-
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees,$seq_duration,$topPixel,$show_frame,$text1_color,$text2_color,$username,$script_start);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for  effect text:");
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees,$seq_duration,$topPixel,$show_frame,$text1_color,$text2_color,$username,$script_start)
 {

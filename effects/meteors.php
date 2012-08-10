@@ -100,14 +100,13 @@ sparkles	10
 seq_duration	5
 submit	Submit Form to create your target model
 */
-
 $path="workspaces/". $member_id;
 meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$script_start,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 // function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
-	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$script_start,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type)
 {

@@ -79,7 +79,6 @@ if (file_exists($directory))
 	mkdir($directory, 0777);
 }
 $x_dat = $user_target . "+" . $effect_name . ".dat";
-
 $base = $user_target . "+" . $effect_name;
 spiral($arr,$path,$t_dat,$number_spirals,$number_rotations,$spiral_thickness,$base,$start_color,$end_color,$direction,$frame_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type); 
 $target_info=get_info_target($username,$t_dat);
@@ -90,7 +89,7 @@ $script_end = (float) $sec + (float) $usec;
 $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 //if($description = 'Total Elapsed time for this effect:')
 	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function spiral($arr,$path,$t_dat,$numberSpirals,$numberRotations,$spiralThickness,$base,$start_color,$end_color,$direction,$frame_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type)
 {
@@ -248,7 +247,7 @@ function spiral($arr,$path,$t_dat,$numberSpirals,$numberRotations,$spiralThickne
 						$rgb_val=hexdec($background_color);
 						echo "<pre>$rgb_val=hexdec($background_color);</pre>\n";
 					}
-					if($rgb_val<0 or $rgb_val>0)
+				//	if($rgb_val<0 or $rgb_val>0)
 					{
 						//$amperage[$frame][$strand] += $V*0.060; // assume 29ma for pixels tobe full on
 						$string=$user_pixel=0;

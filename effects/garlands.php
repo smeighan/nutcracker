@@ -78,19 +78,13 @@ sparkles	10
 seq_duration	5
 submit	Submit Form to create your target model
 */
-
 $path="workspaces/". $member_id;
 garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame,$username); 
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
-
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); </pre>\n";
-
-
-
-
 
 function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame,$username)
 {
@@ -183,7 +177,7 @@ function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$w
 					;	// leave pixel alone;
 					else if($s%5==1 or $s%5==3) 
 					$p+=2;
-								}
+				}
 				if($p>$maxPixel) $p=$maxPixel;
 				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
 				if(in_array($s,$window_array))
@@ -193,9 +187,7 @@ function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$w
 					$seq_number++;
 					//fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val));
 					$string=$user_pixel=0;
-					
 					// debug, just to mark strand 1 as white. if($s==1) $rgb_val =hexdec("#FFFFFF");
-					
 					fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$f,$seq_number));
 					/*
 					if($garland==4)

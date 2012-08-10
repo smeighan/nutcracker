@@ -112,7 +112,6 @@ sparkles	10
 seq_duration	5
 submit	Submit Form to create your target model
 */
-
 $path="workspaces/". $member_id;
 if(empty($show_frame)) $show_frame='N';
 if(empty($background_color)) $background_color='#FFFFFF';
@@ -120,8 +119,7 @@ butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$win
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
-
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 // function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 	
 function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$show_frame,$radian_shift,$start_color,$end_color,$background_chunk,$background_skip,$background_color,$formula,$username)
@@ -137,7 +135,6 @@ function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_d
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
 	$enable_project=get_enable_project($username);
-	
 	srand(time());
 	$maxFrame=80;
 	//$maxTrees=6;	// how many tree to draw at one time
@@ -180,7 +177,7 @@ function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_d
 					if($H<0) $H= -$v;
 					if($background_chunk>0 and $background_chunk>0)
 					{
-					if($background_skip<1) $background_skip=1;
+						if($background_skip<1) $background_skip=1;
 						//$background_chunk=4;
 						//$background_skip=3;
 						//$background_color="#FFFFFF";
@@ -277,6 +274,14 @@ function butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)
 		$x1 = ($x-$dx)/$f;
 		$y1 = ($y-$dy)/$f;
 		$v=sin($x1) * cos($y1);
+	}
+	else if ($formula==4)
+	{
+		$x_new = $x+2*sin($y/5); 
+		$y_new = $y+2*sin($x/5) ;
+		$v=$y_new/$maxY;
+		echo "<pre> butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)";
+		echo "x_new,y_new = $x_new,$y_new v=$v</pre>\n";
 	}
 	if(empty($v))
 		$v=1;

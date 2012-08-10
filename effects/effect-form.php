@@ -234,7 +234,7 @@ function get_effect_classes()
 	if(!$db) {
 		die("Unable to select database");
 	}
-	$query ="select * from effects_hdr where active='Y'";
+	$query ="select * from effects_hdr where active='Y' order by effect_class";
 	$result=mysql_query($query) or die ("Error on $query");
 	if (!$result) {
 		$message  = 'Invalid query: ' . mysql_error() . "\n";

@@ -101,29 +101,60 @@ $tree_xyz  =$arr[6];
 $file      =$arr[7];
 $min_max   =$arr[8];
 $strand_pixel=$arr[9];
-$maxCellsToStart=$number_seed_cells;
-if($maxCellsToStart<1) $maxCellsToStart=10;
 $maxFrame=80;
 // $tree_rgb[$strand][$p]=$rgb_val;
 if(empty($seed)) $seed=rand(1,3000);
 srand($seed);
+$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 $base = $user_target . "+" . $effect_name;
 for($s=1;$s<=$maxStrand;$s++)
 	for($p=1;$p<=$maxPixel;$p++)
 {
-	$tree_rgb[$s][$p]=0;
+	$buff1[$s][$p]=0;
+	$buff2[$s][$p]=0;
 }
-$zero_tree_rgb=$tree_rgb;
-for ($i=1;$i<=$maxCellsToStart;$i++)
-{
-	$p=intval(rand(1,$maxPixel));
-	$s=intval(rand(1,$maxStrand));
-	//echo "<pre>Seeding cell at $s,$p</pre>\n";
-	$tree_rgb[$s][$p]=hexdec('#00FF00');
-}
-$prev_tree_rgb=$tree_rgb;
-$numberSpirals=2;	// just filling in a dummy value
 $seq_number=0;
+$s1=5;
+$s2=$maxStrand-5;
+$s1=1;
+$s2=$maxStrand;
+$i=200;
+echo "<pre>Color palette for fire:</pre>\n";
+echo "<table border=1><tr>";
+for($h=0.1666;$h>=0.0;$h=$h-.001666) // gives 100 hues yellow to red.
+{
+	$V=$S=1;
+	$rgb_val=HSV_TO_RGB ($h, $S, $V);
+	$palette[$i]=$rgb_val;
+	$hex=dechex($rgb_val);
+	$hex_array[$i]=$hex;
+	echo "<td bgcolor=$hex>$i($hex):$rgb_val</td>";
+	if($i%8==0) echo "</tr><tr>";
+	$i--; if($i<0) $i=0;
+}
+for($v=1.0;$v>=0;$v=$v-.01) // gives 100 reds bright to black
+{
+	$H=0; $S=1;
+	if($v<0) $v=0;
+	$rgb_val=HSV_TO_RGB ($H, $S, $v);
+	$palette[$i]=$rgb_val;
+	$hex=dechex($rgb_val);
+	$hex_array[$i]=$hex;
+	echo "<td bgcolor=$hex>$i($hex):$rgb_val</td>";
+	if($i%8==0) echo "</tr><tr>";
+	$i--; if($i<0) $i=0;
+}
+echo "</tr></table>";
+
+/*print_r($palette);*/
+for($s=$s1;$s<=$s2;$s++)
+{
+	$r=rand(100,200);
+	$buff1[$s][$maxPixel]=$r;
+}
+/*echo "Buff1 after seeding\n";*/
+$imax=$i;
+
 for($frame=1;$frame<=$maxFrame;$frame++)
 {
 	$x_dat = $base . "_d_". $frame . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -131,42 +162,29 @@ for($frame=1;$frame<=$maxFrame;$frame++)
 	$dat_file_array[]=$dat_file[$frame];
 	//	echo "<pre>$frame $dat_file[$frame]</pre>\n";
 	$fh_dat [$frame]= fopen($dat_file[$frame], 'w') or die("can't open file");
-	$tree_rgb=$zero_tree_rgb;
-	for($s=1;$s<=$maxStrand;$s++)
-		for($p=1;$p<=$maxPixel;$p++)
+	//$tree_rgb=$zero_tree_rgb;
+	$buff2=$buff1;
+	$buff1=build_fire($frame,$buff1,$buff2,$maxPixel,$maxStrand);
+/*	echo "<pre>Frame: $frame\n";	
+	print_buff($buff1,$maxPixel,$maxStrand);
+	echo "</pre>\n";*/
+	for($p=$maxPixel;$p>=1;$p--)
 	{
-		$neighbors=count_neighbors($prev_tree_rgb,$s,$p,$maxStrand,$maxPixel);
-		/*
-		Any live cell with fewer than two live neighbours dies, as if caused by under-population.
-		Any live cell with two or three live neighbours lives on to the next generation.
-		Any live cell with more than three live neighbours dies, as if by overcrowding.
-		Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.*/
-		if($neighbors<2 or $neighbors>3) $tree_rgb[$s][$p]=0; // we died
-		else if($neighbors>=2 and $neighbors<=3) $tree_rgb[$s][$p]=hexdec('#FF0000'); // we live
-		else if($neighbors==3 and $tree_rgb[$s][$p]<>0) $tree_rgb[$s][$p]=hexdec('#0000FF'); // we are born
-		$xyz=$tree_xyz[$s][$p];
-		$rgb_val=$tree_rgb[$s][$p];
-		$string=$user_pixel=0;
-		if($rgb_val<0 or $rgb_val>0)
+		for($s=1;$s<=$maxStrand;$s++)
 		{
-			if($p%2==0)
-				$color_HSV=color_picker($p,$maxPixel,$numberSpirals,$start_color,$end_color);
-			else
-			$color_HSV=color_picker($maxPixel-$p,$maxPixel,$numberSpirals,$start_color,$end_color);
-			$H=$color_HSV['H'];
-			$S=$color_HSV['S'];
-			$V=$color_HSV['V'];
-			$rgb_val=HSV_TO_RGB ($H, $S, $V);
-			$seq_number++;
-			fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
-			//	printf ("<pre>n%d %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d</pre>\n",$neighbors,$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
+			if(in_array($s,$window_array)) // Is this strand in our window?, 
+			{
+				$xyz=$tree_xyz[$s][$p];
+				$index=$buff1[$s][$p];
+				$rgb_val=$palette[$index];
+				$tree_rgb[$s][$p]=$rgb_val;
+				$string=$user_pixel=0;
+				$seq_number++;
+				fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
+			}
 		}
 	}
-	$prev_tree_rgb=$tree_rgb;
 }
-echo "<pre>";
-//print_r($tree_rgb);
-echo "</pre>";
 for ($frame=1;$frame<=$maxFrame;$frame++)
 {
 	//	echo "<pre>closing $fh_dat[$frame]</pre>\n";
@@ -175,31 +193,100 @@ for ($frame=1;$frame<=$maxFrame;$frame++)
 $x_dat_base="life";
 $amperage=array();
 make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
-$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
+//
+//
 
-function count_neighbors($tree_rgb,$s,$p,$maxStrand,$maxPixel)
+function print_buff($buff1,$maxPixel,$maxStrand)
 {
-	//     2   3   4
-	//     1   X   5
-	//     0   7   6
-	$n_x=array(-1,-1,-1,0,1,1,1,0);
-	$n_y=array(-1,0,1,1,1,0,-1,-1);
-	$neighbors=$j=0;
-	for($i=0;$i<=7;$i++)
+	for($s=1;$s<=$maxStrand;$s++)
 	{
-		$x=$s + $n_x[$i];
-		if($x<1) $x=$maxStrand;
-		if($x>$maxStrand) $x=1;
-		$y=$p + $n_y[$i];
-		if($y<1) $y=$maxPixel;
-		if($y>$maxPixel) $y=1;
-		if($tree_rgb[$x][$y]==0)
+		for($p=1;$p<=$maxPixel;$p++)
 		{
-			$j=1;
+			printf("%4d ",$buff1[$s][$p]);
 		}
-		else
-		$neighbors++;
+		printf ("\n");
 	}
-	return $neighbors;
 }
-?>
+
+function build_fire($frame,$buff1,$buff2,$maxPixel,$maxStrand)
+{
+	$step=intval(255/$maxPixel);
+	for ($s=1;$s<=$maxStrand;$s++)
+	{
+		$r=rand(100,150);
+		if($s%2==0) $r=rand(190,200);
+		$buff1[$s][$maxPixel]=$r;
+		$buff1[$s][$maxPixel-1]=$r;
+	}
+	//
+	for($p=$maxPixel;$p>=1;$p--)
+	{
+		for ($s=1;$s<=$maxStrand;$s++)
+		{
+			$pdx=$maxPixel-$p;
+			$pdx=$v1=$v2=$v3=$v4==0;
+			if($p<$maxPixel)
+			{
+				$method=3;
+				if($method==1)
+				{
+					$v1=$buff1 [$s-1][$p+1];
+					$v2=$buff1 [$s+1][$p+1];
+					$v3=$buff1 [$s]  [$p+1];
+					$v4=$buff1 [$s]  [$p]  ;
+				}
+				//
+				if($method==2)
+				{
+					$v1=$buff1 [$s-1][$p];
+					$v2=$buff1 [$s+1][$p];
+					$v3=$buff1 [$s]  [$p+1];
+					$v4=$buff1 [$s]  [$p-1] ;
+				}
+				if($method==3)
+				{
+					$v1=$buff1 [$s-1][$p+1];
+					$v2=$buff1 [$s+1][$p+1];
+					$v3=$buff1 [$s]  [$p+1];
+					$v4=$buff1 [$s]  [$p+1];
+					
+				}
+			}
+			$n=0;
+			if($v1<0) $v1=0;
+			if($v2<0) $v2=0;
+			if($v3<0) $v3=0;
+			if($v4<0) $v4=0;
+			if($v1>0) $n++;
+			if($v2>0) $n++;
+			if($v3>0) $n++;
+			if($v4>0) $n++;
+			$buff2[$s][$p]=$buff1[$s][$p];
+			if($n>0  )
+			{
+				$r2=rand(1,100);
+				if($r2<20)
+				$new_index=intval(($v1+$v2+$v3+$v4)/$n)+$step;
+				else
+				$new_index=intval(($v1+$v2+$v3+$v4)/$n)-$step;
+				if($new_index<0) $new_index=0;
+				if($new_index>1) $buff2[$s][$p]=$new_index;
+			}
+		}
+		$buff1=$buff2;
+	}
+	return $buff2;
+}
+//
+
+function get_rgbval ($index,$palette)
+{
+	$rgb_array = $palette[$index];
+	$rgb_val = $rgb_array[0]<<16 +$rgb_array[1]<<8 + $rgb_array[2];
+	/*echo "<pre>";
+	echo "index=$index, rgb_val=$rgb_val";
+	print_r($rgb_array);
+	echo "</pre>\n";*/
+	return $rgb_val;
+}
