@@ -1258,7 +1258,7 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 		if($loop==1)
 		{
 			$pointsize="0.6";
-			fwrite($fh_gp_file,sprintf("\n\nset terminal gif animate notransparent noenhanced optimize  delay %d size %d,%d\n",$gif_delay,$w,$h));
+			fwrite($fh_gp_file,sprintf("\n\nset terminal gif  notransparent noenhanced optimize animate  delay %d size %d,%d\n",$gif_delay,$w,$h));
 			fwrite($fh_gp_file,sprintf("set output '%s'\n",$gif_file));
 			if($AMPERAGE==1)
 			{

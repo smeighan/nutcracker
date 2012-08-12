@@ -350,7 +350,7 @@ function delete_effects($username,$model_name)
 function insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val,$frame,$seq_number)
 {
 	//echo "<pre> insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val)\n";
-	//Include database connection details
+	//Include database connection details	
 	require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);

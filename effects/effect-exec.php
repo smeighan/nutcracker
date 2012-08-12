@@ -324,8 +324,8 @@ for($i=0;$i<$cnt;$i++)
 			echo "<td>$fname<br/><img src=\"$gifname\"/></td>";
 			$cols++;
 			if($cols%6==0) echo "</tr><tr>";
-			}
-			echo "</tr></table></td>";
+		}
+		echo "</tr></table></td>";
 		echo "</tr>";
 		echo "<tr><td>How should layers be joined. </td><td>";
 		if($layer_method=="Pri-1")
@@ -535,16 +535,15 @@ function show_my_effects($username,$user_targets)
 	$cnt=0;
 	echo "<table border=\"1\">\n";
 	echo "<tr><th colspan=3>Your Library of Effects</th></tr>\n";
-	echo "<tr>";
+	/*echo "<tr>";
 	for($i=0;$i<$cnt;$i++)
 		echo "<th>" . $effect_class_array[$i] ."</th>";
-	echo "</tr>";
+	echo "</tr>";*/
 	echo "<tr>";
 	$query_rows=array();
+	$j=0;
 	for($i=0;$i<$cnt;$i++)
 	{
-		echo "<td>";
-		echo "<table border=\"1\">\n";
 		$query ="select * from effects_user_hdr where username='$username'
 		and effect_class = '$effect_class_array[$i]' 
 		order by effect_class,effect_name";
@@ -554,15 +553,50 @@ function show_my_effects($username,$user_targets)
 		{
 			extract($row);
 			$query_rows[]=$row;
-			echo "<tr>";
+			/*echo "<tr>";
 			echo "<td><a href=\"effect-exec.php?effect_name=$effect_name?username=$username?effect_class=$effect_class?user_targets=$user_targets\">$effect_name</a></td>";
 			echo "<td>$effect_class </td>";
 			echo "<td>$effect_desc </td>";
-			echo "</tr>\n";
+			echo "</tr>\n";*/
+			$j++;
+			$effects_array[$j]=array($effect_name,$username,$effect_class,$effect_desc);
 		}
-		echo "</table>\n";
-		echo "</td>";
+		}	
+	/*echo "<pre>";
+	print_r($effects_array);*/
+	$rows_per_column=60;
+	$maxj=$j;
+	$rows_per_column=1+intval($maxj/4);
+	echo "<td>";
+	echo "<table border=\"1\">\n";
+	echo "<tr>";
+	for($l=1;$l<=$rows_per_column;$l++)
+	{
+		for($k=1;$k<=$maxj;$k+=$rows_per_column)
+		{
+			$check = $l%$rows_per_column;
+			if($check==0)
+				$j=$k+$rows_per_column-1;
+			else
+			$j=$k+$check-1;
+			$eff_array=$effects_array[$j];
+			$effect_name=$eff_array[0];
+			$username=$eff_array[1];
+			$effect_class=$eff_array[2];
+			$effect_desc=$eff_array[3];
+			if($j<=$maxj)
+			{
+			if($effect_class <> $old_effect_class) $effect_class_counter++;
+				echo "<td>$j:<a href=\"effect-exec.php?effect_name=$effect_name?username=$username?effect_class=$effect_class?user_targets=$user_targets\">$effect_name</a></td>";
+				echo "<td>$effect_class </td>";
+				echo "<td>$effect_desc </td>";
+				$old_effect_class=$effect_class;
+			}
+		}
+		echo "</tr><tr>";
 	}
+	echo "</table>\n";
+	echo "</td>";
 	echo "</tr>";
 	echo "</table>\n";
 	echo "<br/><br/>\n";

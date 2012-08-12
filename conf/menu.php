@@ -25,6 +25,11 @@ Cleanup old targets and effects
 <?php if($menu=="cleanup") echo "</b></font>";?>
 </a></td>
 
+<td><a href="../effects/project-form.php">
+<?php if($menu=="project-form") echo "<font color=blue><b>"; ?>
+Nutcracker Projects
+<?php if($menu=="project-form") echo "</b></font>";?>
+</a></td>
 
 <td><a href="../login/logout.php">Logout</a></td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

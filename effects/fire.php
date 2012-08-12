@@ -61,7 +61,7 @@ Array
 	FLY_0_0_TEST?username=f?effect_class=butterfly?user_targets=AA
 */ 
 $array_to_save=$_POST;
-$array_to_save['OBJECT_NAME']='life';
+$array_to_save['OBJECT_NAME']='fire';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
 $effect_name = rtrim($effect_name);
@@ -190,7 +190,7 @@ for ($frame=1;$frame<=$maxFrame;$frame++)
 	//	echo "<pre>closing $fh_dat[$frame]</pre>\n";
 	fclose($fh_dat[$frame]);
 }
-$x_dat_base="life";
+$x_dat_base="fire";
 $amperage=array();
 make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
