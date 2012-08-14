@@ -205,154 +205,158 @@ $textarea="123 test ...";
 $file1=$file2=$layer_method="";
 for($i=0;$i<$cnt;$i++)
 {
-	echo "<tr>";
-	$numb=$i+1;
-	echo "<td>#" . $effect_details[$i]['sequence'] . "</td><td>";
-	if($effect_details[$i]['param_name']=='php_program')
+	$sequence=$effect_details[$i]['sequence'];
+	if($sequence<90)
 	{
+		echo "<tr>";
+		$numb=$i+1;
+		echo "<td>#" . $effect_details[$i]['sequence'] . "</td><td>";
+		if($effect_details[$i]['param_name']=='php_program')
+		{
+			$param_name=$effect_details[$i]['param_name'];
+			if (!isset($value[$param_name]) || $value[$param_name] == null)
+			{
+				$textarea="";
+			}
+			else
+			$textarea= $value[$param_name];
+			echo "<textarea rows=\"20\" cols=\"120\" wrap=\"physical\" name=\"php_program\">";
+			echo "$textarea  ";
+			echo "</textarea>\n";
+		}
+		else
+		{
+			echo "<input type=\"text\"   ";
+			$mystring = $effect_details[$i]['param_name'];
+			$findme="color";
+			$pos = strpos($mystring, $findme);
+			if ($pos === false)
+			{
+				echo " class=\"input\" ";
+			}
+			else {
+				echo " class=\"color {hash:true} {pickerMode:'HSV'}\" ";
+			}
+			$param_name=$effect_details[$i]['param_name'];
+			$val="?";
+			if (!isset($param_name) || $param_name == null)
+			{
+				$val="";
+				$empty="#1";
+			}
+			else if (!isset($value[$param_name]) || $value[$param_name] == null)
+			{
+				$empty="#2 param=[$param_name]";
+				//	$val = $value[$param_name];
+				$val=0;
+			}
+			else
+			{
+				$val = $value[$param_name];
+				$empty="3 param=[$param_name] val=[$val]";
+				if($value[$param_name] == null) $val='0';
+			}
+			if (isset($val) and $val != null) 
+			echo " value=\"$val\" ";
+			echo "STYLE=\"background-color: #ABE8EC;\" size=\"32\"  \n";
+			echo "name=\"" . $effect_details[$i]['param_name'] . "\" />";
+		}
+		echo "</td><td><br/>" . $effect_details[$i]['param_prompt'] . " (" . $effect_details[$i]['param_range'] . "):";
+		echo "<br/>" . $effect_details[$i]['param_desc'] . "</td>\n";
+		echo "</tr>\n";
 		$param_name=$effect_details[$i]['param_name'];
-		if (!isset($value[$param_name]) || $value[$param_name] == null)
+		if($param_name=='file1' or $param_name=='file2')
 		{
-			$textarea="";
+			if($param_name=='file1' ) $file1=$value[$param_name];
+			if($param_name=='file2' ) $file2=$value[$param_name];
 		}
-		else
-		$textarea= $value[$param_name];
-		echo "<textarea rows=\"20\" cols=\"120\" wrap=\"physical\" name=\"php_program\">";
-		echo "$textarea  ";
-		echo "</textarea>\n";
-	}
-	else
-	{
-		echo "<input type=\"text\"   ";
-		$mystring = $effect_details[$i]['param_name'];
-		$findme="color";
-		$pos = strpos($mystring, $findme);
-		if ($pos === false)
+		if($param_name=='layer_method' ) $layer_method=$value[$param_name];
+		if($effect_details[$i]['effect_class']=='layer' and $effect_details[$i]['param_name']=='file2')
 		{
-			echo " class=\"input\" ";
+			echo "<tr><td>Select two effects to layer together.<br/></td>";
+			echo "<td><table border=1>";
+			echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th>";
+			echo "<th>Seq_Duration</th></tr>";
+			$dir="workspaces/2";
+			$files=getFilesFromDir($dir);
+			sort($files);
+			foreach($files as $filename)
+			{
+				$tok=explode("/",$filename); //workspaces/2/AA+FLY.nc
+				$file=$tok[2];
+				$tok2=explode("+",$file);  // AA+FLY.nc
+				$target=$tok2[0];
+				$tok3=explode(".",$tok2[1]);
+				$effect=$tok3[0];
+				$checked="";
+				if($file==$file1) $checked="CHECKED";
+				if($file==$file2) $checked="CHECKED";
+				$effect_details2=get_effect_user_dtl2($username,$effect);
+				/*	 [15] => Array
+				(
+				[username] => f
+				[effect_name] => BARBERPOLE_180
+				[param_name] => window_degrees
+				[param_value] => 180array2
+				[created] => 
+				[last_upd] => 2012-07-26 19:07:49
+				)
+					*/
+				/*echo "<pre>effect_details2:";
+				print_r($effect_details2);
+				echo "</pre>";*/
+				if(isset($effect_details2['window_degrees'])) 	$window_degrees=$effect_details2['window_degrees'];
+				$seq_duration=	$effect_details2['seq_duration'];
+				echo "<tr><td><input type=\"checkbox\" name=\"LAYER_EFFECTS[]\" value=\"$file\"  $checked /> $file<br /></td>";
+				echo "<td>$target</td>";
+				//if(!isset($window_degrees) or $window_degrees==null) $window_degrees=0;
+				echo "<td>$window_degrees</td>";
+				echo "<td>$seq_duration</td></tr>";
+				//	echo "<tr><td>$filename</td></tr>";
+			}
+			echo "</table>";
+			echo "</td>";
+			echo "<td><table><tr>";
+			$cols=0;
+			foreach($files as $filename)
+			{
+				$tok=explode(".",$filename); //workspaces/2/AA+FLY.nc
+				$gifname = $tok[0] . "_th.gif";
+				$tok2=explode("/",$filename); //workspaces/2/AA+FLY.nc
+				$fname = $tok2[2];
+				echo "<td>$fname<br/><img src=\"$gifname\"/></td>";
+				$cols++;
+				if($cols%6==0) echo "</tr><tr>";
+			}
+			echo "</tr></table></td>";
+			echo "</tr>";
+			echo "<tr><td>How should layers be joined. </td><td>";
+			if($layer_method=="Pri-1")
+				echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\" CHECKED />Priority to first effect<BR>";
+			else
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\"         />Priority to first effect<BR>";
+			//
+			if($layer_method=="Pri-2")
+				echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\" CHECKED />Priority to second effect<BR>";
+			else
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\"         />Priority to second effect<BR>";
+			//
+			if($layer_method=="Avg")
+				echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\" CHECKED />Average two pixels together<BR>";
+			else
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\"         />Average two pixels together<BR>";
+			//
+			if($layer_method=="Mask-1")
+				echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\" CHECKED />First effect is mask against second effect<BR>";
+			else
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\"         />First effect is mask against second effect<BR>";
+			//
+			if($layer_method=="Mask-2")
+				echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\" CHECKED />Second effect is mask against first effect<BR>";
+			else
+			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\"         />Second effect is mask against first effect<BR>";
+			echo "</td></tr>";
 		}
-		else {
-			echo " class=\"color {hash:true} {pickerMode:'HSV'}\" ";
-		}
-		$param_name=$effect_details[$i]['param_name'];
-		$val="?";
-		if (!isset($param_name) || $param_name == null)
-		{
-			$val="";
-			$empty="#1";
-		}
-		else if (!isset($value[$param_name]) || $value[$param_name] == null)
-		{
-			$empty="#2 param=[$param_name]";
-			//	$val = $value[$param_name];
-			$val=0;
-		}
-		else
-		{
-			$val = $value[$param_name];
-			$empty="3 param=[$param_name] val=[$val]";
-			if($value[$param_name] == null) $val='0';
-		}
-		if (isset($val) and $val != null) 
-		echo " value=\"$val\" ";
-		echo "STYLE=\"background-color: #ABE8EC;\" size=\"32\"  \n";
-		echo "name=\"" . $effect_details[$i]['param_name'] . "\" />";
-	}
-	echo "</td><td><br/>" . $effect_details[$i]['param_prompt'] . " (" . $effect_details[$i]['param_range'] . "):";
-	echo "<br/>" . $effect_details[$i]['param_desc'] . "</td>\n";
-	echo "</tr>\n";
-	$param_name=$effect_details[$i]['param_name'];
-	if($param_name=='file1' or $param_name=='file2')
-	{
-		if($param_name=='file1' ) $file1=$value[$param_name];
-		if($param_name=='file2' ) $file2=$value[$param_name];
-	}
-	if($param_name=='layer_method' ) $layer_method=$value[$param_name];
-	if($effect_details[$i]['effect_class']=='layer' and $effect_details[$i]['param_name']=='file2')
-	{
-		echo "<tr><td>Select two effects to layer together.<br/></td>";
-		echo "<td><table border=1>";
-		echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th>";
-		echo "<th>Seq_Duration</th></tr>";
-		$dir="workspaces/2";
-		$files=getFilesFromDir($dir);
-		sort($files);
-		foreach($files as $filename)
-		{
-			$tok=explode("/",$filename); //workspaces/2/AA+FLY.nc
-			$file=$tok[2];
-			$tok2=explode("+",$file);  // AA+FLY.nc
-			$target=$tok2[0];
-			$tok3=explode(".",$tok2[1]);
-			$effect=$tok3[0];
-			$checked="";
-			if($file==$file1) $checked="CHECKED";
-			if($file==$file2) $checked="CHECKED";
-			$effect_details2=get_effect_user_dtl2($username,$effect);
-			/*	 [15] => Array
-			(
-			[username] => f
-			[effect_name] => BARBERPOLE_180
-			[param_name] => window_degrees
-			[param_value] => 180array2
-			[created] => 
-			[last_upd] => 2012-07-26 19:07:49
-			)
-				*/
-			/*echo "<pre>effect_details2:";
-			print_r($effect_details2);
-			echo "</pre>";*/
-			if(isset($effect_details2['window_degrees'])) 	$window_degrees=$effect_details2['window_degrees'];
-			$seq_duration=	$effect_details2['seq_duration'];
-			echo "<tr><td><input type=\"checkbox\" name=\"LAYER_EFFECTS[]\" value=\"$file\"  $checked /> $file<br /></td>";
-			echo "<td>$target</td>";
-			//if(!isset($window_degrees) or $window_degrees==null) $window_degrees=0;
-			echo "<td>$window_degrees</td>";
-			echo "<td>$seq_duration</td></tr>";
-			//	echo "<tr><td>$filename</td></tr>";
-		}
-		echo "</table>";
-		echo "</td>";
-		echo "<td><table><tr>";
-		$cols=0;
-		foreach($files as $filename)
-		{
-			$tok=explode(".",$filename); //workspaces/2/AA+FLY.nc
-			$gifname = $tok[0] . "_th.gif";
-			$tok2=explode("/",$filename); //workspaces/2/AA+FLY.nc
-			$fname = $tok2[2];
-			echo "<td>$fname<br/><img src=\"$gifname\"/></td>";
-			$cols++;
-			if($cols%6==0) echo "</tr><tr>";
-		}
-		echo "</tr></table></td>";
-		echo "</tr>";
-		echo "<tr><td>How should layers be joined. </td><td>";
-		if($layer_method=="Pri-1")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\" CHECKED />Priority to first effect<BR>";
-		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-1\"         />Priority to first effect<BR>";
-		//
-		if($layer_method=="Pri-2")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\" CHECKED />Priority to second effect<BR>";
-		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Pri-2\"         />Priority to second effect<BR>";
-		//
-		if($layer_method=="Avg")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\" CHECKED />Average two pixels together<BR>";
-		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Avg\"         />Average two pixels together<BR>";
-		//
-		if($layer_method=="Mask-1")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\" CHECKED />First effect is mask against second effect<BR>";
-		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-1\"         />First effect is mask against second effect<BR>";
-		//
-		if($layer_method=="Mask-2")
-			echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\" CHECKED />Second effect is mask against first effect<BR>";
-		else
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"lmethod\" VALUE=\"Mask-2\"         />Second effect is mask against first effect<BR>";
-		echo "</td></tr>";
 	}
 }
 ?>
@@ -586,7 +590,7 @@ function show_my_effects($username,$user_targets)
 			$effect_desc=$eff_array[3];
 			if($j<=$maxj)
 			{
-			if($effect_class <> $old_effect_class) $effect_class_counter++;
+				if($effect_class <> $old_effect_class) $effect_class_counter++;
 				echo "<td>$j:<a href=\"effect-exec.php?effect_name=$effect_name?username=$username?effect_class=$effect_class?user_targets=$user_targets\">$effect_name</a></td>";
 				echo "<td>$effect_class </td>";
 				echo "<td>$effect_desc </td>";
