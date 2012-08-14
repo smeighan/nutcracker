@@ -34,7 +34,9 @@ echo "</pre>\n";
 ?>
 <div align=left>
 <b>What is a Nutcracker Project?</b>
-<br>A project is all of the animation effects you attach to a single song.
+<br>A project is all of the animation effects you attach to a single song. A Nutcracker project will allow your effects to by sybced to music.
+<br/><b>How can the Nutcracker know about the music timings?</b>
+<br/>Using Audacity I have marked the music phrases found in populare mp3 files. These files I call music object files.  Afte creating a music object file they need to be loaded into the Nutcracker database so they are available for people to use.
 <br/><b>What are the steps for creating a project?</b>
 <ol>
 <li>Create all the effects you will be using against the Target model. </li>
@@ -44,6 +46,8 @@ echo "</pre>\n";
 <li>Export each effect for particular sequencer you are using</li>
 <li>Enjoy!</li>
 </ol>
+<br/>
+<h2><?php echo "$username"; ?>, Here is a table of your current Nutcracker projects</h2>
 </div>
 <form action="<?php echo "project-exec.php"; ?>" method="post">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
@@ -64,10 +68,68 @@ echo "<th>Phrases<br/>In File</th>";
 echo "<th>Artist</th>";
 echo "<th>Target<br/>Model (Select target model to be used with this project)</th>";
 echo "<th>Frame Timing (Select Frame Timing (ms)<br/> for this project. <br/>Suggested Range 25-100:</th>";
-
 echo "<th>Purchase song from here</th>";
 echo "</tr>\n";
 $target_array=get_targets($username); // get current of targets that this user has
+$cnt=count($target_array);
+if($c==0)
+{
+	echo "<tr><td colspan=6>You have no Projects yet</td></tr>\n";
+}
+else
+{
+	foreach($music_object_hdr as $arr2)
+	{
+		$i++;
+		$song_name=$arr2[0];
+		$song_url=$arr2[1];
+		$music_object_id=$arr2[2];
+		$artist=$arr2[3];
+		$music_object_dtl_rows=$arr2[4];
+		$frame_delay=$arr2[5];
+		$target=$arr2[6];
+		if($music_object==$music_object_id)
+			$checked="checked=\"checked\"";
+		else
+		{
+			$checked="";
+		}
+		echo "<tr>";
+		$bold_on=$bold_off="";
+		if($music_object_dtl_rows>0)
+		{
+			$bold_on="<b>";
+			$bold_off="</b>";
+		}
+		echo "<td><input type=\"radio\" name=\"music_object\" value=\"$music_object_id\"  $checked />$bold_on $song_name $bold_off</td>";
+		echo "<td>$music_object_dtl_rows</td>";
+		echo "<td>$artist</td>";
+		pulldown_target($target_array,$music_object_id,$target);
+		echo "<td><input type=\"text\" name=\"frame_delay_array[$music_object_id]\" value=\"$frame_delay\"   /> </td>";
+		echo "<td><a href=$song_url>$song_url</a></td>";
+		echo "</tr>";
+	}
+}
+echo "</table>\n";
+
+//
+$sean_username="f";
+$music_object_hdr=get_music_object_hdr($sean_username);
+/*echo "<pre>";
+print_r($music_object_hdr);*/
+?>
+<br/>
+<br/>
+<h2>Availabe songs that you can copy into your Project library</h2>
+<?php
+echo "<table border=1>";
+echo "<tr>";
+echo "<th>Copy?</th>";
+echo "<th>Song Name</th>";
+echo "<th>Phrases<br/>In File</th>";
+echo "<th>Artist</th>";
+echo "<th>Purchase song from here</th>";
+echo "</tr>\n";
 foreach($music_object_hdr as $arr2)
 {
 	$i++;
@@ -91,11 +153,10 @@ foreach($music_object_hdr as $arr2)
 		$bold_on="<b>";
 		$bold_off="</b>";
 	}
-	echo "<td><input type=\"radio\" name=\"music_object\" value=\"$music_object_id\"  $checked />$bold_on $song_name $bold_off</td>";
+	echo "<td><input type=\"checkbox\" name=\"music_object2\" value=\"$music_object_id\"  $checked /></td>";
+	echo "<td>$bold_on $song_name $bold_off</td>\n";
 	echo "<td>$music_object_dtl_rows</td>";
 	echo "<td>$artist</td>";
-	pulldown_target($target_array,$music_object_id,$target);
-	echo "<td><input type=\"text\" name=\"frame_delay_array[$music_object_id]\" value=\"$frame_delay\"   /> </td>";
 	echo "<td><a href=$song_url>$song_url</a></td>";
 	echo "</tr>";
 }
@@ -103,6 +164,7 @@ echo "</table>\n";
 ?>
 <input type="submit" name="submit" value="Submit Form to assign effects to your project"  class="button" />
 </form>
+
 <?php
 /*[24] => Array
 (
