@@ -278,6 +278,8 @@ for($i=0;$i<$cnt;$i++)
 			echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th>";
 			echo "<th>Seq_Duration</th></tr>";
 			$dir="workspaces/2";
+			$member_id=get_member_id($username);
+			$dir="workspaces/$member_id";
 			$files=getFilesFromDir($dir);
 			sort($files);
 			foreach($files as $filename)

@@ -26,7 +26,6 @@ set_time_limit(60*60);
 extract($_POST);
 echo "<pre>";
 print_r($_POST);
-
 //print_r($nc_array);
 //
 //	If called from project-form:
@@ -156,27 +155,20 @@ if($cnt>0)
 		$frame_delay=$frame_delay_array[$music_object_id];
 		update_music_object_hdr($music_object_id,$target,$frame_delay);
 	}
-	//	update_music_object_dtl($target_array,$frame_delay,$music_object);
-	//	$fh = fopen($full_path, 'r') or die("can't open file $full_path");
-	/*$fh=fopen("test_nc","wb") or die("Unable to create test_nc");
-	for($i=1;$i<=2400;$i++)
-	{
-		
-		$bin_data=array();
-		for($f=1;$f<=1810;$f++)
-		{
-			$buff[$f]=123145678;
-			$bin_data .= pack("C", $buff[$f]);
-		}
-		fwrite($fh,$bin_data);
-	}
-	
-	fclose($fh);*/
+	$target=$target_array[$music_object_id];
+}
+$cnt=count($start_seconds);
+if($cnt>0)
+{
+	update_music_object_dtl($start_seconds,$end_seconds,$nc_array,$frame_delay,$music_object,$username);
 }
 echo "target=$target, frame_delay=$frame_delay\n";
 //
 if($frame_delay<=0) $frame_delay=100;
-$dir = getcwd();
+$member_id=get_member_id($username);
+$dir = getcwd() . "/workspaces/" . $member_id;
+$dir = "workspaces/" . $member_id;
+echo "<pre>dir=$dir.  getFilesFromDir($dir,$target);</pre>\n";
 $array_of_nc= getFilesFromDir($dir,$target); 
 sort($array_of_nc);
 echo "</pre>\n";
@@ -238,15 +230,16 @@ if($cnt>0)
 		$phrase_name=$arr2[0];
 		$start_secs=$arr2[1];
 		$end_secs=$arr2[2];
+		$effect_name=$arr2[3];
 		echo "<tr>";
 		echo "<td><input type=\"radio\" name=\"phrase\" value=\"$phrase_name\"   /> $phrase_name </td>";
 		echo "<td><input type=\"text\" name=\"start_seconds[$phrase_name]\" value=\"$start_secs\"   />  </td>";
-		echo "<td>$end_secs</td>";
+		echo "<td><input type=\"text\" name=\"end_seconds[$phrase_name]\" value=\"$end_secs\"   />  </td>";
 		$delta=$end_secs-$start_secs;
 		echo "<td>$delta</td>";
 		$frames=intval(($delta*1000)/$frame_delay);
 		echo "<td>$frames</td>";
-		pulldown($array_of_nc,$phrase_name,$nc_array);
+		pulldown($array_of_nc,$phrase_name,$nc_array,$effect_name);
 		echo "</tr>";
 	}
 	$nc_array[]=$music_object;
@@ -265,12 +258,19 @@ foreach($phrase_array as $arr2)
 	$phrase_name=$arr2[0];
 	$start_secs=$arr2[1];
 	$end_secs=$arr2[2];
+	$effect_name=get_effect_name($username,$phrase_name,$music_object_id);
 	$len=strlen($nc_array[$phrase_name]);
+	$len2=strlen($effect_name);
+	$member_id = get_member_id($username);
 	if($len>2)
 	{
 		$tok=explode(".nc",$nc_array[$phrase_name]);
 		//	echo "<td>tok[0]=$tok[0]</td><td>tok[1]=$tok[1]</td>";
-		$file = "workspaces/2/" . $tok[0] . "_th.gif";
+		$file = "workspaces/$member_id/" . $tok[0] . "_th.gif";
+	}
+	else if($len2>1)
+	{
+		$file = "workspaces/$member_id/" .$target . "+" . $effect_name . "_th.gif";
 	}
 	else
 	{
@@ -281,7 +281,7 @@ foreach($phrase_array as $arr2)
 }
 echo "</tr></table>";
 
-function pulldown($array_of_nc,$phrase_name,$nc_array)
+function pulldown($array_of_nc,$phrase_name,$nc_array,$effect_name)
 {
 	echo "<td>";
 	echo "<div align=\"center\">";
@@ -289,9 +289,23 @@ function pulldown($array_of_nc,$phrase_name,$nc_array)
 	echo "<option value=\"--\">No Selection</option>";
 	foreach($array_of_nc as $file)
 	{
-		if($nc_array[$phrase_name] == $file) $selected="SELECTED";
+		if($nc_array[$phrase_name] == $file)
+		{
+			$selected="SELECTED";
+		}
 		else
-		$selected="";
+		{
+			$tok1=explode("+",$file);
+			$tok2=explode(".nc",$tok1[1]);
+			$effect_name2 = $tok2[0];
+			if($effect_name == $effect_name2)
+			{
+				$selected="SELECTED";
+				$gif_array[$phrase_name]=$file;
+			}
+			else
+			$selected="";
+		}
 		echo "<option value=\"$file\" $selected>$file</option>";
 	}
 	echo "</select>";
@@ -328,9 +342,44 @@ function get_phrases($music_object_id)
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
-		$phrase_array[]=array($phrase_name,$start_secs,$end_secs);
+		$phrase_array[]=array($phrase_name,$start_secs,$end_secs,$effect_name);
 	}
 	return $phrase_array;
+}
+
+function get_effect_name($username,$phrase_name,$music_object_id)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	$query ="SELECT * FROM `effects_user_hdr` WHERE  music_object_id = '$music_object_id'
+	and username='$username'
+	and phrase_name='$phrase_name'";
+	//echo "<pre>get_effect_name: query=$query</pre>\n";
+	$result=mysql_query($query) or die ("Error on $query");
+	$music_object_id=0;
+	$NO_DATA_FOUND=0;
+	//echo "rows=" . mysql_num_rows($result) . "\n";
+	$effect_name="";
+	if (mysql_num_rows($result) == 0)
+	{
+		$NO_DATA_FOUND=1;
+	}
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	return $effect_name;
 }
 
 function get_max_seconds($music_object_id)
@@ -425,16 +474,20 @@ function getFilesFromDir($dir,$target)
 {
 	$files = array(); 
 	$n=0;
+	echo "<pre>";
+	echo "function getFilesFromDir($dir,$target)\n";
 	if ($handle = opendir($dir))
 	{
 		while (false !== ($file = readdir($handle)))
 		{
+			echo "file=$file\n";
 			if ($file != "." && $file != ".." )
 			{
 				if(is_dir($dir.'/'.$file))
 				{
 					$dir2 = $dir.'/'.$file; 
 					$files[] = getFilesFromDir($dir2,$target);
+					echo "dir2=$dir2\n";
 				}
 				else 
 				{ 
@@ -448,6 +501,7 @@ function getFilesFromDir($dir,$target)
 					//	0 = workspaces
 					//	1 = nuelemma or id
 					//
+					echo "inner file=$file. target_search=$target_search\n";"
 					if($extension=="nc")
 					{
 						//$files[] = $dir.'/'.$file;
@@ -463,6 +517,7 @@ function getFilesFromDir($dir,$target)
 				} 
 			} 
 		closedir($handle);
+		echo "</pre>\n";
 	}
 	return array_flat($files);
 }
@@ -484,7 +539,8 @@ function array_flat($array)
 	return $tmp;
 }
 
-function 	update_music_object_dtl($target_array,$frame_delay,$music_object)
+function 	update_music_object_dtl($start_seconds,$end_seconds,
+$nc_array,$frame_delay,$music_object,$username)
 {
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -499,17 +555,55 @@ function 	update_music_object_dtl($target_array,$frame_delay,$music_object)
 	{
 		die("Unable to select database");
 	}
-	foreach($frame_delay as $i=>$start_secs)
+	foreach ($nc_array as $phrase_name => $file)
 	{
-		$end_secs=$frame_delay[$i-1];
-		$query ="REPLACE into music_object_dtl (start_secs)
-			values ('$start_secs') WHERE  username = '$username'
-		order by music_object_id";
+		$start_secs=$start_seconds[$phrase_name];
+		$end_secs=$end_seconds[$phrase_name];
+		$delta = $end_secs-$start_secs;
+		$seq_duration = sprintf("%7.3f",$delta);
+		$tok1=explode("+",$file);
+		$tok2=explode(".nc",$tok1[1]);
+		$effect_name = $tok2[0];
+		// music_object_id	phrase_name	start_secs	end_secs	effect_name	sequence	
+		if(strlen($effect_name)>0)
+		{
+			$query ="UPDATE music_object_dtl set effect_name='$effect_name' 
+			WHERE  music_object_id=$music_object and
+			phrase_name = '$phrase_name'";
+			//	echo "<pre>$query</pre>\n";
+			$result=mysql_query($query) or die ("Error on $query");
+			// 	effect_class	username	effect_name	effect_desc	music_object_id	start_secs	end_secs	phrase_name	created	last_upd
+			$query ="UPDATE  effects_user_hdr 
+			set music_object_id=$music_object,
+			start_secs=$start_secs,
+			end_secs=$end_secs,
+			phrase_name='$phrase_name'
+			WHERE  username='$username' and
+			effect_name = '$effect_name'";
+			//	echo "<pre>$query</pre>\n";
+			$result=mysql_query($query) or die ("Error on $query");
+			//
+			$query ="UPDATE  effects_user_dtl 
+			set param_value='$frame_delay'
+			WHERE  username='$username' and
+			effect_name = '$effect_name'
+			and param_name='frame_delay'";
+			//	echo "<pre>$query</pre>\n";
+			$result=mysql_query($query) or die ("Error on $query");
+			//
+			$query ="UPDATE  effects_user_dtl 
+			set param_value='$seq_duration'
+			WHERE  username='$username' and
+			effect_name = '$effect_name'
+			and param_name='seq_duration'";
+			//	echo "<pre>$query</pre>\n";
+			$result=mysql_query($query) or die ("Error on $query");
+		}
 	}
-	$query ="SELECT * FROM `music_object_hdr` WHERE  username = '$username'
+	$query ="SELECT * FROM `music_object_hdr` WHERE  music_object_id = '$music_object_id'
 	order by music_object_id";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	/*$result=mysql_query($query) or die ("Error on $query");
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -522,5 +616,5 @@ function 	update_music_object_dtl($target_array,$frame_delay,$music_object)
 		extract($row);
 		$music_object_hdr[]=array($song_name,$song_url,$music_object_id,$artist);
 	}
-	return $music_object_hdr;
+	return $music_object_hdr;*/
 }

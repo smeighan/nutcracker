@@ -64,6 +64,7 @@ list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $member_id=get_member_id($username);
 $path ="workspaces/$member_id";
+$picturedir ="pictures";
 $picturepath ="pictures/$member_id";
 $directory=$path;
 if (file_exists($directory))
@@ -71,6 +72,12 @@ if (file_exists($directory))
 	} else {
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
+}
+if (file_exists($picturedir))  // create the pictures member_id directory. Any images users uploads goes here
+{
+	} else {
+	echo "The directory $picturedir does not exist, creating it";
+	mkdir($picturedir, 0777);
 }
 if (file_exists($picturepath))  // create the pictures member_id directory. Any images users uploads goes here
 {
@@ -107,7 +114,6 @@ $file2=$picturepath . "/a_" . $file1;
 echo "<h1>Processing file $file</h1>";
 $tokens=explode(".",$file);
 $image_type=$tokens[1];
-
 $size   = getimagesize($file);
 print "<pre>";
 print_r($size);
@@ -115,25 +121,18 @@ echo "</pre>";
 $img_width  = $size[0];
 $img_height = $size[1];
 $img_type_number = $size[2];
-
 if($image_type=="png") $image  = imagecreatefrompng($file);
 if($image_type=="jpg") $image  = imagecreatefromjpeg($file);
 if($image_type=="gif") $image  = imagecreatefromgif($file);
-
 echo "<pre>width=$img_width, height=$img_height";
-
-
 include('SimpleImage.php');
 $image = new SimpleImage();
 $image->load($file);
 if($img_width<$img_height)
-$image->resizeToWidth($maxStrand*2);
+	$image->resizeToWidth($maxStrand*2);
 else
 $image->resizeToHeight($maxPixel*2);
-
 $image->save($file2,$img_type_number);
-
-
 $file=$file2;
 if($image_type=="png") $image  = imagecreatefrompng($file);
 if($image_type=="jpg") $image  = imagecreatefromjpeg($file);
@@ -148,7 +147,7 @@ $lowRange2 = $maxStrand/4;
 $highRange1=$maxStrand -  $maxStrand/4;
 $highRange2=$maxStrand;
 $halfTree=1;
-$windowStrandArray =getWindowArray($minStrand,$maxStrand,$window_degrees);
+$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 $precision = intval((max($img_height,$img_width) / $maxStrand) + 0.5);
 $precision = intval($img_width / $maxStrand + 0.5);
 //if ($img_width < 50)
@@ -179,7 +178,7 @@ for($x = 0; $x < $img_width; $x += $precision)
 			and ($p>=$minPixel and $p<=$maxPixel))
 		{
 			$new_s=$s;
-			$key = array_search($s, $windowStrandArray); // $key = 2;
+			//$key = array_search($s, $windowStrandArray); // $key = 2;
 			//echo "<pre>picture: s,p,key = $s,$p,$key</pre>";
 			//		if($halfTree==0 or is_numeric($key))
 			{
@@ -220,12 +219,15 @@ for ($f = 1; $f <= $maxFrame; $f++)
 			else if($s0>$maxStrand) $s0=$s0-$maxStrand;
 			$rgb_val=$tree_rgb[$s0][$p];
 			//$rgb_val=transition($rgb_val,$f,$s,$p,$maxStrand,$maxPixel);
-			if ($rgb_val <> 0 )
+			if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 			{
-			//	$rgb_val=brighten($rgb_val,30); // brighten by 10%
-				$string=$user_pixel=0;
-				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-				fwrite($fh_dat[$f], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
+				if ($rgb_val <> 0 )
+				{
+					//	$rgb_val=brighten($rgb_val,30); // brighten by 10%
+					$string=$user_pixel=0;
+					$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
+					fwrite($fh_dat[$f], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
+				}
 			}
 		}
 		}			
@@ -255,7 +257,6 @@ function brighten($rgb,$per)
 	$H=$HSL['H']; 
 	$S=$HSL['S']; 
 	$V=$HSL['V'];
-	
 	$totper = (100+$per)/100; 
 	$S=$S*$totper;
 	if($S>1.0) $S=1.0;

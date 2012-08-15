@@ -77,7 +77,7 @@ $fh2=fopen($file2,"r");
 $nc_file=$path . "/" . $base . ".nc";
 $fh_nc=fopen($nc_file,"w") or die("Failed opening $nc_file\n");
 echo "<pre>";
-echo "nc_file = $nc_file\n";
+echo "nc_file = $nc_file, file1=$file1, file2=$file2\n";
 $targetpath="../targets/". $member_id;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;

@@ -25,21 +25,23 @@ require("../effects/read_file.php");
 set_time_limit(60*60);
 extract($_POST);
 echo "<pre>";
-/*print_r($_POST);
-print_r($nc_array);*/
+//print_r($_POST);
+//print_r($nc_array);
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
 $music_object=$_POST['music_object'];
 echo "</pre>\n";
+copy_songs($song_array,$username); // if any have been self submitted from this form
 ?>
 <div align=left>
 <b>What is a Nutcracker Project?</b>
-<br>A project is all of the animation effects you attach to a single song. A Nutcracker project will allow your effects to by sybced to music.
+<br>A project are all of the animation effects you attach to a single song. A Nutcracker project will allow your effects to by sybced to music. One Project = 1 mp3
 <br/><b>How can the Nutcracker know about the music timings?</b>
-<br/>Using Audacity I have marked the music phrases found in populare mp3 files. These files I call music object files.  Afte creating a music object file they need to be loaded into the Nutcracker database so they are available for people to use.
+<br/>Using Audacity I have marked the music phrases found in popular mp3 files. These files I call music object files.  After creating a music object file, they need to be loaded into the Nutcracker database so they are available for people to use. 
 <br/><b>What are the steps for creating a project?</b>
 <ol>
 <li>Create all the effects you will be using against the Target model. </li>
+<li>Copy a song from the available mp3's shown to copy it into your Project library</li>
 <li>Select A song, A target model and the frame timing. These are done on this form</li>
 <li>Attach effects to each music phrase. These will done on the next form.</li>
 <li>Regenerate the effects, if you have changed the sequence duration</li>
@@ -56,7 +58,10 @@ echo "</pre>\n";
 <input type="hidden" name="target" value="<?php echo "$target"; ?>"/>
 <?php
 $i=0;
-$music_object_hdr=get_music_object_hdr($username);
+$music_object_hdr=get_music_object_hdr($username,"nonzero");
+/*echo "<pre>music_object_hdr for $username";
+print_r($music_object_hdr);
+echo "</pre>";*/
 $checked="";
 /*echo "<div";*/
 /*echo "<pre>";
@@ -66,15 +71,16 @@ echo "<tr>";
 echo "<th>Song Name</th>";
 echo "<th>Phrases<br/>In File</th>";
 echo "<th>Artist</th>";
+echo "<th>Length<br/>Minutes</th>";
 echo "<th>Target<br/>Model (Select target model to be used with this project)</th>";
 echo "<th>Frame Timing (Select Frame Timing (ms)<br/> for this project. <br/>Suggested Range 25-100:</th>";
 echo "<th>Purchase song from here</th>";
 echo "</tr>\n";
 $target_array=get_targets($username); // get current of targets that this user has
-$cnt=count($target_array);
-if($c==0)
+$cnt=count($music_object_hdr);
+if($cnt<=0)
 {
-	echo "<tr><td colspan=6>You have no Projects yet</td></tr>\n";
+	echo "<tr><td colspan=7>You have no Projects yet</td></tr>\n";
 }
 else
 {
@@ -88,6 +94,7 @@ else
 		$music_object_dtl_rows=$arr2[4];
 		$frame_delay=$arr2[5];
 		$target=$arr2[6];
+		$max_end_secs=$arr2[7];
 		if($music_object==$music_object_id)
 			$checked="checked=\"checked\"";
 		else
@@ -104,6 +111,8 @@ else
 		echo "<td><input type=\"radio\" name=\"music_object\" value=\"$music_object_id\"  $checked />$bold_on $song_name $bold_off</td>";
 		echo "<td>$music_object_dtl_rows</td>";
 		echo "<td>$artist</td>";
+		$length = sprintf("%4.1f",$max_end_secs/60);
+		echo "<td>$length</td>";
 		pulldown_target($target_array,$music_object_id,$target);
 		echo "<td><input type=\"text\" name=\"frame_delay_array[$music_object_id]\" value=\"$frame_delay\"   /> </td>";
 		echo "<td><a href=$song_url>$song_url</a></td>";
@@ -111,12 +120,18 @@ else
 	}
 }
 echo "</table>\n";
-
 //
+?>
+<input type="submit" name="submit" value="Select a song and click here to go to the next screen, assign effects"  class="button" />
+</form>
+<form action="<?php echo $PHP_SELF; ?>" method="post">
+<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
+<input type="hidden" name="seq_duration" value="<?php echo "$seq_duration"; ?>"/>
+<input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>
+<input type="hidden" name="target" value="<?php echo "$target"; ?>"/>
+<?php
 $sean_username="f";
-$music_object_hdr=get_music_object_hdr($sean_username);
-/*echo "<pre>";
-print_r($music_object_hdr);*/
+$music_object_hdr=get_music_object_hdr($sean_username,"nonzero");
 ?>
 <br/>
 <br/>
@@ -125,6 +140,62 @@ print_r($music_object_hdr);*/
 echo "<table border=1>";
 echo "<tr>";
 echo "<th>Copy?</th>";
+echo "<th>Song Name</th>";
+echo "<th>Phrases<br/>In File</th>";
+echo "<th>Artist</th>";
+echo "<th>Length<br/>Minutes</th>";
+echo "<th>Purchase song from here</th>";
+echo "</tr>\n";
+foreach($music_object_hdr as $arr2)
+{
+	$i++;
+	$song_name=$arr2[0];
+	$song_url=$arr2[1];
+	$music_object_id=$arr2[2];
+	$artist=$arr2[3];
+	$music_object_dtl_rows=$arr2[4];
+	$frame_delay=$arr2[5];
+	$target=$arr2[6];
+	$max_end_secs=$arr2[7];
+	if($music_object==$music_object_id)
+		$checked="checked=\"checked\"";
+	else
+	{
+		$checked="";
+	}
+	echo "<tr>";
+	$bold_on=$bold_off="";
+	if($music_object_dtl_rows>0)
+	{
+		$bold_on="<b>";
+		$bold_off="</b>";
+	}
+	echo "<td><input type=\"checkbox\" name=\"song_array[$music_object_id]\" value=\"$music_object_id\"  $checked /></td>";
+	echo "<td>$bold_on $song_name $bold_off</td>\n";
+	echo "<td>$music_object_dtl_rows</td>";
+	echo "<td>$artist</td>";
+	$length = sprintf("%4.1f",$max_end_secs/60);
+	echo "<td>$length</td>";
+	echo "<td><a href=$song_url>$song_url</a></td>";
+	echo "</tr>";
+}
+echo "</table>\n";
+//
+?>
+<input type="submit" name="submit" value="Submit Form to copy these songs into your project library"  class="button" />
+</form>
+<?php
+//
+$music_object_hdr=get_music_object_hdr($sean_username,"zero");
+/*echo "<pre>";
+print_r($music_object_hdr);*/
+?>
+<br/>
+<br/>
+<h2>Songs that that are in the queue waiting for Sean to mark the music phrases</h2>
+<?php
+echo "<table border=1>";
+echo "<tr>";
 echo "<th>Song Name</th>";
 echo "<th>Phrases<br/>In File</th>";
 echo "<th>Artist</th>";
@@ -153,7 +224,6 @@ foreach($music_object_hdr as $arr2)
 		$bold_on="<b>";
 		$bold_off="</b>";
 	}
-	echo "<td><input type=\"checkbox\" name=\"music_object2\" value=\"$music_object_id\"  $checked /></td>";
 	echo "<td>$bold_on $song_name $bold_off</td>\n";
 	echo "<td>$music_object_dtl_rows</td>";
 	echo "<td>$artist</td>";
@@ -161,11 +231,6 @@ foreach($music_object_hdr as $arr2)
 	echo "</tr>";
 }
 echo "</table>\n";
-?>
-<input type="submit" name="submit" value="Submit Form to assign effects to your project"  class="button" />
-</form>
-
-<?php
 /*[24] => Array
 (
 [username] => f
@@ -253,7 +318,7 @@ function get_phrases($music_object_id)
 	return $phrase_array;
 }
 
-function get_music_object_hdr($username)
+function get_music_object_hdr($username,$sort)
 {
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -282,8 +347,14 @@ function get_music_object_hdr($username)
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
-		$music_object_dtl_rows=count_music_object_dtl($music_object_id);
-		$music_object_hdr[]=array($song_name,$song_url,$music_object_id,$artist,$music_object_dtl_rows,$frame_delay,$target);
+		$arr=count_music_object_dtl($music_object_id);
+		$music_object_dtl_rows=$arr[0];
+		$max_end_secs=$arr[1];
+		//echo "<pre>sort=$sort, music_object_dtl_rows=$music_object_dtl_rows,max_end_secs=$max_end_secs</pre>\n";
+		if(
+		($music_object_dtl_rows>0 and $sort=="nonzero") or
+		($music_object_dtl_rows==0 and $sort=="zero"))
+			$music_object_hdr[]=array($song_name,$song_url,$music_object_id,$artist,$music_object_dtl_rows,$frame_delay,$target,$max_end_secs);
 	}
 	return $music_object_hdr;
 }
@@ -303,7 +374,8 @@ function count_music_object_dtl($music_object_id)
 	{
 		die("Unable to select database");
 	}
-	$query ="SELECT count(*) cnt FROM `music_object_dtl` WHERE music_object_id = '$music_object_id'
+	$query ="SELECT count(*) cnt,max(end_secs) max_end_secs
+	FROM `music_object_dtl` WHERE music_object_id = '$music_object_id'
 	group by music_object_id";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
 	$result=mysql_query($query) or die ("Error on $query");
@@ -318,7 +390,7 @@ function count_music_object_dtl($music_object_id)
 	{
 		extract($row);
 	}
-	return $cnt;
+	return array($cnt,$max_end_secs);
 }
 
 function get_targets($username)
@@ -354,6 +426,59 @@ function get_targets($username)
 		$target_array[]=$row;
 	}
 	return $target_array;
+}
+
+function copy_songs($song_array,$username)
+{
+	$cnt=count($song_array);
+	if($cnt==0) return;
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	foreach ($song_array as $i=>$music_object_id)
+	{
+		$query ="INSERT into music_object_hdr (username,song_name,
+		artist,frame_delay,target,song_url,audacity_aup,music_mo_file) 
+		(select '$username',song_name,artist,frame_delay,target,
+		song_url,audacity_aup,music_mo_file
+		from music_object_hdr
+		WHERE username = 'f' and music_object_id=$music_object_id)";
+		echo "<pre>get_music_object_hdr: query=$query</pre>\n";
+		$result=mysql_query($query) or die ("Error on $query");
+		//
+		//
+		$query = "select song_name,music_object_id  music_object_id_new
+		from music_object_hdr 
+		WHERE username = '$username' and song_name in
+		(select song_name from music_object_hdr 
+		WHERE username = 'f'
+		and music_object_id = $music_object_id)";
+		echo "<pre>get_music_object_hdr: query=$query</pre>\n";
+		$result=mysql_query($query) or die ("Error on $query");
+		while ($row = mysql_fetch_assoc($result))
+		{
+			extract($row);
+		}
+		//
+		//
+		$query ="INSERT into music_object_dtl (	music_object_id,phrase_name,
+		start_secs,end_secs,date_created)
+			(select '$music_object_id_new',phrase_name,start_secs,end_secs,now()
+		from music_object_dtl
+		WHERE music_object_id=$music_object_id)";
+		echo "<pre>get_music_object_hdr: query=$query</pre>\n";
+		$result=mysql_query($query) or die ("Error on $query");
+	}
 }
 
 function getFilesFromDir($dir)
