@@ -102,7 +102,6 @@ $maxI = $arr[4];
 // maximum number of pixels in target
 $tree_rgb = $arr[5];
 $tree_xyz = $arr[6];
-$file = $arr[7];
 $min_max = $arr[8];
 $strand_pixel = $arr[9];
 srand(time());
@@ -110,20 +109,24 @@ $maxFrame = 80;
 //$maxTrees=6;	// how many tree to draw at one time
 $seq_number = 0;
 $file=$picturepath . "/" . $file1;
+//$file = getcwd() . "/" . $file;
 $file2=$picturepath . "/a_" . $file1;
 echo "<h1>Processing file $file</h1>";
 $tokens=explode(".",$file);
 $image_type=$tokens[1];
 $size   = getimagesize($file);
+list($width, $height, $type, $attr) = getimagesize($file);
 print "<pre>";
 print_r($size);
+//echo "list($width, $height, $type, $attr)\n";
 echo "</pre>";
 $img_width  = $size[0];
 $img_height = $size[1];
 $img_type_number = $size[2];
-if($image_type=="png") $image  = imagecreatefrompng($file);
-if($image_type=="jpg") $image  = imagecreatefromjpeg($file);
-if($image_type=="gif") $image  = imagecreatefromgif($file);
+// 1 = GIF, 2 = JPG, 3 = PNG, 4 = SWF, 5 = PSD, 6 = BMP, 7 = TIFF(orden de bytes intel), 8 = TIFF(orden de bytes motorola), 9 = JPC, 10 = JP2, 11 = JPX, 12 = JB2, 13 = SWC, 14 = IFF, 15 = WBMP, 16 = XBM. 
+if($img_type_number==1) $image  = imagecreatefromgif($file);
+if($img_type_number==2) $image  = imagecreatefromjpeg($file);
+if($img_type_number==3) $image  = imagecreatefrompng($file);
 echo "<pre>width=$img_width, height=$img_height";
 include('SimpleImage.php');
 $image = new SimpleImage();
@@ -162,17 +165,26 @@ for($x = 0; $x < $img_width; $x += $precision)
 		$p_raw++;
 		$p = $p_raw+$pixel_offset;
 		$rgb = imagecolorat($image, $x, $y);
+		$hex=dechex($rgb);
+		//	echo "<pre>x,y=rgb  $x,$y=$hex</pre>\n";
 		$r = ($rgb >> 16) & 0xFF;
 		$g = ($rgb >> 8) & 0xFF;
 		$b = $rgb & 0xFF;
+		if($image_type=="gif")
+		{
+			if($r==0 and $g==0)
+			{
+				$r=$g=$b;
+			}
+		}
 		$HSL=RGB_TO_HSV ($r, $g, $b);
 		$H=$HSL['H']; 
 		$S=$HSL['S']; 
 		$V=$HSL['V']; 
-		$S=$S*1.10;
-		if($s>1.0) $S=1.0;
+		/*$S=$S*1.10; // raise saturation level by 10%
+		if($s>1.0) $S=1.0;*/
 		$rgb_val=HSV_TO_RGB ($H, $S, $V);
-		$rgb_val=$rgb;
+		//$rgb_val=$rgb;
 		//	echo " s,p = $s,$p  x,y = $x,$y rgb = $r,$g,$b  \n";
 		if(         ($s>=$minStrand and $s <=$maxStrand)
 			and ($p>=$minPixel and $p<=$maxPixel))
@@ -204,29 +216,43 @@ for ($f = 1; $f <= $maxFrame; $f++)
 	$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
 	fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
 	//$tree_rgb=$orig_tree_rgb; // always start with original loaded image
+	$shift=intval(($f-1)*$speed);
 	for($s=1;$s<=$maxStrand;$s++)
 	{
 		for($p=1;$p<=$maxPixel;$p++)
 		{
-			$s0=$s+($f%$maxStrand);
-			$r=rand(1,100);
-			$offset=($f%$maxStrand);
-			if($r<30) $random=-1;
-			else if ($r>60) $random=1;
-			else $random=0;
-			$s0=$s+$offset+$random;
-			if($s0<0) $s0=$s0+$maxStrand;
-			else if($s0>$maxStrand) $s0=$s0-$maxStrand;
-			$rgb_val=$tree_rgb[$s0][$p];
+			$s0=$s; $p0=$p;
+			switch ($direction)
+			{
+				case 'down':
+				$p0-=$shift;
+				break;
+				case 'up':
+				$p0+=$shift;
+				break;
+				case 'right':
+				$s0+=$shift;
+				break;
+				case 'left':
+				$s0-=$shift;
+				break;
+			}
+			$s1=($s0%$maxStrand);
+			if($s1==0) $s1=$maxStrand;
+			$p1=($p0%$maxPixel);
+			if($p1==0) $p1=$maxPixel;
+			if($p1<1) $p1+=$maxPixel;
+			if($s1<1) $s1+=$maxStrand;
+			$rgb_val=$tree_rgb[$s1][$p1];
 			//$rgb_val=transition($rgb_val,$f,$s,$p,$maxStrand,$maxPixel);
-			if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+			if(in_array($s1,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 			{
 				if ($rgb_val <> 0 )
 				{
 					//	$rgb_val=brighten($rgb_val,30); // brighten by 10%
 					$string=$user_pixel=0;
 					$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-					fwrite($fh_dat[$f], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
+					fwrite($fh_dat[$f], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $f, $seq_number));
 				}
 			}
 		}
@@ -246,6 +272,7 @@ $x_dat_base = $base . ".dat";
 make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float)$sec + (float)$usec;
+$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 echo "<End of Program>\n";
 
 function brighten($rgb,$per)
@@ -395,5 +422,38 @@ function resizeImage($originalImage,$toWidth,$toHeight)
 	$imageTmp     = imagecreatefromjpeg ($originalImage); 
 	imagecopyresampled($imageResized, $imageTmp, 0, 0, 0, 0, $new_width, $new_height, $width, $height); 
 	return $imageResized;
+}
+
+function gif2jpeg($p_fl, $p_new_fl, $bgcolor=false)
+{
+	list($wd, $ht, $tp, $at)=getimagesize($p_fl);
+	$img_src=imagecreatefromgif($p_fl);
+	$img_dst=imagecreatetruecolor($wd,$ht);
+	$clr['red']=255;
+	$clr['green']=255;
+	$clr['blue']=255;
+	if(is_array($bgcolor)) $clr=$bgcolor;
+	$kek=imagecolorallocate($img_dst,
+	$clr['red'],$clr['green'],$clr['blue']);
+	imagefill($img_dst,0,0,$kek);
+	imagecopyresampled($img_dst, $img_src, 0, 0, 
+	0, 0, $wd, $ht, $wd, $ht);
+	$draw=true;
+	if(strlen($p_new_fl)>0)
+	{
+		if($hnd=fopen($p_new_fl,'w'))
+		{
+			$draw=false;
+			fclose($hnd);
+		}
+	}
+	if(true==$draw)
+	{
+		header("Content-type: image/jpeg");
+		imagejpeg($img_dst);
+	}
+	else imagejpeg($img_dst, $p_new_fl);
+	imagedestroy($img_dst);
+	imagedestroy($img_src);
 }
 ?>

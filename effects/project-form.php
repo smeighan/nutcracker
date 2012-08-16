@@ -26,7 +26,7 @@ set_time_limit(60*60);
 extract($_POST);
 echo "<pre>";
 //print_r($_POST);
-//print_r($nc_array);
+//print_r($_SERVER);
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
 $music_object=$_POST['music_object'];
@@ -124,7 +124,7 @@ echo "</table>\n";
 ?>
 <input type="submit" name="submit" value="Select a song and click here to go to the next screen, assign effects"  class="button" />
 </form>
-<form action="<?php echo $PHP_SELF; ?>" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="seq_duration" value="<?php echo "$seq_duration"; ?>"/>
 <input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>
@@ -380,6 +380,7 @@ function count_music_object_dtl($music_object_id)
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
 	$result=mysql_query($query) or die ("Error on $query");
 	$music_object_id=0;
+	$cnt=$max_end_secs=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
 	if (mysql_num_rows($result) == 0)

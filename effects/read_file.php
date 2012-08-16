@@ -526,8 +526,10 @@ function display_gif($dir,$model,$gp_file,$out_file_array,$frame_delay,$script_s
 		//   $shellCommmand = "/usr/local/bin/gnuplot '" . $pathToCommandFile .+"'";
 		//         $output = system($shellCommmand . " 2>&1");
 		//
-		if($_SERVER['HTTP_HOST'] == 'localhost') 
-		$shellCommand = "gnuplot " . $gp_file .  " 2>&1"; 
+		if($_SERVER['HTTP_HOST'] == 'localhost')
+		{
+			$shellCommand = "gnuplot.exe " . $gp_file .  " 2>&1";
+		}
 		else
 		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
 		$return=system($shellCommand,$output); 
@@ -1125,12 +1127,13 @@ function get_member_id($username)
 	}
 	$query = "select member_id from members where username='$username'";
 	$result=mysql_query($query) or die ("Error on $query");
+	$member_id=0;
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
 	}
 	mysql_close();
-	if(empty($member_id))
+	if($member_id==0)
 		echo "<pre>ERROR: We did not find username [$username]</pre>\n";
 	return ($member_id);
 }
@@ -1982,7 +1985,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 							$rgb_val=$rgb;
 							$fade_out_start = $TotalFrames-$fade_out+1;
 							if(($fade_in>0 and $frameCounter<=$fade_in) or ($fade_out>0 and $frameCounter>=$fade_out_start))
-							$rgb=fade($fade_in,$fade_out,$frameCounter,$TotalFrames,$rgb_val);
+								$rgb=fade($fade_in,$fade_out,$frameCounter,$TotalFrames,$rgb_val);
 							//echo "<pre>loop,f = $loop,$f  rgb_val,rgb $rgb_val,$rgb</pre>\n";
 							fwrite ($fh_buff,sprintf(" %d",$rgb));
 							if($echo==1)printf(" %d",$rgb);

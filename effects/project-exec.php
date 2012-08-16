@@ -25,7 +25,7 @@ require("../effects/read_file.php");
 set_time_limit(60*60);
 extract($_POST);
 echo "<pre>";
-print_r($_POST);
+//print_r($_POST);
 //print_r($nc_array);
 //
 //	If called from project-form:
@@ -162,18 +162,21 @@ if($cnt>0)
 {
 	update_music_object_dtl($start_seconds,$end_seconds,$nc_array,$frame_delay,$music_object,$username);
 }
-echo "target=$target, frame_delay=$frame_delay\n";
+//echo "target=$target, frame_delay=$frame_delay\n";
 //
 if($frame_delay<=0) $frame_delay=100;
 $member_id=get_member_id($username);
 $dir = getcwd() . "/workspaces/" . $member_id;
 $dir = "workspaces/" . $member_id;
-echo "<pre>dir=$dir.  getFilesFromDir($dir,$target);</pre>\n";
+//echo "<pre>dir=$dir.  getFilesFromDir($dir,$target);</pre>\n";
+$array_of_nc=array();
 $array_of_nc= getFilesFromDir($dir,$target); 
 sort($array_of_nc);
+//print_r($_SERVER);
+
 echo "</pre>\n";
 ?>
-<form action="<?php echo $PHP_SELF;?>" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="music_object" value="<?php echo "$music_object"; ?>"/>
 <input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>
@@ -474,20 +477,20 @@ function getFilesFromDir($dir,$target)
 {
 	$files = array(); 
 	$n=0;
-	echo "<pre>";
-	echo "function getFilesFromDir($dir,$target)\n";
+	//echo "<pre>";
+	//echo "function getFilesFromDir($dir,$target)\n";
 	if ($handle = opendir($dir))
 	{
 		while (false !== ($file = readdir($handle)))
 		{
-			echo "file=$file\n";
+		//	echo "file=$file\n";
 			if ($file != "." && $file != ".." )
 			{
 				if(is_dir($dir.'/'.$file))
 				{
 					$dir2 = $dir.'/'.$file; 
 					$files[] = getFilesFromDir($dir2,$target);
-					echo "dir2=$dir2\n";
+				//	echo "dir2=$dir2\n";
 				}
 				else 
 				{ 
@@ -501,7 +504,7 @@ function getFilesFromDir($dir,$target)
 					//	0 = workspaces
 					//	1 = nuelemma or id
 					//
-					echo "inner file=$file. target_search=$target_search\n";"
+					//echo "inner file=$file. target_search=$target_search\n";
 					if($extension=="nc")
 					{
 						//$files[] = $dir.'/'.$file;

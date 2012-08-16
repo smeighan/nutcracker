@@ -37,7 +37,8 @@ if($_SERVER['HTTP_HOST'] !='localhost')
 
 function load_xml_file($xmlUrl)
 {
-	require_once('nutcracker/conf/config.php');
+$dir=getcwd();
+	require_once($dir . '/conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
 	if(!$link)

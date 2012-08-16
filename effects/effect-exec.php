@@ -145,9 +145,10 @@ if (file_exists("gifs"))
 	mkdir("gifs", 0777);
 }
 $uploaddir = "gifs/$member_id"; 
-if($user_effects=="gif")
+if($user_effects=="gif"  or $user_effects=="pictures")
 {
-	$uploaddir = "gifs/$member_id"; 
+	if($user_effects=="gif") $uploaddir = "gifs/$member_id"; 
+	if($user_effects=="pictures") $uploaddir = "pictures/$member_id"; 
 	if (file_exists($uploaddir))
 	{
 		} else {
@@ -156,7 +157,7 @@ if($user_effects=="gif")
 	}
 	$dir = opendir($uploaddir); 
 	$files = array(); 
-	echo "<h2>Here is your current gif library</h2>\n";
+	echo "<h2>Here is your current $user_effects library</h2>\n";
 	echo "<table border=1>";
 	echo "<tr>";
 	/*
@@ -184,6 +185,7 @@ if($user_effects=="gif")
 			{
 				$w=$result_array[0];
 				$h=$result_array[1];
+				$images_array[]=$file;
 				echo "<td><img src=\"$fullname\"/><br/>$file<br/> $w x $h</td>";
 			}
 			else
@@ -194,7 +196,7 @@ if($user_effects=="gif")
 	}
 	echo "</tr>";
 	echo "</table>\n";
-	echo "<h2>If you want to add images to your gif library, go here: <a href=\"up.php?member_id=$member_id\">Add gifs to your library</a></h2>\n";
+	echo "<h2>If you want to add images to your $user_effects library, go here: <a href=\"up.php?member_id=$member_id\">Add $user_effects to your library</a></h2>\n";
 }
 echo "<table border=1>";
 $cnt=count($effect_details);
@@ -649,4 +651,28 @@ function  get_value_effect_user_dtl($username,$effect_name,$param_name)
 		}
 	}
 	return $param_value;
+}
+
+function images_pulldown($images_array)
+{
+	echo "<td>";
+	echo "<div align=\"center\">";
+	echo "<select name=\"images[]\">";
+	echo "<option value=\"--\">No Selection</option>";
+	foreach($images_array as $file)
+	{
+		if($nc_array[$phrase_name] == $file)
+		{
+			$selected="SELECTED";
+		}
+		else
+		{
+			
+			$selected="";
+		}
+		echo "<option value=\"$file\" $selected>$file</option>";
+	}
+	echo "</select>";
+	echo "</div>\n";
+	echo "</td>\n";
 }
