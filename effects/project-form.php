@@ -23,6 +23,8 @@ require_once('../conf/auth.php');
 //
 require("../effects/read_file.php");
 set_time_limit(60*60);
+$seq_duration=$frame_delay=0;
+$target='';
 extract($_POST);
 echo "<pre>";
 //print_r($_POST);
@@ -32,6 +34,8 @@ $username=$_SESSION['SESS_LOGIN'];
 $music_object=$_POST['music_object'];
 echo "</pre>\n";
 copy_songs($song_array,$username); // if any have been self submitted from this form
+$username=trim($username);
+
 ?>
 <div align=left>
 <b>What is a Nutcracker Project?</b>
@@ -52,10 +56,10 @@ copy_songs($song_array,$username); // if any have been self submitted from this 
 <h2><?php echo "$username"; ?>, Here is a table of your current Nutcracker projects</h2>
 </div>
 <form action="<?php echo "project-exec.php"; ?>" method="post">
-<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
-<input type="hidden" name="seq_duration" value="<?php echo "$seq_duration"; ?>"/>
-<input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>
-<input type="hidden" name="target" value="<?php echo "$target"; ?>"/>
+<input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
+<input type="hidden" name="seq_duration" value="<?php printf( "$seq_duration");?> "/>
+<input type="hidden" name="frame_delay"  value="<?php echo "$frame_delay"; ?> "/>
+<input type="hidden" name="target"       value="<?php echo "$target";      ?> "/>
 <?php
 $i=0;
 $music_object_hdr=get_music_object_hdr($username,"nonzero");

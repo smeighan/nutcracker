@@ -131,16 +131,17 @@ $path = "workspaces/" . $member_id;
 for ($frame = 1; $frame <= $maxFrame; $frame++)
 {
 	$file = $file_array[$frame-1];
-	$image_array=get_image($file,$frame,$maxStrand,$maxPixel);
-	if ($frame > 500)
-		exit("Too many frames in sequence");
+	$image_array=get_image($file,$frame,$maxStrand,$maxPixel,$window_degrees);
+	echo "<pre>";
+	print_r($image_array);
+	echo "</pre>\n";
 	$x_dat = $base . "_d_" . $frame . ".dat";
 	// for spirals we will use a dat filename starting "S_" and the tree model
 	$dat_file[$frame] = $path . "/" . $x_dat;
 	$dat_file_array[] = $dat_file[$frame];
 	$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
 	fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
-	draw_icon($fh_dat[$frame], $image_array, 0, $frame, $minStrand, $maxStrand, $minPixel, $maxPixel, $tree_xyz, $strand_pixel,$brightness);
+	draw_icon($fh_dat[$frame], $image_array, 0, $frame, $minStrand, $maxStrand, $minPixel, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees);
 	//	draw_icon(	$fh_dat [$frame],$big_image_array[4],66,$frame,$minStrand ,$maxStrand,$minPixel,$maxPixel,$tree_xyz,$strand_pixel);
 	echo "</pre>\n";
 }
@@ -160,14 +161,22 @@ list($usec, $sec) = explode(' ', microtime());
 $script_start = (float)$sec + (float)$usec;
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
-function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness)
+function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees)
 {
+	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$seq_number = 0;
 	for ($x = 0; $x <= 63; $x++)
 	{
 		for ($y = 0; $y <= 63; $y++)
 		{
-			$rgb_val = $image_array[$x][$y];
+			if(!isset($image_array[$x][$y]) or $image_array[$x][$y]==null)
+			{
+				$rgb_val=0;
+			}
+			else
+			{
+				$rgb_val = $image_array[$x][$y];
+			}
 			$s = $x + $offset;
 			$p = $y + 4;
 			$s = $maxStrand-$s;
@@ -190,7 +199,7 @@ function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $
 					$HSV['V']=$V;
 					$rgb_val=HSV_TO_RGB($H,$S,$V);
 				}
-				if ($rgb_val <> 0 )
+			//	if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 				{
 					fwrite($fh, sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
 					//					printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
@@ -200,7 +209,7 @@ function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $
 	}
 }
 
-function get_image($file,$frame,$maxStrand,$maxPixel)
+function get_image($file,$frame,$maxStrand,$maxPixel,$window_degrees)
 {
 	$path = "";
 	$directory = $path;
@@ -217,13 +226,27 @@ function get_image($file,$frame,$maxStrand,$maxPixel)
 	else if ($image_type == "giftmp")
 		$image = imagecreatefromgif($image_path);
 	else die("Invalid file type of $image_type");
-	$maxStrand = 34;
+	
 	$size = getimagesize($image_path);
 	$img_width = $size[0];
 	$img_height = $size[1];
+	
+/*	include('SimpleImage.php');
+$image = new SimpleImage();
+$image->load($file);
+if($img_width<$img_height)
+	$image->resizeToWidth($maxStrand*2);
+else
+$image->resizeToHeight($maxPixel*2);
+$image->save($file2,$img_type_number);
+$file=$file2;*/
+
+
 	//$image=resizeImage($Image,$maxStrand,$maxPixel); 
 	//echo "<pre>img width,height = $img_width,$img_height  max strand,pixel=$maxStrand,$maxPixel</pre>\n";
 	$s = 0;
+	//	If window degrees = 360, then leave maxStrand alone otherwise sclae it.
+	$maxStrand = intval( $maxStrand * $window_degrees/360);
 	$precision = intval((max($img_height,$img_width) / $maxStrand) + 0.5);
 	$precision = intval($img_width / $maxStrand + 0.5);
 	//if ($img_width < 50)
