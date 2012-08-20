@@ -130,17 +130,17 @@ for($f=1;$f<=$maxFrame;$f++)
 				$rgb_val=hexdec("FFFFFF");
 				$bar_n =intval( $p/$bar_width);
 				$bar_n=$bar_n%6;
-				if($bar_n==0) $rgb_val=hexdec("FF0000");
-				if($bar_n==1) $rgb_val=hexdec("00FF00");
-				if($bar_n==2) $rgb_val=hexdec("0000FF");
-				if($bar_n==3) $rgb_val=hexdec("FF0F0F");
-				if($bar_n==4) $rgb_val=hexdec("00FFFF");
-				if($bar_n==5) $rgb_val=hexdec("FFFF00");
-				if($bar_n==6) $rgb_val=hexdec("FF00FF");
+				if($bar_n==0) $rgb_val=hexdec($color1);
+				if($bar_n==1) $rgb_val=hexdec($color2);
+				if($bar_n==2) $rgb_val=hexdec($color3);
+				if($bar_n==3) $rgb_val=hexdec($color4);
+				if($bar_n==4) $rgb_val=hexdec($color5);
+				if($bar_n==5) $rgb_val=hexdec($color6);
+			/*	if($bar_n==6) $rgb_val=hexdec("FF00FF");
 				if($bar_n==7) $rgb_val=hexdec("FFF0FF");
 				if($bar_n==8) $rgb_val=hexdec("FF0FFF");
 				if($bar_n==9) $rgb_val=hexdec("FF00FF");
-				if($bar_n==10) $rgb_val=hexdec("F0000F");
+				if($bar_n==10) $rgb_val=hexdec("F0000F");*/
 				//$rgb_val=hexdec("FFFFFF");
 				$HSV=RGBVAL_TO_HSV($rgb_val);
 				$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];

@@ -131,16 +131,20 @@ $path = "workspaces/" . $member_id;
 for ($frame = 1; $frame <= $maxFrame; $frame++)
 {
 	$file = $file_array[$frame-1];
+	//
+	//	read in next frame of gif animation into array
 	$image_array=get_image($file,$frame,$maxStrand,$maxPixel,$window_degrees);
-	echo "<pre>";
+	/*echo "<pre>";
 	print_r($image_array);
-	echo "</pre>\n";
+	echo "</pre>\n";*/
 	$x_dat = $base . "_d_" . $frame . ".dat";
 	// for spirals we will use a dat filename starting "S_" and the tree model
 	$dat_file[$frame] = $path . "/" . $x_dat;
 	$dat_file_array[] = $dat_file[$frame];
 	$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
 	fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
+	//
+	//	All pixels of this gif frame are in image_array, write them out to dat file.
 	draw_icon($fh_dat[$frame], $image_array, 0, $frame, $minStrand, $maxStrand, $minPixel, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees);
 	//	draw_icon(	$fh_dat [$frame],$big_image_array[4],66,$frame,$minStrand ,$maxStrand,$minPixel,$maxPixel,$tree_xyz,$strand_pixel);
 	echo "</pre>\n";
@@ -164,22 +168,23 @@ $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$
 function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees)
 {
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
+	/*echo "<pre>";
+	print_r($window_array);
+	echo "</pre>\n";*/
 	$seq_number = 0;
-	for ($x = 0; $x <= 63; $x++)
+	for ($s = 0; $s <= $maxStrand; $s++)
 	{
-		for ($y = 0; $y <= 63; $y++)
+		for ($p = 1; $p <= $maxPixel; $p++)
 		{
-			if(!isset($image_array[$x][$y]) or $image_array[$x][$y]==null)
+			if(!isset($image_array[$s][$p]) or $image_array[$s][$p]==null)
 			{
 				$rgb_val=0;
 			}
 			else
 			{
-				$rgb_val = $image_array[$x][$y];
+				$rgb_val = $image_array[$s][$p];
 			}
-			$s = $x + $offset;
-			$p = $y + 4;
-			$s = $maxStrand-$s;
+			
 			if ($s >= 1 and $s <= $maxStrand and $p >= 1 and $p <= $maxPixel and isset($tree_xyz[$s][$p]))
 			{
 				$xyz = $tree_xyz[$s][$p];
@@ -199,7 +204,7 @@ function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $
 					$HSV['V']=$V;
 					$rgb_val=HSV_TO_RGB($H,$S,$V);
 				}
-			//	if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+				if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 				{
 					fwrite($fh, sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
 					//					printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
@@ -286,12 +291,15 @@ $file=$file2;*/
 		echo "precision = $precision";
 		echo "</pre>\n";
 	}
+	$s=0;
 	for ($x = 0; $x < $img_width; $x += $precision)
 	{
 		$s++;
 		$p_raw = 0;
+		$p=0;
 		for ($y = 0; $y < $img_height; $y += $precision)
 		{
+		$p++;
 			$rgb_index = imagecolorat($image, $x, $y);
 			$cols = ImageColorsForIndex($image, $rgb_index);
 			$r = $cols['red'];
@@ -299,7 +307,7 @@ $file=$file2;*/
 			$b = $cols['blue'];
 			$rgbhex = fromRGB ($r,$g,$b);
 			$rgb_val = hexdec($rgbhex);
-			$image_array[$x][$y] = $rgb_val;
+			$image_array[$s][$p] = $rgb_val;
 			//			echo "<pre>x,y,rgb= $x,$y,($r,$g,$b), rgbval=$rgb_val</pre>";
 		}
 	}

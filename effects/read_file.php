@@ -256,6 +256,7 @@ function RGBVAL_TO_HSV($rgb_val)
 	$r = ($rgb >> 16) & 0xFF;
 	$g = ($rgb >> 8) & 0xFF;
 	$b = $rgb & 0xFF;
+	
 	$HSL=RGB_TO_HSV ($r, $g, $b);
 	return $HSL;
 }
