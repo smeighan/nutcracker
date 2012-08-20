@@ -134,11 +134,6 @@ else
 	echo "<pre>Error! frame_delay was zero</pre>\n";
 	$TotalFrames=$MaxFrame;
 }
-if($TotalFrames>1000)
-{
-	echo "<font color=red><h2>Limiting current sequences to 1000 frames</h2></font>\n";
-	$TotalFrames=1000;
-}
 //$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 $filename_buff= "workspaces/" . $member_id . "/" . $base . ".nc";
 /*$create_srt_file_array=create_srt_file($full_path,$base,$username,$frame_delay,$TotalFrames);
@@ -166,19 +161,21 @@ $fh_buff=fopen($filename_buff,"r") or die("Unable to open $filename_buff");
 //
 $old_pixel=$channels=0;
 echo "<h3>$seq_duration seconds of animation with a $frame_delay ms frame timing = $TotalFrames frames of animation</h3>\n";
+$line_counter=0;
 while (!feof($fh_buff))
 {
+	$line_counter++;
 	$line = fgets($fh_buff);
 	$tok=preg_split("/ +/", $line);
 	$l=strlen($line);
 	$cnt= count($tok);
 	$MaxFrame=$cnt-4;
 	//echo "cnt=$cnt MaxFrame=$MaxFrame, line=$line\n";
-	if($cnt>4)
+	if($tok[0]=='S')  // "S 1 P 1 12345 1234 1234 1234"
 	{
 		$string=$tok[1];
 		$pixel=$tok[3];
-		for($f=1;$f<$MaxFrame;$f++)
+		for($f=1;$f<=$MaxFrame;$f++)
 		{
 			fwrite($fh_hlsnc,sprintf("%d ",$tok[$f+3]));
 		}
@@ -191,15 +188,12 @@ fclose($fh_hlsnc);
 fclose($fh_hlsnc);*/
 /*$TotalFrames= ($seq_duration*1000)/$frame_delay;*/
 $duration = $seq_duration*1000;
-if($sequencer=="hls")
-{
 echo "<table border=1>";
-	printf ("<tr><td bgcolor=lightgreen><h2>$channels channels have been created for HLS</h2></td>\n");
-	echo "<td>Instructions</td></tr>";
-	printf ("<tr><td bgcolor=#98FF73><h2><a href=\"%s\">Right Click here for HLSNC file. %s</a>.</h2></td>\n",$hlsnc,$hlsnc);
-	echo "<td>Save hlsnc file into your HLS directory </td></tr>\n";
-	echo "</table>";
-}
+printf ("<tr><td bgcolor=lightgreen><h2>$channels channels have been created for HLS ($line_counter lines read)</h2></td>\n");
+echo "<td>Instructions</td></tr>";
+printf ("<tr><td bgcolor=#98FF73><h2><a href=\"%s\">Right Click here for HLSNC file. %s</a>.</h2></td>\n",$hlsnc,$hlsnc);
+echo "<td>Save hlsnc file into your HLS directory </td></tr>\n";
+echo "</table>";
 $description ="Total Elapsed time for this effect:";
 list($usec, $sec) = explode(' ', microtime());
 $script_end = (float) $sec + (float) $usec;

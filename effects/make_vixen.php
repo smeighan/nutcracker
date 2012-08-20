@@ -137,11 +137,7 @@ else
 	echo "<pre>Error! frame_delay was zero</pre>\n";
 	$TotalFrames=$MaxFrame;
 }
-if($TotalFrames>1000)
-{
-	echo "<font color=red><h2>Limiting current sequences to 1000 frames</h2></font>\n";
-	$TotalFrames=1000;
-}
+
 // uneeded , each effect file makes this now:  $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 $filename_buff= "workspaces/" . $member_id . "/" . $base . ".nc";
 /*$create_srt_file_array=create_srt_file($full_path,$base,$username,$frame_delay,$TotalFrames);

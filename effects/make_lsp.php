@@ -175,11 +175,7 @@ else
 	echo "<pre>Error! frame_delay was zero</pre>\n";
 	$TotalFrames=$MaxFrame;
 }
-if($TotalFrames>1000)
-{
-	echo "<font color=red><h2>Limiting current sequences to 1000 frames</h2></font>\n";
-	$TotalFrames=1000;
-}
+
 /*$create_srt_file_array=create_srt_file($full_path,$base,$username,$frame_delay,$TotalFrames);
 $maxFrame=$create_srt_file_array[0];
 $seq_srt=$create_srt_file_array[1];

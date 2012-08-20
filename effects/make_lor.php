@@ -21,7 +21,7 @@ require_once('../conf/auth.php');
 //
 require("../effects/read_file.php");
 
-set_time_limit(3600);
+set_time_limit(0);
 
 //show_array($_SERVER,"SERVER");
 // [QUERY_STRING] => make_lor.php?base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
