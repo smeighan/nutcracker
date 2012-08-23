@@ -31,6 +31,20 @@ Nutcracker Projects
 <?php if($menu=="project-form") echo "</b></font>";?>
 </a></td>
 
+<td><a href="../effects/bug.php">
+<?php if($menu=="bug") echo "<font color=blue><b>"; ?>
+Open a Bug or Enhancement Ticket
+<?php if($menu=="bug") echo "</b></font>";?>
+</a></td>
+
+
+<td><a href="../effects/tutorials.html">
+<?php if($menu=="tutorials") echo "<font color=blue><b>"; ?>
+Nutcracker Tutorials
+<?php if($menu=="tutorials") echo "</b></font>";?>
+</a></td>
+
+
 <td><a href="../login/logout.php">Logout</a></td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

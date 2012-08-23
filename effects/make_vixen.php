@@ -177,11 +177,12 @@ while (!feof($fh_buff))
 	$l=strlen($line);
 	$cnt= count($tok);
 	$MaxFrame=$cnt-4;
-	//echo "cnt=$cnt MaxFrame=$MaxFrame, line=$line\n";
+	echo "cnt=$cnt MaxFrame=$MaxFrame, line=$line\n";
 	if($tok[0]=='S' and $tok[2]=='P')
 	{
 		$string=$tok[1];
 		$pixel=$tok[3];
+		echo "<pre>$line</pre>\n";
 		for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++)
 		{
 			for($f=1;$f<$MaxFrame;$f++)
@@ -273,8 +274,13 @@ function make_vix($vixen_vir,$duration,$frame_delay)
 	$extension =$path_parts['extension']; // .dat
 	$filename  = $path_parts['filename']; //  AA+CIRCLE1_d_1
 	$file_vix = $dirname . "/" . $filename . ".vix";
+	$file_vire = $dirname . "/" . $filename . ".vire"; //  enhanced vir file()
+	
 	
 	$fh_vir=fopen($vixen_vir,"r") or die("Unable to open $vixen_vir");
+	$fh_vire=fopen($vixen_vire,"w") or die("Unable to open $vixen_vir");
+	
+	
 	$fh = fopen($file_vix,"w") or die ("unable to open $file_vix");
 	fwrite($fh,sprintf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"));
 	fwrite($fh,sprintf("<Program>\n"));

@@ -35,6 +35,8 @@ require_once('../conf/auth.php');
 <?php $menu="effect-form"; require "../conf/menu.php"; ?>
 <?php
 //
+error_reporting(E_ALL);
+
 require("read_file.php");
 $username=$_SESSION['SESS_LOGIN'];
 $member_id=$_SESSION['SESS_MEMBER_ID'];

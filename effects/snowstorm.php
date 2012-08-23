@@ -123,9 +123,10 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 	}
 	/*$model_name_base = basename($model_name,".dat");*/
 	//	mode_dtl: username	object_name	strand	pixel	string	user_pixel	created	last_upd
-	$username='f';
+	
 	$counter=0;	// how many total snowflakes we have
 	$query0="delete from snowstorm  where username='$username'";
+	echo "<pre>$query0</pre>\n";
 	$result0=mysql_query($query0) or die ("Error on $query0");
 	$new_records=$maxSnowflakes;
 	for($seed=1;$seed<=$maxSnowflakes;$seed++)
@@ -140,7 +141,7 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 		$rgb_val=HSV_TO_RGB ($H, $S, $V);
 		$state=1;
 		/*$snowflake[$counter]['rgb']=$rgb_val;*/
-		$query1="insert into snowstorm (username,counter,state,strand,pixel,rgb,parent_rgb) 
+		$query1="replace into snowstorm (username,counter,state,strand,pixel,rgb,parent_rgb) 
 		values ('$username',$counter,$state,$strand,$pixel,$rgb_val,$rgb_val)";
 		$result1=mysql_query($query1) or die ("Error on $query1");
 	}
@@ -157,7 +158,7 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 		fwrite($fh_dat[$frame],"#    " . $dat_file[$frame] . "\n");
 		/*$c=count($snowflake);*/
 		/*echo "<pre>frame=$frame for($sf=1;$sf<=$counter;$sf++)</pre>\n";*/
-		$query2="SELECT * from snowstorm where username='f'";
+		$query2="SELECT * from snowstorm where username='$username'";
 		$result2=mysql_query($query2) or die ("Error on $query2");
 		/*echo "<table border=1>";
 		echo "<tr><td>frame=$frame</td></tr>";*/
@@ -177,7 +178,7 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 			{
 				$rgbnew=dim($parent_rgb,$state,$trail_length);
 				//update_row($username,$counter,$rgbnew,$state);
-				$query4="update snowstorm set rgb=$rgbnew ,state=$state where username='f' and counter=$counter"; 
+				$query4="update snowstorm set rgb=$rgbnew ,state=$state where username='$username' and counter=$counter"; 
 				$result4=mysql_query($query4) or die ("Error on $query4");
 				if($state==2)
 				{
@@ -191,14 +192,14 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 					if($pixel>$maxPixel) $pixel=$pixel-$maxPixel;
 					if($strand<1) $strand+=$maxStrand;
 					if($strand>$maxStrand) $strand=$strand-$maxStrand;
-					$query5="insert into snowstorm (username,counter,state,strand,pixel,rgb,parent_rgb) 
+					$query5="replace into snowstorm (username,counter,state,strand,pixel,rgb,parent_rgb) 
 					values ('$username',$new_records,$state,$strand,$pixel,$parent_rgb,$parent_rgb)";
 					$result5=mysql_query($query5) or die ("Error on $query5");
 				}
 			}
 		}
 		/*	echo "</table>";*/
-		$query6="SELECT * from snowstorm where username='f'";
+		$query6="SELECT * from snowstorm where username='$username'";
 		$result6=mysql_query($query6) or die ("Error on $query6");
 		/*	echo "<table border=1>";
 		echo "<tr><td>frame=$frame</td></tr>";*/
@@ -241,7 +242,7 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 
 function insert_snowstorm($username,$counter,$strand,$pixel,$rgb_val)
 {
-	$query="insert into snowstorm (username,counter,state,strand,pixel,rgb) 
+	$query="replace into snowstorm (username,counter,state,strand,pixel,rgb) 
 	values ('$username',$counter,$strand,$pixel,$rgb_val)";
 	$result=mysql_query($query) or die ("Error on $query");
 }

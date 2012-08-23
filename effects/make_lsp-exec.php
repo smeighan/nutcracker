@@ -126,8 +126,8 @@ function make_xml($fh_xml,$filename_buff,$type,$frame_delay)
 			{
 				//fwrite($fh_xml,sprintf("%d ",$tok[$f+3]));
 				$time=$f*50000;
-				$time=$f*$frame_delay*1000;
-				$time = $time * .882;	// just imperical measurement that one second timing = 88200
+				$time=($f*$frame_delay)/1000;
+				$time = $time * 88200;	// just imperical measurement that one second timing = 88200
 				$maxTime=$time+100000;
 				$rgb=$tok[$f+3];
 				//	fwrite($fh_xml,sprintf("            <TimeInterval eff=\"3\" dat=\"&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ec&gt;&#xD;&#xA;  &lt;in&gt;100&lt;/in&gt;&#xD;&#xA;  &lt;out&gt;100&lt;/out&gt;&#xD;&#xA;&lt;/ec&gt;\" gui=\"\" in=\"100\" out=\"100\" pos=\"%d\" sin=\"-1\" att=\"0\" bst=\"%d\" ben=\"%d\" />\n",$time,$rgb,$rgb));

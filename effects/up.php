@@ -14,45 +14,37 @@
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-
 <?php
-
 $tokens=explode("=",$_SERVER['QUERY_STRING']);
-$member_id = $tokens[1];
-echo "member=$member_id\n";
-
+$uploaddir = $tokens[1];
+//$uploaddir;
 {
-	$uploaddir = "gifs/$member_id"; 
-
-	if (file_exists($uploaddir)) {
-	} else {
+	if (file_exists($uploaddir))
+	{
+		} else {
 		echo "The directory $uploaddir does not exist, creating it";
 		mkdir($uploaddir, 0777);
 	}
-
 	$dir = opendir($uploaddir); 
 	$files = array(); 
 	echo "<h2>Here is your current gif library</h2>\n";
 	echo "<table border=1>";
 	echo "<tr>";
-
-/*
-Returns a array with 4 elements.
-The 0 index is the width of the image in pixels.
-The 1 index is the height of the image in pixels.
-The 2 index is a flag for the image type:
-
-1 = GIF, 2 = JPG, 3 = PNG, 4 = SWF, 5 = PSD, 6 = BMP, 7 = TIFF(orden de bytes intel), 8 = TIFF(orden de bytes motorola), 9 = JPC, 10 = JP2, 11 = JPX, 12 = JB2, 13 = SWC, 14 = IFF, 15 = WBMP, 16 = XBM. 
-
- */
-
+	/*
+	Returns a array with 4 elements.
+	The 0 index is the width of the image in pixels.
+	The 1 index is the height of the image in pixels.
+	The 2 index is a flag for the image type:
+	1 = GIF, 2 = JPG, 3 = PNG, 4 = SWF, 5 = PSD, 6 = BMP, 7 = TIFF(orden de bytes intel), 8 = TIFF(orden de bytes motorola), 9 = JPC, 10 = JP2, 11 = JPX, 12 = JB2, 13 = SWC, 14 = IFF, 15 = WBMP, 16 = XBM. 
+	*/
 	$images=0;
-	while($file = readdir($dir)) { 
+	while($file = readdir($dir))
+	{
 		$tok=explode(".",$file);
-	$ext=$tok[1];
-	echo "<pre>ext=$ext, file=$file</pre>\n";
+		$ext=$tok[1];
+		//	echo "<pre>ext=$ext, file=$file</pre>\n";
 		$image_types=array('gif','png','jpg');
-	
+		$ext=strtolower($ext);
 		if(in_array($ext,$image_types))
 		{
 			$fullname = $uploaddir . "/" . $file;
@@ -60,12 +52,11 @@ The 2 index is a flag for the image type:
 			$result_array=getimagesize($fullname);
 			$images++;
 			if($images%8==0) echo "</tr><tr>\n";
-			if ($result_array !== false) { 
-
+			if ($result_array !== false)
+			{
 				$w=$result_array[0];
 				$h=$result_array[1];
 				echo "<td><img src=\"$fullname\"/><br/>$file<br/> $w x $h</td>";
-
 			}
 			else
 			{
@@ -76,13 +67,10 @@ The 2 index is a flag for the image type:
 	echo "</tr>";
 	echo "</table>\n";
 }
-
 ?>
-
-	<form action="./upload.php<?php echo "?member_id=$member_id"; ?>" method="post" enctype="multipart/form-data">
-	<p>
-	<label for="file">Select a file from your computer to add to your Nutcracker GIF library:</label> <input type="file" name="userfile" id="file"> <br />
-	<button>Upload File</button>
-	<p>
-	</form>
-
+<form action="./upload.php<?php echo "?uploaddir=$uploaddir"; ?>" method="post" enctype="multipart/form-data">
+<p>
+<label for="file">Select a file from your computer to add to your Nutcracker GIF library:</label> <input type="file" name="userfile" id="file"> <br />
+<button>Upload File</button>
+<p>
+</form>

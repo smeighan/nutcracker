@@ -111,6 +111,7 @@ $seq_number = 0;
 $file=$picturepath . "/" . $file1;
 //$file = getcwd() . "/" . $file;
 $file2=$picturepath . "/a_" . $file1;
+$filez=$picturepath . "/z_" . $file1;
 echo "<h1>Processing file $file</h1>";
 $tokens=explode(".",$file);
 $image_type=$tokens[1];
@@ -124,18 +125,30 @@ $img_width  = $size[0];
 $img_height = $size[1];
 $img_type_number = $size[2];
 // 1 = GIF, 2 = JPG, 3 = PNG, 4 = SWF, 5 = PSD, 6 = BMP, 7 = TIFF(orden de bytes intel), 8 = TIFF(orden de bytes motorola), 9 = JPC, 10 = JP2, 11 = JPX, 12 = JB2, 13 = SWC, 14 = IFF, 15 = WBMP, 16 = XBM. 
-if($img_type_number==1) $image  = imagecreatefromgif($file);
+/*if($img_type_number==1) $image  = imagecreatefromgif($file);
 if($img_type_number==2) $image  = imagecreatefromjpeg($file);
-if($img_type_number==3) $image  = imagecreatefrompng($file);
+if($img_type_number==3) $image  = imagecreatefrompng($file);*/
 echo "<pre>width=$img_width, height=$img_height";
 include('SimpleImage.php');
 $image = new SimpleImage();
 $image->load($file);
-if($img_width<$img_height)
+/*if($img_width<$img_height)
 	$image->resizeToWidth($maxStrand*2);
 else
-$image->resizeToHeight($maxPixel*2);
-$image->save($file2,$img_type_number);
+$image->resizeToHeight($maxPixel*2);*/
+$old_method=1;
+if($old_method==1)
+{
+	$image->resize(intval($maxStrand*($window_degrees/360)),$maxPixel);
+	$image->save($file2,$img_type_number);
+}
+else{
+	$src=$file1;
+	$dst=$filez;
+	$width=intval($maxStrand*($window_degrees/360));
+	image_resize($src, $dst,$width ,$maxPixel,0);
+}
+//
 $file=$file2;
 if($image_type=="png") $image  = imagecreatefrompng($file);
 if($image_type=="jpg") $image  = imagecreatefromjpeg($file);
@@ -180,9 +193,14 @@ for($x = 0; $x < $img_width; $x += $precision)
 		$HSL=RGB_TO_HSV ($r, $g, $b);
 		$H=$HSL['H']; 
 		$S=$HSL['S']; 
-		$V=$HSL['V']; 
-		/*$S=$S*1.10; // raise saturation level by 10%
-		if($s>1.0) $S=1.0;*/
+		$V=$HSL['V']; 		
+		if($brightness>0.0)
+		{
+			if($V>0.1) $V=$V+$brightness;
+			if($V>1) $V=1;
+			$HSV['V']=$V;
+			$rgb_val=HSV_TO_RGB($H,$S,$V);
+		}
 		$rgb_val=HSV_TO_RGB ($H, $S, $V);
 		//$rgb_val=$rgb;
 		//	echo " s,p = $s,$p  x,y = $x,$y rgb = $r,$g,$b  \n";
@@ -456,4 +474,51 @@ function gif2jpeg($p_fl, $p_new_fl, $bgcolor=false)
 	imagedestroy($img_dst);
 	imagedestroy($img_src);
 }
-?>
+
+function image_resize($src, $dst, $width, $height, $crop=0)
+{
+	if(!list($w, $h) = getimagesize($src)) return "Unsupported picture type!";
+	$type = strtolower(substr(strrchr($src,"."),1));
+	if($type == 'jpeg') $type = 'jpg';
+	switch($type)
+	{
+		case 'bmp': $img = imagecreatefromwbmp($src); break;
+		case 'gif': $img = imagecreatefromgif($src); break;
+		case 'jpg': $img = imagecreatefromjpeg($src); break;
+		case 'png': $img = imagecreatefrompng($src); break;
+		default : return "Unsupported picture type!";
+	}
+	// resize
+	if($crop)
+	{
+		if($w < $width or $h < $height) return "Picture is too small!";
+		$ratio = max($width/$w, $height/$h);
+		$h = $height / $ratio;
+		$x = ($w - $width / $ratio) / 2;
+		$w = $width / $ratio;
+	}
+	else{
+		if($w < $width and $h < $height) return "Picture is too small!";
+		$ratio = min($width/$w, $height/$h);
+		$width = $w * $ratio;
+		$height = $h * $ratio;
+		$x = 0;
+	}
+	$new = imagecreatetruecolor($width, $height);
+	// preserve transparency
+	if($type == "gif" or $type == "png")
+	{
+		imagecolortransparent($new, imagecolorallocatealpha($new, 0, 0, 0, 127));
+		imagealphablending($new, false);
+		imagesavealpha($new, true);
+	}
+	imagecopyresampled($new, $img, 0, 0, $x, 0, $width, $height, $w, $h);
+	switch($type)
+	{
+		case 'bmp': imagewbmp($new, $dst); break;
+		case 'gif': imagegif($new, $dst); break;
+		case 'jpg': imagejpeg($new, $dst); break;
+		case 'png': imagepng($new, $dst); break;
+	}
+	return true;
+}

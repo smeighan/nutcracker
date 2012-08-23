@@ -32,6 +32,7 @@ $tokens=array("","");
 $model_name="";
 $tokens=explode("model=",$_SERVER['QUERY_STRING']);
 $c=count($tokens);
+echo "<pre>c=$c, " . $_SERVER['QUERY_STRING'] . "</pre>\n";
 if($c>1)
 	$model_name=$tokens[1];
 else
@@ -42,6 +43,7 @@ if($WARN==1)
 	echo "<h1><font color=red>Web page is undoing construction. When this banner goes away, you can use page again</font></h1>";
 	//	echo "<h4>" . md5("pepe1pepe1") . "</h4>";
 }
+echo "<pre>show_my_models($username,$model_name);</pre>\n";
 $row=show_my_models($username,$model_name);
 /*echo "<pre>";
 print_r($row);
@@ -141,7 +143,7 @@ name="MODEL_TYPE">	Ray <br />
 </tr>
 <tr>
 <td><img src="../images/mega_tree.png" alt="bottom_to_top"  ></td>
-<td><img src="../images/matrix.png" alt="up_down_next"  ></td>
+<td><img src="../images/vert_matrix.png" alt="up_down_next"  ></td>
 <td><img src="../images/horiz_matrix.png" alt="up_down_next"  ></td>
 <td><img src="../images/ray.png" alt="up_down_180"  ></td>
 </tr>
@@ -212,7 +214,7 @@ function show_my_models($username,$model_name)
 		die("Unable to select database");
 	}
 	$MODEL_ONLY=0;
-	if(strlen($model_name)>1) $MODEL_ONLY=1;
+	if(strlen($model_name)>=1) $MODEL_ONLY=1;
 	$query ="select * from models where username='$username'";
 	echo "query=$query";
 	$result=mysql_query($query) or die ("Error on $query");
@@ -258,7 +260,6 @@ function show_my_models($username,$model_name)
 		while ($row = mysql_fetch_assoc($result))
 		{
 			extract($row);
-			//print_r($row);
 			//
 			if($MODEL_ONLY and $object_name == $model_name) $query_rows = $row;
 			echo "<tr>\n";

@@ -1751,7 +1751,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	t1    3    3     1.283     1.766   107.269 16716696 18 278
 	*/
 	//$TotalFrames = 
-	/*echo "<pre>";
+/*	echo "<pre>";
 	print_r($dat_file_array);
 	echo "</pre>\n";*/
 	$seq_file = $dirname . "/" . $base . ".dat";
@@ -1786,6 +1786,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		t1   13    1     0.692     0.225   113.090 16712526 0 0 3 40
 		*/
 		$loop=$maxPixel=0;
+		$line_counter=0;
 		while (!feof($fh))
 		{
 			$line = fgets($fh);
@@ -1793,6 +1794,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$tok=preg_split("/ +/", $line);
 			$l=strlen($line);
 			$c= substr($line,0,1);
+			$line_counter++;
 			//echo "<pre>frame=$frame l=$l, c=$c line=$line</pre>\n";
 			if($l>20 and $c !="#")
 			{
@@ -1814,12 +1816,12 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 				if(in_array($string,$window_array)) // Is this strand in our window?, 
 				{
 					fwrite($fh_seq,sprintf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line));
-					//	printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);
+			//			printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);
 				}
 			}
 		}
 		fclose($fh);
-		//echo "<pre>unlink($full_path)</pre>\n";
+	//	echo "<pre>unlink($full_path) has $line_counter lines</pre>\n";
 		if (file_exists($full_path))
 		{
 			unlink($full_path);
@@ -1951,6 +1953,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		$line = fgets($fh);
 		$tok=preg_split("/ +/", $line);
 		$l=strlen($line);
+		//echo "<pre>zz: $line</pre>\n";
 		$c= substr($line,0,1);
 		if($l>20 and $c !="#")
 		{
