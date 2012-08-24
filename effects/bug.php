@@ -3,11 +3,17 @@
 <h3>
 Nutcracker code is open source and is hosted on github.
 
+
+<div style="color: #0900C4; font: Helvetica 12pt;border: 1px solid black;"><p>
+If you are going to enter bugs, you need to register on github.<a href=https://github.com/signup/free>Sign up for GitHub</a></a>
+   <br/> If all you want to do is review the current bugs and enhancements, you can skip this github registration step.</p></div>
+
+<br/>
 Here is the link to go and review or create bugs and enhancements against the nutcracker software
 <br/>
 <a href=https://github.com/smeighan/nutcracker/issues>Nutcracker issue tracker</a>
 <br/>
-
+after you do this you can then enter bugs and enhancements. 
 After you click this link
 <ul>
 <li>Click "New Request"</li>

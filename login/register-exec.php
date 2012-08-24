@@ -1,4 +1,14 @@
 <?php
+//*************************************************************************************************
+//
+//	file: .php
+//	Summary: Validate data from a new user create process, if valid 
+//           create a new row in the MEMBERS database
+//
+//
+//
+//
+//*************************************************************************************************
 //Start session
 session_start();
 

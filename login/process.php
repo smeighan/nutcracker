@@ -1,4 +1,14 @@
 <?php
+//*************************************************************************************************
+//
+//	file: process.php
+//	Summary: Called from member-index after user has edited or created a target. Our goal here is to 
+//           store his target info into the MODELS table and to display what the string and pixel mapping is 
+//           to nutcracker strand and pixel.
+//
+//
+//
+//*************************************************************************************************
 require_once('../conf/auth.php');
 // process.php
 /*

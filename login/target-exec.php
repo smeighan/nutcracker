@@ -1,4 +1,14 @@
 <?php
+//*************************************************************************************************
+//
+//	file: target-exec.php
+//	Summary: Process and insert target data
+//
+//
+//
+//
+//
+//*************************************************************************************************
 //function insert_target_array($target_array,$username,$model_name,$maxStrand,$maxPixel)
 	//require_once('../conf/auth.php');
 ?>

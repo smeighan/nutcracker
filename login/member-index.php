@@ -1,4 +1,14 @@
 <?php
+//*************************************************************************************************
+//
+//	file: member-index.php
+//	Summary: Shows current targets to user and allows new targets to be created
+//
+//
+//
+//
+//
+//*************************************************************************************************
 require_once('../conf/auth.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -126,12 +136,22 @@ Example: 16 strand megatree made of Smart Strings. Used in front yard.
 <input type="radio" value="MTREE" 
 <?php if( $row['model_type']=="MTREE") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> Mega-Tree (If you want a half mega tree, choose this and then later in the effects screens set window_degrees to 180)<br />
+
+
 <input type="radio" value="MATRIX"
 <?php if( $row['model_type']=="MATRIX") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> 	Matrix(Grid) <br />
+
+
 <input type="radio" value="HORIZ_MATRIX"
 <?php if( $row['model_type']=="HORIZ_MATRIX") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> 	Horizontal Matrix(Grid) (UNDER DEVELOPMENT, DOES NOT WORK YET)<br />
+
+<input type="radio" value="SINGLE_STRAND" 
+<?php if( $row['model_type']=="SINGLE_STRAND") echo "checked=\"checked\""; ?>
+name="MODEL_TYPE">	Single Strand <br />
+
+
 <input type="radio" value="RAY" 
 <?php if( $row['model_type']=="RAY") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE">	Ray <br />
@@ -145,6 +165,7 @@ name="MODEL_TYPE">	Ray <br />
 <td><img src="../images/mega_tree.png" alt="bottom_to_top"  ></td>
 <td><img src="../images/vert_matrix.png" alt="up_down_next"  ></td>
 <td><img src="../images/horiz_matrix.png" alt="up_down_next"  ></td>
+<td><img src="../images/single_strand.png" alt="up_down_next"  ></td>
 <td><img src="../images/ray.png" alt="up_down_180"  ></td>
 </tr>
 </table>

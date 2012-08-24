@@ -1,4 +1,14 @@
 <?php
+//*************************************************************************************************
+//
+//	file: member-profile.php
+//	Summary: Stub for future code to allow user to edit profile information about his account
+//
+//
+//
+//
+//
+//*************************************************************************************************
 	require_once('../conf/auth.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
