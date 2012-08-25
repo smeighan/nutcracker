@@ -4,14 +4,14 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Aug 15, 2012 at 04:28 PM
+-- Generation Time: Aug 25, 2012 at 08:13 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Database: `seqbuilder`
+-- Database: `nutcracker`
 --
 
 -- --------------------------------------------------------
@@ -166,20 +166,6 @@ CREATE TABLE IF NOT EXISTS `manifest` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manifest1`
---
-
-CREATE TABLE IF NOT EXISTS `manifest1` (
-  `path` varchar(255) DEFAULT NULL,
-  `filename` varchar(255) NOT NULL,
-  `cksum` varchar(255) DEFAULT NULL,
-  `filedate` date DEFAULT NULL,
-  `filesize` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `members`
 --
 
@@ -202,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=494 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=512 ;
 
 -- --------------------------------------------------------
 
@@ -275,7 +261,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   UNIQUE KEY `user_song` (`username`,`song_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=51 ;
 
 -- --------------------------------------------------------
 
@@ -291,6 +277,5 @@ CREATE TABLE IF NOT EXISTS `snowstorm` (
   `parent_rgb` int(8) DEFAULT NULL,
   `username` varchar(50) NOT NULL,
   `counter` int(8) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`counter`),
-  KEY `user_counter` (`username`,`counter`)
+  PRIMARY KEY (`username`,`strand`,`pixel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='used for snowtorm.php';

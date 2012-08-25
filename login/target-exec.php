@@ -286,10 +286,22 @@ function get_models($username,$model_name)
 	echo "</tr>";
 	echo "</table>";
 	$target_array2= array($target_array,$username,$model_name) ;
-	if($model_type=="MTREE") $full_path=megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
-	else if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY") $full_path=matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+	if($model_type=="MTREE")
+	{
+		$full_path=megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
+	}
+	else if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY")
+	{
+		$full_path=matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+	}
+	else if($model_type=="SINGLE_STRAND")
+	{
+		$full_path=single_string($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+	}
 	else
-	echo "<pre>ERROR! Model type $model_type is unknown</pre>\n";
+	{
+		echo "<pre>ERROR! Model type $model_type is unknown</pre>\n";
+	}
 	echo "<pre>";
 	//display_file($full_path);
 	//print_r($target_array);
@@ -436,6 +448,89 @@ function megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$t
 }
 
 function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
+{
+	#
+	#	output files are created for each segment
+	#	8 segment = t1_8.dat output file
+	#	16 segment = t1_16.dat output file
+	#	32 segment = t1_32.dat output file
+	#
+	#
+	#
+	#	Build a mega-Tree with arbitray strands
+	$PI = pi();
+	$DTOR = $PI/180;
+	$RTOD = 180/$PI;
+	$pixel_spacing=3.0;
+	$width_bottom = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	$width_top = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	if($model_type=="RAY") $width_top=$width_bottom/5;
+	$height = $pixel_spacing*$maxPixels;
+	$target_array=$target_array2[0];
+	$username=$target_array2[1];
+	$model_name=$target_array2[2];
+	$member_id=get_member_id($username);
+	$path="../targets/" . $member_id ;
+	##	passed in now thru runtime arg, 	strands=16;
+	$dat_file = $path . "/" . $model_name . ".dat";
+	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
+	fwrite($fh,"#    $dat_file\n");
+	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
+	fwrite($fh,"#    Col 2: Strand number.\n");
+	fwrite($fh,"#    Col 3: Nutcracker Pixel#\n");
+	fwrite($fh,"#    Col 4: X location in world coordinates\n");
+	fwrite($fh,"#    Col 5: Y location in world coordinates\n");
+	fwrite($fh,"#    Col 6: Z location in world coordinates\n");
+	fwrite($fh,"#    Col 7: User string\n");
+	fwrite($fh,"#    Col 8: User pixel\n");
+	fwrite($fh,"# \n");
+	$pixels=$maxPixels;
+	$x_spacing=$x_spacing_top=$pixel_spacing;
+	echo "<pre>";
+	echo "x_spacing=x_spacing_top=pixel_spacing;\n";
+	echo "$x_spacing=$x_spacing_top=$pixel_spacing;\n";
+	echo "<pre>";
+	echo "model_type=$model_type";
+	echo "maxStrands=$maxStrands,maxPixels=$maxPixels\n ";
+	$s=1;
+	for ($p=1;$p<=$maxPixels;$p++)
+	{
+		$mod=($p%$maxStrands)+1;
+		$mod2 = $maxPixels-$mod+1;
+		$mod2 = $maxPixels-$p;
+		
+			$h= ($mod2*$x_spacing);
+	
+		if(isset($target_array[$s][$p]['string']))
+		{
+			$s_orig=$s; $p_orig=$p;
+			$s0=$s; $p0=$p;
+			if($model_type=="HORIZ_MATRIX")
+			{
+				if($s_orig%$folds==1)
+				{
+					$s0=$p;
+				}
+				else{
+					$s0=$maxPixels-$p+1;
+				}
+				$p0=$s_orig;
+				$s2=$maxPixels/2;
+				$mod2 = $maxStrands-$p0;
+			}
+			$x2=$s0*3 - $s2*3;
+			$h=$mod2*3;
+			fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+			printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+		}
+	}
+	fwrite($fh, "\n" );
+	fclose($fh);
+	echo "</pre>\n";
+	return $dat_file;
+}
+
+function single_string($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
 {
 	#
 	#	output files are created for each segment
