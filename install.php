@@ -61,6 +61,9 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 	<p>
 	Password: <input type="password" name="root_pass" value="<?php
 	echo (!empty($_POST['root_pass']) ? $_POST['root_pass'] : ''); ?>" /><br />
+	If you just installed XAMPP, leave this blank.
+	</p>
+	<p>
 	This is the root password for your XAMPP/LAMP MySQL database.  If you just
 	installed XAMPP the password is blank.  LAMP users can change it
 	<a href="http://localhost/security/xamppsecurity.php">here</a>.
@@ -69,6 +72,9 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 	<p>
 	Username: <input type="text" name="root_user" value="<?php
 	echo (!empty($_POST['root_user']) ? $_POST['root_user'] : 'root'); ?>" /><br />
+	If you just installed XAMPP, leave this as 'root'.
+	</p>
+	<p>
 	This is the username for the root user of your XAMPP/LAMP MySQL database.  The
 	default 'root' is probably correct for 95% of users.
 	If you're unsure, leave this alone.
