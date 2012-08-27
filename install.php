@@ -155,7 +155,7 @@ function build_nutcracker_database()
 	// http://stackoverflow.com/questions/147821/loading-sql-files-from-within-php
 	require_once("sql_parse.php");
 
-	$dbms_schema = 'nutcrackertables.sql';
+	$dbms_schema = 'sql/nutcrackertables.sql';
 	$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
 	if ( !$sql_query )
 	{
@@ -182,7 +182,7 @@ function build_nutcracker_database()
 
 	echo "Populating nutcracker database data..."; flush(); ob_flush();
 
-	$dbms_schema = 'nutcrackerdata.sql';
+	$dbms_schema = 'sql/nutcrackerdata.sql';
 	$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
 	if ( !$sql_query )
 	{
