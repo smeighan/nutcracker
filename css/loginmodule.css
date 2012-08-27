@@ -56,3 +56,11 @@ label {
     text-align: right;
 }
 br { clear: left; }
+.fail {
+	color: red;
+	font-weight: bold;
+}
+.pass {
+	color: #99CC00;
+	font-weight: bold;
+}
