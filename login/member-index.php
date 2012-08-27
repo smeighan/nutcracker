@@ -100,7 +100,7 @@ echo "<h2>Nutcracker: RGB Effects Builder for user $username<h2>";
 //
 ////	set defaults if this is the first time we are coming in
 if(empty($row['model_type'])) $row['model_type']="MTREE";
-if(empty($row['string_type'])) $row['string_type']="SINGLE_STRING";
+if(empty($row['string_type'])) $row['string_type']="SINGLE_STRAND";
 if(empty($row['orientation'])) $row['orientation']="0";
 if(empty($row['unit_of_measure'])) $row['unit_of_measure']="in";
 if(empty($row['topography'])) $row['topography']="BOT_TOP";
@@ -299,7 +299,7 @@ function show_my_models($username,$model_name)
 			if($model_type=="MTREE") $model="Mega-Tree";
 			if($model_type=="MTREE_HALF") $model="Mega-Tree Half";
 			if($model_type=="MATRIX") $model="Matrix(Grid)";
-				if($model_type=="SINGLE_STRING") $model="Single String";
+				if($model_type=="SINGLE_STRAND") $model="Single Strand";
 			if($model_type=="RAY") $model="Ray";
 			echo "<td>$model</td>";
 			//

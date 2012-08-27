@@ -296,7 +296,7 @@ function get_models($username,$model_name)
 	}
 	else if($model_type=="SINGLE_STRAND")
 	{
-		$full_path=single_string($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+		$full_path=single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
 	}
 	else
 	{
@@ -530,7 +530,7 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	return $dat_file;
 }
 
-function single_string($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
+function single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
 {
 	#
 	#	output files are created for each segment
