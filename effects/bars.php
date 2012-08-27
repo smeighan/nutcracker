@@ -114,6 +114,7 @@ $window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 $bar_width = intval($maxPixel/$number_bars);
 if($bar_width==0) $bar_width=1;
 echo "<pre>bar_width=$bar_width,  number_bars=$number_bars</pre>\n";
+$direction=strtolower($direction);	// make sure commands are lower case
 for($f=1;$f<=$maxFrame;$f++)
 {
 	$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
