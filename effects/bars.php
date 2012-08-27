@@ -111,7 +111,7 @@ $seq_number=0;
 $window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 // $tree_rgb[$s][$p]=$rgb_val;
 //$number_bars=10;
-$bar_width = intval($maxPixel/$number_bars);
+$bar_width = intval($maxPixel/$number_bars)+1;
 if($bar_width==0) $bar_width=1;
 echo "<pre>bar_width=$bar_width,  number_bars=$number_bars</pre>\n";
 $direction=strtolower($direction);	// make sure commands are lower case
