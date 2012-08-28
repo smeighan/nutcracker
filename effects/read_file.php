@@ -2145,3 +2145,65 @@ function get_target_model($username,$model_name)
 	$return_array[1]=$maxPixels;
 	return $return_array;
 }
+
+function  create_sparkles($sparkles,$maxStrand,$maxPixel)
+{
+	if($sparkles==0) return array();
+	$totalPixels=$maxPixel*$maxStrand;
+	$pixels_to_allocate = $totalPixels * ($sparkles/100);
+	for($i=1;$i<=$pixels_to_allocate;$i++)
+	{
+		srand();
+		$s=rand(1,$maxStrand);
+		$p=rand(1,$maxPixel);
+		$sparkles_array[$s][$p]=rand(1,100);
+	}
+	return $sparkles_array;
+}
+
+function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
+{
+	$orig=$rgb_val;
+	$v=intval($cnt%$sparkle_count);
+/*	Sparkle is a twinkle down over 7 frames.
+	frame 1, dark gray (#444444)
+	frame 2, Lighter gray #888888
+	frame 3, almost white #BBBBBB
+	frame 4, pure white #FFFFFF
+	frame 5, almost white #BBBBBB
+	frame 6, Lighter gray #888888
+	frame 7, dark gray (#444444)*/
+	
+	if($v==1)
+	{
+		$rgb_val=4473924; // #444444
+	}
+	if($v==2)
+	{
+		$rgb_val=8947848; // #888888
+	}
+	if($v==3)
+	{
+		$rgb_val=12303291; // #BBBBBB
+	}
+	if($v==4)
+	{
+		$rgb_val=16777215; // #FFFFFF
+	}
+	if($v==5)
+	{
+		$rgb_val=12303291; // #BBBBBB
+	}
+	if($v==6)
+	{
+		$rgb_val=8947848; // #888888
+	}
+	if($v==7)
+	{
+		$rgb_val=4473924; // #444444
+	}
+	$hex=dechex($rgb_val);
+	//	echo "<pre>s,p=$s,$p cnt=$cnt v=$v, orig=$orig, rgb_val=$rgb_val, $hex</pre>\n";
+	return $rgb_val;
+}
+

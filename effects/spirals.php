@@ -82,7 +82,7 @@ $x_dat = $user_target . "+" . $effect_name . ".dat";
 $base = $user_target . "+" . $effect_name;
 spiral($arr,$path,$t_dat,$number_spirals,$number_rotations,$spiral_thickness,$base,
 $color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
-$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type); 
+$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkle_count); 
 $target_info=get_info_target($username,$t_dat);
 //show_array($target_info,'MODEL: ' . $t_dat);
 $description ="Total Elapsed time for this effect:";
@@ -95,7 +95,7 @@ $filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade
 
 function spiral($arr,$path,$t_dat,$numberSpirals,$number_rotations,$spiralThickness,$base,
 $color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
-$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type)
+$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkle_count)
 {
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -118,7 +118,6 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 	$direction=strtolower($direction);
 	$fade_3d=strtoupper($fade_3d);
 	$rainbow_hue=strtoupper($rainbow_hue);
-	
 	show_elapsed_time($script_start,"Creating  Effect, spirals class:");
 	if($maxStrand<1)$maxStrand=1;
 	$pixelPerStrand=$maxPixel/$maxStrand;
@@ -142,17 +141,16 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 	$highRange2=$maxStrand;
 	$seq_number=0;
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
-	//show_elapsed_time($script_start,"Start     delete_effects:");
-	//delete_effects($username,$t_dat);
-	//show_elapsed_time($script_start,"Fini      delete_effects:");
+	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
+	/*echo "<pre>";
+	print_r($sparkles_array);
+	echo "</pre>\n";*/
 	//flush();
 	//
 	$f=1;
 	$amperage=array();
-	
 	//
 	//
-	
 	for ($f=1;$f<=$maxStrand;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -251,7 +249,7 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 					}
 					$rgb_val=HSV_TO_RGB ($H, $S, $V);
 					$f1_rgb_val=$rgb_val;
-					$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
+					//		$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 					$p_offset = intval($p*$number_rotations);
 					if($direction=="ccw")
 					{
@@ -266,6 +264,7 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 					if($new_s<$minStrand) $new_s = $new_s%$maxStrand;
 					if($new_s==0) $new_s=$maxStrand;
 					if($new_s<0) $new_s+=$maxStrand;
+					//	$strand=$new_s;
 					$xyz=$tree_xyz[$strand][$p]; // get x,y,z location from the model.
 					//echo "<pre> f,s,p=$f,$strand,$p  ns,thick=$ns,$thick</pre>\n";
 					$tree_rgb[$strand][$p]=$rgb_val;
@@ -277,7 +276,7 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 					}
 					$xyz=$tree_xyz[$new_s][$p];
 					$seq_number++;
-					$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
+					//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 					$tree_rgb[$strand][$p]=$rgb_val;
 					if(in_array($new_s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 					{
@@ -285,14 +284,24 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 						{
 							$rgb_val=hexdec($background_color);
 						}
-						//$amperage[$f][$new_s] += $V*0.060; // assume 29ma for pixels tobe full on
+						if(isset($sparkles_array[$strand][$p])===false 
+						or $sparkles_array[$strand][$p]==null )
+							$x=0;
+						else if($sparkles_array[$strand][$p]>1)
+						{
+							$sparkles_array[$strand][$p]++;
+							$rgb_val=calculate_sparkle($strand,$p,
+							$sparkles_array[$strand][$p],
+							$rgb_val,$sparkle_count);
+						}
 						$string=$user_pixel=0;
+						//	$sparkles_array[$strand][$p]=$sparkles_array[$strand][$p]+0;
 						fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$strand,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$new_s][$p][0],$strand_pixel[$new_s][$p][1],$f,$seq_number));
 					}
 				}
 			}
 		}
-	}
+		}// for ($f=1;$f<=$maxStrand;$f++) 
 	for ($f=1;$f<=$maxStrand;$f++)
 	{
 		fclose($fh_dat[$f]);

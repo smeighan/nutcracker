@@ -86,6 +86,15 @@ list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $t_dat = $user_target . ".dat";
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
+$minStrand =$arr[0];  // lowest strand seen on target
+$minPixel  =$arr[1];  // lowest pixel seen on skeleton
+$maxStrand =$arr[2];  // highest strand seen on target
+$maxPixel  =$arr[3];  // maximum pixel number found when reading the skeleton target
+$maxI      =$arr[4];  // maximum number of pixels in target
+$tree_rgb  =$arr[5];
+$tree_xyz  =$arr[6];
+$file      =$arr[7];
+$min_max   =$arr[8];
 $member_id=get_member_id($username);
 $path ="workspaces/" . $member_id;
 $directory=$path;
@@ -147,6 +156,7 @@ function color_wash($arr,$t_dat,$base,$path,$frame_delay,$seq_duration,$window_d
 		//printf ("<pre>%4d %7.4f %7.4f %7.4f %s</pre>\n",$frame,$H,$S,$V,$hex);
 		//
 		fwrite($fh_dat[$frame],"#    " . $dat_file[$frame] . "\n");
+		$seq_number=0;
 		for($s=1;$s<=$maxStrand;$s++)
 			for($p=1;$p<=$maxPixel;$p++)
 		{
@@ -156,11 +166,14 @@ function color_wash($arr,$t_dat,$base,$path,$frame_delay,$seq_duration,$window_d
 				$xyz=$tree_xyz[$s][$p];
 				$seq_number++;
 				$rgb_val_orig=$rgb_val;
-				if($sparkles_array[$s][$p]>1)
+				if(isset($sparkles_array[$s][$p])===false or $sparkles_array[$s][$p]==null )
+					;
+				else if($sparkles_array[$s][$p]>1)
 				{
 					$sparkles_array[$s][$p]++;
 					$rgb_val=calculate_sparkle($s,$p,$sparkles_array[$s][$p],$rgb_val,$sparkle_count);
 				}
+				$seq_number++;
 				fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
 				$rgb_val=$rgb_val_orig;
 				//	printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
@@ -171,56 +184,4 @@ function color_wash($arr,$t_dat,$base,$path,$frame_delay,$seq_duration,$window_d
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
 	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
-}
-
-function  create_sparkles($sparkles,$maxStrand,$maxPixel)
-{
-	if($sparkles==0) return array();
-	$totalPixels=$maxPixel*$maxStrand;
-	$pixels_to_allocate = $totalPixels * ($sparkles/100);
-	for($i=1;$i<=$pixels_to_allocate;$i++)
-	{
-		srand();
-		$s=rand(1,$maxStrand);
-		$p=rand(1,$maxPixel);
-		$sparkles_array[$s][$p]=rand(1,100);
-	}
-	return $sparkles_array;
-}
-
-function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
-{
-	$orig=$rgb_val;
-	$v=intval($cnt%$sparkle_count);
-	if($v==1)
-	{
-		$rgb_val=4473924; // #444444
-	}
-	if($v==2)
-	{
-		$rgb_val=8947848; // #888888
-	}
-	if($v==3)
-	{
-		$rgb_val=12303291; // #BBBBBB
-	}
-	if($v==4)
-	{
-		$rgb_val=16777215; // #FFFFFF
-	}
-	if($v==5)
-	{
-		$rgb_val=12303291; // #BBBBBB
-	}
-	if($v==6)
-	{
-		$rgb_val=8947848; // #888888
-	}
-	if($v==7)
-	{
-		$rgb_val=4473924; // #444444
-	}
-	$hex=dechex($rgb_val);
-	//	echo "<pre>s,p=$s,$p cnt=$cnt v=$v, orig=$orig, rgb_val=$rgb_val, $hex</pre>\n";
-	return $rgb_val;
 }

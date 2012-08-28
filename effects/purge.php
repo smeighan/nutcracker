@@ -23,6 +23,7 @@ function getFilesFromDir($dir)
 {
 	$files = array(); 
 	$gifn=$gif=$totn=$tot=$nc=$ncn=0;
+	echo "<pre>";
 	if ($handle = opendir($dir))
 	{
 		while (false !== ($file = readdir($handle)))
@@ -39,43 +40,52 @@ function getFilesFromDir($dir)
 					$filesize=filesize($fullname);
 					$tok=explode(".",$file);
 					$tok2=explode("_th.",$file);
+					$c=count($tok2);
+					//		echo "file=$file, c=$c\n";
 					if($tok[1]=="gif")
 					{
 						$gifn++;
 						$gif+=$filesize;
-						if($tok2[1]=="gif")
-						{
-							;
+						if($c==2) // is this gif a file_th.gif? We leave those along
+						{						
+							echo "DONT DELETE _th.gif: $totn: rm $fullname. dir=$dir\n";
 						}
-						else
+						else // this is any other file that is file.gif form, we will delete
 						{
-							echo "<pre>$totn: rm $fullname</pre>\n";
-							unlink($fullname);
+							if($dir=="workspaces/2")
+								echo "DONT DELETE SEAN: $totn: rm $fullname. dir=$dir\n";
+							else
+							{
+								echo "DELETE GIF: $totn: rm $fullname. dir=$dir\n";
+								unlink($fullname);
+							}
 							$totn++;
 							$tot+=$filesize;
 						}
 					}
-					else if($tok[1]=="nc")
+					else if($tok[1]=="nc") // is this a nutcracker file, file.nc?
 					{
-						$ncn++;
+						echo "DONT DELETE NC: $totn: rm $fullname. dir=$dir\n";
+						$ncn++; // yes, count stats , but dont delete
 						$nc+=$filesize;
 					}
-					else
+					else // any other file is going to be deleted (*.dat, *.gp,.etc.)
 					{
-						echo "<pre>$totn: rm $fullname</pre>\n";
+						echo "DELETE: $totn: rm $fullname. dir=$dir\n";
 						unlink($fullname);
 						$totn++;
 						$tot+=$filesize;
 					}
-					//echo "<pre>dir=$dir,   file=$file $filesize</pre>\n";
+					//echo "dir=$dir,   file=$file $filesize</pre>\n";
 				}
 				} 
 			} 
 		closedir($handle); 
-		echo "<pre>dir=$dir\n";
+		echo "dir=$dir\n";
 		echo "gifn=$gifn, gif=$gif\n";
 		echo "ncn=$ncn, nc=$nc\n";
 		echo "totn=$totn, tot=$tot\n";
+		echo "</pre>";
 	}
 	} 
 
