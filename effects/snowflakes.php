@@ -20,8 +20,6 @@ require_once('../conf/auth.php');
 <h1>Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
 <?php $menu="effect-form"; require "../conf/menu.php"; ?>
 <?php
-echo "<h2>Nutcracker: RGB Effects Builder for user $username<br/>
-On this page you build an animation of the garland class and crate an animated GIF</h2>"; 
 //
 require("read_file.php");
 show_array($_POST,"_POST");
@@ -64,7 +62,6 @@ show_array($array_to_save,"Effect Settings");
 $path="../targets/". $username;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
-$elapsed_time = round($script_end - $script_start, 5);
 $member_id=get_member_id($username);
 $path ="workspaces/$member_id";
 $directory=$path;
@@ -102,7 +99,6 @@ $path="workspaces/". $member_id;
 snowflakes($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$show_frame,$maxSnowFlakes,$maxPhase);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
-show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 // function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 	
@@ -120,7 +116,7 @@ function snowflakes($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay
 	$strand_pixel=$arr[9];
 	srand(time());
 	$maxFrame=40;
-	$maxSnowFlakes=3;	// how many snowflakes to draw at one time
+	//$maxSnowFlakes=3;	// how many snowflakes to draw at one time
 	$seq_number=0;
 	//$maxPhase=5;
 	$depth=$maxPhase;	// depth of snowflake trail in pixles

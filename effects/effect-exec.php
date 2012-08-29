@@ -586,6 +586,8 @@ function show_my_effects($username,$user_targets)
 	echo "<td>";
 	echo "<table border=\"1\">\n";
 	echo "<tr>";
+	$old_effect_class="";
+	$effect_class_counter=0;
 	for($l=1;$l<=$rows_per_column;$l++)
 	{
 		for($k=1;$k<=$maxj;$k+=$rows_per_column)
@@ -595,6 +597,9 @@ function show_my_effects($username,$user_targets)
 				$j=$k+$rows_per_column-1;
 			else
 			$j=$k+$check-1;
+		/*	if(isset($effects_array[$j])===false or $effects_array[$j]==null)
+				$eff_array="";
+			else*/
 			$eff_array=$effects_array[$j];
 			$effect_name=$eff_array[0];
 			$username=$eff_array[1];

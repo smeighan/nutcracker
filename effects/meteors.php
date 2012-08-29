@@ -253,33 +253,7 @@ function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$w
 						$rgb_val=sparkles($sparkles,$frame1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 					}
 				}
-				/*$snow=1;
-				if($snow==1)
-					if($ph==0 or $ph==1) $rgb_val=hexdec("#FFFFFF");
-				if($ph==1 and $sparkles>0 and ($meteor_type>=3 and $meteor_type<=6))
-				{
-					//	random_colour = 3: Random color of meteor head, different color on every frame redraw
-					//	random_colour = 4: White  color of meteor head, different color on every frame redraw
-					//	random_colour = 5: Random color of meteor head, that color kept for every subsequent iframe redraw
-					//	random_colour = 6: White color of meteor head, that color kept for every subsequent iframe redraw
-					//if((100-$sparkles)>= rand(1,100)) // if sparkles threshold is met then
-					{
-						$H = rand(0,1000)/1000;
-						$S= 1.0; 
-						$V=  1.0;
-						if($meteor_type==4 or $meteor_type==6) $S=0.0;	//	 force a white
-						if(count($meteor_array[$imeteor]['sparkle'])==0) 
-						$meteor_array[$imeteor]['sparkle']=array('H'=>$H,'S'=>$S,'V'=>$V);
-					}
-				}
-				if($meteor_type>=5 and $meteor_type<=6 and $meteor_array[$imeteor]['sparkle']>0)
-				{
-					$color_HSV=$meteor_array[$imeteor]['sparkle'];
-					$H=$color_HSV['H'];
-					$S=$color_HSV['S'];
-					$V=$color_HSV['V'];
-				}
-				*/
+				
 				$new_p = $p-$ph; // backup the meteor trail
 				if($new_p>=$minPixel and $new_p<=$maxPixel)
 				{

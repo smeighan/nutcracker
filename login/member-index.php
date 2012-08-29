@@ -145,16 +145,16 @@ name="MODEL_TYPE"> 	Matrix(Grid) <br />
 
 <input type="radio" value="HORIZ_MATRIX"
 <?php if( $row['model_type']=="HORIZ_MATRIX") echo "checked=\"checked\""; ?>
-name="MODEL_TYPE"> 	Horizontal Matrix(Grid) (UNDER DEVELOPMENT, DOES NOT WORK YET)<br />
+name="MODEL_TYPE"> 	Horizontal Matrix(Grid) <font color=red>(UNDER DEVELOPMENT, DOES NOT WORK YET)</font><br />
 
 <input type="radio" value="SINGLE_STRAND" 
 <?php if( $row['model_type']=="SINGLE_STRAND") echo "checked=\"checked\""; ?>
-name="MODEL_TYPE">	Single Strand <br />
+name="MODEL_TYPE">	Single Strand <font color=red>(UNDER DEVELOPMENT, DOES NOT WORK YET)</font><br />
 
 
 <input type="radio" value="RAY" 
 <?php if( $row['model_type']=="RAY") echo "checked=\"checked\""; ?>
-name="MODEL_TYPE">	Ray <br />
+name="MODEL_TYPE">	Ray <font color=blue>(UNDER DEVELOPMENT, DOES NOT CREATE GIF. USE HALF MEGATREE FOR NOW)</font><br />
 </blockquote>
 <table border="1">
 <tr>
