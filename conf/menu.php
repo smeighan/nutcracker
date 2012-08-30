@@ -38,6 +38,12 @@ Open a Bug or Enhancement Ticket
 </a></td>
 
 
+<td><a href="../effects/xmas_songs.php">
+<?php if($menu=="xmas_songs") echo "<font color=blue><b>"; ?>
+Christmas Songs
+<?php if($menu=="xmas_songs") echo "</b></font>";?>
+</a></td>
+
 <td><a href="../effects/tutorials.html">
 <?php if($menu=="tutorials") echo "<font color=blue><b>"; ?>
 Nutcracker Tutorials
