@@ -32,7 +32,11 @@ echo "</pre>";*/
 $username=$_SESSION['SESS_LOGIN'];
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 if(isset($_POST['target'])===FALSE or $_POST['target']==NULL)
-	$target=array();
+{
+	
+	$target=get_votes_by_user($username);
+	//$target=array();
+}
 else
 {
 	$target=$_POST['target'];
@@ -87,12 +91,17 @@ function show_songs($target_array)
 	$line=0;
 	if(!$NO_DATA_FOUND)
 	{
+		$votes_summary=vote_stats();
+		
+		
 		// LSP1_8	LSP2_0	LOR_S2	LOR_S3	VIXEN211	VIXEN25	VIXEN3	OTHER	
 		echo "<tr>";
 		echo "<th>Using<br/>It?</th>";
 		echo "<th>SongId</th>";
 		echo "<th>Song Name</th>";
-		echo "<th>Votes</th>";
+		$users=$votes_summary['users'];
+		$cnt=$votes_summary['cnt'];
+		echo "<th>$users users<br/>Have Cast <br/>$cnt total votes</th>";
 		echo "<th>artist</th>";
 		echo "<th>Comment</th>";
 		echo "<th>Song URL</th>";
@@ -103,6 +112,7 @@ function show_songs($target_array)
 		echo "</pre>\n";
 		*/
 		$c=count($target_array);
+	
 		while ($row = mysql_fetch_assoc($result))
 		{
 			$line++;
@@ -170,7 +180,46 @@ function get_votes()
 	}
 	return $votes_array;
 }
-
+function get_votes_by_user($username)
+{
+//Include database connection details
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	$query ="SELECT * FROM `music_object_votes`
+	where username = '$username'";
+	//echo "<pre>$query</pre>";
+	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	$NO_DATA_FOUND=0;
+	if (mysql_num_rows($result) == 0)
+	{
+		$NO_DATA_FOUND=1;
+	}
+	$param_value="";
+	$line=0;
+	if(!$NO_DATA_FOUND)
+	{
+		while ($row = mysql_fetch_assoc($result))
+		{
+			$line++;
+			extract($row);
+			$target_array[]=$music_object_id;
+		}
+	}
+	return $target_array;	
+	
+}
 function update_votes($username,$target)
 {
 	//Include database connection details
@@ -200,4 +249,46 @@ function update_votes($username,$target)
 		//echo "<pre>$query</pre>";
 		$result = mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	}
+}
+
+function vote_stats()
+{
+//Include database connection details
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	$query ="select  count(distinct username) as users, count(*) as cnt
+	 from music_object_votes";
+	//echo "<pre>$query</pre>";
+	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	$NO_DATA_FOUND=0;
+	if (mysql_num_rows($result) == 0)
+	{
+		$NO_DATA_FOUND=1;
+	}
+	$param_value="";
+	$line=0;
+	if(!$NO_DATA_FOUND)
+	{
+		while ($row = mysql_fetch_assoc($result))
+		{
+			
+			extract($row);
+			
+		}
+	}
+	$votes_summary=array('users'=>$users, 'cnt'=>$cnt);
+	return $votes_summary;
+	
 }
