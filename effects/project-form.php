@@ -306,7 +306,7 @@ function get_phrases($music_object_id)
 	$query ="SELECT * FROM `music_object_dtl` WHERE  music_object_id = '$music_object_id'
 	order by phrase_name";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -340,7 +340,7 @@ function get_music_object_hdr($username,$sort)
 	$query ="SELECT * FROM `music_object_hdr` WHERE  username = '$username'
 	order by music_object_id";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -382,7 +382,7 @@ function count_music_object_dtl($music_object_id)
 	FROM `music_object_dtl` WHERE music_object_id = '$music_object_id'
 	group by music_object_id";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$cnt=$max_end_secs=0;
 	$NO_DATA_FOUND=0;
@@ -416,7 +416,7 @@ function get_targets($username)
 	$query ="SELECT * FROM `models` WHERE username = '$username'
 	order by object_name";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -459,7 +459,7 @@ function copy_songs($song_array,$username)
 		from music_object_hdr
 		WHERE username = 'f' and music_object_id=$music_object_id)";
 		echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-		$result=mysql_query($query) or die ("Error on $query");
+		$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 		//
 		//
 		$query = "select song_name,music_object_id  music_object_id_new
@@ -469,7 +469,7 @@ function copy_songs($song_array,$username)
 		WHERE username = 'f'
 		and music_object_id = $music_object_id)";
 		echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-		$result=mysql_query($query) or die ("Error on $query");
+		$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 		while ($row = mysql_fetch_assoc($result))
 		{
 			extract($row);
@@ -482,7 +482,7 @@ function copy_songs($song_array,$username)
 		from music_object_dtl
 		WHERE music_object_id=$music_object_id)";
 		echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-		$result=mysql_query($query) or die ("Error on $query");
+		$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	}
 }
 

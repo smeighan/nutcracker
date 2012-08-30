@@ -92,7 +92,7 @@ foreach($get_effect_user_hdr_array as $i=>$row)
 	$row['effect_name'],
 	'123-123-123');
 	echo $insert;
-	$result=mysql_query($insert) or die ("Error on $insert");
+	$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 }
 foreach($get_effect_user_dtl_array as $i=>$row)
 	//foreach($row as $indx=>$value)
@@ -109,7 +109,7 @@ foreach($get_effect_user_dtl_array as $i=>$row)
 	$new_value,
 	'123-123-123');
 	echo $insert;
-	$result=mysql_query($insert) or die ("Error on $insert");
+	$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 }
 echo "</pre>\n";
 

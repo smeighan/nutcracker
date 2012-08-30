@@ -244,7 +244,7 @@ function insert_snowstorm($username,$counter,$strand,$pixel,$rgb_val)
 {
 	$query="replace into snowstorm (username,counter,state,strand,pixel,rgb) 
 	values ('$username',$counter,$strand,$pixel,$rgb_val)";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 }
 
 function update_row($username,$counter,$rgbnew,$state)

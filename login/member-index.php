@@ -238,7 +238,7 @@ function show_my_models($username,$model_name)
 	if(strlen($model_name)>=1) $MODEL_ONLY=1;
 	$query ="select * from models where username='$username'";
 	echo "query=$query";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -361,7 +361,7 @@ function show_user_base($username)
 		die("Unable to select database");
 	}
 	$query ="select * from members where member_id>4";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";

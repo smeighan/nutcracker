@@ -123,7 +123,7 @@ echo "</tr>";
 //$target_info=function get_info_target($username,$t_dat);
 
 $query = "select * from models where username='$username' order by object_name";
-$result=mysql_query($query) or die ("Error on $query");
+$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 while ($row = mysql_fetch_assoc($result))
 {
 	extract($row);

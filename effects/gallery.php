@@ -273,7 +273,7 @@ function get_eff_class($username,$effect_name)
 	}
 	// effect_class	username	effect_name	effect_desc	created	last_upd
 	$query = "select effect_class from effects_user_hdr where username='$username' and effect_name='$effect_name'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
@@ -302,7 +302,7 @@ function insert_into_gallery($array_of_gifs)
 	}
 	// effect_class	username	effect_name	effect_desc	created	last_upd
 	$query = "delete from  gallery where 1=1";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$line=0;
 	foreach($array_of_gifs as $fullpath)
 	{
@@ -352,7 +352,7 @@ function get_from_gallery()
 	}
 	// effect_class	username	effect_name	effect_desc	created	last_upd
 	$query = "select * from gallery order by member_id,effect_class, fullpath";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
@@ -382,7 +382,7 @@ function get_effect_class_gallery()
 	from gallery
 	group by effect_class
 	order by effect_class";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);

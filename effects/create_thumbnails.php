@@ -249,7 +249,7 @@ function create_thumbnails($effect_class_passed,$group)
 					}
 					// effect_class	username	effect_name	effect_desc	created	last_upd
 					$query = "select effect_class from effects_user_hdr where username='$username' and effect_name='$effect_name'";
-					$result=mysql_query($query) or die ("Error on $query");
+					$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 					while ($row = mysql_fetch_assoc($result))
 					{
 						extract($row);

@@ -147,7 +147,7 @@ else
 	{
 		die("Unable to select database");
 	}
-	mysql_query($insert) or die ("Error on $insert");
+	mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	//echo "<pre>Target model saved</pre>";
 	$date_field= date('Y-m-d');
 	$time_field= date("H:i:s");

@@ -439,7 +439,7 @@ function get_effect_hdr($effect_class)
 	}
 	$query ="select * from effects_hdr where effect_class='$effect_class'";
 	//echo "<pre>get_effect_hdr query: $query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -483,7 +483,7 @@ function get_effect_details($effect_class)
 	}
 	$query ="select * from effects_dtl where effect_class='$effect_class' and active='Y' order by sequence";
 	//echo "<pre> get_effect_details: query $query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -528,7 +528,7 @@ function show_my_effects($username,$user_targets)
 	$query="select effect_class,count(*) from effects_user_hdr where username='$username'
 	group by effect_class
 	order by effect_class";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -563,7 +563,7 @@ function show_my_effects($username,$user_targets)
 		$query ="select * from effects_user_hdr where username='$username'
 		and effect_class = '$effect_class_array[$i]' 
 		order by effect_class,effect_name";
-		$result=mysql_query($query) or die ("Error on $query");
+		$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 		$query_rows=array();
 		while ($row = mysql_fetch_assoc($result))
 		{
@@ -642,7 +642,7 @@ function  get_value_effect_user_dtl($username,$effect_name,$param_name)
 		die("Unable to select database");
 	}
 	$query ="select * from effects_user_dtl where effect_name='$effect_name' and username = '$username' and param_name='$param_name'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";

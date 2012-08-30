@@ -117,7 +117,7 @@ Array
 	$query ="select * from MODELS where username='$username' and object_name='$model_name'";
 	echo "query=$query\n";
 
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result) {
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
 		$message .= 'Whole query: ' . $query;
@@ -257,7 +257,7 @@ function insert_target_array($target_array,$username,$model_name,$maxStrand,$max
 			$user_pixel = $target_array[$s][$p]['user_pixel'];
 			$insert = "insert into model_dtl( username,object_name,strand,pixel,string,user_pixel,last_upd)
 				values ('$username','$model_name',$s,$p,$string,$user_pixel,now())";
-			mysql_query($insert) or die ("Error on $insert");
+			mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 		}
 }
 function display_file($full_path)

@@ -14,7 +14,7 @@ if(!$db)
 }
 $query ="select * from manifest order by path,filename";
 echo "<pre>get_effect_hdr query: $query</pre>\n";
-$result=mysql_query($query) or die ("Error on $query");
+$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 if (!$result)
 {
 	$message  = 'Invalid query: ' . mysql_error() . "\n";

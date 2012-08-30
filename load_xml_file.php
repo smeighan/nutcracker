@@ -88,7 +88,7 @@ $dir=getcwd();
 				}
 				$query .= sprintf (")");
 				echo "$query\n";
-				$result=mysql_query($query) or die ("Error on $query");
+				$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 			}
 		}
 	}

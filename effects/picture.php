@@ -217,9 +217,9 @@ function save_user_effect($passed_array)
 	$effect_desc="desc";
 	$insert = "REPLACE into effects_user_hdr( effect_class,username,effect_name,effect_desc,last_upd)
 		values ('$effect_class','$username','$effect_name','$effect_desc',now())";
-	mysql_query($insert) or die ("Error on $insert");
+	mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$query = "select param_name from effects_dtl where effect_class = '$effect_class'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$param_name_array=array();
 	while ($row = mysql_fetch_assoc($result))
 	{

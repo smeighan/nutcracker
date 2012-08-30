@@ -603,7 +603,7 @@ function insert_sequence($username,$model_name,$frame,$string,$user_pixel,$c,$rg
 	AND a.object_name = b.object_name
 	and a.username='$username'
 	and a.object_name='$model_name_base'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
@@ -638,7 +638,7 @@ function get_strand_pixel($username,$model_name,$string,$user_pixel)
 	and a.string=$string
 	and a.user_pixel=$user_pixel
 	and a.object_name='$model_name_base'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$model_array=array();
 	while ($row = mysql_fetch_assoc($result))
 	{
@@ -1005,11 +1005,11 @@ function save_user_effect($passed_array)
 	$effect_desc="desc";
 	$insert = "REPLACE into effects_user_hdr( effect_class,username,effect_name,effect_desc,last_upd)
 		values ('$effect_class','$username','$effect_name','$effect_desc',now())";
-	$result=mysql_query($insert) or die ("Error on $insert");
+	$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	//mysql_free_result($result);
 	$query = "select param_name from effects_dtl where effect_class = '$effect_class'";
 	//echo "<pre>$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$param_name_array=array();
 	while ($row = mysql_fetch_assoc($result))
 	{
@@ -1064,7 +1064,7 @@ function get_info_target($username,$t_dat)
 	//
 	$base = basename($t_dat,".dat");
 	$query ="select * from models where username='$username' and object_name='$base'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -1127,7 +1127,7 @@ function get_member_id($username)
 		die("Unable to select database");
 	}
 	$query = "select member_id from members where username='$username'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$member_id=0;
 	while ($row = mysql_fetch_assoc($result))
 	{
@@ -1155,7 +1155,7 @@ function get_username($member_id)
 		die("Unable to select database");
 	}
 	$query = "select username from members where member_id='$member_id'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
@@ -1487,7 +1487,7 @@ function get_effect_user_dtl($username,$effect_name)
 	}
 	$query ="select * from effects_user_dtl where effect_name='$effect_name' and username = '$username'";
 	//echo "<pre>get_effect_user_dtl: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -1533,7 +1533,7 @@ function get_effect_user_dtl2($username,$effect_name)
 	}
 	$query ="select * from effects_user_dtl where effect_name='$effect_name' and username = '$username'";
 	//echo "<pre>get_effect_user_dtl: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -1582,7 +1582,7 @@ function get_effect_user_hdr($username,$effect_name)
 	}
 	$query ="select * from effects_user_hdr where effect_name='$effect_name' and username = '$username'";
 	//echo "<pre>get_effect_user_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
@@ -2103,7 +2103,7 @@ function get_target_model($username,$model_name)
 		*/
 	//	
 	$query ="select * from models where username='$username' and object_name='$model_name'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";

@@ -105,7 +105,7 @@ function get_music_object_id($music_mo_file)
 	}
 	$query ="SELECT music_object_id FROM `music_object_hdr` WHERE  music_mo_file = '$music_mo_file'";
 	echo "<pre>get_music_object_id: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	echo "rows=" . mysql_num_rows($result) . "\n";
@@ -143,7 +143,7 @@ function insert_mo($music_object_id,$mo_array)
 	}
 	$query ="delete from music_object_dtl  where music_object_id=$music_object_id";
 	echo "<pre>get_effect_user_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	printf("Records deleted for music_object_id $music_object_id: %d\n", mysql_affected_rows());
 	//
 	//
@@ -163,7 +163,7 @@ function insert_mo($music_object_id,$mo_array)
 			(music_object_id,phrase_name,start_secs,end_secs,effect_name,sequence,date_created)
 				values ($music_object_id,'$phrase','$start','$end','',$sequence,now())";
 			//	echo "<pre>$insert</pre>\n";
-			$result=mysql_query($insert) or die ("Error on $insert");
+			$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 		}
 	}
 }

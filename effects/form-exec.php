@@ -149,7 +149,7 @@ function get_effect_details($effect_class)
 	}
 	$query ="select * from effects_dtl where effect_class='$effect_class' order by sequence";
 	echo "query=$query\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result) {
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
 		$message .= 'Whole query: ' . $query;
@@ -191,7 +191,7 @@ function get_effect_hdr($effect_class)
 		die("Unable to select database");
 	}
 	$query ="select * from effects_hdr where effect_class='$effect_class'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result) {
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
 		$message .= 'Whole query: ' . $query;

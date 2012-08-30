@@ -334,7 +334,7 @@ function get_phrases($music_object_id)
 	$query ="SELECT * FROM `music_object_dtl` WHERE  music_object_id = '$music_object_id'
 	order by start_secs";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -369,7 +369,7 @@ function get_effect_name($username,$phrase_name,$music_object_id)
 	and username='$username'
 	and phrase_name='$phrase_name'";
 	//echo "<pre>get_effect_name: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -402,7 +402,7 @@ function get_max_seconds($music_object_id)
 	}
 	$query ="SELECT max(end_secs) max_seconds FROM `music_object_dtl` WHERE  music_object_id = '$music_object_id'";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -436,7 +436,7 @@ function update_music_object_hdr($music_object,$target,$frame_delay)
 	$query ="update `music_object_hdr` set frame_delay=$frame_delay, target='$target'
 	where  music_object_id = '$music_object'";
 	//echo "<pre>update_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 }
 
 function get_music_object_hdr($username)
@@ -457,7 +457,7 @@ function get_music_object_hdr($username)
 	$query ="SELECT * FROM `music_object_hdr` WHERE  username = '$username'
 	order by music_object_id";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";
@@ -574,7 +574,7 @@ $nc_array,$frame_delay,$music_object,$username)
 			WHERE  music_object_id=$music_object and
 			phrase_name = '$phrase_name'";
 			//	echo "<pre>$query</pre>\n";
-			$result=mysql_query($query) or die ("Error on $query");
+			$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 			// 	effect_class	username	effect_name	effect_desc	music_object_id	start_secs	end_secs	phrase_name	created	last_upd
 			$query ="UPDATE  effects_user_hdr 
 			set music_object_id=$music_object,
@@ -584,7 +584,7 @@ $nc_array,$frame_delay,$music_object,$username)
 			WHERE  username='$username' and
 			effect_name = '$effect_name'";
 			//	echo "<pre>$query</pre>\n";
-			$result=mysql_query($query) or die ("Error on $query");
+			$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 			//
 			$query ="UPDATE  effects_user_dtl 
 			set param_value='$frame_delay'
@@ -592,7 +592,7 @@ $nc_array,$frame_delay,$music_object,$username)
 			effect_name = '$effect_name'
 			and param_name='frame_delay'";
 			//	echo "<pre>$query</pre>\n";
-			$result=mysql_query($query) or die ("Error on $query");
+			$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 			//
 			$query ="UPDATE  effects_user_dtl 
 			set param_value='$seq_duration'
@@ -600,13 +600,13 @@ $nc_array,$frame_delay,$music_object,$username)
 			effect_name = '$effect_name'
 			and param_name='seq_duration'";
 			//	echo "<pre>$query</pre>\n";
-			$result=mysql_query($query) or die ("Error on $query");
+			$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 		}
 	}
 	$query ="SELECT * FROM `music_object_hdr` WHERE  music_object_id = '$music_object_id'
 	order by music_object_id";
 	//echo "<pre>get_music_object_hdr: query=$query</pre>\n";
-	/*$result=mysql_query($query) or die ("Error on $query");
+	/*$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$music_object_id=0;
 	$NO_DATA_FOUND=0;
 	//echo "rows=" . mysql_num_rows($result) . "\n";

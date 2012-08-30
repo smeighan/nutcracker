@@ -342,7 +342,7 @@ function delete_effects($username,$model_name)
 	}
 	$model_base_name = basename($model_name,".dat");
 	$query = "delete from effects where username='$username' and object_name='$model_base_name'";
-	$result=mysql_query($query) or die ("Error on $query");
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	mysql_close();
 }
 
@@ -370,6 +370,6 @@ function insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val,$
 	$query="insert into effects (seq_number,username,object_name,strand,pixel,x,y,z,rgb_val,frame) values
 	($seq_number,'$username','$model_base_name',$strand,$pixel,$x,$y,$z,$rgb_val,$f)";
 	//echo "<pre>insert_effects: query=$query</pre>\n";
-	mysql_query($query) or die ("Error on $query");
+	mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	mysql_close();
 }
