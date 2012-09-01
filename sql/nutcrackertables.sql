@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Aug 30, 2012 at 09:23 AM
+-- Generation Time: Sep 01, 2012 at 09:33 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=516 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=532 ;
 
 -- --------------------------------------------------------
 
@@ -258,12 +258,13 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `frame_delay` int(6) DEFAULT NULL,
   `target` varchar(100) DEFAULT NULL,
   `song_url` varchar(256) DEFAULT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `audacity_aup` varchar(256) DEFAULT NULL,
   `music_mo_file` varchar(256) DEFAULT NULL,
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=66 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=384 ;
 
 -- --------------------------------------------------------
 
@@ -282,6 +283,17 @@ CREATE TABLE IF NOT EXISTS `music_object_votes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `music_object_votes_count`
+--
+
+CREATE TABLE IF NOT EXISTS `music_object_votes_count` (
+  `music_object_id` int(11) NOT NULL,
+  `cnt` bigint(21) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `snowstorm`
 --
 
@@ -295,3 +307,4 @@ CREATE TABLE IF NOT EXISTS `snowstorm` (
   `counter` int(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`username`,`strand`,`pixel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='used for snowtorm.php';
+
