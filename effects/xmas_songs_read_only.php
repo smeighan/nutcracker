@@ -108,6 +108,22 @@ function show_songs($target_array,$sort)
 		where a.username='f'
 		order by b.cnt desc";
 	}
+	else if($sort=="songid")
+	{
+		$query ="SELECT a.*,b.cnt  FROM music_object_hdr a
+		left join music_object_votes_count b
+		on a.music_object_id = b.music_object_id
+		where a.username='f'
+		order by a.music_object_id";
+	}
+	else if($sort=="comment")
+	{
+		$query ="SELECT a.*,b.cnt  FROM music_object_hdr a
+		left join music_object_votes_count b
+		on a.music_object_id = b.music_object_id
+		where a.username='f'
+		order by a.desc3";
+	}
 	else
 	{
 		$query ="SELECT a.*,b.cnt  FROM music_object_hdr a
@@ -131,20 +147,20 @@ function show_songs($target_array,$sort)
 		$self=$_SERVER['PHP_SELF'];
 		// LSP1_8	LSP2_0	LOR_S2	LOR_S3	VIXEN211	VIXEN25	VIXEN3	OTHER	
 		echo "<tr>";
-		echo "<th colspan=2></th>";
-		echo "<th colspan=3>Click on These Column Headings to sort<br/>Current sort order is by $sort</th>";
-		echo "<th colspan=2></th>";
+		echo "<th colspan=1></th>";
+		echo "<th colspan=5 bgcolor=lightblue>Click on These Column Headings to sort<br/>Current sort order is by $sort</th>";
+		echo "<th colspan=1></th>";
 		echo "</tr><tr>";
 		echo "<th>Row#</th>";
 		/*echo "<th>Using<br/>It?</th>";*/
-		echo "<th>SongId</th>";
+		echo "<th><a href=$self?sort=songid>SongId</a></th>";
 		echo "<th><a href=$self?sort=song>Song Name</a></th>";
 		$users=$votes_summary['users'];
 		$cnt=$votes_summary['cnt'];
 		//echo "<th><a href=$self?sort=votes>Votes:<br/>$users users<br/>Have Cast <br/>$cnt votes</a></th>";
 		echo "<th><a href=$self?sort=votes>Votes</a></th>";
 		echo "<th><a href=$self?sort=artist>Artist</a></th>";
-		echo "<th>Comment</th>";
+		echo "<th><a href=$self?sort=comment>Comment</a></th>";
 		echo "<th>Song URL</th>";
 		echo "</tr>";
 		//$votes_array=get_votes();
