@@ -1,0 +1,355 @@
+<kgustafson-2012-09-01>
+	<effects_user_hdr>
+		<row1>
+			<effect_class>spirals</effect_class>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<effect_desc>desc</effect_desc>
+			<music_object_id>0</music_object_id>
+			<start_secs>0.000000</start_secs>
+			<end_secs>0.000000</end_secs>
+			<phrase_name></phrase_name>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row1>
+		<row2>
+			<effect_class>spirals</effect_class>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<effect_desc>desc</effect_desc>
+			<music_object_id>0</music_object_id>
+			<start_secs>0.000000</start_secs>
+			<end_secs>0.000000</end_secs>
+			<phrase_name></phrase_name>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row2>
+		<row3>
+			<effect_class>spirals</effect_class>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<effect_desc>desc</effect_desc>
+			<music_object_id>0</music_object_id>
+			<start_secs>0.000000</start_secs>
+			<end_secs>0.000000</end_secs>
+			<phrase_name></phrase_name>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row3>
+	</effects_user_hdr>
+	<effects_user_dtl>
+		<row1>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>color1</param_name>
+			<param_value>#42D3FF</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row1>
+		<row2>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>color2</param_name>
+			<param_value>#FF4FE8</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row2>
+		<row3>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>direction</param_name>
+			<param_value>2</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row3>
+		<row4>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>effect_name</param_name>
+			<param_value>sean31</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row4>
+		<row5>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>frame_delay</param_name>
+			<param_value>22</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row5>
+		<row6>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>number_rotations</param_name>
+			<param_value>0.5</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row6>
+		<row7>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>number_spirals</param_name>
+			<param_value>2</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row7>
+		<row8>
+			<username>kgustafson</username>
+			<effect_name>SEAN31</effect_name>
+			<param_name>spiral_thickness</param_name>
+			<param_value>2</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:33:19</last_upd>
+		</row8>
+		<row9>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>background_color</param_name>
+			<param_value>#FFFFFF</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row9>
+		<row10>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>color1</param_name>
+			<param_value>#E924FF</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row10>
+		<row11>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>color2</param_name>
+			<param_value>#6BFF89</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row11>
+		<row12>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>direction</param_name>
+			<param_value>2</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row12>
+		<row13>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>effect_name</param_name>
+			<param_value>smeighan1</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row13>
+		<row14>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>frame_delay</param_name>
+			<param_value>22</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row14>
+		<row15>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>handiness</param_name>
+			<param_value></param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row15>
+		<row16>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>number_rotations</param_name>
+			<param_value>0.5</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row16>
+		<row17>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>number_spirals</param_name>
+			<param_value>3</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row17>
+		<row18>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>sparkles</param_name>
+			<param_value></param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row18>
+		<row19>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>spiral_thickness</param_name>
+			<param_value>7</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row19>
+		<row20>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>use_background</param_name>
+			<param_value></param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row20>
+		<row21>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN1</effect_name>
+			<param_name>window_degrees</param_name>
+			<param_value></param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-08 19:42:19</last_upd>
+		</row21>
+		<row22>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>color1</param_name>
+			<param_value>#E924FF</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row22>
+		<row23>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>color2</param_name>
+			<param_value>#6BFF89</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row23>
+		<row24>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>direction</param_name>
+			<param_value>2</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row24>
+		<row25>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>effect_name</param_name>
+			<param_value>smeighan2</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row25>
+		<row26>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>frame_delay</param_name>
+			<param_value>22</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row26>
+		<row27>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>number_rotations</param_name>
+			<param_value>0.5</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row27>
+		<row28>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>number_spirals</param_name>
+			<param_value>1</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row28>
+		<row29>
+			<username>kgustafson</username>
+			<effect_name>SMEIGHAN2</effect_name>
+			<param_name>spiral_thickness</param_name>
+			<param_value>22</param_value>
+			<created>0000-00-00 00:00:00</created>
+			<last_upd>2012-03-05 00:27:10</last_upd>
+		</row29>
+	</effects_user_dtl>
+	<members>
+		<row1>
+			<member_id>142</member_id>
+			<firstname>Kurt</firstname>
+			<lastname>Gustafson</lastname>
+			<username>kgustafson</username>
+			<passwd>b5965308ac8a6fad133ef79381793797</passwd>
+			<enable_projects>N</enable_projects>
+			<LSP1_8>N</LSP1_8>
+			<LSP2_0>N</LSP2_0>
+			<LSP3_0>N</LSP3_0>
+			<LOR_S2>N</LOR_S2>
+			<LOR_S3>N</LOR_S3>
+			<VIXEN211>Y</VIXEN211>
+			<VIXEN25>Y</VIXEN25>
+			<VIXEN3>Y</VIXEN3>
+			<HLS>N</HLS>
+			<OTHER>N</OTHER>
+			<date_created>2012-08-31 22:45:40</date_created>
+		</row1>
+	</members>
+	<models>
+		<row1>
+			<username>kgustafson</username>
+			<object_name>AA</object_name>
+			<object_desc>a</object_desc>
+			<model_type>MTREE</model_type>
+			<string_type></string_type>
+			<pixel_count>80</pixel_count>
+			<folds>2</folds>
+			<start_bottom>Y</start_bottom>
+			<pixel_first>1</pixel_first>
+			<pixel_last>80</pixel_last>
+			<pixel_length>240.00</pixel_length>
+			<pixel_spacing>3.0000</pixel_spacing>
+			<unit_of_measure>in</unit_of_measure>
+			<total_strings>24</total_strings>
+			<total_pixels>0</total_pixels>
+			<direction></direction>
+			<orientation>0</orientation>
+			<topography>UP_DOWN_NEXT</topography>
+			<h1>111.00</h1>
+			<h2>0.00</h2>
+			<d1>58.00</d1>
+			<d2>0.00</d2>
+			<d3>1.00</d3>
+			<d4>0.00</d4>
+			<date_created>2012-08-31 22:45:40</date_created>
+		</row1>
+		<row2>
+			<username>kgustafson</username>
+			<object_name>MT</object_name>
+			<object_desc>ttt</object_desc>
+			<model_type>MTREE</model_type>
+			<string_type></string_type>
+			<pixel_count>80</pixel_count>
+			<folds>1</folds>
+			<start_bottom>Y</start_bottom>
+			<pixel_first>1</pixel_first>
+			<pixel_last>80</pixel_last>
+			<pixel_length>240.00</pixel_length>
+			<pixel_spacing>3.0000</pixel_spacing>
+			<unit_of_measure>in</unit_of_measure>
+			<total_strings>44</total_strings>
+			<total_pixels>0</total_pixels>
+			<direction></direction>
+			<orientation>0</orientation>
+			<topography>BOT_TOP</topography>
+			<h1>222.00</h1>
+			<h2>0.00</h2>
+			<d1>123.00</d1>
+			<d2>1.00</d2>
+			<d3>0.00</d3>
+			<d4>0.00</d4>
+			<date_created>2012-08-31 22:45:40</date_created>
+		</row2>
+	</models>
+	<music_object_hdr>
+	</music_object_hdr>
+	<music_object_dtl>
+	</music_object_dtl>
+</kgustafson-2012-09-01>
