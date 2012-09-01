@@ -10,6 +10,7 @@
 //
 //*************************************************************************************************
 require_once('../conf/auth.php');
+define('BASE_URL', substr($_SERVER['PHP_SELF'],0,-22));  //this returns the path (minus the login/) string
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -208,6 +209,18 @@ name="UNIT_OF_MEASURE">cm
 </tr>
 </table>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
+</form>
+<form action="<?php echo BASE_URL;?>export.php" method="POST">
+	<input type="hidden" name="username" value="<?php echo $username;?>" />
+	<input type="submit" name="cmdExport" value="Export files for backup from server" />
+</form>
+<?php
+	if ($_SERVER['SERVER_NAME'] != 'meighan.net') {
+	// if ($_SERVER['SERVER_NAME'] != 'localhost') { // this is a test
+?>
+<form action="<?php echo BASE_URL;?>import.php" method="POST">
+	<input type="hidden" name="username" value="<?php echo $username;?>" />
+	<input type="submit" name="cmdImport" value="Import files from a previous backup" />
 </form>
 </body>
 </html>
@@ -564,3 +577,4 @@ function insert_users($db,$file)
 	}
 	echo "</table>";
 }
+
