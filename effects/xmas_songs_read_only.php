@@ -1,5 +1,5 @@
 <?php
-require_once('../conf/auth.php');
+//require_once('../conf/auth.php');
 /*
 List songs from database where the song url i sempty
 SELECT * FROM `music_object_hdr` WHERE username = 'f'
@@ -22,8 +22,7 @@ and song_url is null
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<h1>Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<?php $menu="effect-form"; require "../conf/menu.php"; ?>
+
 <?php
 //
 require("../effects/read_file.php");
@@ -41,40 +40,30 @@ if(count($tok)>1)
 else
 $sort="song";
 //echo "<pre>sort=$sort</pre>";
-$username=$_SESSION['SESS_LOGIN'];
-$member_id=$_SESSION['SESS_MEMBER_ID'];
-if(isset($_POST['target'])===FALSE or $_POST['target']==NULL)
-{
-	$target=get_votes_by_user($username);
-	//$target=array();
-}
-else
-{
-	$target=$_POST['target'];
-	update_votes($username,$target);
-}
+
 //print_r($target);
 //echo "</pre>\n";
-$member_id=$_SESSION['SESS_MEMBER_ID'];
-$username=$_SESSION['SESS_LOGIN'];
+
 $file = "Wizards_In_Winter.mo";
 $dir = 'music_object_files'; 
 $votes_summary=vote_stats();
 $users=$votes_summary['users'];
 $cnt=$votes_summary['cnt'];
 echo "<h1>Christmas Songs.</h1><h2> $users Users have cast $cnt votes.</h2>";
-echo "<h4>Instructions: Click in the column labeled 'Using It?' for every song you plan on using this year";
-echo "<br/>Click submit and your vote will be tallied. Look under the 'Votes' column to see the current tally";
-echo "<br/>across all users.</h4>";
+echo "<h4>Instructions: If you want to vote for the songs you are going to be using this year,
+	 login to the Nutcracker <a href=http://meighan.net/nutcracker>http://meighan.net/nutcracker</a>
+	 and then select <b>Christmas Songs</b> from the top menu. This page is a Read Only view of the data.";
+echo "</h4>";
 echo "<br/><br/>";
 $self=$_SERVER['PHP_SELF'];
-echo "<form action=\"$self\" method=\"POST\">\n";
-echo '<input type="submit" name="submit" value="Submit Form to have your choices recorded" />';
+/*echo "<form action=\"$self\" method=\"POST\">\n";
+echo '<input type="submit" name="submit" value="Submit Form to have your choices recorded" />';*/
 echo "<table border=1>";
+$target=array();
 show_songs($target,$sort);
 echo "</table>";
-echo '<input type="submit" name="submit" value="Submit Form to have your choices recorded" />';
-echo '</form>';
+/*echo '<input type="submit" name="submit" value="Submit Form to have your choices recorded" />';
+echo '</form>';*/
 
 function show_songs($target_array,$sort)
 {
@@ -142,12 +131,12 @@ function show_songs($target_array,$sort)
 		$self=$_SERVER['PHP_SELF'];
 		// LSP1_8	LSP2_0	LOR_S2	LOR_S3	VIXEN211	VIXEN25	VIXEN3	OTHER	
 		echo "<tr>";
-		echo "<th colspan=3></th>";
+		echo "<th colspan=2></th>";
 		echo "<th colspan=3>Click on These Column Headings to sort<br/>Current sort order is by $sort</th>";
 		echo "<th colspan=2></th>";
 		echo "</tr><tr>";
 		echo "<th>Row#</th>";
-		echo "<th>Using<br/>It?</th>";
+		/*echo "<th>Using<br/>It?</th>";*/
 		echo "<th>SongId</th>";
 		echo "<th><a href=$self?sort=song>Song Name</a></th>";
 		$users=$votes_summary['users'];
@@ -180,14 +169,14 @@ function show_songs($target_array,$sort)
 			{
 				if(intval($target_array[$i])==intval($music_object_id)) $checked='checked=checked';
 			}
-			printf ("<tr><td>$line</td><td><input type=\"checkbox\" name=\"target[]\" value=\"%s\" %s >
+			printf ("<tr><td>$line</td>
 			<th>M-%s</th>  
 			<td align=\"left\">%s</td>
 			<td bgcolor=\"%s\">%s</td>
 			<td align=\"left\">%s</td>
 			<td align=\"left\">%s</td>
 			<td align=\"left\"><a href=%s</a>%s</td>
-			</tr>\n",$music_object_id,$checked,$music_object_id,$song_name,$color,$votes,$artist,$desc3,$song_url,$song_url);
+			</tr>\n",$music_object_id,$song_name,$color,$votes,$artist,$desc3,$song_url,$song_url);
 		}
 	}
 }
