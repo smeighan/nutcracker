@@ -222,6 +222,7 @@ name="UNIT_OF_MEASURE">cm
 	<input type="hidden" name="username" value="<?php echo $username;?>" />
 	<input type="submit" name="cmdImport" value="Import files from a previous backup" />
 </form>
+<?php } ?>
 </body>
 </html>
 <?php show_user_base($username); ?>
