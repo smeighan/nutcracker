@@ -35,7 +35,6 @@ Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
 /*echo "<pre>";
 print_r($_SESSION);
 echo "</pre>";*/
-
 // index.php
 $username= $_SESSION['SESS_LOGIN'];
 $username=$username;
@@ -68,10 +67,8 @@ if(empty($row)) // on our first time, we have no data for this user. initializze
 	$row['total_strings']=0;
 	$row['pixel_count']=0;
 }
-
 $ip=@$REMOTE_ADDR; 
 //echo "<b>IP Address= $ip</b>";
-
 /*
 Array $row
 (
@@ -137,22 +134,15 @@ Example: 16 strand megatree made of Smart Strings. Used in front yard.
 <input type="radio" value="MTREE" 
 <?php if( $row['model_type']=="MTREE") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> Mega-Tree (If you want a half mega tree, choose this and then later in the effects screens set window_degrees to 180)<br />
-
-
 <input type="radio" value="MATRIX"
 <?php if( $row['model_type']=="MATRIX") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> 	Matrix(Grid) <br />
-
-
 <input type="radio" value="HORIZ_MATRIX"
 <?php if( $row['model_type']=="HORIZ_MATRIX") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE"> 	Horizontal Matrix(Grid) <font color=red>(UNDER DEVELOPMENT, DOES NOT WORK YET)</font><br />
-
 <input type="radio" value="SINGLE_STRAND" 
 <?php if( $row['model_type']=="SINGLE_STRAND") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE">	Single Strand <font color=red>(UNDER DEVELOPMENT, DOES NOT WORK YET)</font><br />
-
-
 <input type="radio" value="RAY" 
 <?php if( $row['model_type']=="RAY") echo "checked=\"checked\""; ?>
 name="MODEL_TYPE">	Ray <font color=blue>(UNDER DEVELOPMENT, DOES NOT CREATE GIF. USE HALF MEGATREE FOR NOW)</font><br />
@@ -177,6 +167,9 @@ name="MODEL_TYPE">	Ray <font color=blue>(UNDER DEVELOPMENT, DOES NOT CREATE GIF.
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
 value="<?php echo $row['total_strings'] ?>" name="TOTAL_STRINGS"></td></tr>
 <tr>
+<td><table border=1>
+<tr>
+<td rowspan=3>Do not fill in these 3 questions if you are doing Single Strand Targets</td>
 <td><b><font color="blue">**Total number of Pixels on this string </b>
 </font>
 <input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="5" 
@@ -194,8 +187,9 @@ value="<?php echo $row['folds'] ?>" name="FOLDS"></td></tr>
 of the RGB device (Y or N):</b>
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="1" maxlength="1" 
 value="<?php echo $row['start_bottom'] ?>" name="START_BOTTOM"></td></tr>
-<tr>
-<td><b><font color="blue">**Unit of Measure:</b><br /> 
+</table>
+</td></tr>
+<!--<tr><td><b><font color="blue">**Unit of Measure:</b><br /> 
 </font><blockquote>
 <input type="radio" value="in"  
 <?php if( $row['unit_of_measure']=="in") echo "checked=\"checked\""; ?>  
@@ -205,31 +199,32 @@ name="UNIT_OF_MEASURE">inches
 name="UNIT_OF_MEASURE">cm
 </blockquote>
 <br />
-</td>
-</tr>
+</td></tr>-->
 </table>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 </form>
 <form action="<?php echo BASE_URL;?>export.php" method="POST">
-	<input type="hidden" name="username" value="<?php echo $username;?>" />
-	<input type="submit" name="cmdExport" value="Export files for backup from server" />
+<input type="hidden" name="username" value="<?php echo $username;?>" />
+<input type="submit" name="cmdExport" value="Export files for backup from server" />
 </form>
 <?php
-	if ($_SERVER['SERVER_NAME'] != 'meighan.net') {
-	// if ($_SERVER['SERVER_NAME'] != 'localhost') { // this is a test
-?>
-<form action="<?php echo BASE_URL;?>import.php" method="POST">
-	<input type="hidden" name="username" value="<?php echo $username;?>" />
-	<input type="submit" name="cmdImport" value="Import files from a previous backup" />
-</form>
-<?php } ?>
-</body>
-</html>
-<?php show_user_base($username); ?>
-<?php $menu="member-index"; require "../conf/menu.php"; ?>
-</body>
-</html>
-<?php
+if ($_SERVER['SERVER_NAME'] != 'meighan.net')
+{
+	// if ($_SERVER['SERVER_NAME'] != 'localhost')
+	{
+		// this is a test
+		?>
+		<form action="<?php echo BASE_URL;?>import.php" method="POST">
+		<input type="hidden" name="username" value="<?php echo $username;?>" />
+		<input type="submit" name="cmdImport" value="Import files from a previous backup" />
+		</form>
+		<?php 
+	}
+}
+show_user_base($username); 
+$menu="member-index"; require "../conf/menu.php"; 
+echo "</body>";
+echo "</html>\n";
 
 function show_my_models($username,$model_name)
 {
@@ -313,7 +308,7 @@ function show_my_models($username,$model_name)
 			if($model_type=="MTREE") $model="Mega-Tree";
 			if($model_type=="MTREE_HALF") $model="Mega-Tree Half";
 			if($model_type=="MATRIX") $model="Matrix(Grid)";
-				if($model_type=="SINGLE_STRAND") $model="Single Strand";
+			if($model_type=="SINGLE_STRAND") $model="Single Strand";
 			if($model_type=="RAY") $model="Ray";
 			echo "<td>$model</td>";
 			//
@@ -578,4 +573,3 @@ function insert_users($db,$file)
 	}
 	echo "</table>";
 }
-

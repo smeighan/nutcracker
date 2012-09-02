@@ -30,11 +30,10 @@ $requiredFields = array(
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-/*
 echo "<pre>process.php:";
-print_r($_SESSION);
-echo "</pre>\n";*/
-
+echo "SESSION:\n"; print_r($_SESSION);
+echo "POST:\n"; print_r($_POST);
+echo "</pre>\n";
 $username= $_SESSION['SESS_LOGIN'];
 //echo "<pre>";
 //echo "process.php username=$username";
@@ -156,8 +155,11 @@ else
 	mysql_close();
 	session_write_close();
 	$_SESSION['SESS_LOGIN'] = $username;
-	
 	session_write_close();
+	$model_type=$_SESSION['MODEL_TYPE'];
+	if($model_type=="SINGLE_STRAND")
+		header("location: single_strand-form.php?model=$OBJECT_NAME?user=$username");
+	else
 	header("location: target-exec.php?model=$OBJECT_NAME?user=$username");
 	exit();
 	//setcookie("username", "");

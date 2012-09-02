@@ -1035,7 +1035,7 @@ function save_user_effect($passed_array)
 	$date_field= date('Y-m-d');
 	$time_field= date("H:i:s");
 	$query="INSERT into audit_log values ('$username','$date_field','$time_field','effect','$OBJECT_NAME')";
-	$result=mysql_query($query) or die("Failed to execute $query");
+	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	//mysql_free_result($result);
 	mysql_close();
 	$_SESSION['SESS_LOGIN'] = $username;

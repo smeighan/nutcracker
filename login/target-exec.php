@@ -125,7 +125,6 @@ function get_models($username,$model_name)
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
-		print_r($row);
 	}
 	$pixel_count_even=$folds * intval($pixel_count/$folds); // this is the total pixels that are evenly divisible.
 	if($folds==1)
