@@ -30,10 +30,14 @@ $requiredFields = array(
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-echo "<pre>process.php:";
-echo "SESSION:\n"; print_r($_SESSION);
-echo "POST:\n"; print_r($_POST);
-echo "</pre>\n";
+echo "<pre>";
+echo "POST:\n";
+print_r($_POST);
+echo "SERVER:";
+print_r($_SERVER);
+echo "SESSION:\n";
+print_r($_SESSION);
+echo "</pre>";
 $username= $_SESSION['SESS_LOGIN'];
 //echo "<pre>";
 //echo "process.php username=$username";
@@ -153,12 +157,15 @@ else
 	$query="INSERT into audit_log values ('$username','$date_field','$time_field','insert','$OBJECT_NAME')";
 	$result=mysql_query($query) or die("Failed to execute $query");
 	mysql_close();
-	session_write_close();
 	$_SESSION['SESS_LOGIN'] = $username;
-	session_write_close();
-	$model_type=$_SESSION['MODEL_TYPE'];
-	if($model_type=="SINGLE_STRAND")
-		header("location: single_strand-form.php?model=$OBJECT_NAME?user=$username");
+	//session_write_close();
+	//$model_type=$_POST['MODEL_TYPE'];
+	/*echo "<pre>";
+	print_r($_POST);
+	echo "model_type = model_type\n";
+	echo "</pre>";*/
+	if($MODEL_TYPE=="SINGLE_STRAND")
+		header("location: single_strand-form.php?user=$username?total_strings=$TOTAL_STRINGS");
 	else
 	header("location: target-exec.php?model=$OBJECT_NAME?user=$username");
 	exit();
