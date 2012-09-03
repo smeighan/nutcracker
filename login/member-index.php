@@ -42,7 +42,7 @@ $tokens=array("","");
 $model_name="";
 $tokens=explode("model=",$_SERVER['QUERY_STRING']);
 $c=count($tokens);
-echo "<pre>c=$c, " . $_SERVER['QUERY_STRING'] . "</pre>\n";
+// echo "<pre>c=$c, " . $_SERVER['QUERY_STRING'] . "</pre>\n";
 if($c>1)
 	$model_name=$tokens[1];
 else
@@ -53,7 +53,7 @@ if($WARN==1)
 	echo "<h1><font color=red>Web page is undoing construction. When this banner goes away, you can use page again</font></h1>";
 	//	echo "<h4>" . md5("pepe1pepe1") . "</h4>";
 }
-echo "<pre>show_my_models($username,$model_name);</pre>\n";
+// echo "<pre>show_my_models($username,$model_name);</pre>\n";
 $row=show_my_models($username,$model_name);
 /*echo "<pre>";
 print_r($row);
@@ -228,6 +228,8 @@ echo "</html>\n";
 
 function show_my_models($username,$model_name)
 {
+	// check_dat checks to see if all the model .dat files are created. If they are not this function batches them to create automatically
+	check_dat($username);
 	//Include database connection details
 	require_once('../conf/config.php');
 	require("../effects/read_file.php");
@@ -243,10 +245,11 @@ function show_my_models($username,$model_name)
 	{
 		die("Unable to select database");
 	}
+
 	$MODEL_ONLY=0;
 	if(strlen($model_name)>=1) $MODEL_ONLY=1;
 	$query ="select * from models where username='$username'";
-	echo "query=$query";
+//	echo "query=$query";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
@@ -294,13 +297,14 @@ function show_my_models($username,$model_name)
 			if($MODEL_ONLY and $object_name == $model_name) $query_rows = $row;
 			echo "<tr>\n";
 			echo "<td>$username</td>";
-			$filename = "../targets/" . get_member_id($username) . "/" . $object_name . ".dat";
+			$filename = "../targets/" . get_mem_id($username) . "/" . $object_name . ".dat";
 			if (file_exists($filename))
 			{
 				$fileok="";
 			}
 			else {
-				$fileok="<font color=red>Target model needs to be resaved for $filename</font>";
+				$fileok="<font color=red>Re-creating model for $filename</font>";
+				//$fileok="<font color=red>Target model needs to be resaved for $filename</font>";
 			}
 			echo "<td><a href=\"member-index.php?model=$object_name\">$object_name $fileok</a></td>";
 			echo "<td>$object_desc</td>";
@@ -572,4 +576,452 @@ function insert_users($db,$file)
 		printf("<tr><td>$row</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>n", $myrow[0], $myrow[1], $myrow[2], $myrow[3], $myrow[4]);
 	}
 	echo "</table>";
+}
+function check_dat($username) {
+	require_once('../conf/config.php');
+	$SQL_query = "SELECT * from models where username = '$username'";
+ 	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
+	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
+	$result=mysql_query ($SQL_query, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	if (!$result)
+	{
+		$message  = 'Invalid query: ' . mysql_error() . "\n";
+		$message .= 'Whole query: ' . $query;
+		die($message);
+	}
+	$NO_DATA_FOUND=0;
+	if (mysql_num_rows($result) == 0)
+	{
+		$NO_DATA_FOUND=1;
+	}
+	$query_rows=array();
+	// get a row of data from the sql query
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	
+		$pixel_count_even=$folds * intval($pixel_count/$folds); // this is the total pixels that are evenly divisible.
+		if($folds==1)
+		{
+			$maxPixels=$pixel_count;
+			$maxStrands=$total_strings;
+		}
+		else
+		{
+			$maxPixels = intval($pixel_count/$folds); // 
+			$maxStrands=intval(0.5+($total_strings*$pixel_count)/$maxPixels);
+			if(strtoupper($start_bottom)=='Y')
+			{
+				$maxStrands=intval(0.5 + ($total_strings*$pixel_count_even)/$maxPixels);
+			}
+		}
+		$directory ="../targets";
+		if (file_exists($directory))
+		{
+			} else {
+			echo "The directory $directory does not exist, creating it";
+			mkdir($directory, 0777);
+		}
+		$member_id=get_mem_id($username);
+		$directory ="../targets/" . $member_id;
+		//echo "Checking $object_name ...";
+		if (file_exists($directory))
+		{
+			} else {
+			echo "The directory $directory does not exist, creating it";
+			mkdir($directory, 0777);
+		}
+		$filename = "../targets/" . get_mem_id($username) . "/" . $object_name . ".dat";
+		if (file_exists($filename)) {
+			//echo "found <br />";
+		} else
+		{
+			//echo "not found - creating new dat file<br />";
+			$target_array=array();
+			$n=0;
+			$p=0;
+			for($string=1;$string<=$total_strings;$string++)
+			{
+				$pixel_countN=$pixel_count;
+				if(strtoupper($start_bottom)=='Y')
+				{
+					$pixel_countN=$pixel_count_even;
+				}
+				for($user_pixel=1;$user_pixel<=$pixel_countN;$user_pixel++)
+				{
+					$n++;
+					$mod=($n%$maxPixels);
+					$s=intval(($n-1)/$maxPixels)+1;
+					if($mod==1)
+					{
+						if($folds==1)
+						{
+							$inc=-1;
+							$p=$maxPixels+1;
+						}
+						else if ($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
+						{
+							if($folds==1 or $s%2==1) // Odd strands
+							{
+								$inc=-1;
+								$p=$maxPixels+1;
+							}
+							else    // these are the even strands
+							{
+								$inc=1;
+								$p=0;
+							}
+						}
+						else if($mod==1)  // we have an odd number of folds
+						{
+							if($folds==1 or $s%2==1) // Odd strands
+							{
+								$inc=1;
+								$p=0;
+								if(strtoupper($start_bottom)=='Y' and $s%$folds==1 and $string%2==0 and $mod==1)
+								{
+									$inc=-1;
+									$p=$maxPixels+1;
+								}
+							}
+							else    // these are the odd strands
+							{
+								$inc=-1;
+								$p=$maxPixels+1;
+								if(strtoupper($start_bottom)=='Y' and $s%$folds==1 and $string%2==0 )
+								{
+									$inc=-1;
+									$p=$maxPixels+1;
+								}
+							}
+						}
+					}
+					$p+=$inc;
+					$target_array[$s][$p]['string'] =$string;
+					$target_array[$s][$p]['user_pixel'] =$user_pixel;
+				}
+			}
+			$string=1;
+			$n2=0;
+			for($p=1;$p<=$maxPixels;$p++)
+			{
+				for($s=1;$s<=$maxStrands;$s++)
+				{
+					$n2++;
+					if(strtoupper($start_bottom)=='Y' or $n2<=$n)
+					{
+						if(isset($target_array[$s][$p]['string']))
+						{
+							$string=$target_array[$s][$p]['string'] ;
+							if($string%2==1) $color="lightblue";
+							else $color="lightgreen";
+							$user_pixel=$target_array[$s][$p]['user_pixel'];
+						}
+						else
+						{
+							$user_pixel=0;
+							$color="lightgray";
+						}
+					}
+					else
+					{
+						$user_pixel=0;
+						$color="lightgray";
+					}
+				}
+			}
+			for($s=1;$s<=$maxStrands;$s++)
+			{
+				$s_mod=$s%$folds;
+			}
+			for($string=1;$string<=$total_strings;$string++)
+			{
+				$string_mod=$string%2;
+			}
+			$target_array2= array($target_array,$username,$object_name) ;
+			if($model_type=="MTREE")
+			{
+				$full_path=mega_write($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
+			}
+			else if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY")
+			{
+				$full_path=matrix_write($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+			}
+			else if($model_type=="SINGLE_STRAND")
+			{
+				$full_path=single_write($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
+			}
+			else
+			{
+				echo "<pre>ERROR! Model type $model_type is unknown</pre>\n";
+			}
+		}
+	}
+	return;
+}	
+
+function mega_write($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2)
+{
+	#	Build a mega-Tree with arbitray strands
+	$PI = pi();
+	$DTOR = $PI/180;
+	$RTOD = 180/$PI;
+	$ang=atan2(5,10); // assume a 10' tree with a 5' diameter to get the angles to model with
+	$rad = $ang;
+	$pixel_spacing=3.0;
+	$hypt = $pixel_count*$pixel_spacing;	// assume 3" spacing between nodes.
+	$hyp=0;
+	$h_dx = cos($rad)*$pixel_spacing;
+	$height = $h_dx*$maxPixels;
+	$bottom_diameter=$height/2;
+	$degree_per_segment = 360/$maxStrands;
+	#	10' high, 2.5' radius
+	$bottom_radius=$bottom_diameter/2;  
+	$target_array=$target_array2[0];
+	$username=$target_array2[1];
+	$model_name=$target_array2[2];
+	$member_id=get_mem_id($username);
+	$path=$_SERVER['DOCUMENT_ROOT'];
+	$path.="nutcracker/targets/" . $member_id ;
+	##	passed in now thru runtime arg, 	strands=16;
+	$dat_file = $path . "/" . $model_name . ".dat";
+	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
+	fwrite($fh,"#    $dat_file\n");
+	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
+	fwrite($fh,"#    Col 2: Strand number.\n");
+	fwrite($fh,"#    Col 3: Nutcracker Pixel#\n");
+	fwrite($fh,"#    Col 4: X location in world coordinates\n");
+	fwrite($fh,"#    Col 5: Y location in world coordinates\n");
+	fwrite($fh,"#    Col 6: Z location in world coordinates\n");
+	fwrite($fh,"#    Col 7: RESERVED\n");
+	fwrite($fh,"#    Col 8: User string\n");
+	fwrite($fh,"#    Col 9: User pixel\n");
+	fwrite($fh,"#    Col 10: **User login who created target\n");
+	fwrite($fh,"#    Col 11: **Your TARGET_MODEL_NAME\n");
+	fwrite($fh,"#            ** Optional fields\n");
+	$pixels=$maxPixels;
+	$side = sqrt($height*$height + $bottom_radius*$bottom_radius);
+	if($maxPixels>0)
+	{
+		//	$pixel_spacing = $pixel_length/$maxPixels;
+		$pixel_length = $pixel_spacing * $maxPixels;
+		$pixel_should_be = $side/$maxPixels;
+	}
+	else
+	{
+		echo "<pre>ERROR! Something looks wrong. we have zero for pixels per strand</pre>\n";
+		$pixel_spacing=1;
+		$pixel_should_be = 1;
+	}
+	$ang=atan2($bottom_radius,$height);
+	$rad = $ang;
+	$hyp=0;
+	$h_dx = cos($rad)*$pixel_spacing;
+	$height_sb = $h_dx*$maxPixels;
+	$degree_per_segment = 360/$maxStrands;
+	for ($s=1;$s<=$maxStrands;$s++)
+	{
+		$hyp=0;
+		for ($p=1;$p<=$maxPixels;$p++)
+		{
+			$hyp=$p*$pixel_spacing;
+			$h = $height - cos($rad)*$hyp;
+			//$h = $height - ($p * $h_dx);
+			$r = sin($rad)*$hyp;
+			$degree_rotation=($s-1)*$degree_per_segment;
+			$x2=getx($r,$degree_rotation);
+			$y2=gety($r,$degree_rotation);
+			//if($hyp<=$side)
+			{
+				//	lave the 6yh token 0 as a place holder for the RGB value.
+				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+			}
+		}
+		fwrite($fh, "\n" );
+	}
+	fclose($fh);
+	return $dat_file;
+}
+
+function matrix_write($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
+{
+
+	#	Build a matrix with arbitray strands
+	$PI = pi();
+	$DTOR = $PI/180;
+	$RTOD = 180/$PI;
+	$pixel_spacing=3.0;
+	$width_bottom = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	$width_top = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	if($model_type=="RAY") $width_top=$width_bottom/5;
+	$height = $pixel_spacing*$maxPixels;
+	$target_array=$target_array2[0];
+	$username=$target_array2[1];
+	$model_name=$target_array2[2];
+	$member_id=get_mem_id($username);
+	$path=$_SERVER['DOCUMENT_ROOT'];
+	$path.="nutcracker/targets/" . $member_id ;
+	##	passed in now thru runtime arg, 	strands=16;
+	$dat_file = $path . "/" . $model_name . ".dat";
+	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
+	fwrite($fh,"#    $dat_file\n");
+	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
+	fwrite($fh,"#    Col 2: Strand number.\n");
+	fwrite($fh,"#    Col 3: Nutcracker Pixel#\n");
+	fwrite($fh,"#    Col 4: X location in world coordinates\n");
+	fwrite($fh,"#    Col 5: Y location in world coordinates\n");
+	fwrite($fh,"#    Col 6: Z location in world coordinates\n");
+	fwrite($fh,"#    Col 7: User string\n");
+	fwrite($fh,"#    Col 8: User pixel\n");
+	fwrite($fh,"# \n");
+	$pixels=$maxPixels;
+	$x_spacing=$x_spacing_top=$pixel_spacing;
+	$s=1;
+	$y2=0;  // y2 is unused
+	for ($p=1;$p<=$maxPixels;$p++)
+	{
+		$mod=($p%$maxStrands)+1;
+		$mod2 = $maxPixels-$mod+1;
+		$mod2 = $maxPixels-$p;
+		
+			$h= ($mod2*$x_spacing);
+	
+		if(isset($target_array[$s][$p]['string']))
+		{
+			$s_orig=$s; $p_orig=$p;
+			$s0=$s; $p0=$p;
+			if($model_type=="HORIZ_MATRIX")
+			{
+				if($s_orig%$folds==1)
+				{
+					$s0=$p;
+				}
+				else{
+					$s0=$maxPixels-$p+1;
+				}
+				$p0=$s_orig;
+				$s2=$maxPixels/2;
+				$mod2 = $maxStrands-$p0;
+			} else {
+				$s2=0;
+			}
+			$x2=$s0*3 - $s2*3;
+			$h=$mod2*3;
+			fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+			//printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+		}
+	}
+	fwrite($fh, "\n" );
+	fclose($fh);
+	//echo "</pre>\n";
+	return $dat_file;
+}
+
+function single_write($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
+{
+	#	Build a single strand with arbitray strands
+	$PI = pi();
+	$DTOR = $PI/180;
+	$RTOD = 180/$PI;
+	$pixel_spacing=3.0;
+	$width_bottom = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	$width_top = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	if($model_type=="RAY") $width_top=$width_bottom/5;
+	$height = $pixel_spacing*$maxPixels;
+	$target_array=$target_array2[0];
+	$username=$target_array2[1];
+	$model_name=$target_array2[2];
+	$member_id=get_mem_id($username);
+	$path=$_SERVER['DOCUMENT_ROOT'];
+	$path.="nutcracker/targets/" . $member_id ;
+	##	passed in now thru runtime arg, 	strands=16;
+	$dat_file = $path . "/" . $model_name . ".dat";
+	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
+	fwrite($fh,"#    $dat_file\n");
+	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
+	fwrite($fh,"#    Col 2: Strand number.\n");
+	fwrite($fh,"#    Col 3: Nutcracker Pixel#\n");
+	fwrite($fh,"#    Col 4: X location in world coordinates\n");
+	fwrite($fh,"#    Col 5: Y location in world coordinates\n");
+	fwrite($fh,"#    Col 6: Z location in world coordinates\n");
+	fwrite($fh,"#    Col 7: User string\n");
+	fwrite($fh,"#    Col 8: User pixel\n");
+	fwrite($fh,"# \n");
+	$pixels=$maxPixels;
+	$x_spacing=$x_spacing_top=$pixel_spacing;
+	for ($s=1;$s<=$maxStrands;$s++)
+	{
+		$hyp=0;
+		$s2=$maxStrands/2;
+		$s_delta = $s2-$s;
+		$x2=$s_delta*$x_spacing;
+		$x2_top=$s_delta*$x_spacing;
+		if($model_type=="RAY")
+		{
+			$x2_top= $s_delta*$x_spacing_top;
+		}
+		$y2=0;
+		for ($p=1;$p<=$maxPixels;$p++)
+		{
+			$mod=($p%$maxStrands)+1;
+			$mod2 = $maxPixels-$mod+1;
+			$mod2 = $maxPixels-$p;
+			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")
+				$h= ($mod2*$x_spacing);
+			else 	if($model_type=="RAY")
+				$h= ($mod2*$x_spacing) - $x_spacing;
+			if(isset($target_array[$s][$p]['string']))
+			{
+				$s_orig=$s; $p_orig=$p;
+				$s0=$s; $p0=$p;
+				if($model_type=="HORIZ_MATRIX")
+				{
+					if($s_orig%$folds==1)
+					{
+						$s0=$p;
+					}
+					else{
+						$s0=$maxPixels-$p+1;
+					}
+					$p0=$s_orig;
+					$s2=$maxPixels/2;
+					$mod2 = $maxStrands-$p0;
+				}
+				$x2=$s0*3 - $s2*3;
+				$h=$mod2*3;
+				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+				//printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+			}
+		}
+		fwrite($fh, "\n" );
+	}
+	fclose($fh);
+	return $dat_file;
+}
+function get_mem_id($username)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	$query = "select member_id from members where username='$username'";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	$member_id=0;
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	mysql_close();
+	if($member_id==0)
+		echo "<pre>ERROR: We did not find username [$username]</pre>\n";
+	return ($member_id);
 }
