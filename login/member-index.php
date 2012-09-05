@@ -10,6 +10,7 @@
 //
 //*************************************************************************************************
 require_once('../conf/auth.php');
+require_once('../conf/barmenu.php');
 define('BASE_URL', substr($_SERVER['PHP_SELF'],0,-22));  //this returns the path (minus the login/) string
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -26,11 +27,12 @@ define('BASE_URL', substr($_SERVER['PHP_SELF'],0,-22));  //this returns the path
 <meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
 <meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="../css/barmenu.css">
+<script type="text/javascript" src="../js/barmenu.js"></script>
 </head>
 <body>
-<h1>NUTCRACKER: RGB Effects Builder<br/>
+<?php show_barmenu();?>
 Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<?php $menu="member-index"; require "../conf/menu.php"; ?>
 <?php
 /*echo "<pre>";
 print_r($_SESSION);
@@ -203,12 +205,13 @@ name="UNIT_OF_MEASURE">cm
 </table>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 </form>
+<?php /*
 <form action="<?php echo BASE_URL;?>export.php" method="POST">
 <input type="hidden" name="username" value="<?php echo $username;?>" />
 <input type="submit" name="cmdExport" value="Export files for backup from server" />
 </form>
 <?php
-if ($_SERVER['SERVER_NAME'] != 'meighan.net')
+/*if ($_SERVER['SERVER_NAME'] != 'meighan.net')
 {
 	// if ($_SERVER['SERVER_NAME'] != 'localhost')
 	{
@@ -220,7 +223,7 @@ if ($_SERVER['SERVER_NAME'] != 'meighan.net')
 		</form>
 		<?php 
 	}
-}
+}*/
 show_user_base($username); 
 $menu="member-index"; require "../conf/menu.php"; 
 echo "</body>";
