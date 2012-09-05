@@ -3,6 +3,14 @@ var timeout         = 500;
 var closetimer		= 0;
 var ddmenuitem      = 0;
 
+function NewURL(url,intype,id) {
+	var myStr = document.forms[0].elements[2].value;
+	var myName = document.forms[0].elements[2].name;
+	var newurl = url + '?type='+intype+'&id='+id+'&frame_delay='+myStr;
+	//alert(newurl);
+	document.location.href=newurl;
+}
+
 // open hidden layer
 function mopen(id)
 {	
