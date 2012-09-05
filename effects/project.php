@@ -18,6 +18,7 @@ require_once('../conf/barmenu.php');
 <meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="../css/barmenu.css">
+<link href="../css/ncFormDefault.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	
@@ -44,14 +45,7 @@ if (isset($type)) {
 			break;
 		case 3:
 			if (isset($id)) {
-				$msg_str=remove_song($id,$username);
-			} else {
-				$msg_str="***Error occurred *** no song id selected<br />";
-			}
-			break;
-		case 4:
-			if (isset($id)) {
-				$msg_str=$msg_str=add_song($id,$username,$frame_delay);
+				$msg_str=remove_song($id,$username,$model_name);
 			} else {
 				$msg_str="***Error occurred *** no song id selected<br />";
 			}
@@ -61,11 +55,12 @@ if (isset($type)) {
 	}
 } else {
 	extract($_POST);
-	if (isset($song_cancel)) {
+	if (isset($NewProjectCancel)) {
 		$msg_str="Song add was cancelled";
 	} 
-	if (isset($song_submit)) {
-		$msg_str=add_song($song_id,$username);
+	if (isset($NewProjectSubmit)) {
+		//echo "$song_id  , $username,   $frame_delay, $model_name <br />";
+		$msg_str=add_song($song_id,$username, $frame_delay, $model_name);
 	}
 }
 echo $msg_str;
@@ -82,11 +77,12 @@ echo $msg_str;
 <th>Song Name</th>
 <th>Artist</th>
 <th>Purchase song from here</th>
+<th>Model</th>
 <th>Frame Timing (ms)</th>
 <th>Commands</th>
 </tr>
 <?php
-	$sql = "SELECT song.song_id as song_id, song_name, artist, song_url, frame_delay FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username'";
+	$sql = "SELECT song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username'";
 	//echo "$sql <br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
@@ -100,13 +96,15 @@ echo $msg_str;
 		$song_name = $row['song_name'];
 		$song_url = $row['song_url'];
 		$frame_delay = $row['frame_delay'];
+		$model_name = $row['model_name'];
 	?>
 <tr>
 	<td><a href="project.php?type=2&id=<?php echo $song_id?>"><?php echo $song_name?></a></td>
 	<td><?php echo $artist?></td>
 	<td><a href="<?php echo $song_url?>"><?php echo $song_url?></a></td>
+	<td><?php echo $model_name?></td>
 	<td><?php echo $frame_delay?></td>
-	<td><a href="project.php?type=2&id=<?php echo $song_id?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="project.php?type=3&id=<?php echo $song_id?>"><img src="../images/delete.png">Remove</a></td>
+	<td><a href="project.php?type=2&id=<?php echo $song_id?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="project.php?type=3&id=<?php echo $song_id?>&model_name=<?php echo $model_name?>"><img src="../images/delete.png">Remove</a></td>
 </tr>
 <?php		
 	}
@@ -118,10 +116,10 @@ echo $msg_str;
 <p />
 <a href="project.php?type=1">Add a song</a><br />
 <?php
-function remove_song($song_id, $username) {
+function remove_song($song_id, $username, $model_name) {
 	$song_name=getSongName($song_id);
-	$sql = "DELETE FROM project WHERE song_id=$song_id AND username='$username'";
-	//echo "$sql <br />";
+	$sql = "DELETE FROM project WHERE song_id=$song_id AND username='$username' AND model_name='$model_name'";
+	// echo "$sql <br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
 	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
@@ -129,15 +127,23 @@ function remove_song($song_id, $username) {
 	return("Song '$song_name' removed");
 }
 
-function add_song($song_id, $username, $frame_delay) {
+function add_song($song_id, $username, $frame_delay, $model_name) {
 	$song_name=getSongName($song_id);
-	$sql = "REPLACE INTO project (song_id, username,frame_delay) VALUES ($song_id,'$username',$frame_delay)";
+	$sql2 = 'Select count(*) as songcnt from project WHERE song_id='.$song_id.' AND username="'.$username.'" AND model_name="'.$model_name.'"';
+	$sql = "REPLACE INTO project (song_id, username,frame_delay, model_name) VALUES (".$song_id.",'".$username."',".$frame_delay.",\"".$model_name."\")";
 	//echo "$sql <br />";
+	//echo "$sql2 <br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
 	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
+	$result2 = mysql_query ($sql2, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
+	if ($row['songcnt'] > 0) {
+	return("*** Add Canceled *** Song '$song_name' and Model '$model_name' already exists!");
+	} else {
 	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
-	return("Song '$song_name' added");
+	return("Song '$song_name' and Target '$model_name' added");
+	}
 }
 
 function getSongName($song_id) {
@@ -156,41 +162,96 @@ function getSongName($song_id) {
 	return($retVal);
 }
 function select_song($username) {
-	$sql = "SELECT song_id, song_url, song_name, artist FROM song WHERE song_id NOT IN (SELECT song_id FROM project WHERE username='$username')";
+	$sql = "SELECT song_name, song.song_id, artist, song_url, min( start_secs )AS MinTime, max( end_secs )AS MaxTime\n"
+     . "FROM song\n"
+     . "LEFT JOIN song_dtl ON song.song_id = song_dtl.song_id\n"
+     . "GROUP BY song_name, song.song_id\n";
+    // . "HAVING song.song_id NOT IN (SELECT song_id from project where username='".$username."')";
+	$sql2 = "SELECT object_name FROM models WHERE username='$username'";
 	//echo "$sql <br />";
+	//echo "$sql2 <br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
 	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
 	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
 	?>
 	<h2>Available Songs</h2>
-	<form name="addsong" method="post" action="project.php">
-	<input type="hidden" name="id" value=1>
-	<input type="hidden" name="intype" value=2>
-	Input frame delay for this song : <input type="text" name="delay" value="50">
-	<table border=\"1\"> <?php
+	<table border="1" cellpadding="1" cellspacing="1">
+	<?php
 	$rowcnt = mysql_num_rows($result);
 	if ($rowcnt == 0)
 	{
 		echo "<tr><th>No more songs available to add!</th></tr>";
 	} else {
-		echo "<tr><th>Song Name</th><th>Artist</th><th>Purchase song from here</th><th>Commands</th></tr>";
-		while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$song_name=$row['song_name'];
-			$song_id=$row['song_id'];
-			$artist=$row['artist'];
-			$song_url=$row['song_url'];
-?>
-			<tr>
-				<td><?php echo $song_name?></td>
-				<td><?php echo $artist?></td>
-				<td><a href="<?php echo $song_url?>"><?php echo $song_url?></a></td>
-				<td><input name="song_submit" type="Button" value="Add Song" onClick="NewURL('project.php',4,<?php echo $song_id?>);">&nbsp;&nbsp;&nbsp;<a href="project.php">Cancel</a></td>
-			</tr>
+	?>
+	<?php 
+		$SongSel=parseSongs($result);
+		echo $SongSel[1];?>
+	</table>
+	<p />
+	<h2>Select a Song</h2>
+	<form name="addsong" method="post" action="project.php">
+	<input type="hidden" name="intype" value=2>
+	<table width="375"	border="0" cellpadding="1" cellspacing="1">
+	<tr>
+		<td class="FormFieldName"><div align="right">Song</div></td>
+		<td class="FormFieldName"><?php echo $SongSel[0];?></td>
+	</tr>
+	<?php 
+	}	?>
+    <tr>
+      <td class="FormFieldName"><div align="right">Target</div></td>
+      <td class="FormFieldName">
+	  	 <?php	
+	 	$result2 = mysql_query ($sql2, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+		 echo parseTargetSelect($result2); ?> 
+	  </td>
+    </tr>
+    <tr>
+      <td class="FormFieldName"><div align="right">Frame Rate (ms)</div></td>
+      <td class="FormFieldName"><div align="left">
+      <input name="frame_delay" type="text" id="frame_delay" value="50" size="11" maxlength="11" /></div></td>
+    </tr>
+    <tr>
+      <td><div align="center">
+        <input name="NewProjectCancel" type="submit" class="SubmitButton" id="NewProjectCancel" value="Cancel" />
+      </div></td>
+      <td><div align="center">
+        <input name="NewProjectSubmit" type="submit" class="SubmitButton" id="NewProjectSubmit" value="Submit New Song" />
+      </div></td>
+    </tr>
+	</table>
+	</form>
 <?php
-		}
-	}
-	echo "</table>";
-	echo "</form>";
 }
+function parseTargetSelect($result) {
+	$retStr='<select name="model_name" class="FormSelect" id="model_name">';
+	while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$model_name=$row['object_name'];
+		$retStr.='<option value="'.$model_name.'">'.$model_name.'</option>';
+	}
+	$retStr.='</select>';
+	return($retStr);
+}
+function parseSongs($result) {
+	$retVal = array();
+	$retStr1='<select name="song_id" class="FormSelect" id="song_id">';
+	$retStr2='<tr><td>Song Name</td><td>Song url</td><td>Length of song (sec)</td><td>Length of song (min)</td></tr>';
+	while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$song_name=$row['song_name'];
+		$song_id=$row['song_id'];
+		$song_url=$row['song_url'];
+		$MinTime=$row['MinTime'];
+		$MaxTime=$row['MaxTime'];
+		$song_length = round(($MaxTime-$MinTime),2);
+		$song_length_min = round(($song_length/60),2);
+		$retStr1.='<option value='.$song_id.'>'.$song_name.'</option>';
+		$retStr2.='<tr><td><a href="'.$song_url.'">'.$song_name.'</a></td><td><a href="'.$song_url.'">'.$song_url.'</a><td>'.$song_length.'</td><td>'.$song_length_min.'</td></tr>';
+	}
+	$retStr1.='</select>';
+	$retVal[0]=$retStr1;
+	$retVal[1]=$retStr2;
+	return($retVal);
+}
+
 ?>
