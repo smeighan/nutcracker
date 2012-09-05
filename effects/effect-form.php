@@ -21,6 +21,7 @@ Nutcracker: RGB Effects Builder
 
 require_once('../conf/auth.php');
 require_once('../effects/read_file.php');
+require_once('../conf/barmenu.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -36,12 +37,12 @@ require_once('../effects/read_file.php');
 		<meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
 		<meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="../css/barmenu.css">
+<script type="text/javascript" src="../js/barmenu.js"></script>
 </head>
 <body>
-<h1>NUTCRACKER: RGB Effects Builder<br/>
+<?php show_barmenu();?>
 Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<?php $menu="effect-form"; require "../conf/menu.php"; ?>
-
 
 <?php
 // index.php

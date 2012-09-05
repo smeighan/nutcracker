@@ -21,9 +21,7 @@ require_once('../conf/barmenu.php');
 </head>
 <body>
 	
-<?php show_barmenu();?>
-<h3>Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h3>
-<?php
+<?php show_barmenu();
 //
 require("../effects/read_file.php");
 set_time_limit(60*60);
@@ -53,7 +51,7 @@ if (isset($type)) {
 			break;
 		case 4:
 			if (isset($id)) {
-				$msg_str="Got to add";
+				$msg_str=$msg_str=add_song($id,$username,$frame_delay);
 			} else {
 				$msg_str="***Error occurred *** no song id selected<br />";
 			}
@@ -131,9 +129,9 @@ function remove_song($song_id, $username) {
 	return("Song '$song_name' removed");
 }
 
-function add_song($song_id, $username) {
+function add_song($song_id, $username, $frame_delay) {
 	$song_name=getSongName($song_id);
-	$sql = "REPLACE INTO project (song_id, username) VALUES ($song_id,'$username')";
+	$sql = "REPLACE INTO project (song_id, username,frame_delay) VALUES ($song_id,'$username',$frame_delay)";
 	//echo "$sql <br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
@@ -164,11 +162,17 @@ function select_song($username) {
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
 	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
 	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
-	echo "<h2>Available Songs</h2>";
-	echo "<table border=\"1\">";
+	?>
+	<h2>Available Songs</h2>
+	<form name="addsong" method="post" action="project.php">
+	<input type="hidden" name="id" value=1>
+	<input type="hidden" name="intype" value=2>
+	Input frame delay for this song : <input type="text" name="delay" value="50">
+	<table border=\"1\"> <?php
 	$rowcnt = mysql_num_rows($result);
 	if ($rowcnt == 0)
 	{
+		echo "<tr><th>No more songs available to add!</th></tr>";
 	} else {
 		echo "<tr><th>Song Name</th><th>Artist</th><th>Purchase song from here</th><th>Commands</th></tr>";
 		while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -178,14 +182,15 @@ function select_song($username) {
 			$song_url=$row['song_url'];
 ?>
 			<tr>
-				<td><a href="project.php?type=2&id=<?php echo $song_id?>"><?php echo $song_name?></a></td>
+				<td><?php echo $song_name?></td>
 				<td><?php echo $artist?></td>
 				<td><a href="<?php echo $song_url?>"><?php echo $song_url?></a></td>
-				<td><a href="project.php?type=4&id=<?php echo $song_id?>"><img src="../images/add.gif">Add Song</a>&nbsp;&nbsp;&nbsp;<a href="project.php">Cancel</a></td>
+				<td><input name="song_submit" type="Button" value="Add Song" onClick="NewURL('project.php',4,<?php echo $song_id?>);">&nbsp;&nbsp;&nbsp;<a href="project.php">Cancel</a></td>
 			</tr>
 <?php
 		}
 	}
 	echo "</table>";
+	echo "</form>";
 }
 ?>
