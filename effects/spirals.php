@@ -151,7 +151,9 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 	$amperage=array();
 	//
 	//
-	for ($f=1;$f<=$maxStrand;$f++)
+	$maxFrames = $maxStrand;
+	$maxFrames = intval($maxStrand/$speed)+1;
+	for ($f=1;$f<=$maxFrames;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
 		$dat_file[$f] = $path . "/" .  $x_dat;

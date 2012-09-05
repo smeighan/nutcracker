@@ -36,7 +36,6 @@ require_once('../conf/auth.php');
 <?php
 //
 error_reporting(E_ALL);
-
 require("read_file.php");
 $username=$_SESSION['SESS_LOGIN'];
 $member_id=$_SESSION['SESS_MEMBER_ID'];
@@ -63,7 +62,7 @@ Array
 	FLY_0_0_TEST?username=f?effect_class=butterfly?user_targets=AA
 */ 
 $array_to_save=$_POST;
-$array_to_save['OBJECT_NAME']='bars';
+$array_to_save['OBJECT_NAME']='single_strand';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
 $effect_name = rtrim($effect_name);
@@ -106,15 +105,14 @@ $file      =$arr[7];
 $min_max   =$arr[8];
 $s_pixel=$arr[9];
 $maxFrame=20;
-$maxFrame=intval(($seq_duration*1000/$frame_delay)/$speed)+1;
+$maxFrame=intval($seq_duration*1000/$frame_delay);
 $seq_number=0;
 $window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 // $tree_rgb[$s][$p]=$rgb_val;
 //$number_bars=10;
-$bar_width = intval($maxPixel/$number_bars)+1;
+$bar_width = intval($maxPixel/$number_bars);
 if($bar_width==0) $bar_width=1;
 echo "<pre>bar_width=$bar_width,  number_bars=$number_bars</pre>\n";
-$direction=strtolower($direction);	// make sure commands are lower case
 for($f=1;$f<=$maxFrame;$f++)
 {
 	$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -122,103 +120,100 @@ for($f=1;$f<=$maxFrame;$f++)
 	$dat_file_array[]=$dat_file[$f];
 	$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
 	fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
-	for ($s=1;$s<=$maxStrand;$s++)
+	for($p=1;$p<=$maxPixel;$p++)
 	{
-		for($p=1;$p<=$maxPixel;$p++)
+		if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 		{
-			if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
-			{
-				//$amperage[$f][$s] += $V*0.060; // assume 29ma for pixels tobe full on
-				$string=$user_pixel=0;
-				$rgb_val=hexdec("FFFFFF");
-				$bar_n =intval( $p/$bar_width);
-				$bar_n=$bar_n%6;
-				if($bar_n==0) $rgb_val=hexdec($color1);
-				if($bar_n==1) $rgb_val=hexdec($color2);
-				if($bar_n==2) $rgb_val=hexdec($color3);
-				if($bar_n==3) $rgb_val=hexdec($color4);
-				if($bar_n==4) $rgb_val=hexdec($color5);
-				if($bar_n==5) $rgb_val=hexdec($color6);
+			//$amperage[$f][$s] += $V*0.060; // assume 29ma for pixels tobe full on
+			$string=$user_pixel=0;
+			$rgb_val=hexdec("FFFFFF");
+			$bar_n =intval( $p/$bar_width);
+			$bar_n=$bar_n%6;
+			if($bar_n==0) $rgb_val=hexdec($color1);
+			if($bar_n==1) $rgb_val=hexdec($color2);
+			if($bar_n==2) $rgb_val=hexdec($color3);
+			if($bar_n==3) $rgb_val=hexdec($color4);
+			if($bar_n==4) $rgb_val=hexdec($color5);
+			if($bar_n==5) $rgb_val=hexdec($color6);
 			/*	if($bar_n==6) $rgb_val=hexdec("FF00FF");
-				if($bar_n==7) $rgb_val=hexdec("FFF0FF");
-				if($bar_n==8) $rgb_val=hexdec("FF0FFF");
-				if($bar_n==9) $rgb_val=hexdec("FF00FF");
-				if($bar_n==10) $rgb_val=hexdec("F0000F");*/
-				//$rgb_val=hexdec("FFFFFF");
-				$HSV=RGBVAL_TO_HSV($rgb_val);
-				$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
+			if($bar_n==7) $rgb_val=hexdec("FFF0FF");
+			if($bar_n==8) $rgb_val=hexdec("FF0FFF");
+			if($bar_n==9) $rgb_val=hexdec("FF00FF");
+			if($bar_n==10) $rgb_val=hexdec("F0000F");*/
+			//$rgb_val=hexdec("FFFFFF");
+			$HSV=RGBVAL_TO_HSV($rgb_val);
+			$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
 			//$direction='expand';
 			$f_offset = intval($f*$speed);
-				if($direction=='up')
-				{
-					$n=$p-$f_offset;
-					$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down
-				}
-				if($direction=='down')
-				{
-					$n=$p+$f_offset;
-					$pixel_ratio = (($p%$bar_width))/$bar_width; // up
-				}
-				if($direction=='compress')
-				{
-					$p2 = intval($maxPixel/2);
-					if($p<=$p2)
-					{
-					$n=$p-$f_offset;
-					$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
-					}
-					else{
-						$n=$p+$f_offset;
-					$pixel_ratio = (($p%$bar_width))/$bar_width; // up
-					}
-				}
-				if($direction=='expand')
-				{
-					$p2 = intval($maxPixel/2);
-					if($p>$p2)
-					{
-					$n=$p-$f_offset;
-					$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
-					}
-					else{
-						$n=$p+$f_offset;
-					$pixel_ratio = (($p%$bar_width))/$bar_width; // up
-					}
-				}
-				if($direction=='down')
-				{
-					$n=$p+$f_offset;
-					$pixel_ratio = (($p%$bar_width))/$bar_width; // up
-				}
-			//	$highlight='n';
-				if(strtoupper($highlight)=='Y' and $p%$bar_width==0) $S=0.0;
-				$pixel_ratio += 0.1;
-				if($pixel_ratio>1.0) $pixel_ratio=1.0;
-				if($fade_3d=='Y' or $fade_3d=='y') $V=$V*$pixel_ratio;
-				//echo "<pre>           H,S,V = $H,$S,$V</pre>\n";
-				$rgb_val = HSV_TO_RGB ($H, $S, $V);
-				$seq_number++;
-				if($n<1) $n+=$maxPixel;
-				if($n<1) $n+=$maxPixel;
-				if($n<1) $n+=$maxPixel;
-				if($n<1) $n+=$maxPixel;
-				$m=$n%$maxPixel;
-				if($m==0)
-				{
-					$p_new=$maxPixel;
-				}
-				else
-				{
-					$p_new = $m;
-				}
-				$hex=dechex($rgb_val);
-				//	echo "<pre>f,s,p = $f,$s,$p (p_new=$p_new, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
-				$xyz=$tree_xyz[$s][$p_new]; // get x,y,z location from the model.
-				fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
-				$s,$p_new,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
-				,$s_pixel[$s][$p_new][0],$s_pixel[$s][$p_new][1],
-				$f,$seq_number));
+			if($direction=='up')
+			{
+				$n=$p-$f_offset;
+				$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down
 			}
+			if($direction=='down')
+			{
+				$n=$p+$f_offset;
+				$pixel_ratio = (($p%$bar_width))/$bar_width; // up
+			}
+			if($direction=='compress')
+			{
+				$p2 = intval($maxPixel/2);
+				if($p<=$p2)
+				{
+					$n=$p-$f_offset;
+					$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
+				}
+				else{
+					$n=$p+$f_offset;
+					$pixel_ratio = (($p%$bar_width))/$bar_width; // up
+				}
+			}
+			if($direction=='expand')
+			{
+				$p2 = intval($maxPixel/2);
+				if($p>$p2)
+				{
+					$n=$p-$f_offset;
+					$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
+				}
+				else{
+					$n=$p+$f_offset;
+					$pixel_ratio = (($p%$bar_width))/$bar_width; // up
+				}
+			}
+			if($direction=='down')
+			{
+				$n=$p+$f_offset;
+				$pixel_ratio = (($p%$bar_width))/$bar_width; // up
+			}
+			//	$highlight='n';
+			if(strtoupper($highlight)=='Y' and $p%$bar_width==0) $S=0.0;
+			$pixel_ratio += 0.1;
+			if($pixel_ratio>1.0) $pixel_ratio=1.0;
+			if($fade_3d=='Y' or $fade_3d=='y') $V=$V*$pixel_ratio;
+			//echo "<pre>           H,S,V = $H,$S,$V</pre>\n";
+			$rgb_val = HSV_TO_RGB ($H, $S, $V);
+			$seq_number++;
+			if($n<1) $n+=$maxPixel;
+			if($n<1) $n+=$maxPixel;
+			if($n<1) $n+=$maxPixel;
+			if($n<1) $n+=$maxPixel;
+			$m=$n%$maxPixel;
+			if($m==0)
+			{
+				$p_new=$maxPixel;
+			}
+			else
+			{
+				$p_new = $m;
+			}
+			$hex=dechex($rgb_val);
+			//	echo "<pre>f,s,p = $f,$s,$p (p_new=$p_new, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
+			$xyz=$tree_xyz[$s][$p_new]; // get x,y,z location from the model.
+			fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
+			$s,$p_new,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
+			,$s_pixel[$s][$p_new][0],$s_pixel[$s][$p_new][1],
+			$f,$seq_number));
 		}
 	}
 }

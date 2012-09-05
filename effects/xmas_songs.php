@@ -52,7 +52,7 @@ else
 {
 	$target=$_POST['target'];
 	update_votes($username,$target);
-	insert_audit($username,"Xmas Songs Update"); //  record that someone has updated their xmas songs list
+	insert_audit($username,"Xmas Songs Update");
 	}
 //print_r($target);
 //echo "</pre>\n";

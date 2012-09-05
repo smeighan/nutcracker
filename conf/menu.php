@@ -33,6 +33,12 @@ Christmas Songs
 <?php if($menu=="xmas_songs") echo "</b></font>";?>
 </a></td>
 
+<td><a href="../effects/gallery-form.php">
+<?php if($menu=="gallery-form") echo "<font color=blue><b>"; ?>
+Gallery
+<?php if($menu=="gallery-form") echo "</b></font>";?>
+</a></td>
+
 
 <td><a href="../admin/admin.php">
 <?php if($menu=="admin") echo "<font color=blue><b>"; ?>
