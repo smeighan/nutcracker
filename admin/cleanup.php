@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require_once('../conf/auth.php');
+require_once('../conf/barmenu.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -29,11 +30,11 @@ require_once('../conf/auth.php');
 <meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
 <meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="../css/barmenu.css">
 </head>
 <body>
 <h1>Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<?php $menu="cleanup"; require "../conf/menu.php"; ?>
-<?php
+<?php show_barmenu();
 
 require_once('../conf/config.php');
 //Connect to mysql server
@@ -67,10 +68,13 @@ echo "<pre>";
 extract ($_POST);
 //print_r($_POST);
 //print_r($_SESSION);
-
-$c1=count($effect);
-
-$c2=count($target);
+$c1=$c2=0;
+if (isset($effect)) {
+	$c1=count($effect);
+}
+if (isset($target)) {
+	$c2=count($target);
+}
 echo "Deleting $c2 rows from TARGETS\n";
 if($c2>0)
 	foreach($target as $i => $object_name)
