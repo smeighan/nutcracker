@@ -16,14 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 require_once('../conf/header.php');
 // index.php
 require("../effects/read_file.php");
-echo "<pre>";
+/*echo "<pre>";
 echo "POST:\n";
 print_r($_POST);
 echo "SERVER:";
 print_r($_SERVER);
 //echo "SESSION:\n";
 //print_r($_SESSION);
-echo "</pre>";
+echo "</pre>";*/
 // http://localhost/nutcracker/login/single_strand-form.php?user=f?total_strings=3
 // 
 //

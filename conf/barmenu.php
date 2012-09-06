@@ -5,17 +5,17 @@ function show_barmenu()
 	?>
 	<h1>NUTCRACKER: RGB Effects Builder</h1>
 	<ul id="sddm">
-	<li><a href="/nutcracker" onmouseover="mopen('m1')" onmouseout="mclosetime()">Home</a></li>
-	<li><a href="/nutcracker/login/member-index.php" onmouseover="mopen('m2')" onmouseout="mclosetime()">Models</a></li>
-	<li><a href="/nutcracker/effects/effect-form.php" onmouseover="mopen('m3')" onmouseout="mclosetime()">Effects</a></li>
-	<li><a href="/nutcracker/project/project.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
-	<li><a href="/nutcracker/effects/xmas_songs.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">XmasSongs</a></li>
-	<li><a href="/nutcracker/effects/gallery-form.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Gallery</a></li>
-	<li><a href="/nutcracker/admin/admin.php" onmouseover="mopen('m7')" onmouseout="mclosetime()">Admin</a>
+	<li><a href="../" onmouseover="mopen('m1')" onmouseout="mclosetime()">Home</a></li>
+	<li><a href="../login/member-index.php" onmouseover="mopen('m2')" onmouseout="mclosetime()">Models</a></li>
+	<li><a href="../effects/effect-form.php" onmouseover="mopen('m3')" onmouseout="mclosetime()">Effects</a></li>
+	<li><a href="../project/project.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
+	<li><a href="../effects/xmas_songs.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">XmasSongs</a></li>
+	<li><a href="../effects/gallery-form.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Gallery</a></li>
+	<li><a href="../admin/admin.php" onmouseover="mopen('m7')" onmouseout="mclosetime()">Admin</a>
 		<div id="m7" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-		<a href="/nutcracker/admin/cleanup.php">Cleanup Old Effects and Models</a>
-		<a href="/nutcracker/admin/bug.php">Open a Bug or Enhancement ticket</a>
-		<a href="/nutcracker/effects/tutorials.html">Nutcracker Tutorials</a>
+		<a href="../admin/cleanup.php">Cleanup Old Effects and Models</a>
+		<a href="../admin/bug.php">Open a Bug or Enhancement ticket</a>
+		<a href="../effects/tutorials.html">Nutcracker Tutorials</a>
 		</div>
 	</li>
 	<li><a href="#" onmouseover="mopen('m8')" onmouseout="mclosetime()">Help</a>
@@ -31,7 +31,7 @@ function show_barmenu()
 		<a href="#">Submit Request Form</a>
 		</div>
 	</li>
-	<li><a href="/nutcracker/login/logout.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Logout</a></li>
+	<li><a href="../login/logout.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Logout</a></li>
 	<li>  <!-- paypal -->
 		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 		<input type="hidden" name="cmd" value="_donations"/>

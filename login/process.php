@@ -30,14 +30,14 @@ $requiredFields = array(
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-echo "<pre>";
+/*echo "<pre>";
 echo "POST:\n";
 print_r($_POST);
 echo "SERVER:";
 print_r($_SERVER);
 echo "SESSION:\n";
 print_r($_SESSION);
-echo "</pre>";
+echo "</pre>";*/
 $username= $_SESSION['SESS_LOGIN'];
 //echo "<pre>";
 //echo "process.php username=$username";
