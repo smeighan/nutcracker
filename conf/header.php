@@ -13,11 +13,11 @@ require_once('../conf/barmenu.php');
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
 <meta name="robots" content="index,follow"/>
 <meta name="googlebot" content="noarchive"/>
-<link rel="shortcut icon" href="barberpole.ico" type="image/x-icon"> 
+<link rel="shortcut icon" href="barberpole.ico" type="image/x-icon"/> 
 <meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
 <meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" href="../css/barmenu.css">
+<link rel="stylesheet" type="text/css" href="../css/barmenu.css"/>
 <link href="../css/ncFormDefault.css" rel="stylesheet" type="text/css" />
 </head>
 <body>

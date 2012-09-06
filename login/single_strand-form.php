@@ -73,7 +73,7 @@ echo "number_segments=$number_segments\n";
 echo "</pre>";*/
 echo "<h1>Single Strand</h1>";
 $self=$_SERVER['PHP_SELF'];
-echo "<form action=\"$self?user=$username?total_strings=$total_strings?object_name=$object_name\" method=\"POST\">\n";
+echo "<form action=\"$self?user=$username?total_strings=$total_strings?object_name=$object_name\" method=\"post\">\n";
 ?>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 <table border="1">
@@ -83,16 +83,17 @@ for($string=1;$string<=$total_strings;$string++)
 	echo "<tr><td>Enter the number of pixels in String #$string</td>";
 	$maxPixel=$pixel_array[$string];
 	echo "<td><input type=\"text\" STYLE=\"background-color: #ABE8EC;\" size=\"5\" maxlength=\"6\" 
-	value=\"$maxPixel\" name=\"pixel_array[$string]\"></td>\n";
+	value=\"$maxPixel\" name=\"pixel_array[$string]\"/></td>\n";
 	echo "</tr>\n";
 }
 ?>
 <tr>
 <td>Number of Segments</td>
-<td><input type="text" STYLE="background-color: #ABE8EC;" size="8" maxlength="" 
-<?php echo "value=\"$number_segments\""; ?> name="number_segments"><br/>
+<td><input type="text" style="background-color: #ABE8EC;" size="8" maxlength="" 
+<?php echo "value=\"$number_segments\""; ?> name="number_segments"/><br/>
 </td>
 </tr>
+</table>
 <?php
 if($first_time==0)
 {

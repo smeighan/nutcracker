@@ -259,10 +259,10 @@ function show_my_models($username,$model_name)
 	echo "<th>object_desc</th>";
 	echo "<th>model_type</th>";
 	//	echo "<th>Strings <br/>(aka Bundle or <br/>device)</th>";
-	echo "<th>total<br/>Strings<br/><font color=green>1-100</font></th>";
+	echo "<th>total<br/>Strings<br/><font color=\"green\">1-100</font></th>";
 	//	echo "<th>direction</th>";
 	//	echo "<th>Where does<br/>String#1 start <br/>(in degreees)</th>";
-	echo "<th>pixel count<br/>per string<br/><font color=green>10-10000</font></th>";
+	echo "<th>pixel count<br/>per string<br/><font color=\"green\">10-10000</font></th>";
 	echo "<th>Number of<br/>folds</th>";
 	echo "<th>Unit of<br/>measure</th>";
 	echo "<th>H1 . height</th>";
