@@ -6,11 +6,11 @@ function show_barmenu() {
 	<li><a href="/nutcracker" onmouseover="mopen('m1')" onmouseout="mclosetime()">Home</a></li>
 	<li><a href="/nutcracker/login/member-index.php" onmouseover="mopen('m2')" onmouseout="mclosetime()">Models</a></li>
 	<li><a href="/nutcracker/effects/effect-form.php" onmouseover="mopen('m3')" onmouseout="mclosetime()">Effects</a></li>
-	<li><a href="/nutcracker/effects/project.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
+	<li><a href="/nutcracker/project/project.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
 	<li><a href="/nutcracker/admin/admin.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">Admin</a>
 		<div id="m5" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-		<a href="/nutcracker/effects/cleanup.php">Cleanup Old Effects and Models</a>
-		<a href="/nutcracker/effects/bug.php">Open a Bug or Enhancement ticket</a>
+		<a href="/nutcracker/admin/cleanup.php">Cleanup Old Effects and Models</a>
+		<a href="/nutcracker/admin/bug.php">Open a Bug or Enhancement ticket</a>
 		<a href="/nutcracker/effects/tutorials.html">Nutcracker Tutorials</a>
 		</div>
 	</li>
