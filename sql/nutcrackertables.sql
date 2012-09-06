@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 06, 2012 at 11:25 AM
+-- Generation Time: Sep 06, 2012 at 02:24 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=548 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=550 ;
 
 -- --------------------------------------------------------
 
@@ -199,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `models` (
   `total_strings` int(11) DEFAULT NULL,
   `total_pixels` int(12) DEFAULT NULL,
   `number_segments` varchar(6) DEFAULT '0',
+  `gif_model` varchar(25) DEFAULT 'single',
   `direction` varchar(10) DEFAULT NULL,
   `orientation` int(11) DEFAULT NULL,
   `topography` varchar(16) DEFAULT NULL,
@@ -325,4 +326,3 @@ CREATE TABLE IF NOT EXISTS `snowstorm` (
   `counter` int(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`username`,`strand`,`pixel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='used for snowtorm.php';
-

@@ -18,6 +18,7 @@ require_once('../conf/header.php');
 print_r($_SESSION);
 echo "</pre>";*/
 // index.php
+$gif_model="";
 $username= $_SESSION['SESS_LOGIN'];
 $username=$username;
 $tokens=array("","");
@@ -37,6 +38,7 @@ if($WARN==1)
 }
 $row=show_my_models($username,$model_name);
 $number_segments=$row['number_segments'];
+$gif_model=$row['gif_model'];
 /*echo "<pre>";
 print_r($row);
 echo "<pre>\n";*/
@@ -49,6 +51,7 @@ if(empty($row)) // on our first time, we have no data for this user. initializze
 	$row['total_strings']=0;
 	$row['pixel_count']=0;
 		$row['number_rows']=0;
+			$row['member_index']='single';
 }
 $ip=@$REMOTE_ADDR; 
 //echo "<b>IP Address= $ip</b>";
@@ -92,9 +95,10 @@ $H1=$D1=0;
 <form action="process.php" method="POST">
 <table border="1">
 <input type="submit" name="submit" value="Submit Form to create your target model" />
-<input type="hidden" name="H1" value="<?php echo "$H1"; ?>">
-<input type="hidden" name="D1" value="<?php echo "$D1"; ?>">
-<input type="hidden" name="number_segments" value="<?php echo "$number_segments"; ?>">
+<input type="hidden" name="H1" value="<?php echo "$H1"; ?>"/>
+<input type="hidden" name="D1" value="<?php echo "$D1"; ?>"/>
+<input type="hidden" name="number_segments" value="<?php echo "$number_segments"; ?>"/>
+<input type="hidden" name="gif_model" value="<?php echo "$gif_model"; ?>"/>
 <tr>
 <td><b><font color="blue">**Your name for this object (up to 8 characters):</font></b>
 <input type="text" STYLE="background-color: #ABE8EC;" size="8" maxlength="" 

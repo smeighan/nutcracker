@@ -18,13 +18,13 @@ require_once('../conf/header.php');
 require("../effects/read_file.php");
 $segment_array=array();
 echo "<pre>";
-echo "POST:\n";
+/*echo "POST:\n";
 print_r($_POST);
 //echo "SERVER:";
 //print_r($_SERVER);
 //echo "SESSION:\n";
 //print_r($_SESSION);
-echo "</pre>";
+echo "</pre>";*/
 // http://localhost/nutcracker/login/single_strand-form.php?user=f?total_strings=3
 // 
 //
@@ -41,7 +41,9 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 { // yes
 	$pixel_array=get_strands($username,$object_name);
 	$segment_array=get_segments($username,$object_name);
-	$number_segments=get_number_segments($username,$object_name);
+	$number_segments_arr=get_number_segments($username,$object_name);
+	$number_segments=$number_segments_arr[0];
+	$gif_model=$number_segments_arr[1];
 	$first_time=1;
 }
 else
@@ -50,11 +52,11 @@ else
 	extract($_POST);
 	update_strands($username,$object_name,$pixel_array);
 	$c=count($segment_array);
-	update_number_segments($username,$object_name,$number_segments);
+	update_number_segments($username,$object_name,$number_segments,$gif_model);
 	$c=count($segment_array);
-	echo "<pre>";
+	/*echo "<pre>";
 	print_r($segment_array);
-	echo "</pre>";
+	echo "</pre>";*/
 	if($c>0) update_segments($username,$object_name,$segment_array);
 	/*	POST:
 	Array
@@ -72,11 +74,14 @@ else
 	[submit] => Submit Form to create your target model
 	)*/
 }
-/*echo "<pre>Tokens:";
-print_r($tokens);
+/*echo "<pre>Tokens:\n";
+echo "gif_model=$gif_model\n";
+echo "number_segments=$number_segments\n";
 echo "total_strings=$total_strings\n";
 echo "number_segments=$number_segments\n";
 echo "</pre>";*/
+//
+//
 echo "<h1>Single Strand</h1>";
 $self=$_SERVER['PHP_SELF'];
 echo "<form action=\"$self?user=$username?total_strings=$total_strings?object_name=$object_name\" method=\"post\">\n";
@@ -101,10 +106,11 @@ for($string=1;$string<=$total_strings;$string++)
 </tr>
 <tr>
 <td>What Type of Gif Model to preview with</td>
-<?php $checked_single="checked"; ?>
-<?php $checked_window=""; ?>
-<?php $checked_arch=""; ?>
-<td><input type="radio" name="gif_model" value="single" <?php echo "$checked_single "; ?> />Single Straight<br/>
+<?php $checked_single=$checked_window=$checked_arch="";
+if($gif_model=="single") $checked_single="checked"; 
+if($gif_model=="window") $checked_window="checked"; 
+if($gif_model=="arch") $checked_arch="checked"; ?>
+<td><input type="radio" name="gif_model" value="single" <?php echo "$checked_single "; ?> />Straight Line<br/>
 <input type="radio" name="gif_model" value="window" <?php echo "$checked_window "; ?> />Window (Assumes four segments)<br/>
 <input type="radio" name="gif_model" value="arch" <?php echo "$checked_arch "; ?> />Arch (Each segment makes an arch)</td>
 </td>
@@ -112,7 +118,8 @@ for($string=1;$string<=$total_strings;$string++)
 </tr>
 </table>
 <?php
-if($first_time==0) // if not first time, then we have data we can show
+$c=count($segment_array);
+if($first_time==0 or $c>0) // if not first time, then we have data we can show
 {
 	echo "<table border=1>";
 	for ($loop=1;$loop<=3;$loop++)
@@ -225,7 +232,7 @@ function get_models($username,$model_name)
 		*/
 	//	
 	$query ="select * from models where username='$username' and object_name='$model_name'";
-	echo "query=$query\n";
+	//echo "query=$query\n";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
@@ -263,7 +270,7 @@ function get_models($username,$model_name)
 			$maxStrands=intval(0.5 + ($total_strings*$pixel_count_even)/$maxPixels);
 		}
 	}
-	echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
+	//echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
 	$directory ="../targets";
 	if (file_exists($directory))
 	{
@@ -361,7 +368,7 @@ function get_models($username,$model_name)
 	echo "<table border=1>";
 	$string=1;
 	$n2=0;
-	echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
+	//echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
 	for($p=1;$p<=$maxPixels;$p++)
 	{
 		for($s=1;$s<=$maxStrands;$s++)
@@ -720,15 +727,18 @@ function update_segments($username,$object_name,$segment_array)
 		die("Unable to select database");
 	}
 	$delete = "delete from models_strand_segments where username='$username' and object_name='$object_name'";
-	//	echo "<pre>update_segments: delete=$delete</pre>\n";
+	//echo "<pre>update_segments: delete=$delete</pre>\n";
 	mysql_query($delete) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $delete . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	//
 	//
+	//echo "<pre>update_segments: segment array:";
+	//print_r($segment_array);
+	//echo "</pre>\n";
 	foreach ($segment_array as $segment => $starting_pixel)
 	{
 		$insert = "insert into models_strand_segments( username,object_name,segment,starting_pixel,last_updated)
 			values ('$username','$object_name',$segment,$starting_pixel,now())";
-		//	echo "<pre>update_segments: query=$insert</pre>\n";
+		//echo "<pre>update_segments: query=$insert</pre>\n";
 		mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	}
 }
@@ -763,7 +773,7 @@ function get_segments($username,$object_name)
 	return $segment_array;
 }
 
-function update_number_segments($username,$object_name,$number_segments)
+function update_number_segments($username,$object_name,$number_segments,$gif_model)
 {
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -779,9 +789,9 @@ function update_number_segments($username,$object_name,$number_segments)
 		die("Unable to select database");
 	}
 	//
-	$update = "update models set number_segments=$number_segments,last_updated=now()
+	$update = "update models set number_segments=$number_segments,gif_model='$gif_model',last_updated=now()
 		where username='$username' and  object_name='$object_name'";
-	echo "<pre>update_number_segments: query=$update</pre>\n";
+	//echo "<pre>update_number_segments: query=$update</pre>\n";
 	mysql_query($update) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $update . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 }
 
@@ -810,8 +820,10 @@ function get_number_segments($username,$object_name)
 	{
 		extract($row);
 	}
-	echo "<pre>get_number_segments:";
+	/*echo "<pre>get_number_segments:";
 	print_r($row);
-	echo "</pre>\n";
-	return $number_segments;
+	echo "</pre>\n";*/
+	$number_segments_arr[0]=$number_segments;
+	$number_segments_arr[1]=$gif_model;
+	return $number_segments_arr;
 }

@@ -133,10 +133,10 @@ else
 	else $PIXEL_LENGTH=8;
 	$insert = "REPLACE into models( username,object_name, object_desc, model_type,
 	pixel_count, pixel_first,  pixel_last, 
-	unit_of_measure, pixel_length, total_strings,number_segments,folds,start_bottom)
+	unit_of_measure, pixel_length, total_strings,number_segments,gif_model,folds,start_bottom)
 		values ('$username','$OBJECT_NAME', '$OBJECT_DESC', '$MODEL_TYPE', 
 	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
-	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$number_segments,$FOLDS,'$START_BOTTOM')";
+	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM')";
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
