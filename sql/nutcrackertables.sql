@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 01, 2012 at 09:33 AM
+-- Generation Time: Sep 06, 2012 at 11:25 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
   `date_field` date NOT NULL DEFAULT '2000-01-01',
   `time_field` time NOT NULL DEFAULT '00:00:00',
   `action` varchar(15) DEFAULT NULL,
-  `object_name` varchar(8) DEFAULT NULL,
+  `object_name` varchar(50) DEFAULT NULL,
   KEY `username` (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -152,20 +152,6 @@ CREATE TABLE IF NOT EXISTS `library_hdr` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manifest`
---
-
-CREATE TABLE IF NOT EXISTS `manifest` (
-  `path` varchar(255) DEFAULT NULL,
-  `filename` varchar(255) NOT NULL,
-  `cksum` varchar(255) DEFAULT NULL,
-  `filedate` date DEFAULT NULL,
-  `filesize` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `members`
 --
 
@@ -188,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=532 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=548 ;
 
 -- --------------------------------------------------------
 
@@ -212,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `models` (
   `unit_of_measure` varchar(12) DEFAULT NULL,
   `total_strings` int(11) DEFAULT NULL,
   `total_pixels` int(12) DEFAULT NULL,
+  `number_segments` varchar(6) DEFAULT '0',
   `direction` varchar(10) DEFAULT NULL,
   `orientation` int(11) DEFAULT NULL,
   `topography` varchar(16) DEFAULT NULL,
@@ -222,8 +209,39 @@ CREATE TABLE IF NOT EXISTS `models` (
   `d3` decimal(13,2) unsigned DEFAULT NULL,
   `d4` decimal(13,2) unsigned DEFAULT NULL,
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_updated` timestamp NULL DEFAULT NULL,
   UNIQUE KEY `username_object_name` (`username`,`object_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `models_strands`
+--
+
+CREATE TABLE IF NOT EXISTS `models_strands` (
+  `username` varchar(25) NOT NULL,
+  `object_name` varchar(16) NOT NULL,
+  `string` int(6) NOT NULL DEFAULT '0',
+  `pixels` int(6) DEFAULT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`username`,`object_name`,`string`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `models_strand_segments`
+--
+
+CREATE TABLE IF NOT EXISTS `models_strand_segments` (
+  `username` varchar(25) NOT NULL,
+  `object_name` varchar(16) NOT NULL,
+  `segment` int(6) NOT NULL,
+  `starting_pixel` int(6) NOT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`username`,`object_name`,`segment`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -264,7 +282,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=384 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=404 ;
 
 -- --------------------------------------------------------
 
