@@ -16,14 +16,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 require_once('../conf/header.php');
 // index.php
 require("../effects/read_file.php");
-/*echo "<pre>";
+$segment_array=array();
+echo "<pre>";
 echo "POST:\n";
 print_r($_POST);
-echo "SERVER:";
-print_r($_SERVER);
+//echo "SERVER:";
+//print_r($_SERVER);
 //echo "SESSION:\n";
 //print_r($_SESSION);
-echo "</pre>";*/
+echo "</pre>";
 // http://localhost/nutcracker/login/single_strand-form.php?user=f?total_strings=3
 // 
 //
@@ -48,8 +49,13 @@ else
 	$first_time=0;
 	extract($_POST);
 	update_strands($username,$object_name,$pixel_array);
+	$c=count($segment_array);
 	update_number_segments($username,$object_name,$number_segments);
-	update_segments($username,$object_name,$segment_array);
+	$c=count($segment_array);
+	echo "<pre>";
+	print_r($segment_array);
+	echo "</pre>";
+	if($c>0) update_segments($username,$object_name,$segment_array);
 	/*	POST:
 	Array
 	(
@@ -93,9 +99,20 @@ for($string=1;$string<=$total_strings;$string++)
 <?php echo "value=\"$number_segments\""; ?> name="number_segments"/><br/>
 </td>
 </tr>
+<tr>
+<td>What Type of Gif Model to preview with</td>
+<?php $checked_single="checked"; ?>
+<?php $checked_window=""; ?>
+<?php $checked_arch=""; ?>
+<td><input type="radio" name="gif_model" value="single" <?php echo "$checked_single "; ?> />Single Straight<br/>
+<input type="radio" name="gif_model" value="window" <?php echo "$checked_window "; ?> />Window (Assumes four segments)<br/>
+<input type="radio" name="gif_model" value="arch" <?php echo "$checked_arch "; ?> />Arch (Each segment makes an arch)</td>
+</td>
+<td><img src="../images/single_strand.png" /></td>
+</tr>
 </table>
 <?php
-if($first_time==0)
+if($first_time==0) // if not first time, then we have data we can show
 {
 	echo "<table border=1>";
 	for ($loop=1;$loop<=3;$loop++)
@@ -764,7 +781,7 @@ function update_number_segments($username,$object_name,$number_segments)
 	//
 	$update = "update models set number_segments=$number_segments,last_updated=now()
 		where username='$username' and  object_name='$object_name'";
-	//	echo "<pre>update_number_segments: query=$update</pre>\n";
+	echo "<pre>update_number_segments: query=$update</pre>\n";
 	mysql_query($update) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $update . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 }
 
@@ -793,8 +810,8 @@ function get_number_segments($username,$object_name)
 	{
 		extract($row);
 	}
-	/*echo "<pre>get_number_segments:";
+	echo "<pre>get_number_segments:";
 	print_r($row);
-	echo "</pre>\n";*/
+	echo "</pre>\n";
 	return $number_segments;
 }

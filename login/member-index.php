@@ -48,6 +48,7 @@ if(empty($row)) // on our first time, we have no data for this user. initializze
 	$row['start_bottom']='Y';
 	$row['total_strings']=0;
 	$row['pixel_count']=0;
+		$row['number_rows']=0;
 }
 $ip=@$REMOTE_ADDR; 
 //echo "<b>IP Address= $ip</b>";

@@ -30,14 +30,14 @@ $requiredFields = array(
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-/*echo "<pre>";
+echo "<pre>";
 echo "POST:\n";
 print_r($_POST);
-echo "SERVER:";
-print_r($_SERVER);
-echo "SESSION:\n";
-print_r($_SESSION);
-echo "</pre>";*/
+//echo "SERVER:";
+//print_r($_SERVER);
+//echo "SESSION:\n";
+//print_r($_SESSION);
+echo "</pre>";
 $username= $_SESSION['SESS_LOGIN'];
 //echo "<pre>";
 //echo "process.php username=$username";
@@ -71,7 +71,8 @@ foreach($_POST AS $key => $value)
 }
 require "../effects/read_file.php";
 extract($_POST);
-//show_array($_POST,"POST");
+show_array($_POST,"POST");
+//die("die");
 // were there any errors?
 //
 if(count($errors) > 0)
@@ -132,10 +133,10 @@ else
 	else $PIXEL_LENGTH=8;
 	$insert = "REPLACE into models( username,object_name, object_desc, model_type,
 	pixel_count, pixel_first,  pixel_last, 
-	unit_of_measure, pixel_length, total_strings,folds,start_bottom)
+	unit_of_measure, pixel_length, total_strings,number_segments,folds,start_bottom)
 		values ('$username','$OBJECT_NAME', '$OBJECT_DESC', '$MODEL_TYPE', 
 	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
-	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$FOLDS,'$START_BOTTOM')";
+	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$number_segments,$FOLDS,'$START_BOTTOM')";
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -165,7 +166,7 @@ else
 	echo "model_type = model_type\n";
 	echo "</pre>";*/
 	if($MODEL_TYPE=="SINGLE_STRAND")
-		header("location: single_strand-form.php?user=$username?total_strings=$TOTAL_STRINGS?object_name=$OBJECT_NAME");
+		header("location: single_strand-form.php?user=$username?total_strings=$TOTAL_STRINGS?object_name=$OBJECT_NAME?number_segments=$number_segments");
 	else
 	header("location: target-exec.php?model=$OBJECT_NAME?user=$username");
 	exit();
