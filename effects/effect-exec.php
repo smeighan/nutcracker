@@ -23,11 +23,7 @@ On this page you customize an effects class and save it to your library</h2>";
 //
 $tokens=explode("?",$_SERVER['QUERY_STRING']);
 $c=count($tokens);
-echo "<pre>";
-echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
-set_time_limit(300);
-echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
-echo "</pre>";
+set_time_limit(0);
 if($c>1)
 {
 	$tokens2=explode("effect_class=",$tokens[2]);

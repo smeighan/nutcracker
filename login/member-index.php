@@ -25,7 +25,6 @@ $model_name="";
 $tokens=explode("model=",$_SERVER['QUERY_STRING']);
 $c=count($tokens);
 $number_segments=0;
-echo "<pre>c=$c, " . $_SERVER['QUERY_STRING'] . "</pre>\n";
 if($c>1)
 	$model_name=$tokens[1];
 else
@@ -36,7 +35,6 @@ if($WARN==1)
 	echo "<h1><font color=red>Web page is undoing construction. When this banner goes away, you can use page again</font></h1>";
 	//	echo "<h4>" . md5("pepe1pepe1") . "</h4>";
 }
-echo "<pre>show_my_models($username,$model_name);</pre>\n";
 $row=show_my_models($username,$model_name);
 $number_segments=$row['number_segments'];
 /*echo "<pre>";
@@ -232,7 +230,6 @@ function show_my_models($username,$model_name)
 	$MODEL_ONLY=0;
 	if(strlen($model_name)>=1) $MODEL_ONLY=1;
 	$query ="select * from models where username='$username'";
-	echo "query=$query";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
