@@ -30,14 +30,14 @@ $requiredFields = array(
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-echo "<pre>";
+/*echo "<pre>";
 echo "POST:\n";
 print_r($_POST);
 //echo "SERVER:";
 //print_r($_SERVER);
 //echo "SESSION:\n";
 //print_r($_SESSION);
-echo "</pre>";
+echo "</pre>";*/
 $username= $_SESSION['SESS_LOGIN'];
 //echo "<pre>";
 //echo "process.php username=$username";
@@ -71,7 +71,7 @@ foreach($_POST AS $key => $value)
 }
 require "../effects/read_file.php";
 extract($_POST);
-show_array($_POST,"POST");
+//show_array($_POST,"POST");
 //die("die");
 // were there any errors?
 //
@@ -92,7 +92,6 @@ if(count($errors) > 0)
 	//	header("location: member-index.php");
 	echo "<p><a href=\"member-index.php\">Click here</a> to go and correct missing fields.</p>";
 	//include 'member-index.php';
-	echo "</pre>";
 }
 else
 {
