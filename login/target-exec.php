@@ -501,6 +501,12 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 				$s2=$maxPixels/2;
 				$mod2 = $maxStrands-$p0;
 			}
+			if ((isset($s2))==false) {  // handle minor error
+				$s2 = 0;
+			}
+			if ((isset($y2))==false) { // handle minor error
+				$y2 = 0;
+			}
 			$x2=$s0*3 - $s2*3;
 			$h=$mod2*3;
 			fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
