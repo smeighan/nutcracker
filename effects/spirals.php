@@ -31,6 +31,7 @@ echo "<pre>\n";
 ini_get('max_execution_time'); 
 set_time_limit(250);
 ini_get('max_execution_time'); 
+print_r($_POST);
 //show_array($_POST,"_POST");
 //show_array($_SERVER,"_SERVER");
 //show_array($_SESSION,"_SESSION");

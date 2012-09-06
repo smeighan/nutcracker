@@ -58,9 +58,9 @@ extract ($_POST);
 )
 	[number_segments] => 
 )*/
-echo "<pre>";
+/*echo "<pre>";
 print_r($_POST);
-echo "</pre>\n";
+echo "</pre>\n";*/
 // http://meighan.net/nutcracker/effects/gallery.php?start=101?end=151?number_gifs=50?sort=member_id?effect_class_selected=dummy|garlands|meteors
 // QUERY_STRING] => start=101?end=151?number_gifs=50?sort=member_id?effect_class_selected=dummy|garlands|meteors
 //
@@ -69,8 +69,8 @@ echo "</pre>\n";
 if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-index.php
 { // yes
 	$tokens=explode("?",$_SERVER['QUERY_STRING']);
-	$tok2=explode("=",$tokens[0]); $start = $tok2[1];
-	$tok2=explode("=",$tokens[1]); $end = $tok2[1];
+	$tok2=explode("=",$tokens[0]); $start_pic = $tok2[1];
+	$tok2=explode("=",$tokens[1]); $end_pic = $tok2[1];
 	$tok2=explode("=",$tokens[2]); $number_gifs = $tok2[1];
 	$tok2=explode("=",$tokens[3]); $sort = $tok2[1];
 	$tok2=explode("=",$tokens[4]); $effect_class_selected_array = $tok2[1];
@@ -80,35 +80,39 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 	{
 		$effect_class_selected[]=$class;
 	}
-	echo "<pre>";
-	echo "start,end=$start,$end</pre>\n";
+	/*echo "<pre>";
+	echo "start,end=$start_pic,$end_pic</pre>\n";
 	print_r($effect_class_selected);
-	echo "</pre>";
+	echo "</pre>";*/
 }
 else
 {
 	extract ($_POST);
-	$start=1;
-	$end=$number_gifs;
+	$start_pic=1;
+	$end_pic=$number_gifs;
 }
 //
 //
 $total_gifs=count_gallery($effect_class_selected);
-echo "<h1>$total_gifs gif's in Library</h1>";
+echo "<h1>$total_gifs gif's in Library, Start,end=$start_pic,$end_pic</h1>";
+echo "<h2>Click on these links to display the next group of effects</h2>";
 $number_gifs+=0;
 if($number_gifs<=0)
 	$number_gifs=1;
 $loops = intval($total_gifs/$number_gifs)+1;
 $effect_class_selected_buff="dummy";
-foreach ($effect_class_selected as $class)
+foreach ($effect_class_selected as $i => $class)
 {
-	$effect_class_selected_buff = $effect_class_selected_buff . "|" . $class;
+	if($i==0)
+		$effect_class_selected_buff= $class ;
+	else
+	$effect_class_selected_buff = $effect_class_selected_buff . "|" . $class ;
 }
 echo "<ol>";
 for ($l=1;$l<=$loops;$l++)
 {
 	$start = 1+($l-1)*$number_gifs;
-	$end=$start +$number_gifs;
+	$end=$start +$number_gifs -1;
 	echo "<li><a href=gallery.php?start=$start?end=$end?number_gifs=$number_gifs?sort=$sort?effect_class_selected=$effect_class_selected_buff>$start - $end</a>";
 }
 echo "</ol>";
@@ -126,7 +130,7 @@ if($c>0)
 if(!isset($group) or $group<1) $group=1;
 if(!isset($group_size) or $group_size<1) $group_size=40;
 $pics_in_group=$group_size;
-gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effect_class_selected,$start,$end);
+gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effect_class_selected,$start_pic,$end_pic);
 
 function getFilesFromDir($dir)
 {
@@ -188,7 +192,8 @@ function array_flat($array)
 	return $tmp;
 }
 
-function gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effect_class_selected,$start,$end)
+function gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,
+$effect_class_selected,$start_pic,$end_pic)
 {
 	$dir = 'workspaces'; 
 	$number_gifs+=0;
@@ -240,7 +245,7 @@ function gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effe
 	$max_rows=($pics_in_group/$pics_per_row);
 	$last_pic=$pics_per_row-1;
 	$group_to_show=$group;
-	$pics_col=0; $pics_row=$start_pic=$end_pic=0;
+	$pics_col=0; $pics_row=0;
 	$pic_group=0;
 	$array_effect_classes=get_effect_class_gallery();
 	//sort($array_effect_classes);
@@ -250,12 +255,20 @@ function gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effe
 	<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 	<?php
 	/*echo "FILTER:&nbsp;<INPUT TYPE=\"RADIO\" NAME=\"effect_class_array\" VALUE=\"All\" CHECKED >Any effect class";
-	foreach($array_effect_classes as $effect_cl)
-	{
-		echo "<INPUT TYPE=\"RADIO\" NAME=\"effect_class_array\" VALUE=\"$effect_cl\"  >$effect_cl";
-	}
-	*/
+	(
+	[0] => Array
+	(
+	[0] => workspaces/2/A+FLY_50_2_th.gif
+	[1] => butterfly
+	)
+		[1] => Array
+	(
+	[0] => workspaces/2/A+FLY_GITHUB_th.gif
+	[1] => butterfly
+	)
+		*/
 	echo "<table border=\"1\">\n";
+	$pics=0;
 	foreach ($array_of_gifs as $i => $array2)
 	{
 		$file=$array2[0];
@@ -273,33 +286,29 @@ function gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effe
 		$pos=strpos($file,"_amp.gif");
 		$th=strpos($file,"_th.gif");	
 		$checked="";	
-		//echo "<pre>$file member=$member_id pos=$pos, th=$th</pre>\n";
-		if($extension=="gif" and $pos === false and $th>1 and $member_id>=1 and $member_id < 99999999)
+		$pics++;
+		//echo "<pre>pics=$pics, start_pic,end_pic=[$start_pic,$end_pic] $file member=$member_id pos=$pos, th=$th effect_class=$effect_class</pre>\n";
+		$tok2=explode("+",$filename);
+		$target_model=$tok2[0];
+		$effect_name=$tok2[1];   // AA+SPIRAL_th.gif"
+		/*$tok3=explode("_th",$tok2[1]);
+		$effect_name=$tok3[0];
+		$username = get_username($member_id);*/
+		
+		
+		if($pics>=$start_pic and $pics<=$end_pic)
 		{
-			$tok2=explode("+",$filename);
-			$target_model=$tok2[0];
-			$effect_name=$tok2[1];   // AA+SPIRAL_th.gif"
-			$tok3=explode("_th",$tok2[1]);
-			$effect_name=$tok3[0];
-			$username = get_username($member_id);
-			$pics++;
-			if($pics>=$start and $pics<$end)
+			if($pics%$pics_per_row==1) // check if we should advance row
 			{
-				if($pics%$pics_per_row==1) // check if we should advance row
-				{
-					echo "</tr><tr>";
-					$pics_row++;
-				}
-				//	if($pic_group==$group_to_show or $group_to_show==0) // should we show gif?
-				{
-					echo "<td><b>$effect_class</b>&nbsp;&nbsp;File#$pics. &nbsp;&nbsp;Select:<input type=\"checkbox\" name=\"fullpath_array[$i]\" value=\"$file\"  $checked /> ";
-					echo "<br/>Your name for this effect:<input type=\"text\" name=\"user_effect_name[$i]\" size=\"25\" value=\"\">";
-					echo "<br/>Your Description:<input type=\"text\" name=\"desc[$i]\" size=\"25\" >";
-					echo "<br/>$file<br /><img src=\"$file\"/></a></td>\n";
-				}
+				echo "</tr><tr>";
+				$pics_row++;
 			}
-			$end_pic=$pics;
+			echo "<td><b>$effect_class</b>&nbsp;&nbsp;#$pics. &nbsp;&nbsp;Select:<input type=\"checkbox\" name=\"fullpath_array[$i]\" value=\"$file\"  $checked /> ";
+			echo "<br/>Your name for this effect:<input type=\"text\" name=\"user_effect_name[$i]\" size=\"25\" value=\"\">";
+			echo "<br/>Your Description:<input type=\"text\" name=\"desc[$i]\" size=\"25\" >";
+			echo "<br/>$file<br /><img src=\"$file\"/></a></td>\n";
 		}
+		$end=$pics;
 	}
 	if($pics%$pics_per_row!=1)
 	{
@@ -419,9 +428,17 @@ function get_from_gallery($number_gifs,$sort,$effect_class_selected)
 	if($sort=="effect_class") $sort_string="effect_class,member_id, fullpath";
 	if($sort=="effect_name") $sort_string="effect_name,member_id, fullpath";
 	$c=count($effect_class_selected);
-	$effect_string="'dummy'";
-	foreach($effect_class_selected as $effect_class)
+	if (in_array("all", $effect_class_selected))
 	{
+		$query = "select count(*) cnt from gallery ";
+	}
+	else
+	$query = "select count(*) cnt from gallery where effect_class in ($effect_string)"; 
+	foreach($effect_class_selected as $i => $effect_class)
+	{
+		if($i==0)
+			$effect_string= "'" . $effect_class . "'";
+		else
 		$effect_string=$effect_string . ",'" . $effect_class . "'";
 	}
 	if($effect_class_selected[0]=="all")
@@ -436,7 +453,7 @@ function get_from_gallery($number_gifs,$sort,$effect_class_selected)
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
-		$array_of_gifs[$linenumber]=array($fullpath,$effect_class);
+		$array_of_gifs[]=array($fullpath,$effect_class);
 	}
 	mysql_close();
 	return ($array_of_gifs);
@@ -513,20 +530,23 @@ function count_gallery($effect_class_selected)
 	}
 	//
 	$c=count($effect_class_selected);
-	$effect_string="'dummy'";
-	foreach($effect_class_selected as $effect_class)
+	$effect_string="'xx'";
+	foreach($effect_class_selected as $i => $effect_class)
 	{
+		if($i==0)
+			$effect_string= "'" . $effect_class . "'";
+		else
 		$effect_string=$effect_string . ",'" . $effect_class . "'";
-	}
-	echo "<pre>";
+	}	
+	/*echo "<pre>effect_string=$effect_string\n";
 	print_r($effect_class_selected);
-	echo "</pre>";
+	echo "</pre>";*/
 	if (in_array("all", $effect_class_selected))
 	{
 		$query = "select count(*) cnt from gallery ";
 	}
 	else
-	$query = "select count(*) cnt from gallery 	where effect_class in ($effect_string)"; 
+	$query = "select count(*) cnt from gallery where effect_class in ($effect_string)"; 
 	echo "<pre>count_gallery: $query</pre>\n";
 	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	$cnt=0;
