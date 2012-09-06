@@ -6,8 +6,8 @@ function show_barmenu() {
 	<li><a href="/nutcracker" onmouseover="mopen('m1')" onmouseout="mclosetime()">Home</a></li>
 	<li><a href="/nutcracker/login/member-index.php" onmouseover="mopen('m2')" onmouseout="mclosetime()">Models</a></li>
 	<li><a href="/nutcracker/effects/effect-form.php" onmouseover="mopen('m3')" onmouseout="mclosetime()">Effects</a></li>
-	<li><a href="/nutcracker/effects/project.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
-	<li><a href="/nutcracker/effects/xmas_songs.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">Christmas Songs</a></li>
+	<li><a href="/nutcracker/project/project.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
+	<li><a href="/nutcracker/effects/xmas_songs.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">XmasSongs</a></li>
 	<li><a href="/nutcracker/effects/gallery-form.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Gallery</a></li>
 	<li><a href="/nutcracker/admin/admin.php" onmouseover="mopen('m7')" onmouseout="mclosetime()">Admin</a>
 		<div id="m7" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
