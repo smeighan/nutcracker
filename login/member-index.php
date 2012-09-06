@@ -1,39 +1,19 @@
 <?php
-//*************************************************************************************************
-//
-//	file: member-index.php
-//	Summary: Shows current targets to user and allows new targets to be created
-//
-//
-//
-//
-//
-//*************************************************************************************************
-require_once('../conf/auth.php');
-require_once('../conf/barmenu.php');
-define('BASE_URL', substr($_SERVER['PHP_SELF'],0,-22));  //this returns the path (minus the login/) string
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Nutcracker: RGB Effects Builder</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="last-modified" content=" 24 Feb 2012 09:57:45 GMT"/>
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
-<meta name="robots" content="index,follow"/>
-<meta name="googlebot" content="noarchive"/>
-<link rel="shortcut icon" href="targetmodel.ico" type="image/x-icon"> 
-<meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
-<meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
-<link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" href="../css/barmenu.css">
-<script type="text/javascript" src="../js/barmenu.js"></script>
-</head>
-<body>
-<?php show_barmenu();?>
-Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<?php
+/*
+Nutcracker: RGB Effects Builder
+Copyright (C) 2012  Sean Meighan
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+require_once('../conf/header.php');
 /*echo "<pre>";
 print_r($_SESSION);
 echo "</pre>";*/

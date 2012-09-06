@@ -165,7 +165,7 @@ else
 	echo "model_type = model_type\n";
 	echo "</pre>";*/
 	if($MODEL_TYPE=="SINGLE_STRAND")
-		header("location: single_strand-form.php?user=$username?total_strings=$TOTAL_STRINGS");
+		header("location: single_strand-form.php?user=$username?total_strings=$TOTAL_STRINGS?object_name=$OBJECT_NAME");
 	else
 	header("location: target-exec.php?model=$OBJECT_NAME?user=$username");
 	exit();

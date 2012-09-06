@@ -26,7 +26,7 @@ function show_barmenu() {
 	</li>
 	<li><a href="#" onmouseover="mopen('m9')" onmouseout="mclosetime()">Contact</a>
 		<div id="m9" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-		<a href="#">E-mail</a>
+		<a href="mailto:sean.meighan@oracle.com?Subject=Nutcracker%20Question">E-mail</a>
 		<a href="#">Submit Request Form</a>
 		</div>
 	</li>
