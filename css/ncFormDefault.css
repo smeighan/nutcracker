@@ -1,0 +1,25 @@
+@charset "UTF-8";
+.FormFieldName {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+	background-color: #FC9;
+}
+.FormSelect {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+	background-color: #FFF;
+}
+.SubmitButton {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	text-align: center;
+}
+.TableTitle {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: bold;
+	background-color: #F93;
+	color: #FFF;
+}
