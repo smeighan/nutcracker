@@ -41,7 +41,6 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 	$pixel_array=get_strands($username,$object_name);
 	$segment_array=get_segments($username,$object_name);
 	$number_segments=get_number_segments($username,$object_name);
-	$segment_array=update_segments($username,$object_name,$segment_array);
 	$first_time=1;
 }
 else
