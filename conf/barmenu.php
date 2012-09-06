@@ -11,8 +11,9 @@ function show_barmenu() {
 	<li><a href="/nutcracker/effects/gallery-form.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Gallery</a></li>
 	<li><a href="/nutcracker/admin/admin.php" onmouseover="mopen('m7')" onmouseout="mclosetime()">Admin</a>
 		<div id="m7" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-		<a href="/nutcracker/effects/cleanup.php">Cleanup Old Effects and Models</a>
-		<a href="/nutcracker/effects/bug.php">Open a Bug or Enhancement ticket</a>
+		<a href="/nutcracker/admin/cleanup.php">Cleanup Old Effects and Models</a>
+		<a href="/nutcracker/admin/bug.php">Open a Bug or Enhancement ticket</a>
+
 		<a href="/nutcracker/effects/tutorials.html">Nutcracker Tutorials</a>
 		</div>
 	</li>

@@ -36,18 +36,17 @@ if (isset($type)) {
 			$msg_str=select_song($username);
 			break;
 		case 2:
-			$msg_str="Editing Song";
-			if (isset($id)) {
-				$msg_str.="$id<br />";
+			if (isset($project_id)) {
+				$msg_str=edit_song($project_id);
 			} else {
-				$msg_str = "***Error occurred *** no song id selected<br />";
+				$msg_str = "***Error occurred *** no project id<br />";
 			}
 			break;
 		case 3:
-			if (isset($id)) {
-				$msg_str=remove_song($id,$username,$model_name);
+			if (isset($project_id)) {
+				$msg_str=remove_song($project_id);
 			} else {
-				$msg_str="***Error occurred *** no song id selected<br />";
+				$msg_str="***Error occurred *** no project id<br />";
 			}
 			break;
 		default:
@@ -56,11 +55,19 @@ if (isset($type)) {
 } else {
 	extract($_POST);
 	if (isset($NewProjectCancel)) {
-		$msg_str="Song add was cancelled";
+		$msg_str="*** Song add was cancelled ***";
 	} 
 	if (isset($NewProjectSubmit)) {
 		//echo "$song_id  , $username,   $frame_delay, $model_name <br />";
 		$msg_str=add_song($song_id,$username, $frame_delay, $model_name);
+	}
+	if (isset($SavePhraseEdit)) {
+		save_phrases($_POST);
+		$msg_str=edit_song($project_id);
+		$msg_str="Edit Saved";
+	}
+	if (isset($CancelPhraseEdit)) {
+		$msg_str="Song detail hidden";
 	}
 }
 echo $msg_str;
@@ -68,10 +75,6 @@ echo $msg_str;
 <h2>Current Nutcracker projects</h2>
 <form action="<?php echo "project-exec.php"; ?>" method="post">
 <input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
-<?php /*<input type="hidden" name="seq_duration" value="<?php printf( "$seq_duration");?> "/>
-<input type="hidden" name="frame_delay"  value="<?php echo "$frame_delay"; ?> "/>
-<input type="hidden" name="target"       value="<?php echo "$target";      ?> "/> */
-?>
 <table border=1>
 <tr>
 <th>Song Name</th>
@@ -82,7 +85,7 @@ echo $msg_str;
 <th>Commands</th>
 </tr>
 <?php
-	$sql = "SELECT song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username'";
+	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username' ORDER BY song_name, model_name";
 	//echo "$sql <br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
@@ -91,6 +94,7 @@ echo $msg_str;
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$cnt +=1;
+		$project_id = $row['project_id'];
 		$song_id = $row['song_id'];
 		$artist = $row['artist'];
 		$song_name = $row['song_name'];
@@ -99,12 +103,12 @@ echo $msg_str;
 		$model_name = $row['model_name'];
 	?>
 <tr>
-	<td><a href="project.php?type=2&id=<?php echo $song_id?>"><?php echo $song_name?></a></td>
+	<td><?php echo $song_name?></a></td>
 	<td><?php echo $artist?></td>
 	<td><a href="<?php echo $song_url?>"><?php echo $song_url?></a></td>
 	<td><?php echo $model_name?></td>
 	<td><?php echo $frame_delay?></td>
-	<td><a href="project.php?type=2&id=<?php echo $song_id?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="project.php?type=3&id=<?php echo $song_id?>&model_name=<?php echo $model_name?>"><img src="../images/delete.png">Remove</a></td>
+	<td><a href="project.php?type=2&project_id=<?php echo $project_id?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="project.php?type=3&project_id=<?php echo $project_id?>"><img src="../images/delete.png">Remove</a></td>
 </tr>
 <?php		
 	}
@@ -116,15 +120,166 @@ echo $msg_str;
 <p />
 <a href="project.php?type=1">Add a song</a><br />
 <?php
-function remove_song($song_id, $username, $model_name) {
-	$song_name=getSongName($song_id);
-	$sql = "DELETE FROM project WHERE song_id=$song_id AND username='$username' AND model_name='$model_name'";
-	// echo "$sql <br />";
+
+function save_phrases($inphp) {
+	//extract($inphp);
+	//print_r($inphp);
+	foreach($inphp as $key=>$val)
+	{
+		switch ($key) {
+		case "project_id":
+			$project_id = $val;
+			break;
+		case "frame_delay":
+			$frame_delay = $val;
+			if (isset($project_id)) {
+				$sql="UPDATE project SET frame_delay=".$frame_delay." WHERE project_id=".$project_id;
+				//echo "$sql <br />";
+				$result=nc_query($sql);
+			}
+			break;
+		case "SavePhraseEdit":
+			break;
+		default:
+			if (strlen($val)==0) {
+				$val="NULL";
+			} else {
+				$val="'".$val."'";
+			}
+			$sql="UPDATE project_dtl SET effect_name=".$val." WHERE project_dtl_id=".$key;
+			//echo "$sql <br />";
+			$result=nc_query($sql);
+		}
+		//echo "$key : $val <br />";
+	}
+}
+
+function get_effects($username) {
+	$sql = "SELECT effect_name, effect_class FROM effects_user_hdr WHERE username='$username' AND effect_name IS NOT NULL ORDER BY effect_name";
+	//echo "$sql<br />";
+	$result=nc_query($sql);
+	$cnt=0;
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$effect[$cnt]=$row['effect_name'];
+		$cnt+=1;
+	}
+	return($effect);
+}
+
+function edit_song($project_id) {
+	$sql = "SELECT frame_delay, username FROM project WHERE project_id=$project_id";
+	$result=nc_query($sql);
+	$row=mysql_fetch_array($result,MYSQL_ASSOC);
+	$frame_delay=$row['frame_delay'];
+	$username=$row['username'];
+	$effect=get_effects($username);
+	//print_r($effect);
+	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
+	//echo "edit song SQL - $sql<br />";
+	?>
+	<h2>Edit Project Details</h2>
+	<form name="project_edit" id="project_edit" action="project.php" method="post">
+	<input type="hidden" name="project_id" id="project_id" value=<?php echo $project_id;?>>
+	Frame Rate for project : <input class="FormFieldName" type="text" name="frame_delay" id="frame_delay"0 value="<?php echo $frame_delay?>"><br />
+	<table border="1" cellpadding="1" cellspacing="1">
+	<tr><th>Phrase</th><th>start time (sec)</th><th>end time (sec)</th><th>Effect Assigned</th></tr>
+	<?php
+	$result3=nc_query($sql);
+	$cnt=show_phrases($result3,$effect);
+	if ($cnt==0) {
+		insert_proj_detail_from_library($project_id);
+		$result3=nc_query($sql);
+		$newcnt=show_phrases($result3,$effect);
+	}
+	?>
+	</table>
+	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
+	</form>
+	<?php
+	//echo "There are $cnt records in details <br />";
+	return;
+}
+
+function show_phrases($inresult,$effect) {
+	$cnt=0;
+	while ($row = mysql_fetch_array($inresult, MYSQL_ASSOC)) {
+		$cnt +=1;
+		$project_dtl_id = $row['project_dtl_id'];
+		$phrase_name = $row['phrase_name'];
+		$start_secs = $row['start_secs'];
+		$end_secs = $row['end_secs'];
+		$effect_name = $row['effect_name'];
+		$effect_str=effect_select($effect,$effect_name,$project_dtl_id);
+		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" >$start_secs</td><td class=\"FormFieldName\" >$end_secs</td><td class=\"FormFieldName\" >$effect_str</td></tr>";
+		// echo "$phrase_name : $start_secs : $end_secs : $effect_name<br />";
+	}
+	return($cnt);
+}
+
+function effect_select($effect_array, $ineffect, $project_dtl_id) {
+	$retStr='<select class="FormFieldName" name='.$project_dtl_id.' id='.$project_dtl_id.'>';
+	if (strlen($ineffect)==0) {
+		$defstr=" selected";
+	} else {
+		$defstr="";
+	}
+	$retStr.='<option value=""'.$defstr.'>No Effect Selected</option>';
+	foreach ($effect_array as $effect) {
+		if ($effect == $ineffect) {
+			$defstr = " selected";
+		} else {
+			$defstr = "";
+		}
+		$retStr.='<option value="'.$effect.'"'.$defstr.'>'.$effect.'</option>';
+	}
+	$retStr.='</select>';
+	return($retStr);
+}
+
+function nc_query($sql) {
+	//echo "sql = $sql<br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
 	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
 	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
-	return("Song '$song_name' removed");
+	return($result);
+}
+
+function insert_proj_detail_from_library($project_id) {
+	$sql = "SELECT song_id FROM project WHERE project_id = ".$project_id;
+	$result=nc_query($sql);
+	$row = mysql_fetch_array($result, MYSQL_ASSOC);
+	$song_id=$row['song_id'];
+	$sql = "SELECT phrase_name, start_secs, end_secs FROM song_dtl where song_id = ".$song_id;
+	$cnt=0;
+	//echo "$sql<br />";
+	$result2=nc_query($sql);
+	while ($row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
+		$cnt +=1;
+		$phrase_name = $row['phrase_name'];
+		$start_secs = $row['start_secs'];
+		$end_secs = $row['end_secs'];
+		$sql="INSERT INTO project_dtl (phrase_name, start_secs, end_secs, project_id) VALUES ('".$phrase_name."',".$start_secs.",".$end_secs.",".$project_id.")";
+		//echo "$sql <br />";
+		$result3=nc_query($sql);
+	}
+	echo "Inserted $cnt new records into project detail<br />";
+	return;
+}
+
+function remove_song($project_id) {
+	$sql = "SELECT song_id, model_name FROM project where project_id=".$project_id;
+	// echo "$sql <br />";
+	$result2 = nc_query($sql);
+	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
+	$song_id = $row['song_id'];
+	$model_name = $row['model_name'];
+	$sql = "DELETE FROM project_dtl WHERE project_id=$project_id";
+	$result=nc_query($sql);
+	$sql = "DELETE FROM project WHERE project_id=$project_id";
+	$result = nc_query($sql);
+	$song_name=getSongName($song_id);
+	return("Song '$song_name' and Model '$model_name' removed");
 }
 
 function add_song($song_id, $username, $frame_delay, $model_name) {
