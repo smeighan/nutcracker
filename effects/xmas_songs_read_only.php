@@ -1,5 +1,6 @@
 <?php
 //require_once('../conf/auth.php');
+require_once('../conf/barmenu.php');
 /*
 List songs from database where the song url i sempty
 SELECT * FROM `music_object_hdr` WHERE username = 'f'
@@ -9,6 +10,7 @@ and song_url is null
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+script type="text/javascript" src="../js/barmenu.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Nutcracker: RGB Effects Builder</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -20,10 +22,11 @@ and song_url is null
 <meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
 <meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
 <link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="../css/barmenu.css">
 </head>
 <body>
 
-<?php
+<?php show_barmenu();
 //
 require("../effects/read_file.php");
 set_time_limit(60*60);

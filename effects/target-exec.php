@@ -1,49 +1,21 @@
 <?php
-//require_once('auth.php');
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<title>Nutcracker: RGB Effects Builder</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="last-modified" content=" 24 Feb 2012 09:57:45 GMT"/>
-		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
-		<meta name="robots" content="index,follow"/>
-		<meta name="googlebot" content="noarchive"/>
-		<link rel="shortcut icon" href="targetmodel.ico" type="image/x-icon"> 
-		<meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
-		<meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
-<link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-<h1>NUTCRACKER: RGB Effects Builder<br/>
-Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<table>
-<tr>
-<td> <a href="../index.html">Home</a> </td>
-<td> <a href="../login/member-index.php">Target Generator</a> </td>
-<td> <a href="../effects/effect-form.php">Effects Generator</a> </td>
-<td><a href="../login/logout.php">Logout</a></td>
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-<td>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_donations">
-<input type="hidden" name="business" value="P2S34RML54T9W">
-<input type="hidden" name="lc" value="US">
-<input type="hidden" name="item_name" value="Nutcracker: RGB Effects Builder">
-<input type="hidden" name="currency_code" value="USD">
-<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
+/*
+Nutcracker: RGB Effects Builder
+Copyright (C) 2012  Sean Meighan
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+require_once('../conf/header.php');
+>?
 
-</td>
-</tr>
-</table>
-
-<?php
 // index.php
 require("../effects/read_file.php");
 

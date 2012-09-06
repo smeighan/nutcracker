@@ -1,27 +1,19 @@
 <?php
-require_once('../conf/auth.php');
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Nutcracker: RGB Effects Builder</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="last-modified" content=" 24 Feb 2012 09:57:45 GMT"/>
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
-<meta name="robots" content="index,follow"/>
-<meta name="googlebot" content="noarchive"/>
-<link rel="shortcut icon" href="barberpole.ico" type="image/x-icon"> 
-<meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
-<meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
-<link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-<h1>Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<a href="../index.html">Home</a> | <a href="../login/member-index.php">Target Generator</a> | 
-<a href="effect-form.php">Effects Generator</a> | <a href="../login/logout.php">Logout</a>
-<p>This is the screen for creating effects and saving them into your library. </p>
-<?php
+/*
+Nutcracker: RGB Effects Builder
+Copyright (C) 2012  Sean Meighan
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+require_once('../conf/header.php');
 echo "<h2>Nutcracker: RGB Effects Builder for user $myusername<br/>
 On this page you build an animation of the spiral class and crate an animated GIF<h2>"; 
 //
