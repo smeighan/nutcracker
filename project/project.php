@@ -141,14 +141,29 @@ function save_phrases($inphp) {
 		case "SavePhraseEdit":
 			break;
 		default:
-			if (strlen($val)==0) {
-				$val="NULL";
-			} else {
-				$val="'".$val."'";
+			switch (substr($key,0,3)) {
+			case "en-":
+				$key=(substr($key,3));
+				$sql="UPDATE project_dtl SET end_secs=".$val." WHERE project_dtl_id=".$key;
+				//echo "$sql <br />";				
+				$result=nc_query($sql);
+				break;
+			case "st-":
+				$key=(substr($key,3));				
+				$sql="UPDATE project_dtl SET start_secs=".$val." WHERE project_dtl_id=".$key;
+				//echo "$sql <br />";
+				$result=nc_query($sql);
+				break;
+			default:
+				if (strlen($val)==0) {
+					$val="NULL";
+				} else {
+					$val="'".$val."'";
+				}
+				$sql="UPDATE project_dtl SET effect_name=".$val." WHERE project_dtl_id=".$key;
+				//echo "$sql <br />";
+				$result=nc_query($sql);
 			}
-			$sql="UPDATE project_dtl SET effect_name=".$val." WHERE project_dtl_id=".$key;
-			//echo "$sql <br />";
-			$result=nc_query($sql);
 		}
 		//echo "$key : $val <br />";
 	}
@@ -167,17 +182,20 @@ function get_effects($username) {
 }
 
 function edit_song($project_id) {
-	$sql = "SELECT frame_delay, username FROM project WHERE project_id=$project_id";
+	$sql = "SELECT song_name, artist, song_url, frame_delay, username FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$frame_delay=$row['frame_delay'];
 	$username=$row['username'];
+	$song_url=$row['song_url'];
+	$song_name=$row['song_name'];
+	$artist=$row['artist'];
 	$effect=get_effects($username);
 	//print_r($effect);
 	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
 	//echo "edit song SQL - $sql<br />";
 	?>
-	<h2>Edit Project Details</h2>
+	<h2>Edit Project Details for <?php echo $song_name;?> by <?php echo $artist;?></h2>
 	<form name="project_edit" id="project_edit" action="project.php" method="post">
 	<input type="hidden" name="project_id" id="project_id" value=<?php echo $project_id;?>>
 	Frame Rate for project : <input class="FormFieldName" type="text" name="frame_delay" id="frame_delay"0 value="<?php echo $frame_delay?>"><br />
@@ -186,7 +204,7 @@ function edit_song($project_id) {
 	<?php
 	$result3=nc_query($sql);
 	$cnt=show_phrases($result3,$effect);
-	if ($cnt==0) {
+	if ($cnt==0) { // if there currently are no phrases attached to project get them from the library
 		insert_proj_detail_from_library($project_id);
 		$result3=nc_query($sql);
 		$newcnt=show_phrases($result3,$effect);
@@ -210,7 +228,7 @@ function show_phrases($inresult,$effect) {
 		$end_secs = $row['end_secs'];
 		$effect_name = $row['effect_name'];
 		$effect_str=effect_select($effect,$effect_name,$project_dtl_id);
-		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" >$start_secs</td><td class=\"FormFieldName\" >$end_secs</td><td class=\"FormFieldName\" >$effect_str</td></tr>";
+		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$start_secs\" name=\"st-$project_dtl_id\"></td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$end_secs\" name=\"en-$project_dtl_id\"></td><td class=\"FormFieldName\" >$effect_str</td></tr>";
 		// echo "$phrase_name : $start_secs : $end_secs : $effect_name<br />";
 	}
 	return($cnt);
