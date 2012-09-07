@@ -30,7 +30,7 @@ function isInvalidLine($in_str) { // returns false if the string starts with a #
 	if (isset($in_str)==false) { 
 		$outVal=true;
 	}
-	if (strlen($in_str)==0) {
+	if (strlen(trim($in_str))==0) {
  		$outVal=true;
 	} else {
 		if (substr($in_str,0,1)=="#") { 
@@ -129,6 +129,37 @@ function array2File($outfile,$outarray) {//writes out a file from an array
 	fclose($f);
 }
 
+function createHeader($outfile,$model_name, $username, $project_id, $sepStr=" "){
+	$sql="SELECT member_id FROM members WHERE username='".$username."'";
+	//echo "$sql <br />";
+	$result=nc_query($sql);
+	$row=mysql_fetch_array($result,MYSQL_ASSOC);
+	$member_id=$row['member_id'];
+	$mydir='../targets/'.$member_id.'/';
+	$model_file=$mydir.$model_name.".dat";
+	//echo "$model_file<br />";
+	$retArray = array();
+	$f = fopen ($model_file, "r");
+	$w = fopen ($outfile, "w");
+	$outstr="#   project id $project_id\n#   target name $model_name\n";
+	fwrite($w, $outstr);
+	//$ln= 0;
+	while ($line= fgets ($f)) {
+		if ($line) {
+			if (isInvalidLine($line) == false) {
+				//echo "$line<br />";
+				$myArray=myTokenizer($line, $sepStr);
+				//$myStr=revTokenizer($myArray,$stripHeader, $sepStr);
+				//$retArray[$ln]=$myStr;
+				//$ln++;
+				$outstr = "S".$sepStr.$myArray[1].$sepStr."P".$sepStr.$myArray[2]."\n";
+				fwrite($w, $outstr);
+			}
+		}
+    }
+	fclose ($f);
+	fclose ($w);
+}
 //
 // MAIN
 //

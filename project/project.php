@@ -73,6 +73,7 @@ if (isset($type)) {
 	if (isset($MasterNCSubmit)) {
 		$myarray=checkGaps($project_id);
 		$projectArray=setupNCfiles($project_id,$myarray);
+		prepMasterNCfile($project_id);
 		printArray($projectArray);
 	}
 }
@@ -499,7 +500,7 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 			$outstr="zeros:$frame_cnt";
 		} else {
 			// code to output the model to a file here!!!!
-			createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end);
+			createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id); 
 			$outstr="$username+$model_name+$eff+$frame_cnt.nc";
 		}
 		$outarray[$cnt++]=$outstr;
@@ -514,10 +515,18 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 	return($outarray);	
 }
 
-function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end) {  // this function will create the batch call to the effects to create the individual nc files
+function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id) {  // this function will create the batch call to the effects to create the individual nc files
 	return;
 }
 
+function prepMasterNCfile($project_id) {
+	$proj_array=getProjInfo($project_id);
+	$username=$proj_array['username'];
+	$model_name=$proj_array['model_name'];
+	$outfile="$username+$project_id+master.nc";
+	createHeader($outfile,$model_name, $username, $project_id);
+}
+	
 function printArray($inArray) {
 	foreach($inArray as $currarray) {
 		print_r($currarray);
