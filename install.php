@@ -16,7 +16,6 @@
 <body>
 <h1>Nutcracker Install Script</h1>
 <?php
-
 if($_SERVER['HTTP_HOST'] != 'localhost')
 {
 	echo"<pre><h1>ERROR! You cannot run this script on any place except for your local computer<br/>";
@@ -28,62 +27,52 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 	echo "</pre>";
 	die ("\n\nProgram exiting .. ");
 }
-
 {
 	if ( !build_nutcracker_database() )
 	{
-
-	if ( !isset($_POST['root_pass']) || !isset($_POST['root_user']) )
-	{	?>
-
-	<h3>Steps to install Nutcracker</h3>
-
-	<p>
-	<ol>
-	<li>Download/Install <a href="http://sourceforge.net/projects/xampp/">XAMPP</a> - If you're
-		here, you've probably already done this step.</li>
-	<li>Download/Install <a href="http://sourceforge.net/projects/gnuplot/files/latest/download?source=files">gnuplot</a> -
-	During the install's "Select Additional Tasks" screen be sure you check
-	the "Add application directory to your PATH environment variable"</li>
-	</ol>
-	</p>
-
-	<h3>Installation Details</h3>
-	<?php	}	else	{	?>
-	<h3>Retry Installation</h3>
-	<p>
-	Once you believe you have fixed anything causing errors, you can resubmit this form.
-	</p>
-	<?php	}	?>
-
-	<form name="input" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-
-	<p>
-	Password: <input type="password" name="root_pass" value="<?php
-	echo (!empty($_POST['root_pass']) ? $_POST['root_pass'] : ''); ?>" /><br />
-	If you just installed XAMPP, leave this blank.
-	</p>
-	<p>
-	This is the root password for your XAMPP/LAMP MySQL database.  If you just
-	installed XAMPP the password is blank.  LAMP users can change it
-	<a href="http://localhost/security/xamppsecurity.php">here</a>.
-	</p>
-
-	<p>
-	Username: <input type="text" name="root_user" value="<?php
-	echo (!empty($_POST['root_user']) ? $_POST['root_user'] : 'root'); ?>" /><br />
-	If you just installed XAMPP, leave this as 'root'.
-	</p>
-	<p>
-	This is the username for the root user of your XAMPP/LAMP MySQL database.  The
-	default 'root' is probably correct for 95% of users.
-	If you're unsure, leave this alone.
-	</p>
-
-	<p><input type="submit" value="Submit" /></p>
-
-	</form>
-
+		if ( !isset($_POST['root_pass']) || !isset($_POST['root_user']) )
+		{
+			?>
+			<h3>Steps to install Nutcracker</h3>
+			<p>
+			<ol>
+			<li>Download/Install <a href="http://sourceforge.net/projects/xampp/">XAMPP</a> - If you're
+			here, you've probably already done this step.</li>
+			<li>Download/Install <a href="http://sourceforge.net/projects/gnuplot/files/latest/download?source=files">gnuplot</a> -
+			During the install's "Select Additional Tasks" screen be sure you check
+			the "Add application directory to your PATH environment variable"</li>
+			</ol>
+			</p>
+			<h3>Installation Details</h3>
+			<?php	}	else	{	?>
+			<h3>Retry Installation</h3>
+			<p>
+			Once you believe you have fixed anything causing errors, you can resubmit this form.
+			</p>
+			<?php	}	?>
+		<form name="input" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+		<p>
+		Password: <input type="password" name="root_pass" value="<?php
+		echo (!empty($_POST['root_pass']) ? $_POST['root_pass'] : ''); ?>" /><br />
+		If you just installed XAMPP, leave this blank.
+		</p>
+		<p>
+		This is the root password for your XAMPP/LAMP MySQL database.  If you just
+		installed XAMPP the password is blank.  LAMP users can change it
+		<a href="http://localhost/security/xamppsecurity.php">here</a>.
+		</p>
+		<p>
+		Username: <input type="text" name="root_user" value="<?php
+		echo (!empty($_POST['root_user']) ? $_POST['root_user'] : 'root'); ?>" /><br />
+		If you just installed XAMPP, leave this as 'root'.
+		</p>
+		<p>
+		This is the username for the root user of your XAMPP/LAMP MySQL database.  The
+		default 'root' is probably correct for 95% of users.
+		If you're unsure, leave this alone.
+		</p>
+		<p><input type="submit" value="Submit" /></p>
+		</form>
 	<?php	}
 	else
 	{
@@ -98,12 +87,9 @@ function build_nutcracker_database()
 	{
 		return false;
 	}
-
 	echo "<h3>Installing Nutcracker</h3>\n";
-
 	// Include the preferred configuration
 	require_once(dirname(__FILE__)."/conf/config.php");
-
 	echo "Connecting to MySQL..."; flush(); ob_flush();
 	$conn = mysql_connect('localhost', $_POST['root_user'], $_POST['root_pass']);
 	if( !$conn )
@@ -115,8 +101,7 @@ function build_nutcracker_database()
 		return false;
 	}
 	else
-		echo "<span class=\"pass\">OK</span><br />\n";
-
+	echo "<span class=\"pass\">OK</span><br />\n";
 	echo "Creating nutcracker database..."; flush(); ob_flush();
 	$sql = "CREATE DATABASE IF NOT EXISTS ".DB_DATABASE.";";
 	$retval = mysql_query( $sql, $conn );
@@ -124,12 +109,11 @@ function build_nutcracker_database()
 	{
 		echo "<span class=\"fail\">FAILED!</span><br />\n";
 		echo "Could not create nutcracker database.\n";
-		echo "MySQL Error: " . mysql_error();
+		echo "MySQL Error: $sql " . "(" . mysql_errno() . ") " . mysql_error();
 		return false;
 	}
 	else
-		echo "<span class=\"pass\">OK</span><br />\n";
-
+	echo "<span class=\"pass\">OK</span><br />\n";
 	echo "Giving nutcracker database user permissions..."; flush(); ob_flush();
 	$sql = "GRANT ALL ON *.* TO '".DB_USER."'@".DB_HOST." IDENTIFIED BY '".DB_PASSWORD."';";
 	$retval = mysql_query( $sql, $conn );
@@ -137,30 +121,48 @@ function build_nutcracker_database()
 	{
 		echo "<span class=\"fail\">FAILED!</span><br />\n";
 		echo "Could not set permissions for nutcracker database user.<br />\n";
-		echo "MySQL Error: " . mysql_error();
+		echo "MySQL Error: $sql " . "(" . mysql_errno() . ") " . mysql_error();
 		return false;
 	}
 	else
-		echo "<span class=\"pass\">OK</span><br />\n";
-
+	echo "<span class=\"pass\">OK</span><br />\n";
 	echo "Selecting our new database to populate..."; flush(); ob_flush();
 	$retval = mysql_select_db(DB_DATABASE);
 	if( !$retval )
 	{
 		echo "<span class=\"fail\">FAILED!</span><br />\n";
 		echo "Could not select our new database.<br />\n";
-		echo "MySQL Error: " . mysql_error();
+		echo "MySQL Error: $sql " . "(" . mysql_errno() . ") " . mysql_error();
 		return false;
 	}
 	else
-		echo "<span class=\"pass\">OK</span><br />\n";
-
+	echo "<span class=\"pass\">OK</span><br />\n";
 	echo "Creating nutcracker database schema..."; flush(); ob_flush();
-
 	// Thanks to the following link on SO for importing SQL in PHP:
 	// http://stackoverflow.com/questions/147821/loading-sql-files-from-within-php
 	require_once("sql_parse.php");
-
+	$dbms_schema = 'sql/droptables.sql';
+	$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
+	if ( !$sql_query )
+	{
+		echo "<span class=\"fail\">FAILED!</span><br />\n";
+		echo "Could not open sql file for import.<br />\n";
+		return false;
+	}
+	$sql_query = remove_remarks($sql_query);
+	$sql_query = split_sql_file($sql_query, ';');
+	foreach($sql_query as $sql)
+	{
+		$retval = mysql_query($sql);
+		if( !$retval )
+		{
+			echo "<span class=\"fail\">FAILED!</span><br />\n";
+			echo "Could not populate database.<br />\n";
+			echo "MySQL Error: $sql " . "(" . mysql_errno() . ") " . mysql_error();
+			return false;
+		}
+	}
+	echo "<span class=\"pass\">OK</span><br />\n";
 	$dbms_schema = 'sql/nutcrackertables.sql';
 	$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
 	if ( !$sql_query )
@@ -169,10 +171,8 @@ function build_nutcracker_database()
 		echo "Could not open sql file for import.<br />\n";
 		return false;
 	}
-
 	$sql_query = remove_remarks($sql_query);
 	$sql_query = split_sql_file($sql_query, ';');
-
 	foreach($sql_query as $sql)
 	{
 		$retval = mysql_query($sql);
@@ -180,14 +180,12 @@ function build_nutcracker_database()
 		{
 			echo "<span class=\"fail\">FAILED!</span><br />\n";
 			echo "Could not populate database.<br />\n";
-			echo "MySQL Error: " . mysql_error();
+			echo "MySQL Error: $sql " . "(" . mysql_errno() . ") " . mysql_error();
 			return false;
 		}
 	}
 	echo "<span class=\"pass\">OK</span><br />\n";
-
 	echo "Populating nutcracker database data..."; flush(); ob_flush();
-
 	$dbms_schema = 'sql/nutcrackerdata.sql';
 	$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
 	if ( !$sql_query )
@@ -196,10 +194,8 @@ function build_nutcracker_database()
 		echo "Could not open sql file for import.<br />\n";
 		return false;
 	}
-
 	$sql_query = remove_remarks($sql_query);
 	$sql_query = split_sql_file($sql_query, ';');
-
 	foreach($sql_query as $sql)
 	{
 		$retval = mysql_query($sql);
@@ -207,16 +203,13 @@ function build_nutcracker_database()
 		{
 			echo "<span class=\"fail\">FAILED!</span><br />\n";
 			echo "Could not populate database.<br />\n";
-			echo "MySQL Error: " . mysql_error();
+			echo "MySQL Error: $sql " . "(" . mysql_errno() . ") " . mysql_error();
 			return false;
 		}
 	}
 	echo "<span class=\"pass\">OK</span><br />\n";
-
 	return true;
 }
-
 ?>
-
 </body>
 </html>
