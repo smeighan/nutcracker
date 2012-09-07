@@ -36,9 +36,9 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 			<h3>Steps to install Nutcracker</h3>
 			<p>
 			<ol>
-			<li>Download/Install <a href="http://sourceforge.net/projects/xampp/">XAMPP</a> - If you're
+			<li>Download/Install <a href="http://www.wampserver.com/en/">WAMP</a> - If you're
 			here, you've probably already done this step.</li>
-			<li>Download/Install <a href="http://sourceforge.net/projects/gnuplot/files/latest/download?source=files">gnuplot</a> -
+			<li>Download/Install <a href="http://sourceforge.net/projects/gnuplot/files/latest/download?source=files">gnuplot. Only needed for a Linux install</a> -
 			During the install's "Select Additional Tasks" screen be sure you check
 			the "Add application directory to your PATH environment variable"</li>
 			</ol>
@@ -54,20 +54,20 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 		<p>
 		Password: <input type="password" name="root_pass" value="<?php
 		echo (!empty($_POST['root_pass']) ? $_POST['root_pass'] : ''); ?>" /><br />
-		If you just installed XAMPP, leave this blank.
+		If you just installed WAMP, leave this blank.
 		</p>
 		<p>
-		This is the root password for your XAMPP/LAMP MySQL database.  If you just
-		installed XAMPP the password is blank.  LAMP users can change it
-		<a href="http://localhost/security/xamppsecurity.php">here</a>.
+		This is the root password for your WAMP/LAMP MySQL database.  If you just
+		installed WAMP the password is blank.  LAMP users can change it
+		<a href="http://localhost/security/WAMPsecurity.php">here</a>.
 		</p>
 		<p>
 		Username: <input type="text" name="root_user" value="<?php
 		echo (!empty($_POST['root_user']) ? $_POST['root_user'] : 'root'); ?>" /><br />
-		If you just installed XAMPP, leave this as 'root'.
+		If you just installed WAMP, leave this as 'root'.
 		</p>
 		<p>
-		This is the username for the root user of your XAMPP/LAMP MySQL database.  The
+		This is the username for the root user of your WAMP/LAMP MySQL database.  The
 		default 'root' is probably correct for 95% of users.
 		If you're unsure, leave this alone.
 		</p>
