@@ -318,7 +318,7 @@ function add_song($song_id, $username, $frame_delay, $model_name) {
 	if ($row['songcnt'] > 0) {
 	return("*** Add Canceled *** Song '$song_name' and Model '$model_name' already exists!");
 	} else {
-	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	$result =nc_query($sql);
 	return("Song '$song_name' and Target '$model_name' added");
 	}
 }
@@ -327,10 +327,7 @@ function getSongName($song_id) {
 	$retVal = "Error occured";
 	$sql = "SELECT song_name FROM song WHERE song_id='$song_id'";
 	//echo "$sql <br />";
-	require_once('../conf/config.php');
- 	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
-	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
-	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	$result = nc_query($sql);
 	if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$retVal=$row['song_name'];
 	} else {
@@ -377,7 +374,7 @@ function select_song($username) {
       <td class="FormFieldName"><div align="right">Target</div></td>
       <td class="FormFieldName">
 	  	 <?php	
-	 	$result2 = mysql_query ($sql2, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	 	$result2 =nc_query($sql2);
 		 echo parseTargetSelect($result2); ?> 
 	  </td>
     </tr>
