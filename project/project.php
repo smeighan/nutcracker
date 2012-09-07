@@ -1,6 +1,7 @@
 <?php
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
+require_once('project_filer.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -69,8 +70,14 @@ if (isset($type)) {
 	if (isset($CancelPhraseEdit)) {
 		$msg_str="Song detail hidden";
 	}
+	if (isset($MasterNCSubmit)) {
+		$myarray=checkGaps($project_id);
+		$projectArray=setupNCfiles($project_id,$myarray);
+		printArray($projectArray);
+	}
 }
 echo $msg_str;
+
 ?>
 <h2>Current Nutcracker projects</h2>
 <form action="<?php echo "project-exec.php"; ?>" method="post">
@@ -87,10 +94,7 @@ echo $msg_str;
 <?php
 	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username' ORDER BY song_name, model_name";
 	//echo "$sql <br />";
-	require_once('../conf/config.php');
- 	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
-	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
-	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	$result = nc_query($sql);
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$cnt +=1;
@@ -212,6 +216,8 @@ function edit_song($project_id) {
 	?>
 	</table>
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
+	<p />
+	<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Ouput Project">
 	</form>
 	<?php
 	//echo "There are $cnt records in details <br />";
@@ -306,10 +312,7 @@ function add_song($song_id, $username, $frame_delay, $model_name) {
 	$sql = "REPLACE INTO project (song_id, username,frame_delay, model_name) VALUES (".$song_id.",'".$username."',".$frame_delay.",\"".$model_name."\")";
 	//echo "$sql <br />";
 	//echo "$sql2 <br />";
-	require_once('../conf/config.php');
- 	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
-	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
-	$result2 = mysql_query ($sql2, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	$result2 = nc_query($sql2);
 	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
 	if ($row['songcnt'] > 0) {
 	return("*** Add Canceled *** Song '$song_name' and Model '$model_name' already exists!");
@@ -343,10 +346,7 @@ function select_song($username) {
 	$sql2 = "SELECT object_name FROM models WHERE username='$username'";
 	//echo "$sql <br />";
 	//echo "$sql2 <br />";
-	require_once('../conf/config.php');
- 	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
-	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
-	$result = mysql_query ($sql, $DB_link) or die ("Data not found. Your SQL query didn't work... ");
+	$result = nc_query($sql);
 	?>
 	<h2>Available Songs</h2>
 	<table border="1" cellpadding="1" cellspacing="1">
@@ -427,4 +427,101 @@ function parseSongs($result) {
 	return($retVal);
 }
 
+function checkGaps($project_id) {  // from a finished project, start by returning an array of arrays that hold start,end,effect 
+	$start_time=0.0;
+	$subarray=array();
+	$cnt=0;
+	$outarray=array();
+	$sql="SELECT phrase_name, start_secs,end_secs, effect_name FROM `project_dtl` WHERE project_id=$project_id ORDER BY start_secs"; 
+	$result2=nc_query($sql);
+	while ($row=mysql_fetch_array($result2,MYSQL_ASSOC)) {
+		$st_time=$row['start_secs'];
+		$end_time=$row['end_secs'];
+		$effect_name=$row['effect_name'];
+		if ($start_time < $st_time) {
+			$subarray[0]=$start_time;
+			$subarray[1]=$st_time;
+			$subarray[2]="zzeross";
+			$outarray[$cnt]=$subarray;
+			$cnt+=1;
+		}
+		if (strlen($effect_name)==0)
+			$effect_name="zzeross";
+		$subarray[0]=$st_time;
+		$subarray[1]=$end_time;
+		$subarray[2]=$effect_name;
+		$outarray[$cnt]=$subarray;
+		$cnt+=1;
+		$start_time=$end_time;
+	}
+	return($outarray);
+}
+
+function getProjInfo($project_id) { // gets project info from database and returns it as an array
+	$retArray=array();
+	$sql="SELECT username, frame_delay,model_name FROM project WHERE project_id=$project_id";
+	$result=nc_query($sql);
+	$row=mysql_fetch_array($result,MYSQL_ASSOC);	
+	$retArray=$row;
+	return($retArray);
+}
+
+function getFrameCnt($st,$end,$frame_delay) {
+	$retVal = ($end-$st)/($frame_delay/1000);
+	return($retVal);
+}
+
+function checkAccum($inval) {
+	$retVal=0;
+	while ($inval>1) {
+		$inval--;
+		$retVal++;
+	}
+	return($retVal);
+}
+
+function setupNCfiles($project_id,$phrase_array) {  // create each of the effect nc files (or make sure they are created for each of the times
+	$proj_array=getProjInfo($project_id);
+	$frame_delay=$proj_array['frame_delay'];
+	$model_name=$proj_array['model_name'];
+	$username=$proj_array['username'];
+	$cnt=0;
+	$outarray=array();
+	$accumulator=0;
+	foreach ($phrase_array as $curr_array) {
+		$st=$curr_array[0];
+		$end=$curr_array[1];
+		$eff=$curr_array[2];
+		$frame_cnt_raw=getFrameCnt($st,$end,$frame_delay);
+		$frame_cnt=floor($frame_cnt_raw);
+		$frame_cnt_remain=$frame_cnt_raw-$frame_cnt;
+		if ($eff=="zzeross") {
+			$outstr="zeros:$frame_cnt";
+		} else {
+			// code to output the model to a file here!!!!
+			createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end);
+			$outstr="$username+$model_name+$eff+$frame_cnt.nc";
+		}
+		$outarray[$cnt++]=$outstr;
+		$accumulator+=$frame_cnt_remain;
+		$zeroframecnt=checkAccum($accumulator);
+		if ($zeroframecnt>0) {
+			$outstr="zeros:$zeroframecnt";
+			$accumulator-=$zeroframecnt;
+			$outarray[$cnt++]=$outstr;
+		}
+	}
+	return($outarray);	
+}
+
+function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end) {  // this function will create the batch call to the effects to create the individual nc files
+	return;
+}
+
+function printArray($inArray) {
+	foreach($inArray as $currarray) {
+		print_r($currarray);
+		echo "<br />";
+	}
+}
 ?>
