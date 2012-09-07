@@ -1609,7 +1609,7 @@ function get_effect_user_hdr($username,$effect_name)
 
 function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in_secs,$fade_out_secs)
 {
-	echo "<pre>function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)</pr>\n";
+	//echo "<pre>function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)</pr>\n";
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	$tokens=explode("+",$base);
@@ -1888,8 +1888,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	die ("frame_delay = 0, unable to create any output");
 	//	should we show 5 string mini channel preview?
 	echo "<pre>";
-	echo "TotalFrames= (seq_duration*1000)/frame_delay;\n";
-	echo "$TotalFrames= ($seq_duration*1000)/$frame_delay;\n";
+	//echo "TotalFrames= (seq_duration*1000)/frame_delay;\n";
+	//echo "$TotalFrames= ($seq_duration*1000)/$frame_delay;\n";
 	echo "</pre>\n";
 	$preview=0; // for now, no
 	if($preview==1)
@@ -1930,8 +1930,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	{
 		$MaxFrameLoops=1;
 	}
-	echo "<pre>$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);</pre>\n";
-	echo "<pre>MaxFrameLoops = $MaxFrameLoops</pre>\n";
+	//echo "<pre>$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);</pre>\n";
+	//echo "<pre>MaxFrameLoops = $MaxFrameLoops</pre>\n";
 	$Sec2=-1;
 	$old_string=$old_pixel=0;
 	$i=0;
@@ -2164,6 +2164,8 @@ function  create_sparkles($sparkles,$maxStrand,$maxPixel)
 function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
 {
 	$orig=$rgb_val;
+	//echo "<pre>function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)</pre>\n";
+	if($sparkle_count<1) return $rgb_val;
 	$v=intval($cnt%$sparkle_count);
 /*	Sparkle is a twinkle down over 7 frames.
 	frame 1, dark gray (#444444)

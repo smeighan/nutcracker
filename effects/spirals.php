@@ -63,7 +63,6 @@ list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $t_dat = $user_target . ".dat";
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-echo "<pre>arr=read_file($t_dat,$path);</pre>\n";
 $member_id=get_member_id($username);
 $path ="workspaces/" . $member_id;
 $directory=$path;
@@ -77,7 +76,7 @@ $x_dat = $user_target . "+" . $effect_name . ".dat";
 $base = $user_target . "+" . $effect_name;
 spiral($arr,$path,$t_dat,$number_spirals,$number_rotations,$spiral_thickness,$base,
 $color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
-$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkle_count); 
+$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkles_count); 
 $target_info=get_info_target($username,$t_dat);
 //show_array($target_info,'MODEL: ' . $t_dat);
 $description ="Total Elapsed time for this effect:";
@@ -90,7 +89,7 @@ $filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade
 
 function spiral($arr,$path,$t_dat,$numberSpirals,$number_rotations,$spiralThickness,$base,
 $color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
-$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkle_count)
+$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkles_count)
 {
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -137,9 +136,9 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 	$seq_number=0;
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
-	/*echo "<pre>";
-	print_r($sparkles_array);
-	echo "</pre>\n";*/
+	//echo "<pre>sparkle_count=$sparkles_count\n";
+	//print_r($sparkles_array);
+	//echo "</pre>\n";
 	//flush();
 	//
 	$f=1;
@@ -289,7 +288,7 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 							$sparkles_array[$strand][$p]++;
 							$rgb_val=calculate_sparkle($strand,$p,
 							$sparkles_array[$strand][$p],
-							$rgb_val,$sparkle_count);
+							$rgb_val,$sparkles_count);
 						}
 						$string=$user_pixel=0;
 						//	$sparkles_array[$strand][$p]=$sparkles_array[$strand][$p]+0;
@@ -305,7 +304,7 @@ $direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$bac
 	}
 	show_elapsed_time($script_start,"Finished  Effect, spirals class:");
 	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame);
-	echo "<pre>make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
+	//echo "<pre>make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
 	?>
 	<br/>
 	<br/>
