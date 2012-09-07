@@ -92,7 +92,10 @@ echo "<form action=\"$self?user=$username?total_strings=$total_strings?object_na
 for($string=1;$string<=$total_strings;$string++)
 {
 	echo "<tr><td>Enter the number of pixels in String #$string</td>";
-	$maxPixel=$pixel_array[$string];
+	if(isset($pixel_array[$string]))
+		$maxPixel=$pixel_array[$string];
+	else
+	$maxPixel=0;
 	echo "<td><input type=\"text\" STYLE=\"background-color: #ABE8EC;\" size=\"5\" maxlength=\"6\" 
 	value=\"$maxPixel\" name=\"pixel_array[$string]\"/></td>\n";
 	echo "</tr>\n";
@@ -141,7 +144,6 @@ if($first_time==0 or $c>0) // if not first time, then we have data we can show
 						echo "<th>Virtual<br/>Pixel</th>";
 					}
 					echo "<th>$pixel</th>";
-				
 				}
 				if($loop==2)
 				{
@@ -232,12 +234,11 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	$s=1;
 	for ($p=1;$p<=$maxPixels;$p++)
 	{
-				$x=$p*3;
+		$x=$p*3;
 		$y=0;
 		$h=72;
 		fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
 		//printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
-		
 	}
 	fwrite($fh, "\n" );
 	fclose($fh);

@@ -37,8 +37,17 @@ if($WARN==1)
 	//	echo "<h4>" . md5("pepe1pepe1") . "</h4>";
 }
 $row=show_my_models($username,$model_name);
-$number_segments=$row['number_segments'];
-$gif_model=$row['gif_model'];
+if(isset($row['number_segments']))
+{
+	$number_segments=$row['number_segments'];
+	$gif_model=$row['gif_model'];
+}
+else
+{
+	$number_segments=0;
+	$gif_model="single";
+	
+}
 /*echo "<pre>";
 print_r($row);
 echo "<pre>\n";*/
@@ -50,8 +59,8 @@ if(empty($row)) // on our first time, we have no data for this user. initializze
 	$row['start_bottom']='Y';
 	$row['total_strings']=0;
 	$row['pixel_count']=0;
-		$row['number_rows']=0;
-			$row['member_index']='single';
+	$row['number_rows']=0;
+	$row['member_index']='single';
 }
 $ip=@$REMOTE_ADDR; 
 //echo "<b>IP Address= $ip</b>";
@@ -209,7 +218,7 @@ name="UNIT_OF_MEASURE">cm
 		</form>
 		<?php 
 	}
-}*/
+	}*/
 show_user_base($username); 
 $menu="member-index"; require "../conf/menu.php"; 
 echo "</body>";
