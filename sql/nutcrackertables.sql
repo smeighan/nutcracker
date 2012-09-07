@@ -326,3 +326,45 @@ CREATE TABLE IF NOT EXISTS `snowstorm` (
   `counter` int(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`username`,`strand`,`pixel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='used for snowtorm.php';
+
+CREATE TABLE IF NOT EXISTS `project` (
+  `project_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `song_id` int(11) NOT NULL,
+  `username` varchar(25) NOT NULL,
+  `frame_delay` int(11) NOT NULL,
+  `model_name` varchar(16) NOT NULL,
+  PRIMARY KEY (`project_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin AUTO_INCREMENT=11 ;
+
+CREATE TABLE IF NOT EXISTS `project_model` (
+  `project_model_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) unsigned NOT NULL,
+  `model_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`project_id`,`model_id`),
+  UNIQUE KEY `project_model_id` (`project_model_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `song_dtl` (
+  `song_dtl_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `song_id` int(11) NOT NULL,
+  `phrase_name` varchar(100) NOT NULL,
+  `start_secs` float(12,6) NOT NULL,
+  `end_secs` float(12,6) NOT NULL,
+  `sequence` int(6) NOT NULL DEFAULT '0',
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`song_dtl_id`),
+  KEY `song_id` (`song_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=88 ;
+
+CREATE TABLE IF NOT EXISTS `song` (
+  `song_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `active_set` varchar(1) DEFAULT 'N',
+  `song_name` varchar(256) DEFAULT NULL,
+  `artist` varchar(100) DEFAULT NULL,
+  `song_url` varchar(256) DEFAULT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `audacity_aup` varchar(256) DEFAULT NULL,
+  `music_mo_file` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`song_id`),
+  KEY `user_song` (`song_name`,`artist`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=387
