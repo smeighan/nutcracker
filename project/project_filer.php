@@ -160,6 +160,11 @@ function createHeader($outfile,$model_name, $username, $project_id, $sepStr=" ")
 	fclose ($f);
 	fclose ($w);
 }
+//$sql = "SELECT e1.effect_class, e2.param_name, e2.param_value FROM effects_user_hdr AS e1 "
+//     . "LEFT JOIN effects_user_dtl AS e2 ON "
+//     . "e1.username=e2.username AND "
+//     . "e1.effect_name=e2.effect_name "
+//     . "WHERE e2.username=\"$username\" AND e2.effect_name=\"$effect_name\"";
 //
 // MAIN
 //
