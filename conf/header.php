@@ -22,4 +22,6 @@ require_once('../conf/barmenu.php');
 </head>
 <body>
 	
-<?php show_barmenu();
+<?php
+if (!isset($_POST['BATCH']))
+	show_barmenu();
