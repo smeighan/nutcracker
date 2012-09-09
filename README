@@ -1,7 +1,7 @@
 README for Nutcracker
 
-Nutcracker is a web based, php tool that will create animations for RGB devices. Nutcracker allows for the easy generation of complicated effects on a Christmas RGB Mega-Tree.
+Nutcracker is a web based, php tool that will create animations for RGB devices. Nutcracker allows for the easy generation of complicated effects on a Christmas RGB Mega-Tree or Matrix.
 
-The Nutcracker currently supports output for 4 different sequencers: Light Show Pro, Lighy-O-Rama, Vixen and HLS.
+The Nutcracker currently supports output for 4 different sequencers: Light Show Pro, Light-O-Rama, Vixen and HLS.
 
 ![sample effect from Nutcracker](http://meighan.net/nutcracker/effects/workspaces/2/A+FLY_GITHUB.gif)
