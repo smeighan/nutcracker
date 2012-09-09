@@ -41,6 +41,9 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 { // yes
 	$pixel_array=get_strands($username,$object_name);
 	$segment_array=get_segments($username,$object_name);
+	echo "<pre>";
+	print_r($segment_array);
+	echo "</pre>";
 	$number_segments_arr=get_number_segments($username,$object_name);
 	$number_segments=$number_segments_arr[0];
 	$gif_model=$number_segments_arr[1];
@@ -176,6 +179,7 @@ if($first_time==0 or $c>0) // if not first time, then we have data we can show
 	{
 		$pixels_per_segment= intval($pixel/$number_segments);
 		$start_pixel = ($segment-1)*$pixels_per_segment + 1;
+			if(isset($segment_array[$segment])) $start_pixel=$segment_array[$segment];
 		echo "<tr>";
 		echo "<td>Segment $segment starts at virtual pixel#</td>";
 		echo "<td>$start_pixel</td>";
