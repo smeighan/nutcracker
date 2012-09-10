@@ -73,8 +73,8 @@ if (isset($type)) {
 	if (isset($MasterNCSubmit)) {
 		$myarray=checkGaps($project_id);
 		$projectArray=setupNCfiles($project_id,$myarray);
-		prepMasterNCfile($project_id);
-		printArray($projectArray);
+		$myNCarray=prepMasterNCfile($project_id);
+		processMasterNCfile($project_id, $projectArray, $myNCarray);
 	}
 }
 echo $msg_str;
@@ -496,7 +496,6 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 		if ($eff=="zzeross") {
 			$outstr="zeros:$frame_cnt";
 		} else {
-			// code to output the model to a file here!!!!
 			createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id); 
 			$outstr="$username+$model_name+$eff+$frame_cnt.nc";
 		}
@@ -513,6 +512,9 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 }
 
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id) {  // this function will create the batch call to the effects to create the individual nc files
+	//
+	// code to output the model to an individual nc file per phrase here!!!!
+	//
 	return;
 }
 
@@ -520,8 +522,23 @@ function prepMasterNCfile($project_id) {
 	$proj_array=getProjInfo($project_id);
 	$username=$proj_array['username'];
 	$model_name=$proj_array['model_name'];
+	$testarr = getHeader($model_name, $username, $project_id);
+	// print_r($testarr);
+	return($testarr);
+}
+
+function processMasterNCfile($project_id, $projectArray, $workArray) {
+	// 
+	// Code to process all the Master NC Files here
+	//
+	$proj_array=getProjInfo($project_id);
+	$username=$proj_array['username'];
+	$model_name=$proj_array['model_name'];
+	$retArray=appendFiles($projectArray,$workArray);
 	$outfile="$username+$project_id+master.nc";
-	createHeader($outfile,$model_name, $username, $project_id);
+	array2File($outfile, $retArray);
+	// print_r($retArray);
+	return;
 }
 	
 function printArray($inArray) {

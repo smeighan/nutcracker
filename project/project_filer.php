@@ -96,25 +96,23 @@ function getFileData($infile,$stripHeader=false, $sepStr=" ") {
 // Array of files need to be of the format <filename> surrounded by quotes which delinates the file to be appended.
 // Array of files can also have the format zero:<number> surround by quotes which delinates the number of frames as zero to be appended.
 // 
-function appendFiles($in_filearray, $sepStr=" ") { 
-	$stripHeader=false;
-	$myarr=array();
+function appendFiles($in_filearray, $prepArray, $sepStr=" ") { 
+//	$stripHeader=false;
+	$retarr=$prepArray;
+	//print_r($retarr);
 	foreach($in_filearray as $infile) {
-		if (substr($infile,0,5)=="zero:") {
-			$val=substr($infile,5);
-			echo "Adding $val zeros\n";
+		if (substr($infile,0,6)=="zeros:") {
+			$val=substr($infile,6);
+			echo "Adding $val zeros<br />";
 			if (isset($retarr)) {
 				$retarr=appendZeros($retarr,$val,false,$sepStr);
+				//echo "VAL : $val <br />";
+				// print_r($retarr);
 			}
 		} else {
-			echo "Reading file $infile \n";
-			if ($stripHeader) {
-				$myarr=getFileData($infile,true,$sepStr);
-				$retarr=appendStr($retarr,$myarr);
-			} else {
-				$retarr=getFileData($infile,false,$sepStr);
-				$stripHeader=true;
-			}
+			echo "Reading file $infile<br />";
+//			$myarr=getFileData($infile,true,$sepStr);
+//			$retarr=appendStr($retarr,$myarr);
 		}
 	}
 	return($retarr);
@@ -131,27 +129,20 @@ function array2File($outfile,$outarray) {//writes out a file from an array
 
 function createHeader($outfile,$model_name, $username, $project_id, $sepStr=" "){
 	$sql="SELECT member_id FROM members WHERE username='".$username."'";
-	//echo "$sql <br />";
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
 	$model_file=$mydir.$model_name.".dat";
-	//echo "$model_file<br />";
 	$retArray = array();
 	$f = fopen ($model_file, "r");
 	$w = fopen ($outfile, "w");
 	$outstr="#   project id $project_id\n#   target name $model_name\n";
 	fwrite($w, $outstr);
-	//$ln= 0;
 	while ($line= fgets ($f)) {
 		if ($line) {
 			if (isInvalidLine($line) == false) {
-				//echo "$line<br />";
 				$myArray=myTokenizer($line, $sepStr);
-				//$myStr=revTokenizer($myArray,$stripHeader, $sepStr);
-				//$retArray[$ln]=$myStr;
-				//$ln++;
 				$outstr = "S".$sepStr.$myArray[1].$sepStr."P".$sepStr.$myArray[2]."\n";
 				fwrite($w, $outstr);
 			}
@@ -160,17 +151,34 @@ function createHeader($outfile,$model_name, $username, $project_id, $sepStr=" ")
 	fclose ($f);
 	fclose ($w);
 }
-//$sql = "SELECT e1.effect_class, e2.param_name, e2.param_value FROM effects_user_hdr AS e1 "
-//     . "LEFT JOIN effects_user_dtl AS e2 ON "
-//     . "e1.username=e2.username AND "
-//     . "e1.effect_name=e2.effect_name "
-//     . "WHERE e2.username=\"$username\" AND e2.effect_name=\"$effect_name\"";
-//
-// MAIN
-//
-//$fileArray=array("test/test.nc","zero:4","test/test2.nc","zero:20","test/test3.nc","test/test4.nc"); //files to append. This array drives all the appending!
-//$myArr=appendFiles($fileArray); //append the files together into a large array
-//$outfile="test/testout.nc"; //set the output file
-//array2File($outfile,$myArr); //write out the large array to the outfile.
 
+function getHeader($model_name, $username, $project_id, $sepStr=" "){
+	$sql="SELECT member_id FROM members WHERE username='".$username."'";
+	//echo "$sql <br />";
+	$stripHeader = true;
+	$result=nc_query($sql);
+	$row=mysql_fetch_array($result,MYSQL_ASSOC);
+	$member_id=$row['member_id'];
+	$mydir='../targets/'.$member_id.'/';
+	$model_file=$mydir.$model_name.".dat";
+	//echo "$model_file<br />";
+	$retArray = array();
+	$f = fopen ($model_file, "r");
+	$ln= 0;
+	while ($line= fgets ($f)) {
+		if ($line) {
+			if (isInvalidLine($line) == false) {
+				//echo "$line<br />";
+				$myArray=myTokenizer($line, $sepStr);
+				//print_r($myArray);
+				$tempStr="S ".$myArray[1]." P ".$myArray[2];
+				//$myStr=revTokenizer($myArray,$stripHeader, $sepStr);
+				$retArray[$ln]=$tempStr;
+				$ln++;
+			}
+		}
+    }
+	fclose ($f);
+	return($retArray);
+}
 ?>
