@@ -2,9 +2,7 @@
 
 function f_bars($get)
 {
-	/*echo "<pre>";
-	print_r($get);
-	echo "</pre>\n";*/
+	ini_set("memory_limit","512M");
 	extract($get);
 	require_once("read_file.php");
 	$member_id=get_member_id($username);
