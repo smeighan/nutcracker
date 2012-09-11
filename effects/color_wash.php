@@ -163,5 +163,5 @@ function color_wash($arr,$t_dat,$base,$path,$frame_delay,$seq_duration,$window_d
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 }

@@ -77,14 +77,14 @@ submit	Submit Form to create your target model
 */
 if(!isset($show_frame)) $show_frame='N';
 $path="workspaces/". $member_id;
-snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$maxSnowflakes,$seq_duration,$show_frame,$start_color,$end_color,$username,$trail_length);
+snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$maxSnowflakes,$seq_duration,$show_frame,$start_color,$end_color,$username,$trail_length);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
-// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
+// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
-function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$maxSnowflakes,$seq_duration,$show_frame,$start_color,$end_color,$username,$trail_length)
+function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$maxSnowflakes,$seq_duration,$show_frame,$start_color,$end_color,$username,$trail_length)
 {
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -231,7 +231,7 @@ function snowstorm($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 }
 
 function insert_snowstorm($username,$counter,$strand,$pixel,$rgb_val)

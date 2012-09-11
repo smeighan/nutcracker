@@ -397,10 +397,10 @@ function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees
 		// for($w=0;$w<=$windowWidth;$w++);
 	}
 	// for($k=1;$k<=$maxK+$windowWidth;$k++);
-	//	echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);\n";
+	//	echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);\n";
 	$full_path = "workspaces/2/AA+TEXT2_d_8.dat";
 	//fill_in_zeros($arr,$dat_file_array);
-	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 }
 
 function create_library($link,$username,$base,$MaxFrames)

@@ -31,8 +31,10 @@ if (file_exists($directory))
 }
 //echo "<pre>user_effects=$user_effects</pre>\n";
 //echo "<pre>query_string = ". $_SERVER['QUERY_STRING'] . "</pre>\n";
+$effect_class="";
 extract($_GET);
 
+//show_array($_GET,"_GET Settings");
 if(!empty($_GET))
 {
 	

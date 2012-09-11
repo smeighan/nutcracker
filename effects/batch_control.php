@@ -11,13 +11,12 @@ $batch=2;
 //    3       |   No    |        No         |       No           |      Yes
 $song_list[] = array($target,"BARS1","f_bars");
 $song_list[] = array($target,"FIRE1","f_fire");
-$song_list[] = array($target,"FIRE2","f_fire");
+$song_list[] = array($target,"GARLAND0","f_garlands");
 $song_list[] = array($target,"FLY_0_0","f_butterfly");
 $song_list[] = array($target,"BARS1_TEST","f_bars");
 $song_list[] = array($target,"BARBERPOLE","f_spirals");
 /*$song_list[] = array($target,"BARS2","f_bars");
 $song_list[] = array($target,"BARS3","f_bars");*/
-$song_list[] = array($target,"BARBERPOLE_180","f_spirals");
 $username='f';
 echo "<html>";
 echo "<body>";
@@ -25,6 +24,7 @@ require_once ("f_bars.php");
 require_once ("f_spirals.php");
 require_once ("f_butterfly.php");
 require_once ("f_fire.php");
+require_once ("f_garlands.php");
 //
 echo "<table border=2>";
 echo "<tr>";
@@ -62,6 +62,7 @@ foreach($song_list as $i=>$arr2)
 	if($program=="f_spirals") f_spirals($get);
 	if($program=="f_butterfly") f_butterfly($get);
 	if($program=="f_fire") f_fire($get);
+	if($program=="f_garlands") f_garlands($get);
 	//
 	list($usec, $sec) = explode(' ', microtime());
 	$script_end = (float) $sec + (float) $usec;

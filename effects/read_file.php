@@ -485,7 +485,7 @@ function my_exec($cmd, $input='')
 	);
 }
 
-function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay,$script_start)
+function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 {
 	//
 	////	to speed up imagmagick: +dither or -treedepth 4 -colors 256.
@@ -671,9 +671,9 @@ function make_amperage_datefile($loop,$amperage,$dat_file)
 	fclose($fh);
 }
 
-function rotate($arr,$x_dat,$t_dat,$path,$direction,$halfTree,$frame_delay,$sparkles,$window_degrees,$script_start,$username,$sequence_duration)
+function rotate($arr,$x_dat,$t_dat,$path,$direction,$halfTree,$frame_delay,$sparkles,$window_degrees,$username,$sequence_duration)
 {
-	show_elapsed_time($script_start,"Starting  Rotate image about Z axis");
+	//show_elapsed_time($script_start,"Starting  Rotate image about Z axis");
 	// now rotate image that we just made, dat file is $x_dat
 	$x_arr=read_file($x_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$minStrand =$arr[0];  // lowest strand seen on target
@@ -771,9 +771,9 @@ function rotate($arr,$x_dat,$t_dat,$path,$direction,$halfTree,$frame_delay,$spar
 	fclose($fh);  // x_dat
 	fclose($fh_dat);  // dat_file
 	$base_t_dat=$t_dat;
-	show_elapsed_time($script_start,"Finished  Rotate image about Z axis");
+	//show_elapsed_time($script_start,"Finished  Rotate image about Z axis");
 	// make_rotate_gp($path,$base_t_dat,$x_dat,$height,$dat_file_array);
-	make_gp($batch,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$sequence_duration,$show_frame);
+	make_gp($batch,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$sequence_duration,$show_frame);
 }
 
 function show_srt_file($file,$maxFrame,$frame_delay,$maxPixel,$pixel_count)
@@ -1182,9 +1182,9 @@ function sparkles($sparkles,$rgb_val)
 	return $rgb_val;
 }
 
-function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)
+function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame)
 {
-	//	echo "<pre>function make_gp($batch,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
+	//	echo "<pre>function make_gp($batch,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
 	//  make_gp($batch,workspaces/f,AA+SEAN3.dat,AA.dat,Array,Array,f,5,1331320308.6,Array)
 		//
 	fill_in_zeros($arr,$dat_file_array); // modify dat files so they have missingg data
@@ -1204,7 +1204,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	)
 		*/
 	$pixel_count=$target_info['pixel_count'];
-	show_elapsed_time($script_start,"Making  gnuplot command file:");
+	//show_elapsed_time($script_start,"Making  gnuplot command file:");
 	//	dat_file_array[0]=workspaces/2/AA+CIRCLE1_d_1.dat
 	//
 	$path_parts = pathinfo($dat_file_array[0]);
@@ -1368,7 +1368,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	fclose($fh_gp_file);
 	fclose($fh_gp_file_amperage);
 	$model="_d_";
-	if($batch<=2) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay,$script_start);
+	if($batch<=2) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay);
 	//display_gif($batch,$path,$model,$gp_file_amperage,$out_file_array_amperage,$frame_delay,$script_start);
 	
 	//

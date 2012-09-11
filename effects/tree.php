@@ -120,7 +120,7 @@ purge_files();
 
 $path="workspaces/". $member_id;
 
-tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$show_frame,$maxTrees,$maxPhase,$random_colours);
+tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$show_frame,$maxTrees,$maxPhase,$random_colours);
 
 
 $target_info=get_info_target($username,$t_dat);
@@ -129,9 +129,9 @@ show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 
 
-// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
+// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 
-function tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$show_frame,$maxTrees,$maxPhase,$random_colours)
+function tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$show_frame,$maxTrees,$maxPhase,$random_colours)
 {
 
 	$minStrand =$arr[0];  // lowest strand seen on target
@@ -337,7 +337,7 @@ function tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$wind
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 
 	echo "</body>";
 	echo "</html>";

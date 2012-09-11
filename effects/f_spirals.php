@@ -47,7 +47,7 @@ ini_set("memory_limit","512M");
 	$get['f_delay']=$f_delay;
 	/*//spiral($arr,$path,$t_dat,$number_spirals,$number_rotations,$spiral_thickness,$base,
 	$color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
-	$direction,$f_delay,$sparkles,$window_degrees,$script_start,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkles_count); */
+	$direction,$f_delay,$sparkles,$window_degrees,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkles_count); */
 	spiral($get);
 	$target_info=get_info_target($username,$t_dat);
 	//show_array($target_info,'MODEL: ' . $t_dat);
@@ -283,8 +283,8 @@ function spiral($get)
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	//if($batch==0) show_elapsed_time($script_start,"Finished  Effect, spirals class:");
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame);
-	//echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
+	//echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
 	
 }
 

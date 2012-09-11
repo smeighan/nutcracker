@@ -78,14 +78,14 @@ $php_program = str_replace(CR, LF, $php_program);
 $php_program = str_replace("\\\"", "\"", $php_program);
 //echo "<pre>after: $php_program</pre>\n";
 $path="workspaces/". $member_id;
-ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$param1,$param2,$start_color,$end_color,$php_program,$effect_name,$username);
+ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$param1,$param2,$start_color,$end_color,$php_program,$effect_name,$username);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
-// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
+// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 	
-function ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$param1,$param2,$start_color,$end_color,$php_program,$effect_name,$username)
+function ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$param1,$param2,$start_color,$end_color,$php_program,$effect_name,$username)
 {
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -138,7 +138,7 @@ function ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
 	$show_frame='N';
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	echo "</body>";
 	echo "</html>";
 }

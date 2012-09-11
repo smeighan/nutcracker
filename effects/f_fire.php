@@ -131,9 +131,9 @@ function f_fire($get)
 	$x_dat_base="fire";
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,
-	$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	//	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,
-	//	$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	//	$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 	// $filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
 	// ($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in_secs,$fade_out_secs)

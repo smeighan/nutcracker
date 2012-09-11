@@ -119,7 +119,7 @@ $mask = $directory . "/*.dat";
 //array_map( "unlink", glob( $mask ) );
 
 $base = $user_target . "~" . $effect_name;
-circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$use_background,$background_color); // create circles on the target
+circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$use_background,$background_color); // create circles on the target
 
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
@@ -127,10 +127,10 @@ show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
 
 
-function circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$use_background,$background_color)
+function circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$use_background,$background_color)
 {
 
-	echo " circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$use_background,$background_color\n";
+	echo " circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$use_background,$background_color\n";
 
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -202,9 +202,9 @@ function circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$wi
 		fclose($fh_dat[$f]);
 		show_elapsed_time($script_start,"Finished  Effect, circles class:");
 	}
-	echo "make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration)\n";
+	echo "make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration)\n";
 	$amperage=array();
-	make_gp($batch,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration);
+	make_gp($batch,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration);
 
 	echo "</body>";
 	echo "</html>";

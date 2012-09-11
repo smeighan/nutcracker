@@ -95,14 +95,14 @@ seq_duration	5
 submit	Submit Form to create your target model
 */
 $path="workspaces/". $member_id;
-meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$script_start,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type);
+meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);
 show_elapsed_time($script_start,"Total Elapsed time for this effect:");
-// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
+// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
-function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$script_start,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type)
+function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$username,$sparkles,$seq_duration,$show_frame,$maxMeteors,$maxPhase,$meteor_type)
 {
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -283,7 +283,7 @@ function meteors($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$w
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	echo "</body>";
 	echo "</html>";
 }

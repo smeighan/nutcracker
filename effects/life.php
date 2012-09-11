@@ -154,7 +154,7 @@ for ($frame=1;$frame<=$maxFrame;$frame++)
 }
 $x_dat_base="life";
 $amperage=array();
-make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function count_neighbors($tree_rgb,$s,$p,$maxStrand,$maxPixel)
