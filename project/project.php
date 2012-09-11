@@ -218,7 +218,7 @@ function edit_song($project_id) {
 	</table>
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
 	<p />
-	<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Ouput Project">
+	<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
 	</form>
 	<?php
 	//echo "There are $cnt records in details <br />";
@@ -496,8 +496,8 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 		if ($eff=="zzeross") {
 			$outstr="zeros:$frame_cnt";
 		} else {
-			createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id); 
-			$outstr="$username+$model_name+$eff+$frame_cnt.nc";
+			$outstr=createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id); 
+
 		}
 		$outarray[$cnt++]=$outstr;
 		$accumulator+=$frame_cnt_remain;
@@ -512,10 +512,14 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 }
 
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id) {  // this function will create the batch call to the effects to create the individual nc files
-	//
-	// code to output the model to an individual nc file per phrase here!!!!
-	//
-	return;
+	$workdir="workarea/";
+	$outfile="$username+$model_name+$eff+$frame_cnt.nc";
+	if (file_exists($workdir.$outfile)) {
+		echo "$outfile already exist <br />";
+	} else {
+		// code to gen a new individual nc file goes here
+	}
+	return($workdir.$outfile); // this will be the file created 
 }
 
 function prepMasterNCfile($project_id) {

@@ -1,15 +1,11 @@
 <?php
 function myTokenizer($in_str, $sepStr=" ") { // Takes a string and returns an array seperated by value of $sepStr 
-	$outarray = array();
-	$tokens = $sepStr;
-	$tokenized = strtok($in_str, $tokens);
-	$cnt=0;
-	while ($tokenized) {
-		$outarray[$cnt]=$tokenized;
-		$cnt+=1;
-		$tokenized = strtok($tokens);
-   }
-   return($outarray);
+	$outarray=array();
+	$words = preg_split('/\s/', $in_str);
+	foreach ($words as $word) 
+		if (strlen(trim($word))!=0) 
+			$outarray[]=$word;
+	return($outarray);
 }
 
 function revTokenizer($in_array,$stripHeader=false, $sepStr=" ") { // Reverse of myTokenizer.  Takes an array and reverts it to a string
@@ -42,20 +38,15 @@ function isInvalidLine($in_str) { // returns false if the string starts with a #
 
 function appendStr($str_array1,$str_array2,$prepend=false, $sepStr=" ") {  // takes two array of strings and appends them together
 	$retArray = array();
-	if (count($str_array1) != count($str_array2)) {
-		echo "*** ERROR *** arrays must match length!\n";
-	} else {
-		$cnt=0;
-		foreach($str_array1 as $val) {
+	if (count($str_array1) != count($str_array2))
+		echo "*** ERROR *** arrays must match length!<br />";
+	else 
+		$y=count($str_array1);
+		for($x=0;$x<$y;$x++) 
 			if ($prepend) 
-				$newstr = $str_array2[$cnt].$sepStr.$val;
+				$retArray[$x]=$str_array2[$x].sepStr.$str_array1[$x];
 			else
-				$newstr = $val.$sepStr.$str_array2[$cnt];
-			
-			$retArray[$cnt] = $newstr;
-			$cnt+=1;
-		}
-	}
+				$retArray[$x]=$str_array1[$x].$sepStr.$str_array2[$x];
 	return($retArray);
 }
 
@@ -111,8 +102,10 @@ function appendFiles($in_filearray, $prepArray, $sepStr=" ") {
 			}
 		} else {
 			echo "Reading file $infile<br />";
-//			$myarr=getFileData($infile,true,$sepStr);
-//			$retarr=appendStr($retarr,$myarr);
+			$myarr=getFileData($infile,true,$sepStr);
+			// print_r($myarr);
+			$retarr=appendStr($retarr,$myarr);
+			//print_r($retarr);
 		}
 	}
 	return($retarr);
@@ -161,18 +154,15 @@ function getHeader($model_name, $username, $project_id, $sepStr=" "){
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
 	$model_file=$mydir.$model_name.".dat";
-	//echo "$model_file<br />";
+	echo "$model_file<br />";
 	$retArray = array();
 	$f = fopen ($model_file, "r");
 	$ln= 0;
 	while ($line= fgets ($f)) {
 		if ($line) {
 			if (isInvalidLine($line) == false) {
-				//echo "$line<br />";
 				$myArray=myTokenizer($line, $sepStr);
-				//print_r($myArray);
 				$tempStr="S ".$myArray[1]." P ".$myArray[2];
-				//$myStr=revTokenizer($myArray,$stripHeader, $sepStr);
 				$retArray[$ln]=$tempStr;
 				$ln++;
 			}
