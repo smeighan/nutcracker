@@ -1,10 +1,14 @@
 <?php
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
-if(isset($_GET['batch'])) 
-$batch = $_GET['batch'];
+if(isset($_GET['batch']))
+{
+	$batch = $_GET['batch'];
+}
 else
-$batch=0;
+{
+	$batch=0;
+}
 if($batch==0)
 {
 	?>

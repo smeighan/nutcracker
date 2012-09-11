@@ -65,7 +65,7 @@ if(!empty($_GET))
 
 //$effect_class=$user_effects;
 show_my_effects($username,$user_targets);
-$effect_details=get_effect_details($effect_class);
+if(isset($effect_class)) $effect_details=get_effect_details($effect_class);
 if(isset($user_effects))
 {
 	$effect_hdr=get_effect_hdr($user_effects);

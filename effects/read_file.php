@@ -1262,7 +1262,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	{
 		if($loop==1)
 		{
-			$pointsize="0.6";
+			$pointsize="0.6";  // was 0.6
 			fwrite($fh_gp_file,sprintf("\n\nset terminal gif  notransparent noenhanced optimize animate  delay %d size %d,%d\n",$gif_delay,$w,$h));
 			fwrite($fh_gp_file,sprintf("set output '%s'\n",$gif_file));
 			if($AMPERAGE==1)
@@ -1274,7 +1274,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 		}
 		else
 		{
-			$pointsize="0.3";
+			$pointsize="0.3"; // was 0.3
 			fwrite($fh_gp_file,sprintf("\nset output\n"));
 			$w2=100;
 			$h2=200;
@@ -1368,7 +1368,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	fclose($fh_gp_file);
 	fclose($fh_gp_file_amperage);
 	$model="_d_";
-	if($batch<=1) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay,$script_start);
+	if($batch<=2) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay,$script_start);
 	//display_gif($batch,$path,$model,$gp_file_amperage,$out_file_array_amperage,$frame_delay,$script_start);
 	
 	//

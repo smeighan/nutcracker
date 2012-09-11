@@ -1,14 +1,22 @@
 <?php
 $target="AA2244"; // small target 6x30, runs fast good for testing
-//$target="AA";  // larger target, 2400 channes
-$batch=1;   // 0 = full html+gifs+nc files(normal), 1=gifs+nc files, 2=nc files
-
+$target="AA";  // larger target, 2400 channes
+$batch=2;   
+//  Batch
+//	Level     |   Html  |   Full Size Gifs  |  Thumbnail Gif's   |  NC Data file
+// ------------------------------------------------------------------------------
+//    0       |   Yes   |        Yes        |       Yes          |      Yes
+//    1       |   No    |        Yes        |       Yes          |      Yes
+//    2       |   No    |        No         |       Yes          |      Yes
+//    3       |   No    |        No         |       No           |      Yes
 $song_list[] = array($target,"BARS1","f_bars");
+$song_list[] = array($target,"FIRE1","f_fire");
+$song_list[] = array($target,"FIRE2","f_fire");
 $song_list[] = array($target,"FLY_0_0","f_butterfly");
 $song_list[] = array($target,"BARS1_TEST","f_bars");
 $song_list[] = array($target,"BARBERPOLE","f_spirals");
-$song_list[] = array($target,"BARS2","f_bars");
-$song_list[] = array($target,"BARS3","f_bars");
+/*$song_list[] = array($target,"BARS2","f_bars");
+$song_list[] = array($target,"BARS3","f_bars");*/
 $song_list[] = array($target,"BARBERPOLE_180","f_spirals");
 $username='f';
 echo "<html>";
@@ -16,6 +24,8 @@ echo "<body>";
 require_once ("f_bars.php");
 require_once ("f_spirals.php");
 require_once ("f_butterfly.php");
+require_once ("f_fire.php");
+//
 echo "<table border=2>";
 echo "<tr>";
 echo "<th>#</th>";
@@ -24,6 +34,8 @@ echo "<th>Effect</th>";
 echo "<th>Elapsed<br/>Time (secs)</th>";
 echo "<th>gif</th>";
 echo "</tr>";
+list($usec, $sec) = explode(' ', microtime());
+$program_start = (float) $sec + (float) $usec;
 foreach($song_list as $i=>$arr2)
 {
 	//
@@ -37,7 +49,7 @@ foreach($song_list as $i=>$arr2)
 	echo "<td>$effect</td>";
 	$get=get_user_effects($target,$effect,$username);
 	$get['batch']=$batch;
-		$get['username']='f';
+	$get['username']='f';
 	$get['user_target']=$target;
 	extract($get);
 	/*echo "<pre>";
@@ -49,6 +61,7 @@ foreach($song_list as $i=>$arr2)
 	if($program=="f_bars")    f_bars   ($get);
 	if($program=="f_spirals") f_spirals($get);
 	if($program=="f_butterfly") f_butterfly($get);
+	if($program=="f_fire") f_fire($get);
 	//
 	list($usec, $sec) = explode(' ', microtime());
 	$script_end = (float) $sec + (float) $usec;
@@ -61,6 +74,12 @@ foreach($song_list as $i=>$arr2)
 	ob_flush();
 	flush();
 }
+echo "</table>";
+list($usec, $sec) = explode(' ', microtime());
+$program_end = (float) $sec + (float) $usec;
+$elapsed_time = round($program_end - $program_start, 5); // to 5 decimal places
+$number_effects=$i+1;
+echo "<h2>Total time to process these $number_effects effects was $elapsed_time seconds</h2>\n";
 echo "</body>";
 echo "</html>";
 
