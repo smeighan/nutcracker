@@ -21,7 +21,7 @@ set_time_limit(250);
 ini_get('max_execution_time');
 echo "</pre>\n";
 require ("read_file.php");
-$array_to_save=$_POST;
+$array_to_save=$_GET;
 $array_to_save['OBJECT_NAME']='picture';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
@@ -30,12 +30,12 @@ $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 $array_to_save['effect_name']=$effect_name;
 $array_to_save['username']=$username;
-$frame_delay = $_POST['frame_delay'];
+$frame_delay = $_GET['frame_delay'];
 $frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 $array_to_save['frame_delay']=$frame_delay;
 extract ($array_to_save);
 save_user_effect($array_to_save);
-//show_array($_POST,"_POST");
+//show_array($_GET,"_GET");
 show_array($array_to_save,"Effect Settings");
 //show_array($_SESSION,"_SESSION");
 //show_array($_SERVER,"_SERVER");
@@ -64,9 +64,9 @@ if (file_exists($picturepath))  // create the pictures member_id directory. Any 
 	echo "The directory $picturepath does not exist, creating it";
 	mkdir($picturepath, 0777);
 }
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 $t_dat = $user_target . ".dat";
-$xdat = $user_target ."+".  $effect_name . ".dat";
+$xdat = $user_target ."~".  $effect_name . ".dat";
 $path="../targets/". $member_id;
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 $minStrand = $arr[0];
@@ -266,7 +266,7 @@ if (!isset($username))
 	$username = 'f';
 $amperage=array();
 $x_dat_base = $base . ".dat";
-make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float)$sec + (float)$usec;
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 

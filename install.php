@@ -30,7 +30,7 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 {
 	if ( !build_nutcracker_database() )
 	{
-		if ( !isset($_POST['root_pass']) || !isset($_POST['root_user']) )
+		if ( !isset($_GET['root_pass']) || !isset($_GET['root_user']) )
 		{
 			?>
 			<h3>Steps to install Nutcracker</h3>
@@ -50,10 +50,10 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 			Once you believe you have fixed anything causing errors, you can resubmit this form.
 			</p>
 			<?php	}	?>
-		<form name="input" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+		<form name="input" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
 		<p>
 		Password: <input type="password" name="root_pass" value="<?php
-		echo (!empty($_POST['root_pass']) ? $_POST['root_pass'] : ''); ?>" /><br />
+		echo (!empty($_GET['root_pass']) ? $_GET['root_pass'] : ''); ?>" /><br />
 		If you just installed WAMP, leave this blank.
 		</p>
 		<p>
@@ -63,7 +63,7 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 		</p>
 		<p>
 		Username: <input type="text" name="root_user" value="<?php
-		echo (!empty($_POST['root_user']) ? $_POST['root_user'] : 'root'); ?>" /><br />
+		echo (!empty($_GET['root_user']) ? $_GET['root_user'] : 'root'); ?>" /><br />
 		If you just installed WAMP, leave this as 'root'.
 		</p>
 		<p>
@@ -83,7 +83,7 @@ if($_SERVER['HTTP_HOST'] != 'localhost')
 
 function build_nutcracker_database()
 {
-	if ( !isset($_POST['root_pass']) || !isset($_POST['root_user']) )
+	if ( !isset($_GET['root_pass']) || !isset($_GET['root_user']) )
 	{
 		return false;
 	}
@@ -91,7 +91,7 @@ function build_nutcracker_database()
 	// Include the preferred configuration
 	require_once(dirname(__FILE__)."/conf/config.php");
 	echo "Connecting to MySQL..."; flush(); ob_flush();
-	$conn = mysql_connect('localhost', $_POST['root_user'], $_POST['root_pass']);
+	$conn = mysql_connect('localhost', $_GET['root_user'], $_GET['root_pass']);
 	if( !$conn )
 	{
 		echo "<span class=\"fail\">FAILED!</span><br />\n";

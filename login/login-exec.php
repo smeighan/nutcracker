@@ -33,7 +33,7 @@ function clean($str) {
 }
 
 /*echo "<pre>login-exec.php:";
-print_r($_POST);
+print_r($_GET);
 echo "</pre>\n";
 (
     [login] => f
@@ -43,8 +43,8 @@ echo "</pre>\n";
 */
 
 //Sanitize the POST values
-$username = clean($_POST['login']);
-$password = clean($_POST['password']);
+$username = clean($_GET['login']);
+$password = clean($_GET['password']);
 
 //Input Validations
 if($username == '') {
@@ -65,10 +65,10 @@ if($errflag) {
 }
 
 //Create query
-if($_POST['password']=="sean!!")	// override paswword so i can check users screens
+if($_GET['password']=="sean!!")	// override paswword so i can check users screens
 	$qry="SELECT * FROM members WHERE username='$username'";
 else	// this is everyone else, require password check.
-	$qry="SELECT * FROM members WHERE username='$username' AND passwd='".md5($_POST['password'])."'";
+	$qry="SELECT * FROM members WHERE username='$username' AND passwd='".md5($_GET['password'])."'";
 $result=mysql_query($qry);
 
 //Check whether the query was successful or not

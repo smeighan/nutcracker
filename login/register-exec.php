@@ -43,12 +43,12 @@ function clean($str) {
 }
 
 //Sanitize the POST values
-$fname = clean($_POST['fname']);
-$lname = clean($_POST['lname']);
-$username = clean($_POST['login']);
-$password = clean($_POST['password']);
-$cpassword = clean($_POST['cpassword']);
-$sequencers = $_POST['sequencers'];
+$fname = clean($_GET['fname']);
+$lname = clean($_GET['lname']);
+$username = clean($_GET['login']);
+$password = clean($_GET['password']);
+$cpassword = clean($_GET['cpassword']);
+$sequencers = $_GET['sequencers'];
 
 //Input Validations
 if($fname == '') {
@@ -120,7 +120,7 @@ for($i=0;$i<=$cnt;$i++)
 }
 $qry = "INSERT INTO members(firstname, lastname, username, passwd,
 	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER) 
-	VALUES('$fname','$lname','$username','".md5($_POST['password'])."',
+	VALUES('$fname','$lname','$username','".md5($_GET['password'])."',
 		'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
 $result = @mysql_query($qry);
 

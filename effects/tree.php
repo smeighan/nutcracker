@@ -28,7 +28,7 @@ require("read_file.php");
 
 
 
-show_array($_POST,"_POST");
+show_array($_GET,"_GET");
 ///*
 /*
 Array
@@ -53,7 +53,7 @@ Array
  */ 
 
 
-extract($_POST);
+extract($_GET);
 
 
 $effect_name = strtoupper($effect_name);
@@ -62,7 +62,7 @@ $direction = strtolower($direction);
 $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 
-save_user_effect($_POST);
+save_user_effect($_GET);
 
 $path="../targets/". $username;
 
@@ -80,10 +80,10 @@ if (file_exists($directory)) {
 	mkdir($directory, 0777);
 }
 
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 
 $t_dat = $user_target . ".dat";
-$xdat = $user_target ."+".  $effect_name . ".dat";
+$xdat = $user_target ."~".  $effect_name . ".dat";
 
 $path="../targets/". $member_id;
 
@@ -101,7 +101,7 @@ $mask = $directory . "/*.dat";
 
 
 /*
-_POST
+_GET
 username	f
 user_target	AA
 effect_class	garlands
@@ -337,7 +337,7 @@ function tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$wind
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 
 	echo "</body>";
 	echo "</html>";

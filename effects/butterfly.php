@@ -39,7 +39,7 @@ Array
 [submit] => Submit Form to create your target model
 )
 	*/ 
-$array_to_save=$_POST;
+$array_to_save=$_GET;
 $array_to_save['OBJECT_NAME']='butterfly';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
@@ -48,12 +48,12 @@ $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 $array_to_save['effect_name']=$effect_name;
 $array_to_save['username']=$username;
-$frame_delay = $_POST['frame_delay'];
+$frame_delay = $_GET['frame_delay'];
 $frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 $array_to_save['frame_delay']=$frame_delay;
 extract ($array_to_save);
 save_user_effect($array_to_save);
-//show_array($_POST,"_POST");
+//show_array($_GET,"_GET");
 show_array($array_to_save,"Effect Settings");
 //show_array($_SESSION,"_SESSION");
 //show_array($_SERVER,"_SERVER");
@@ -68,9 +68,9 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 $t_dat = $user_target . ".dat";
-$xdat = $user_target ."+".  $effect_name . ".dat";
+$xdat = $user_target ."~".  $effect_name . ".dat";
 $path="../targets/". $member_id;
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 //	remove old ong and dat files
@@ -79,7 +79,7 @@ $mask = $directory . "/*.png";
 $mask = $directory . "/*.dat";
 //array_map( "unlink", glob( $mask ) );
 /*
-_POST
+_GET
 username	f
 user_target	AA
 effect_class	garlands
@@ -197,7 +197,7 @@ function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_d
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 	echo "</body>";
 	echo "</html>";
 }
@@ -260,8 +260,8 @@ function butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)
 		$x_new = $x+2*sin($y/5); 
 		$y_new = $y+2*sin($x/5) ;
 		$v=$y_new/$maxY;
-		echo "<pre> butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)";
-		echo "x_new,y_new = $x_new,$y_new v=$v</pre>\n";
+		/*echo "<pre> butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)";
+		echo "x_new,y_new = $x_new,$y_new v=$v</pre>\n";*/
 	}
 	if(empty($v))
 		$v=1;

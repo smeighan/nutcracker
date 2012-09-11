@@ -19,16 +19,11 @@ require("../effects/read_file.php");
 //echo "<pre>";
 //echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
 set_time_limit(60*60);
-//echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
-//echo "</pre>";
-//show_array($_SERVER,"SERVER");
-// [QUERY_STRING] => make_lor.php?base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-// base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-//
+
 //echo "<pre>sequencer=$sequencer</pre>\n";
 echo "<pre>";
-print_r($_POST);
-extract($_POST);
+print_r($_GET);
+extract($_GET);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 list($usec, $sec) = explode(' ', microtime());
@@ -44,13 +39,13 @@ $script_start = (float) $sec + (float) $usec;
 [type] => 
 [seq_duration] => 8
 [frame_delay] => 100*/
-$username=$_POST['username'];
-$user_target=$_POST['user_target'];
-$effect_class=$_POST['effect_class'];
-$type=$_POST['type'];
-$seq_duration=$_POST['seq_duration'];
-$frame_delay=$_POST['frame_delay'];
-$files_array=$_POST['fullpath_array'];
+$username=$_GET['username'];
+$user_target=$_GET['user_target'];
+$effect_class=$_GET['effect_class'];
+$type=$_GET['type'];
+$seq_duration=$_GET['seq_duration'];
+$frame_delay=$_GET['frame_delay'];
+$files_array=$_GET['fullpath_array'];
 $cnt=count($files_array);
 foreach($files_array as $i=>$file0)
 {

@@ -48,7 +48,7 @@ require("read_file.php");
 
 
 
-show_array($_POST,"_POST");
+show_array($_GET,"_GET");
 ///*
 /*
 Array
@@ -73,7 +73,7 @@ Array
  */ 
 
 
-extract($_POST);
+extract($_GET);
 
 
 $effect_name = strtoupper($effect_name);
@@ -82,7 +82,7 @@ $direction = strtolower($direction);
 $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 
-//save_user_effect($_POST);
+//save_user_effect($_GET);
 
 $path="../targets/". $username;
 
@@ -118,7 +118,7 @@ $mask = $directory . "/*.png";
 $mask = $directory . "/*.dat";
 //array_map( "unlink", glob( $mask ) );
 
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$script_start,$use_background,$background_color); // create circles on the target
 
 $target_info=get_info_target($username,$t_dat);
@@ -202,9 +202,9 @@ function circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$wi
 		fclose($fh_dat[$f]);
 		show_elapsed_time($script_start,"Finished  Effect, circles class:");
 	}
-	echo "make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration)\n";
+	echo "make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration)\n";
 	$amperage=array();
-	make_gp($path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration);
+	make_gp($batch,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration);
 
 	echo "</body>";
 	echo "</html>";

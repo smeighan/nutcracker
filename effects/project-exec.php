@@ -17,9 +17,9 @@ require_once('../conf/header.php');
 //
 require("../effects/read_file.php");
 set_time_limit(60*60);
-extract($_POST);
+extract($_GET);
 echo "<pre>";
-//print_r($_POST);
+//print_r($_GET);
 //print_r($nc_array);
 //
 //	If called from project-form:
@@ -140,7 +140,7 @@ Array
 	target=AA, frame_delay=66*/
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
-$music_object=$_POST['music_object'];
+$music_object=$_GET['music_object'];
 $cnt=count($target_array);
 if($cnt>0)
 {
@@ -151,7 +151,8 @@ if($cnt>0)
 	}
 	$target=$target_array[$music_object_id];
 }
-$cnt=count($start_seconds);
+if(isset($start_seconds)) $cnt=count($start_seconds);
+else $cnt=0;
 if($cnt>0)
 {
 	update_music_object_dtl($start_seconds,$end_seconds,$nc_array,$frame_delay,$music_object,$username);
@@ -170,7 +171,7 @@ sort($array_of_nc);
 
 echo "</pre>\n";
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="get">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="music_object" value="<?php echo "$music_object"; ?>"/>
 <input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>
@@ -236,7 +237,8 @@ if($cnt>0)
 		echo "<td>$delta</td>";
 		$frames=intval(($delta*1000)/$frame_delay);
 		echo "<td>$frames</td>";
-		pulldown($array_of_nc,$phrase_name,$nc_array,$effect_name);
+		if(!isset($nc_array)) $nc_array=array();
+		 pulldown($array_of_nc,$phrase_name,$nc_array,$effect_name);
 		echo "</tr>";
 	}
 	$nc_array[]=$music_object;
@@ -267,7 +269,7 @@ foreach($phrase_array as $arr2)
 	}
 	else if($len2>1)
 	{
-		$file = "workspaces/$member_id/" .$target . "+" . $effect_name . "_th.gif";
+		$file = "workspaces/$member_id/" .$target . "~" . $effect_name . "_th.gif";
 	}
 	else
 	{
@@ -292,7 +294,7 @@ function pulldown($array_of_nc,$phrase_name,$nc_array,$effect_name)
 		}
 		else
 		{
-			$tok1=explode("+",$file);
+			$tok1=explode("~",$file);
 			$tok2=explode(".nc",$tok1[1]);
 			$effect_name2 = $tok2[0];
 			if($effect_name == $effect_name2)
@@ -498,11 +500,11 @@ function getFilesFromDir($dir,$target)
 					//	0 = workspaces
 					//	1 = nuelemma or id
 					//
-					//echo "inner file=$file. target_search=$target_search\n";
+					echo "inner file=$file. target_search=$target_search\n";
 					if($extension=="nc")
 					{
 						//$files[] = $dir.'/'.$file;
-						$target_search=$target ."+";
+						$target_search=$target ."~";
 						if(!strncmp($file, $target_search, strlen($target_search)))
 						{
 							$files[] = $file; 
@@ -558,7 +560,7 @@ $nc_array,$frame_delay,$music_object,$username)
 		$end_secs=$end_seconds[$phrase_name];
 		$delta = $end_secs-$start_secs;
 		$seq_duration = sprintf("%7.3f",$delta);
-		$tok1=explode("+",$file);
+		$tok1=explode("~",$file);
 		$tok2=explode(".nc",$tok1[1]);
 		$effect_name = $tok2[0];
 		// music_object_id	phrase_name	start_secs	end_secs	effect_name	sequence	

@@ -23,7 +23,7 @@ On this page you build an animation of the spiral class and create an animated G
 ini_get('max_execution_time'); 
 set_time_limit(250);
 ini_get('max_execution_time'); 
-//show_array($_POST,"_POST");
+//show_array($_GET,"_GET");
 //show_array($_SERVER,"_SERVER");
 //show_array($_SESSION,"_SESSION");
 ///*
@@ -42,7 +42,7 @@ list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 //
 //
-$array_to_save=$_POST;
+$array_to_save=$_GET;
 $array_to_save['OBJECT_NAME']='color_wash';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
@@ -53,7 +53,7 @@ $array_to_save['effect_name']=$effect_name;
 $array_to_save['username']=$username;
 if(!isset($show_frame)) $show_frame='N';
 $array_to_save['show_frame']=$show_frame;
-$frame_delay = $_POST['frame_delay'];
+$frame_delay = $_GET['frame_delay'];
 $frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 extract ($array_to_save);
 echo "<pre>";
@@ -87,7 +87,7 @@ if (file_exists($directory))
 $maxFrame=intval(($seq_duration*1000)/$frame_delay);
 echo "<pre>maxFrame=$maxFrame</pre>\n";
 $window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 color_wash($arr,$t_dat,$base,$path,$frame_delay,$seq_duration,$window_degrees,$username,$frame_delay,$maxFrame,$show_frame,$start_color,$end_color,$sparkles,$sparkle_count);
 list($usec, $sec) = explode(' ', microtime());
 $script_end = (float) $sec + (float) $usec;
@@ -163,5 +163,5 @@ function color_wash($arr,$t_dat,$base,$path,$frame_delay,$seq_duration,$window_d
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 }

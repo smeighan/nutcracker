@@ -19,28 +19,13 @@ require("../effects/read_file.php");
 //echo "<pre>";
 //echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
 set_time_limit(60*60);
-//echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
-//echo "</pre>";
-//show_array($_SERVER,"SERVER");
-// [QUERY_STRING] => make_lor.php?base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-// base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
+
 //
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
-$tokens2=explode("base=",$tokens[0]);
-$base=$tokens2[1];
-$tokens2=explode("full_path=",$tokens[1]);
-$full_path=$tokens2[1];
-$tokens2=explode("frame_delay=",$tokens[2]);
-$frame_delay=$tokens2[1];
-$tokens2=explode("member_id=",$tokens[3]);
-$member_id=$tokens2[1];
-$tokens2=explode("seq_duration=",$tokens[4]);
-$seq_duration=$tokens2[1];
-$tokens2=explode("sequencer=",$tokens[5]);
-$sequencer=$tokens2[1];
-$tokens2=explode("pixel_count=",$tokens[6]);
-$pixel_count=$tokens2[1];
+extract($_GET);
+echo "<pre>";
+print_r($_GET);
+echo "</pre>";
+
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname']; // workspaces/2
 $basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
@@ -83,7 +68,7 @@ if(!in_array($sequencer,$supported))
 	<?php
 	exit();
 }
-extract($_POST);
+extract($_GET);
 $path="../targets/". $member_id;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;

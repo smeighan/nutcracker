@@ -103,7 +103,7 @@ function exportXML()
 	// Get XML form from a SQL query
 	date_default_timezone_set('UTC');
 	$Datetime = date('Y-m-d');
-	$username = $_POST['username'];
+	$username = $_GET['username'];
 	$fileStr = $username.'-'.$Datetime;  // this is used both for the outfile and for the outermost tag
 	$outfile = "xml/".$fileStr.".xml";  // name of the xml file to write
 	//$sqloutfile = "sql/".$fileStr.".sql"; // name of the sql file to write 

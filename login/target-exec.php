@@ -18,21 +18,11 @@ require_once('../conf/header.php');
 require("../effects/read_file.php");
 // http://localhost/nutcracker/login/target-exec.php?model=AA22?user=f
 // 
-//
-// QUERY_STRING] => model=AA22?user=f
-//
-//
-//$tokens=explode("?model=",$REQUEST_URI);
-$tokens=explode("model=",$_SERVER['QUERY_STRING']);
-$tokens2=explode("?user=",$tokens[1]);
-$model_name=$tokens2[0];
-$username=$tokens2[1];
-$c=count($tokens);
-echo "<pre>";
-echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
+
+extract($_GET);
+
 set_time_limit(300);
-echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
-echo "</pre>";
+
 $username = str_replace("%20"," ",$username);
 //get_models('f','ZZ');
 get_models($username,$model_name);

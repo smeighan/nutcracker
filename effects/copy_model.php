@@ -39,9 +39,10 @@ require_once('../conf/auth.php');
 require("../effects/read_file.php");
 $myusername=$_SESSION['SESS_LOGIN'];
 //
+extract($_GET);
 ////	sample call
 // http://localhost/nutcracker/effects/copy_model.php?filename=AA+METEOR1_GREEN_th?member_id=2
-if(!empty($_SERVER['QUERY_STRING']))
+if(!empty($_GET))
 {
 	$tokens=explode("?",$_SERVER['QUERY_STRING']);
 	foreach($tokens as $i=>$pair)
@@ -49,7 +50,7 @@ if(!empty($_SERVER['QUERY_STRING']))
 		$t=explode("=",$pair);
 		if($t[0]=="filename")
 		{
-			$tok=explode("+",$t[1]);
+			$tok=explode("~",$t[1]);
 			$target=$tok[0];
 			$tok2=explode("_th",$tok[1]);
 			$effect_name=$tok2[0];

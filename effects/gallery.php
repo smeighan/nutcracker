@@ -25,7 +25,7 @@ if( isset($_REQUEST['effect_class']) && $_REQUEST['effect_class'] !='')
 {
 	$effect_class=$_REQUEST['effect_class'];
 }
-extract ($_POST);
+extract ($_GET);
 /* Array
 (
 [submit] => Submit Form to create your target model
@@ -40,21 +40,25 @@ extract ($_POST);
 	[number_segments] => 
 )*/
 /*echo "<pre>";
-print_r($_POST);
+print_r($_GET);
 echo "</pre>\n";*/
 // http://meighan.net/nutcracker/effects/gallery.php?start=101?end=151?number_gifs=50?sort=member_id?effect_class_selected=dummy|garlands|meteors
 // QUERY_STRING] => start=101?end=151?number_gifs=50?sort=member_id?effect_class_selected=dummy|garlands|meteors
 //
 //
 //$tokens=explode("?model=",$REQUEST_URI);
-if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-index.php
+$number_gifs=0;
+	$effect_class_selected=array();
+	$sort="member_id";
+if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-index.php
 { // yes
-	$tokens=explode("?",$_SERVER['QUERY_STRING']);
+	/*$tokens=explode("?",$_SERVER['QUERY_STRING']);
 	$tok2=explode("=",$tokens[0]); $start_pic = $tok2[1];
 	$tok2=explode("=",$tokens[1]); $end_pic = $tok2[1];
 	$tok2=explode("=",$tokens[2]); $number_gifs = $tok2[1];
 	$tok2=explode("=",$tokens[3]); $sort = $tok2[1];
-	$tok2=explode("=",$tokens[4]); $effect_class_selected_array = $tok2[1];
+	$tok2=explode("=",$tokens[4]); $effect_class_selected_array = $tok2[1];*/
+	extract ($_GET);
 	$tok3=explode("|",$effect_class_selected_array);
 	$effect_class_selected=array();
 	foreach($tok3 as $class)
@@ -68,13 +72,15 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 }
 else
 {
-	extract ($_POST);
+	extract ($_GET);
 	$start_pic=1;
-	$end_pic=$number_gifs;
+	if(isset($number_gifs)) $end_pic=$number_gifs;
+	else $end_pic=1;
 }
 //
 //
-$total_gifs=count_gallery($effect_class_selected);
+if(isset($effect_class_selected)) $total_gifs=count_gallery($effect_class_selected);
+else $total_gifs=0;
 echo "<h1>$total_gifs gif's in Library, Start,end=$start_pic,$end_pic</h1>";
 echo "<h2>Click on these links to display the next group of effects</h2>";
 $number_gifs+=0;
@@ -97,20 +103,19 @@ for ($l=1;$l<=$loops;$l++)
 	echo "<li><a href=gallery.php?start=$start?end=$end?number_gifs=$number_gifs?sort=$sort?effect_class_selected=$effect_class_selected_buff>$start - $end</a>";
 }
 echo "</ol>";
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
-$group=1;
-$INSERT_NEW_GIFS=0;
+
+/*$INSERT_NEW_GIFS=0;
 if($c>0)
 {
 	//	gallery.php?INSERT_NEW_GIFS=1
 	$tokens2=explode("INSERT_NEW_GIFS=",$tokens[0]);
 	$c1=count($tokens2);
 	if($c1>1) $INSERT_NEW_GIFS=$tokens2[1];
-}
+}*/
 if(!isset($group) or $group<1) $group=1;
 if(!isset($group_size) or $group_size<1) $group_size=40;
 $pics_in_group=$group_size;
+if(!isset($INSERT_NEW_GIFS)) $INSERT_NEW_GIFS=0;
 gallery($group,$pics_in_group,$INSERT_NEW_GIFS,$number_gifs,$sort,$effect_class_selected,$start_pic,$end_pic);
 
 function getFilesFromDir($dir)
@@ -232,7 +237,7 @@ $effect_class_selected,$start_pic,$end_pic)
 	//sort($array_effect_classes);
 	$username='';
 	?>
-	<form action="<?php echo "gallery-exec.php"; ?>" method="post">
+	<form action="<?php echo "gallery-exec.php"; ?>" method="get">
 	<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 	<?php
 	/*echo "FILTER:&nbsp;<INPUT TYPE=\"RADIO\" NAME=\"effect_class_array\" VALUE=\"All\" CHECKED >Any effect class";
@@ -269,9 +274,12 @@ $effect_class_selected,$start_pic,$end_pic)
 		$checked="";	
 		$pics++;
 		//echo "<pre>pics=$pics, start_pic,end_pic=[$start_pic,$end_pic] $file member=$member_id pos=$pos, th=$th effect_class=$effect_class</pre>\n";
-		$tok2=explode("+",$filename);
-		$target_model=$tok2[0];
-		$effect_name=$tok2[1];   // AA+SPIRAL_th.gif"
+		$tok2=explode("~",$filename);
+		if(isset($tok2[0])) $target_model=$tok2[0];
+		else $target_model="";
+		if(isset($tok2[1])) $effect_name=$tok2[1];   // AA+SPIRAL_th.gif"
+		else $effect_name="";
+		
 		/*$tok3=explode("_th",$tok2[1]);
 		$effect_name=$tok3[0];
 		$username = get_username($member_id);*/
@@ -363,7 +371,7 @@ function insert_into_gallery($array_of_gifs)
 		$member_id=$tok[1];
 		$username=get_username($member_id);
 		$effect_class="spiral";
-		$tok2=explode("+",$tok[2]);
+		$tok2=explode("~",$tok[2]);
 		$tok3=explode("_th.",$tok2[1]);
 		$effect_name=$tok3[0];
 		$ar=get_effect_user_hdr($username,$effect_name);

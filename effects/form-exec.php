@@ -32,9 +32,9 @@ Array
 )
  */ 
 
-$username = $_POST['username'];
-$user_targets = $_POST['user_targets'];
-$effect_class = $_POST['user_effects'];
+$username = $_GET['username'];
+$user_targets = $_GET['user_targets'];
+$effect_class = $_GET['user_effects'];
 
 
 
@@ -74,7 +74,7 @@ echo "<h2>Nutcracker: RGB Effects Builder for user $username<h2>";
 
 $cnt=count($effect_details);
 ?>
-	<form action="<? echo "$extra"; ?>" method="POST">
+	<form action="<? echo "$extra"; ?>" method="get">
 <input type="hidden" name="username" value="<? echo "$username"; ?>">
 <table border="1">
 <?php

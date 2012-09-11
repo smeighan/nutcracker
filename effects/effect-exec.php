@@ -21,16 +21,7 @@ echo "<h2>Nutcracker: RGB Effects Builder for user $username<br/>
 On this page you customize an effects class and save it to your library</h2>"; 
 // [QUERY_STRING] => effect_name=BUTTERFLY3?username=f?effect_class=butterfly?user_targets=AA
 //
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
 set_time_limit(0);
-if($c>1)
-{
-	$tokens2=explode("effect_class=",$tokens[2]);
-	$user_effects=$tokens2[1];
-}
-else
-$user_effects=$_POST['user_effects'];
 $directory ="workspaces";
 if (file_exists($directory))
 {
@@ -40,24 +31,11 @@ if (file_exists($directory))
 }
 //echo "<pre>user_effects=$user_effects</pre>\n";
 //echo "<pre>query_string = ". $_SERVER['QUERY_STRING'] . "</pre>\n";
-if(!empty($_SERVER['QUERY_STRING']))
+extract($_GET);
+
+if(!empty($_GET))
 {
-	$tokens=explode("?",$_SERVER['QUERY_STRING']);
-	//tokens[1] = effect_name=SEAN2
-	//tokens[2] = username=f
-	//tokens[3] = effect_class=spirals
-	//
-	// [QUERY_STRING] => effect_name=METEOR3?username=f?effect_class=meteors?user_targets=AA
-	//
-	$tokens2=explode("=",$tokens[0]);
-	$effect_name=$tokens2[1];
-	//$effect_name=strtoupper(str_replace(" ","_",$effect_name)); // replace spaces with underscores and upshift
-	$tokens2=explode("username=",$tokens[1]);
-	$username=$tokens2[1];
-	$tokens2=explode("=",$tokens[2]);
-	$effect_class=$tokens2[1];
-	$tokens2=explode("=",$tokens[3]);
-	$user_targets=$tokens2[1];
+	
 	$debug=0;
 	if($debug==1)
 	{
@@ -67,51 +45,62 @@ if(!empty($_SERVER['QUERY_STRING']))
 		echo "<pre>user_targets = $user_targets</pre>\n";
 		echo "<pre>effect_name = $effect_name</pre>\n";
 	}
-	$effect_name=str_replace("%20"," ",$effect_name);
-	$username=str_replace("%20"," ",$username);
-	$effect_user_dtl=get_effect_user_dtl($username,$effect_name);
-	$cnt=count($effect_user_dtl);
-	$value=array();
-	for($i=0;$i<$cnt;$i++)
+	if(isset($effect_name))
 	{
-		$param_name=$effect_user_dtl[$i]['param_name'];
-		$value[$param_name]=$effect_user_dtl[$i]['param_value'];
-		//echo "<pre>i=$i paran_nam=	$param_name  value[]=" . 	$value[$param_name] . "</pre>\n";
+		$effect_name=str_replace("%20"," ",$effect_name);
+		$effect_user_dtl=get_effect_user_dtl($username,$effect_name);
+		/*echo "<pre>effect_user_dtl array";
+		print_r($effect_user_dtl);
+		echo "</pre>";*/
+		$cnt=count($effect_user_dtl);
+		$value=array();
+		for($i=0;$i<$cnt;$i++)
+		{
+			$param_name=$effect_user_dtl[$i]['param_name'];
+			$value[$param_name]=$effect_user_dtl[$i]['param_value'];
+			//echo "<pre>i=$i paran_nam=	$param_name  value[]=" . 	$value[$param_name] . "</pre>\n";
+		}
 	}
+}
+
+//$effect_class=$user_effects;
+show_my_effects($username,$user_targets);
+$effect_details=get_effect_details($effect_class);
+if(isset($user_effects))
+{
+	$effect_hdr=get_effect_hdr($user_effects);
+}
+else 
+{
+	$effect_hdr=array();
+}
+$host  = $_SERVER['HTTP_HOST'];
+$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+if(isset($effect_hdr[0]['php_program']))
+{
+	$extra = $effect_hdr[0]['php_program'];
+	$desc=$effect_hdr[0]['description'];
 }
 else
 {
-	extract($_POST);
+	$extra="";
+	$desc="";
+	$user_effects="";
 }
-$effect_class=$user_effects;
-show_my_effects($username,$user_targets);
-$effect_details=get_effect_details($effect_class);
-$effect_hdr=get_effect_hdr($user_effects);
-$host  = $_SERVER['HTTP_HOST'];
-$uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-$extra = $effect_hdr[0]['php_program'];
 ?>
 <script type="text/javascript" src="jscolor.js"></script>
-<form action="<?php echo "$effect_class.php"; ?>" method="post">
+<form action="<?php echo "$effect_class.php"; ?>" method="get">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
 <input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
 <table border="1">
-<tr><th>#</th><th>EFFECT_CLASS: <?php echo "$user_effects"; echo "<br/>" . $effect_hdr[0]['description']; ?></th></tr>
+<tr><th>#</th><th>EFFECT_CLASS: <?php echo "$user_effects"; echo "<br/>" . $desc; ?></th></tr>
 <?php
 // >[QUERY_STRING] => effect_name=GIF1?username=f?effect_class=gif?user_targets=AA
 //
-if(isset($_POST['username']))
-	$username=$_POST['username'];
-else
-{
-	$tokens=explode("?",$_SERVER['QUERY_STRING']);
-	$c=count($tokens);
-	$tokens2=explode("effect_name=",$tokens[0]);
-	$effect_name=$tokens2[1];
-	$tokens2=explode("username=",$tokens[1]);
-	$username=$tokens2[1];
-}
+extract($_GET);
+
+
 $member_id=get_member_id($username);
 if($member_id<1)
 	echo "ERROR. Member_id is not valid. username=$username\n";
@@ -273,7 +262,7 @@ for($i=0;$i<$cnt;$i++)
 			{
 				$tok=explode("/",$filename); //workspaces/2/AA+FLY.nc
 				$file=$tok[2];
-				$tok2=explode("+",$file);  // AA+FLY.nc
+				$tok2=explode("~",$file);  // AA+FLY.nc
 				$target=$tok2[0];
 				$tok3=explode(".",$tok2[1]);
 				$effect=$tok3[0];
@@ -459,7 +448,6 @@ function get_effect_details($effect_class)
 		die("Unable to select database");
 	}
 	$query ="select * from effects_dtl where effect_class='$effect_class' and active='Y' order by sequence";
-	//echo "<pre> get_effect_details: query $query</pre>\n";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
@@ -574,18 +562,29 @@ function show_my_effects($username,$user_targets)
 				$j=$k+$rows_per_column-1;
 			else
 			$j=$k+$check-1;
-		/*	if(isset($effects_array[$j])===false or $effects_array[$j]==null)
+			/*	if(isset($effects_array[$j])===false or $effects_array[$j]==null)
 				$eff_array="";
 			else*/
-			$eff_array=$effects_array[$j];
-			$effect_name=$eff_array[0];
-			$username=$eff_array[1];
-			$effect_class=$eff_array[2];
-			$effect_desc=$eff_array[3];
+			if(isset($effects_array[$j]))
+			{
+				$eff_array=$effects_array[$j];
+				$effect_name=$eff_array[0];
+				$username=$eff_array[1];
+				$effect_class=$eff_array[2];
+				$effect_desc=$eff_array[3];
+			}
+			else
+			{
+				$eff_array=array();
+				$effect_name="";
+				$username="";
+				$effect_class="";
+				$effect_desc="";
+			}
 			if($j<=$maxj)
 			{
 				if($effect_class <> $old_effect_class) $effect_class_counter++;
-				echo "<td>$j:<a href=\"effect-exec.php?effect_name=$effect_name?username=$username?effect_class=$effect_class?user_targets=$user_targets\">$effect_name</a></td>";
+				echo "<td>$j:<a href=\"effect-exec.php?effect_name=$effect_name&username=$username&effect_class=$effect_class&user_targets=$user_targets\">$effect_name</a></td>";
 				echo "<td>$effect_class </td>";
 				echo "<td>$effect_desc </td>";
 				$old_effect_class=$effect_class;

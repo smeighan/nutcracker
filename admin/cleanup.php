@@ -65,8 +65,8 @@ if($member_id<1 or !isset($member_id) or !isset($username)) die ("Invalid user. 
 
 
 echo "<pre>";
-extract ($_POST);
-//print_r($_POST);
+extract ($_GET);
+//print_r($_GET);
 //print_r($_SESSION);
 $c1=$c2=0;
 if (isset($effect)) {
@@ -103,7 +103,7 @@ unset ($target);
 unset ($effect);
 
 
-echo "<form action=\"$self\" method=\"POST\">\n";
+echo "<form action=\"$self\" method=\"GET\">\n";
 
 echo '<input type="submit" name="submit" value="Submit Form to delete checked rows" />';
 /*$target_info['target_name']=$object_name;

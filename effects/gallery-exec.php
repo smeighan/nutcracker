@@ -43,28 +43,9 @@ if( isset($_REQUEST['effect_class']) && $_REQUEST['effect_class'] !='')
 {
 	$effect_class=$_REQUEST['effect_class'];
 }
-/*echo "<pre>";
-print_r($_SERVER);
-echo "POST\n";
-print_r($_POST);
-echo "</pre>\n";*/
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
-/*echo "<pre>";
-print_r($tokens);
-echo "</pre>\n";*/
-$c=count($tokens);
+
 $group=1;
-if($c>0)
-{
-	$tokens2=explode("=",$tokens[0]);
-	$group=$tokens2[1];
-	/*echo "<pre>c=$c";
-	print_r($tokens);
-	echo "</pre>\n";*/
-	$tokens2=explode("=",$tokens[1]);
-	$group_size=$tokens2[1];
-}
+
 // copy_model.php?filename=$filename?member_id=$member_id
 /*
 [fullpath_array] => Array
@@ -75,7 +56,7 @@ if($c>0)
 [3] => workspaces/2/AA+GARLAND0_th.gif
 )
 	*/
-foreach($_POST['user_effect_name'] as $i=>$user_effect_name)
+foreach($_GET['user_effect_name'] as $i=>$user_effect_name)
 {
 	if(strlen($user_effect_name)>0)
 	{
@@ -83,7 +64,7 @@ foreach($_POST['user_effect_name'] as $i=>$user_effect_name)
 		$user_effect_name_array[$i]=$user_effect_name;
 	}
 }
-foreach($_POST['desc'] as $i=>$desc)
+foreach($_GET['desc'] as $i=>$desc)
 {
 	if(strlen($desc)>0)
 	{
@@ -91,7 +72,7 @@ foreach($_POST['desc'] as $i=>$desc)
 		$desc_array[$i]=$desc;
 	}
 }
-foreach($_POST['fullpath_array'] as $i=>$fullpath)
+foreach($_GET['fullpath_array'] as $i=>$fullpath)
 {
 	$line++;
 	$user_effect_name=$user_effect_name_array[$i];
@@ -115,7 +96,7 @@ $myusername=$_SESSION['SESS_LOGIN'];
 	//	1 = nuelemma or id
 	//
 	$member_id=$tokens[1];
-	$tok2=explode("+",$filename);
+	$tok2=explode("~",$filename);
 	$target=$tok2[0];
 	$tok3=explode("_th",$tok2[1]);
 	$effect_name=$tok3[0];

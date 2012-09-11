@@ -20,16 +20,11 @@ echo "</pre>";*/
 // index.php
 $gif_model="";
 $username= $_SESSION['SESS_LOGIN'];
-$username=$username;
 $tokens=array("","");
 $model_name="";
-$tokens=explode("model=",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
+
 $number_segments=0;
-if($c>1)
-	$model_name=$tokens[1];
-else
-$model_name="";
+if(!isset($model_name)) $model_name="";
 $WARN=0;
 if($WARN==1)
 {
@@ -101,11 +96,10 @@ if(empty($row['direction'])) $row['direction']="CW";
 $H1=$D1=0;
 ?>
 <h4>
-<form action="process.php" method="POST">
+<form action="process.php" method="get">
 <table border="1">
 <input type="submit" name="submit" value="Submit Form to create your target model" />
-<input type="hidden" name="H1" value="<?php echo "$H1"; ?>"/>
-<input type="hidden" name="D1" value="<?php echo "$D1"; ?>"/>
+<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="number_segments" value="<?php echo "$number_segments"; ?>"/>
 <input type="hidden" name="gif_model" value="<?php echo "$gif_model"; ?>"/>
 <tr>
@@ -201,7 +195,7 @@ name="UNIT_OF_MEASURE">cm
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 </form>
 <?php /*
-<form action="<?php echo BASE_URL;?>export.php" method="POST">
+<form action="<?php echo BASE_URL;?>export.php" method="get">
 <input type="hidden" name="username" value="<?php echo $username;?>" />
 <input type="submit" name="cmdExport" value="Export files for backup from server" />
 </form>
@@ -212,7 +206,7 @@ name="UNIT_OF_MEASURE">cm
 	{
 		// this is a test
 		?>
-		<form action="<?php echo BASE_URL;?>import.php" method="POST">
+		<form action="<?php echo BASE_URL;?>import.php" method="get">
 		<input type="hidden" name="username" value="<?php echo $username;?>" />
 		<input type="submit" name="cmdImport" value="Import files from a previous backup" />
 		</form>

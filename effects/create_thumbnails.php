@@ -153,7 +153,7 @@ function create_thumbnails($effect_class_passed,$group)
 		/*echo "<pre>$file member=$member_id pos=$pos, th=$th</pre>\n";*/
 		if($extension=="gif" and $pos === false and $th>1 and $member_id>=1 and $member_id < 99999999)
 		{
-			$tok2=explode("+",$filename);
+			$tok2=explode("~",$filename);
 			$target_model=$tok2[0];
 			$effect_name=$tok2[1];   // AA+SPIRAL_th.gif"
 			$tok3=explode("_th",$tok2[1]);
@@ -218,11 +218,11 @@ function create_thumbnails($effect_class_passed,$group)
 							$tok=explode("/",$dirname);
 							$member_id=$tok[1];
 							//echo "<td>$item: $file</td>\n";
-							$tok2=explode("+",$filename);
+							$tok2=explode("~",$filename);
 							$target_model=$tok2[0];
 							$effect_name=$tok2[1];
 							$username= $_SESSION['SESS_LOGIN'];
-							echo "<td><a href=\"copy_model.php?effect_class=$effect_class?effect_name=$effect_name?member_id=$member_id?username=[$username]\"><img src=\"$file\"/></a></td>\n";
+							echo "<td><a href=\"copy_model.php?effect_class=$effect_class&effect_name=$effect_name&member_id=$member_id&username=[$username]\"><img src=\"$file\"/></a></td>\n";
 						}
 						if($line%$pics_per_row==0)
 						{

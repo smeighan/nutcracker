@@ -19,15 +19,34 @@ require("../effects/read_file.php");
 set_time_limit(60*60);
 $seq_duration=$frame_delay=0;
 $target='';
-extract($_POST);
+extract($_GET);
 echo "<pre>";
-//print_r($_POST);
-//print_r($_SERVER);
+/*print_r($_GET);
+print_r($_SESSION);
+Array
+(
+)
+Array
+(
+    [SESS_LOGIN] => f
+    [ERRMSG_ARR] => Array
+        (
+            [0] => Login ID missing
+            [1] => Password missing
+        )
+
+    [SESS_MEMBER_ID] => 2
+    [SESS_FIRST_NAME] => sean
+    [SESS_LAST_NAME] => MEIGHAN
+)
+*/
+
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
-$music_object=$_POST['music_object'];
+if(isset($_GET['music_object'])) $music_object=$_GET['music_object'];
+else $music_object="";
 echo "</pre>\n";
-copy_songs($song_array,$username); // if any have been self submitted from this form
+if(isset($song_array)) copy_songs($song_array,$username); // if any have been self submitted from this form
 $username=trim($username);
 
 ?>
@@ -49,7 +68,7 @@ $username=trim($username);
 <br/>
 <h2><?php echo "$username"; ?>, Here is a table of your current Nutcracker projects</h2>
 </div>
-<form action="<?php echo "project-exec.php"; ?>" method="post">
+<form action="<?php echo "project-exec.php"; ?>" method="get">
 <input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
 <input type="hidden" name="seq_duration" value="<?php printf( "$seq_duration");?> "/>
 <input type="hidden" name="frame_delay"  value="<?php echo "$frame_delay"; ?> "/>
@@ -122,7 +141,7 @@ echo "</table>\n";
 ?>
 <input type="submit" name="submit" value="Select a song and click here to go to the next screen, assign effects"  class="button" />
 </form>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="seq_duration" value="<?php echo "$seq_duration"; ?>"/>
 <input type="hidden" name="frame_delay" value="<?php echo "$frame_delay"; ?>"/>

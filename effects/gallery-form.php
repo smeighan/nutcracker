@@ -18,7 +18,7 @@ require_once('../conf/header.php');
 require("../effects/read_file.php");
 /*echo "<pre>";
 echo "POST:\n";
-print_r($_POST);
+print_r($_GET);
 echo "SERVER:";
 print_r($_SERVER);
 //echo "SESSION:\n";
@@ -36,19 +36,19 @@ $tok2=explode("=",$tokens[0]); $username = $tok2[1];
 $tok2=explode("=",$tokens[1]); $total_strings = $tok2[1];
 $tok2=explode("=",$tokens[2]); $object_name = $tok2[1];*/
 set_time_limit(0);
-if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-index.php
+if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-index.php
 { // yes
 	$first_time=1;
 }
 else
 { // no, so this self submit has values for us to update
 	$first_time=0;
-	extract($_POST);
+	extract($_GET);
 }
 $total_count=count_gallery();
 echo "<h1>Gallery has $total_count effects in it</h1>";
 $self=$_SERVER['PHP_SELF'];
-echo "<form action=\"gallery.php\" method=\"POST\">\n";
+echo "<form action=\"gallery.php\" method=\"GET\">\n";
 ?>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 <table border="1">

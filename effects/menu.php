@@ -23,7 +23,7 @@ Effects Generator
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="get">
 <input type="hidden" name="cmd" value="_donations">
 <input type="hidden" name="business" value="P2S34RML54T9W">
 <input type="hidden" name="lc" value="US">

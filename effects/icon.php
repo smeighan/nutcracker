@@ -45,9 +45,9 @@ require ("read_file.php");
 $member_id = 2;
 $user_target = "AA_MATRIX2";
 $effect_name = "ICON";
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 $t_dat = $user_target . ".dat";
-$xdat = $user_target . "+" . $effect_name . ".dat";
+$xdat = $user_target . "~" . $effect_name . ".dat";
 $path = "../targets/" . $member_id;
 $arr = read_file($t_dat, $path);
 //  target megatree 32 strands, all 32 being used. read data into an array
@@ -108,7 +108,7 @@ if (!isset($username))
 	$username = 'f';
 $amperage = array();
 $x_dat_base = $base . ".dat";
-make_gp($arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay, $script_start, $amperage, $seq_duration, $show_frame);
+make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay, $script_start, $amperage, $seq_duration, $show_frame);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float)$sec + (float)$usec;
 

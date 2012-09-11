@@ -18,13 +18,8 @@ require_once('../conf/header.php');
 require("../effects/read_file.php");
 $segment_array=array();
 echo "<pre>";
-/*echo "POST:\n";
-print_r($_POST);
-//echo "SERVER:";
-//print_r($_SERVER);
-//echo "SESSION:\n";
-//print_r($_SESSION);
-echo "</pre>";*/
+print_r($_GET);
+echo "</pre>";
 // http://localhost/nutcracker/login/single_strand-form.php?user=f?total_strings=3
 // 
 //
@@ -32,12 +27,9 @@ echo "</pre>";*/
 //
 //
 //$tokens=explode("?model=",$REQUEST_URI);
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$tok2=explode("=",$tokens[0]); $username = $tok2[1];
-$tok2=explode("=",$tokens[1]); $total_strings = $tok2[1];
-$tok2=explode("=",$tokens[2]); $object_name = $tok2[1];
+extract($_GET);
 set_time_limit(0);
-if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-index.php
+if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-index.php
 { // yes
 	$pixel_array=get_strands($username,$object_name);
 	$segment_array=get_segments($username,$object_name);
@@ -52,10 +44,11 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 else
 { // no, so this self submit has values for us to update
 	$first_time=0;
-	extract($_POST);
-	update_strands($username,$object_name,$pixel_array);
+	extract($_GET);
+	if(isset($pixel_array)) update_strands($username,$object_name,$pixel_array);
 	$c=count($segment_array);
-	update_number_segments($username,$object_name,$number_segments,$gif_model);
+	if(isset($gif_model)) update_number_segments($username,$object_name,$number_segments,$gif_model);
+	else $gif_model="single";
 	$c=count($segment_array);
 	/*echo "<pre>";
 	print_r($segment_array);
@@ -87,7 +80,7 @@ echo "</pre>";*/
 //
 echo "<h1>Single Strand</h1>";
 $self=$_SERVER['PHP_SELF'];
-echo "<form action=\"$self?user=$username?total_strings=$total_strings?object_name=$object_name\" method=\"post\">\n";
+echo "<form action=\"$self?username=$username&total_strings=$total_strings&object_name=$object_name\" method=\"GET\">\n";
 ?>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 <table border="1">
@@ -125,7 +118,7 @@ if($gif_model=="arch") $checked_arch="checked"; ?>
 </table>
 <?php
 $c=count($segment_array);
-if($first_time==0 or $c>0) // if not first time, then we have data we can show
+if(isset($pixel_array) and ($first_time==0 or $c>0   )) // if not first time, then we have data we can show
 {
 	echo "<table border=1>";
 	for ($loop=1;$loop<=3;$loop++)
@@ -179,7 +172,7 @@ if($first_time==0 or $c>0) // if not first time, then we have data we can show
 	{
 		$pixels_per_segment= intval($pixel/$number_segments);
 		$start_pixel = ($segment-1)*$pixels_per_segment + 1;
-			if(isset($segment_array[$segment])) $start_pixel=$segment_array[$segment];
+		if(isset($segment_array[$segment])) $start_pixel=$segment_array[$segment];
 		echo "<tr>";
 		echo "<td>Segment $segment starts at virtual pixel#</td>";
 		echo "<td>$start_pixel</td>";

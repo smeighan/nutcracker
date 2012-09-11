@@ -75,7 +75,7 @@ function file_list($d,$x){
 } 
 function displayFormHeader()
 {
-	echo '<form method="post" action="import.php" name="import">';    
+	echo '<form method="get" action="import.php" name="import">';    
     echo '<div class="formRow">';
     echo '                        <div class="label">';
     echo '                      <label for="import">Select a file to import into your local database</label>';
@@ -102,16 +102,16 @@ function fileSelector($d, $username) {
 			echo '</div>';
 			echo '</div>';
 		echo '</form>';
-echo '<form method="post" action="login/member-index.php">';   		
+echo '<form method="get" action="login/member-index.php">';   		
 	echo '<input type="submit" name="cancel" value="Cancel">';
 	displayFormFooter();
 }
 
 // MAIN FUNCTION HERE
 define('BASE_PATH',realpath('.'));
-$username = $_POST['username'];
-if (isset($_POST['submit'])) {
-	$filename = $_POST['importFile'];
+$username = $_GET['username'];
+if (isset($_GET['submit'])) {
+	$filename = $_GET['importFile'];
 	importXML($filename, $username);
 } else {
     $dirname = 'xml/';

@@ -25,7 +25,7 @@ ini_get('max_execution_time');
 set_time_limit(250);
 ini_get('max_execution_time'); 
 echo "</pre>\n";
-//show_array($_POST,"_POST");
+//show_array($_GET,"_GET");
 //show_array($_SERVER,"_SERVER");
 //show_array($_SESSION,"_SESSION");
 ///*
@@ -40,7 +40,7 @@ Array
 )
 	FLY_0_0_TEST?username=f?effect_class=butterfly?user_targets=AA
 */ 
-$array_to_save=$_POST;
+$array_to_save=$_GET;
 $array_to_save['OBJECT_NAME']='fire';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
@@ -51,7 +51,7 @@ $array_to_save['effect_name']=$effect_name;
 $array_to_save['username']=$username;
 if(!isset($show_frame)) $show_frame='N';
 $array_to_save['show_frame']=$show_frame;
-$frame_delay = $_POST['frame_delay'];
+$frame_delay = $_GET['frame_delay'];
 $frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 extract ($array_to_save);
 save_user_effect($array_to_save);
@@ -70,7 +70,7 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$x_dat = $user_target . "+" . $effect_name . ".dat";
+$x_dat = $user_target . "~" . $effect_name . ".dat";
 $minStrand =$arr[0];  // lowest strand seen on target
 $minPixel  =$arr[1];  // lowest pixel seen on skeleton
 $maxStrand =$arr[2];  // highest strand seen on target
@@ -86,7 +86,7 @@ $maxFrame=80;
 if(empty($seed)) $seed=rand(1,3000);
 srand($seed);
 $window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 for($s=1;$s<=$maxStrand;$s++)
 	for($p=1;$p<=$maxPixel;$p++)
 {
@@ -172,7 +172,7 @@ for ($frame=1;$frame<=$maxFrame;$frame++)
 }
 $x_dat_base="fire";
 $amperage=array();
-make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 //
 //
@@ -205,7 +205,7 @@ function build_fire($frame,$buff1,$buff2,$maxPixel,$maxStrand)
 		for ($s=1;$s<=$maxStrand;$s++)
 		{
 			$pdx=$maxPixel-$p;
-			$pdx=$v1=$v2=$v3=$v4==0;
+			$pdx=$v1=$v2=$v3=$v4=0;
 			if($p<$maxPixel)
 			{
 				$method=3;

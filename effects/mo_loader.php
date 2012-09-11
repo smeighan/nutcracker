@@ -25,33 +25,13 @@ require("../effects/read_file.php");
 //echo "<pre>";
 //echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
 set_time_limit(60*60);
-//echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
-//echo "</pre>";
-//show_array($_SERVER,"SERVER");
-// [QUERY_STRING] => make_lsp.php?base=AA+BARBERPOLE_180?full_path=workspaces/2/AA+BARBERPOLE_180_d_1.dat?frame_delay=100?member_id=2?seq_duration=8?sequencer=lsp?pixel_count=100?type=1
-/*$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
-$tokens2=explode("base=",$tokens[0]);
-$base=$tokens2[1];*/
-extract($_POST);
-//	basename  =SGASE+SEAN33_d_1.dat
-//	extension =dat
-//	filename  =SGASE+SEAN33_d_1
-/*
-Array
-(
-[10] => SGASE+SEAN33_d_10.dat
-[57] => SGASE+SEAN33_d_57.dat
-[5] => SGASE+SEAN33_d_5.dat
-[37] => SGASE+SEAN33_d_37.dat
-[53] => SGASE+SEAN33_d_53.dat
-[66] => SGASE+SEAN33_d_66.dat
-[54] => SGASE+SEAN33_d_54.dat
-[55] => SGASE+SEAN33_d_55.dat
+
+extract($_GET);
+
 /*echo "<pre>";
 print_r($files_array);
-echo "</pre>\n";*/
-echo "<pre>";
+echo "</pre>\n";
+echo "<pre>";*/
 print_r($_SESSION);
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];

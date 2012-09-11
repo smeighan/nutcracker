@@ -68,7 +68,7 @@ $uploaddir = $tokens[1];
 	echo "</table>\n";
 }
 ?>
-<form action="./upload.php<?php echo "?uploaddir=$uploaddir"; ?>" method="post" enctype="multipart/form-data">
+<form action="./upload.php<?php echo "?uploaddir=$uploaddir"; ?>" method="get" enctype="multipart/form-data">
 <p>
 <label for="file">Select a file from your computer to add to your Nutcracker GIF library:</label> <input type="file" name="userfile" id="file"> <br />
 <button>Upload File</button>

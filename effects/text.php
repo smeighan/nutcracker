@@ -39,7 +39,7 @@ Array
 [submit] => Submit Form to create your target model
 )
 	*/ 
-$array_to_save=$_POST;
+$array_to_save=$_GET;
 $array_to_save['OBJECT_NAME']='text';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
@@ -48,7 +48,7 @@ $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 $array_to_save['effect_name']=$effect_name;
 $array_to_save['username']=$username;
-$frame_delay = $_POST['frame_delay'];
+$frame_delay = $_GET['frame_delay'];
 $frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 $array_to_save['frame_delay']=$frame_delay;
 extract ($array_to_save);
@@ -65,9 +65,9 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$base = $user_target . "+" . $effect_name;
+$base = $user_target . "~" . $effect_name;
 $t_dat = $user_target . ".dat";
-$xdat = $user_target ."+".  $effect_name . ".dat";
+$xdat = $user_target ."~".  $effect_name . ".dat";
 $target_path="../targets/". $member_id;
 $arr=read_file($t_dat,$target_path); //  target megatree 32 strands, all 32 being used. read data into an array
 list($usec, $sec) = explode(' ', microtime());
@@ -397,16 +397,16 @@ function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees
 		// for($w=0;$w<=$windowWidth;$w++);
 	}
 	// for($k=1;$k<=$maxK+$windowWidth;$k++);
-	//	echo "make_gp($path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);\n";
+	//	echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);\n";
 	$full_path = "workspaces/2/AA+TEXT2_d_8.dat";
 	//fill_in_zeros($arr,$dat_file_array);
-	make_gp($arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 }
 
 function create_library($link,$username,$base,$MaxFrames)
 {
 	return 0;
-	$tokens2=explode("+",$base); // AA+CIRCLE1
+	$tokens2=explode("~",$base); // AA+CIRCLE1
 	$t_dat=$tokens2[0];	// AA
 	$effect_name=$tokens2[1];	// CIRCLE1
 	$target_info=get_info_target($username,$t_dat);
@@ -506,7 +506,7 @@ function create_library($link,$username,$base,$MaxFrames)
 function store_into_library_dtl($link,$username,$library_id,$base,$string,$pixel,$frame,$rgb_val)
 {
 	return 0;
-	$tokens2=explode("+",$base); // AA+CIRCLE1
+	$tokens2=explode("~",$base); // AA+CIRCLE1
 	$t_dat=$tokens2[0];	// AA
 	$effect_name=$tokens2[1];	// CIRCLE1
 	$update_dtl="UPDATE  library_dtl set rgb_val = '$rgb_val'

@@ -18,37 +18,27 @@ require_once('../conf/auth.php');
 */
 $allowedFields = array(
 'username','object_name', 'object_desc', 'model_type', 'string_type', 
-'pixel_count', 'pixel_first',  'pixel_last', 
+'pixel_count', 'pixel_first',  'pixel_last', 'number_segments','gif_model',
 'unit_of_measure','pixel_length',   'pixel_spacing',
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'h2', 'd1', 'd2', 'd3' , 'd4'
 );
 // Specify the field names that you want to require...
 $requiredFields = array(
-'username','object_name', 'object_desc', 'model_type', 'string_type', 
+'username','model_type', 'string_type', 
 'pixel_count',  'pixel_length',   'pixel_spacing',
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-/*echo "<pre>";
-echo "POST:\n";
-print_r($_POST);
-//echo "SERVER:";
-//print_r($_SERVER);
-//echo "SESSION:\n";
-//print_r($_SESSION);
-echo "</pre>";*/
-$username= $_SESSION['SESS_LOGIN'];
-//echo "<pre>";
-//echo "process.php username=$username";
-//print_r($_SESSION);
-//echo "</pre>\n";
-// Loop through the $_POST array, which comes from the form...
+echo "<pre>";
+print_r($_GET);
+echo "</pre>";
+die("exit");
 $errors = array();
 /*echo "<pre>process.php:";
-print_r($_POST);
+print_r($_GET);
 echo "</pre>";*/
-foreach($_POST AS $key => $value)
+foreach($_GET AS $key => $value)
 {
 	$key=strtolower($key);
 	// is this a required field?
@@ -70,8 +60,8 @@ foreach($_POST AS $key => $value)
 		$errors[] = "The field $key \"$value\" must have a value";
 }
 require "../effects/read_file.php";
-extract($_POST);
-//show_array($_POST,"POST");
+extract($_GET);
+//show_array($_GET,"POST");
 //die("die");
 // were there any errors?
 //
@@ -87,7 +77,7 @@ if(count($errors) > 0)
 	}
 	$errorString .= '</ul>';
 	// display the previous form
-	$_SESSION['SESS_LOGIN'] = $member['login'];
+	if(isset($member['login'])) $_SESSION['SESS_LOGIN'] = $member['login'];
 	session_write_close();
 	//	header("location: member-index.php");
 	echo "<p><a href=\"member-index.php\">Click here</a> to go and correct missing fields.</p>";
@@ -159,15 +149,15 @@ else
 	mysql_close();
 	$_SESSION['SESS_LOGIN'] = $username;
 	//session_write_close();
-	//$model_type=$_POST['MODEL_TYPE'];
+	//$model_type=$_GET['MODEL_TYPE'];
 	/*echo "<pre>";
-	print_r($_POST);
+	print_r($_GET);
 	echo "model_type = model_type\n";
 	echo "</pre>";*/
 	if($MODEL_TYPE=="SINGLE_STRAND")
-		header("location: single_strand-form.php?user=$username?total_strings=$TOTAL_STRINGS?object_name=$OBJECT_NAME?number_segments=$number_segments");
+		header("location: single_strand-form.php?username=$username&total_strings=$TOTAL_STRINGS&object_name=$OBJECT_NAME&number_segments=$number_segments");
 	else
-	header("location: target-exec.php?model=$OBJECT_NAME?user=$username");
+	header("location: target-exec.php?model=$OBJECT_NAME&user=$username");
 	exit();
 	//setcookie("username", "");
 }

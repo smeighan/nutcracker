@@ -33,7 +33,7 @@ set_time_limit(60*60);
 $c=count($tokens);
 $tokens2=explode("base=",$tokens[0]);
 $base=$tokens2[1];*/
-extract($_POST);
+extract($_GET);
 //	basename  =SGASE+SEAN33_d_1.dat
 //	extension =dat
 //	filename  =SGASE+SEAN33_d_1

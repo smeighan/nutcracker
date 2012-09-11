@@ -47,7 +47,7 @@ if (file_exists($directory)) {
 	mkdir($directory, 0777);
 }
 
-$x_dat = $target_model . "+" . $effect_name . ".dat";
+$x_dat = $target_model . "~" . $effect_name . ".dat";
 
 points($arr,$path,$t_dat,$x_dat,$username);
 list($usec, $sec) = explode(' ', microtime());
@@ -144,7 +144,7 @@ function points($arr,$path,$t_dat,$x_dat,$username)
 		}
 		fclose($fh_dat);
 	}
-	make_gp($arr,$path,$maxLoop,$x_dat,$t_dat,$dat_file_array,$min_max,$username);
+	make_gp($batch,$arr,$path,$maxLoop,$x_dat,$t_dat,$dat_file_array,$min_max,$username);
 }
 
 

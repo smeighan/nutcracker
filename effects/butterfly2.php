@@ -110,7 +110,7 @@ function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_d
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 	echo "</body>";
 	echo "</html>";
 }

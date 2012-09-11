@@ -23,24 +23,9 @@ set_time_limit(60*60);
 //echo "</pre>";
 //show_array($_SERVER,"SERVER");
 // [QUERY_STRING] => make_lsp.php?base=AA+BARBERPOLE_180?full_path=workspaces/2/AA+BARBERPOLE_180_d_1.dat?frame_delay=100?member_id=2?seq_duration=8?sequencer=lsp?pixel_count=100?type=1
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
-$tokens2=explode("base=",$tokens[0]);
-$base=$tokens2[1];
-$tokens2=explode("full_path=",$tokens[1]);
-$full_path=$tokens2[1];
-$tokens2=explode("frame_delay=",$tokens[2]);
-$frame_delay=$tokens2[1];
-$tokens2=explode("member_id=",$tokens[3]);
-$member_id=$tokens2[1];
-$tokens2=explode("seq_duration=",$tokens[4]);
-$seq_duration=$tokens2[1];
-$tokens2=explode("sequencer=",$tokens[5]);
-$sequencer=$tokens2[1];
-$tokens2=explode("pixel_count=",$tokens[6]);
-$pixel_count=$tokens2[1];
-$tokens2=explode("type=",$tokens[7]);
-$type=$tokens2[1];
+
+extract ($_GET);
+
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname']; // workspaces/2
 $basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
@@ -83,7 +68,7 @@ if(!in_array($sequencer,$supported))
 	<?php
 	exit();
 }
-extract($_POST);
+extract($_GET);
 $path="../targets/". $member_id;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
@@ -122,7 +107,7 @@ Array
 [59] => SGASE+SEAN33_d_59.dat
 */	
 //    base=AA+SEAN3  t_dat=AA.dat  username=f
-extract($_POST);
+extract($_GET);
 $path="../targets/". $member_id;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
@@ -192,7 +177,7 @@ $user_targets="AA";
 $effect_class="FLY";
 $checked="";
 ?>
-<form action="<?php echo "make_lsp-exec.php"; ?>" method="post">
+<form action="<?php echo "make_lsp-exec.php"; ?>" method="get">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
 <input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
@@ -218,7 +203,7 @@ function getFilesFromDir($dir,$base)
 {
 	$files = array(); 
 	$n=0;
-	$tok=explode("+",$base);
+	$tok=explode("~",$base);
 	$target=$tok[0];
 	$len=strlen($target);
 	if ($handle = opendir($dir))

@@ -77,16 +77,16 @@ echo "<h2>Nutcracker: RGB Effects Builder for user $username<br/>
 if(empty($row['model_type'])) $row['model_type']="MTREE";
 
 
-if(isset($_POST['submit']))
+if(isset($_GET['submit']))
 {
-	$name = $_POST['name'];
+	$name = $_GET['name'];
 	echo "User Has submitted the form and entered this name : <b> $name </b>";
 	echo "<br>You can use the following form again to enter a new name.";
 }
 
 
 ?>
-<form action="effect-exec.php" method="POST">
+<form action="effect-exec.php" method="get">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>">
 	<table border="1">
 <tr>
@@ -537,11 +537,11 @@ function gallery()
 			$tokens=explode("/",$file);
 			$username=$tokens[1];
 			$filename=basename($tokens[2],".gif");
-			$tok2=explode("+",$filename);
+			$tok2=explode("~",$filename);
 			$target_model=$tok2[0];
 			$effect_name=$tok2[1];
 
-			echo "<td><a href=\"copy_model.php?model=$target_mode?effect=$effect_name\"><img src=\"$file\"><br/>#$line target:  $target_model<br/>effect:  $effect_name</a></td>\n";
+			echo "<td><a href=\"copy_model.php?model=$target_mode&effect=$effect_name\"><img src=\"$file\"><br/>#$line target:  $target_model<br/>effect:  $effect_name</a></td>\n";
 			if($line%$pics_per_row==0) 
 			{
 				echo "</tr>";

@@ -19,7 +19,7 @@ On this page you build an animation of the spiral class and crate an animated GI
 //
 require("read_file.php");
 echo "<pre>";
-print_r($_POST);
+print_r($_GET);
 ///*
 /*
 Array
@@ -38,13 +38,13 @@ Array
 [submit] => Submit Form to create your target model
 )
 	*/ 
-extract($_POST);
+extract($_GET);
 $effect_name = strtoupper($effect_name);
 $effect_name = rtrim($effect_name);
 $direction = strtolower($direction);
 $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
-save_user_effect($_POST);
+save_user_effect($_GET);
 if($window=="360")
 	$halfMegatree=0;
 else
@@ -64,8 +64,8 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$x_dat = $user_target . "+" . $effect_name . ".dat";
-$base = $user_target . "+" . $effect_name;
+$x_dat = $user_target . "~" . $effect_name . ".dat";
+$base = $user_target . "~" . $effect_name;
 picture($image_file,$path,$t_dat,$arr,$halfTree);
 list($usec, $sec) = explode(' ', microtime());
 $script_end = (float) $sec + (float) $usec;
@@ -197,7 +197,7 @@ function save_user_effect($passed_array)
 	{
 		die("Unable to select database");
 	}
-	extract($_POST);
+	extract($_GET);
 	$effect_name = strtoupper($effect_name);
 	$effect_name = rtrim($effect_name);
 	$direction = strtolower($direction);
@@ -219,7 +219,7 @@ function save_user_effect($passed_array)
 		$param_name_array[]=$param_name;
 	}
 	$skip_these=array('submit');
-	foreach($_POST AS $key => $value)
+	foreach($_GET AS $key => $value)
 	{
 		$key=strtolower($key);
 		if(in_array($key,$param_name_array))

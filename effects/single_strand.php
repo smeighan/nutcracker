@@ -26,7 +26,7 @@ ini_get('max_execution_time');
 set_time_limit(0);
 ini_get('max_execution_time'); 
 echo "</pre>\n";
-//show_array($_POST,"_POST");
+//show_array($_GET,"_GET");
 //show_array($_SERVER,"_SERVER");
 //show_array($_SESSION,"_SESSION");
 ///*
@@ -41,7 +41,7 @@ Array
 )
 	FLY_0_0_TEST?username=f?effect_class=butterfly?user_targets=AA
 */ 
-$array_to_save=$_POST;
+$array_to_save=$_GET;
 $array_to_save['OBJECT_NAME']='single_strand';
 extract ($array_to_save);
 $effect_name = strtoupper($effect_name);
@@ -52,7 +52,7 @@ $array_to_save['effect_name']=$effect_name;
 $array_to_save['username']=$username;
 if(!isset($show_frame)) $show_frame='N';
 $array_to_save['show_frame']=$show_frame;
-$f_delay = $_POST['frame_delay'];
+$f_delay = $_GET['frame_delay'];
 $f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 extract ($array_to_save);
 save_user_effect($array_to_save);
@@ -64,8 +64,8 @@ $t_dat = $user_target . ".dat";
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 $member_id=get_member_id($username);
 $path ="workspaces/" . $member_id;
-$x_dat = $user_target . "+" . $effect_name . ".dat";
-$base = $user_target . "+" . $effect_name;
+$x_dat = $user_target . "~" . $effect_name . ".dat";
+$base = $user_target . "~" . $effect_name;
 $directory=$path;
 if (file_exists($directory))
 {
@@ -73,7 +73,7 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$x_dat = $user_target . "+" . $effect_name . ".dat";
+$x_dat = $user_target . "~" . $effect_name . ".dat";
 $minStrand =$arr[0];  // lowest strand seen on target
 $minPixel  =$arr[1];  // lowest pixel seen on skeleton
 $maxStrand =$arr[2];  // highest strand seen on target
@@ -200,7 +200,7 @@ for($f=1;$f<=$maxFrame;$f++)
 $x_dat_base=$base . ".dat";
 $show_frame='n';
 $amperage=array();
-make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame);
+make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$script_start,$amperage,$seq_duration,$show_frame);
 $filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
 $description ="Total Elapsed time for this effect:";
 list($usec, $sec) = explode(' ', microtime());

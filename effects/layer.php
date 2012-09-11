@@ -21,14 +21,14 @@ ini_get('max_execution_time');
 set_time_limit(60*60*8);
 ini_get('max_execution_time'); 
 //
-$array_to_save=$_POST;
-extract($_POST);
+$array_to_save=$_GET;
+extract($_GET);
 $array_to_save['OBJECT_NAME']='layer';
 if(isset($LAYER_EFFECTS[0])) $array_to_save['file1']=$LAYER_EFFECTS[0];
 if(isset($LAYER_EFFECTS[1])) $array_to_save['file2']=$LAYER_EFFECTS[1];
 $array_to_save['layer_method']=$lmethod;
 extract ($array_to_save);
-$frame_delay = $_POST['frame_delay'];
+$frame_delay = $_GET['frame_delay'];
 $frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 $array_to_save['frame_delay']=$frame_delay;
 extract ($array_to_save);
@@ -47,7 +47,7 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$base = strtoupper($user_target) . "+" . strtoupper($effect_name);
+$base = strtoupper($user_target) . "~" . strtoupper($effect_name);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $file1 = $path . "/" . $array_to_save['file1'];
@@ -177,7 +177,7 @@ fclose($fh_nc);
 $x_dat_base=$base . ".dat";
 $show_frame='n';
 $amperage=array();
-make_gp($arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
+make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame);
 $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 
 function read_file2($file,$path)

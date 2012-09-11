@@ -30,18 +30,9 @@ script type="text/javascript" src="../js/barmenu.js"></script>
 //
 require("../effects/read_file.php");
 set_time_limit(60*60);
-extract($_POST);
-/*echo "<pre>";
-print_r($_POST);
-print_r($_SERVER);
-echo "</pre>";*/
-$query_string = $_SERVER['QUERY_STRING'];
-//[QUERY_STRING] => sort=song
-$tok=explode("=",$query_string);
-if(count($tok)>1)
-	$sort= $tok[1];
-else
-$sort="song";
+extract($_GET);
+
+if(!isset($song)) $sort="song";
 //echo "<pre>sort=$sort</pre>";
 
 //print_r($target);
@@ -59,7 +50,7 @@ echo "<h4>Instructions: If you want to vote for the songs you are going to be us
 echo "</h4>";
 echo "<br/><br/>";
 $self=$_SERVER['PHP_SELF'];
-/*echo "<form action=\"$self\" method=\"POST\">\n";
+/*echo "<form action=\"$self\" method=\"GET\">\n";
 echo '<input type="submit" name="submit" value="Submit Form to have your choices recorded" />';*/
 echo "<table border=1>";
 $target=array();

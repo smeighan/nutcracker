@@ -222,13 +222,13 @@ function fill_in_zeros($arr,$dat_file_array)
 				$strand=$tok[1];	// 1 strand#
 				$pixel=$tok[2];// 2 pixel#	
 				$rgb=$tok[6];
+				
+				
 				if($rgb!=0)
 					$matrix[$strand][$pixel]=$line;  // store original line
 			}
 		}
-		/*echo "<pre>Matrics from file:";
-		print_r($dat_file_array);
-		echo "<pre>\n";*/
+		
 		//	okay now put out new Files
 		fclose($fh);
 		$fh = fopen($full_path, 'w') or die("can't open file $full_path");
@@ -256,7 +256,6 @@ function RGBVAL_TO_HSV($rgb_val)
 	$r = ($rgb >> 16) & 0xFF;
 	$g = ($rgb >> 8) & 0xFF;
 	$b = $rgb & 0xFF;
-	
 	$HSL=RGB_TO_HSV ($r, $g, $b);
 	return $HSL;
 }
@@ -486,7 +485,7 @@ function my_exec($cmd, $input='')
 	);
 }
 
-function display_gif($dir,$model,$gp_file,$out_file_array,$frame_delay,$script_start)
+function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay,$script_start)
 {
 	//
 	////	to speed up imagmagick: +dither or -treedepth 4 -colors 256.
@@ -494,7 +493,9 @@ function display_gif($dir,$model,$gp_file,$out_file_array,$frame_delay,$script_s
 	// gp_file=../targets/2/AA+GAR_SPACE4.gp
 	//
 	$path_parts = pathinfo($gp_file);
-	//$dat_file_array0=$dat_file_array[0];
+	/*echo "<pre>";
+	print_r($out_file_array);
+	echo "</pre>";*/
 	$dat_file_array0=$out_file_array[0];
 	$dirname   = $path_parts['dirname']; // workspaces/2
 	$basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
@@ -571,8 +572,8 @@ function display_gif($dir,$model,$gp_file,$out_file_array,$frame_delay,$script_s
 	//$thumb->resizeImage(160,120,Imagick::FILTER_LANCZOS,1);
 	//$thumb->writeImage($gif_file_th);
 	*/
-	show_elapsed_time($script_start,"Finished  Imagick to make animated GIF:");
-	printf ("<img src=\"%s\"/>",$gif_file);
+	//show_elapsed_time($script_start,"Finished  Imagick to make animated GIF:");
+	if($batch<=1) printf ("<img src=\"%s\"/>",$gif_file);
 }
 
 function insert_sequence($username,$model_name,$frame,$string,$user_pixel,$c,$rgb)
@@ -772,7 +773,7 @@ function rotate($arr,$x_dat,$t_dat,$path,$direction,$halfTree,$frame_delay,$spar
 	$base_t_dat=$t_dat;
 	show_elapsed_time($script_start,"Finished  Rotate image about Z axis");
 	// make_rotate_gp($path,$base_t_dat,$x_dat,$height,$dat_file_array);
-	make_gp($path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$sequence_duration,$show_frame);
+	make_gp($batch,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$sequence_duration,$show_frame);
 }
 
 function show_srt_file($file,$maxFrame,$frame_delay,$maxPixel,$pixel_count)
@@ -1181,10 +1182,10 @@ function sparkles($sparkles,$rgb_val)
 	return $rgb_val;
 }
 
-function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)
+function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)
 {
-	//	echo "<pre>function make_gp($path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
-	//  make_gp(workspaces/f,AA+SEAN3.dat,AA.dat,Array,Array,f,5,1331320308.6,Array)
+	//	echo "<pre>function make_gp($batch,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$script_start,$amperage,$seq_duration,$show_frame)</pre>\n";
+	//  make_gp($batch,workspaces/f,AA+SEAN3.dat,AA.dat,Array,Array,f,5,1331320308.6,Array)
 		//
 	fill_in_zeros($arr,$dat_file_array); // modify dat files so they have missingg data
 	$target_info=get_info_target($username,$t_dat);
@@ -1367,11 +1368,9 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 	fclose($fh_gp_file);
 	fclose($fh_gp_file_amperage);
 	$model="_d_";
-	show_elapsed_time($script_start,"Finished gnuplot command file:");
-	display_gif($path,$model,$gp_file,$out_file_array,$frame_delay,$script_start);
-	//display_gif($path,$model,$gp_file_amperage,$out_file_array_amperage,$frame_delay,$script_start);
-	//  display_gif(workspaces/f,_r_,workspaces/f/AA+SEAN2.gp,Array,22,1331146938.3,Array)
-		//
+	if($batch<=1) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay,$script_start);
+	//display_gif($batch,$path,$model,$gp_file_amperage,$out_file_array_amperage,$frame_delay,$script_start);
+	
 	//
 	if($username <> 'f')
 	{
@@ -1385,26 +1384,34 @@ function make_gp($arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$username,$fr
 	$full_path=$dat_file_array0;
 	$member_id=get_member_id($username);
 	$base=$base_tmp;
-	echo "<br/><br/><table border=2>";
-	echo "<tr><th colspan=3 bgcolor=lightgreen><b>EXPORT OPTIONS: Now That You Have created a sequence, you need to export it</b></th></tr>";
-	//	make_vixen
-	echo "<tr><th>Sequencer</th><th>Left Click This column to create export file</th><th>Versions</th></tr>";
-	printf ("<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=vixen?pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
-	//	make_lor *.lms
-	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lors2?pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
-	//	make_lor *.lcb
-	printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lor_lcb?pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
-	//	make_lsp GUI I
-	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=1\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type I gui. This is the normal file. &lt;TrackGuid&gt;60cc0c76-f458-4e67-abb4-5d56a9c1d97c&lt;/TrackGuid&gt;</td></tr>\n");
-	//	make_lsp GUI II
-	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=2\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type II gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;4e2556ac-d294-490c-8b40-a40dc6504946&lt;/TrackGuid&gt;</td></tr>\n");
-	//	make_lsp GUI III
-	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=3\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type III gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;ba459d0f-ce08-42d1-b660-5162ce521997&lt;/TrackGuid&gt;</td></tr>\n");
-	//	make_lsp GUI IV
-	printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=lsp?pixel_count=$pixel_count?type=4\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type IV gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;a69f7e39-e70d-4f70-8173-b3b2dbeea350&lt;/TrackGuid&gt;</td></tr>\n");
-	//	make_hls
-	printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base?full_path=$full_path?frame_delay=$frame_delay?member_id=$member_id?seq_duration=$seq_duration?sequencer=hls?pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
-	echo "</table>\n";
+	//
+	//
+	//
+	if($batch==0)
+	{
+		echo "<br/><br/><table border=2>";
+		echo "<tr><th colspan=3 bgcolor=lightgreen><b>EXPORT OPTIONS: Now That You Have created a sequence, you need to export it</b></th></tr>";
+		//	make_vixen
+		echo "<tr><th>Sequencer</th><th>Left Click This column to create export file</th><th>Versions</th></tr>";
+		printf ( "<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=vixen&pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
+		//print htmlentities($buff_vixen);
+		//
+		//	make_lor *.lms
+		printf ( "<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lors2&pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
+		//print htmlentities($buff_lor);
+		printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lor_lcb&pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
+		//	make_lsp GUI I
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=1\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type I gui. This is the normal file. &lt;TrackGuid&gt;60cc0c76-f458-4e67-abb4-5d56a9c1d97c&lt;/TrackGuid&gt;</td></tr>\n");
+		//	make_lsp GUI II
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=2\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type II gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;4e2556ac-d294-490c-8b40-a40dc6504946&lt;/TrackGuid&gt;</td></tr>\n");
+		//	make_lsp GUI III
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=3\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type III gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;ba459d0f-ce08-42d1-b660-5162ce521997&lt;/TrackGuid&gt;</td></tr>\n");
+		//	make_lsp GUI IV
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=4\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type IV gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;a69f7e39-e70d-4f70-8173-b3b2dbeea350&lt;/TrackGuid&gt;</td></tr>\n");
+		//	make_hls
+		printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=hls&pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
+		echo "</table>\n";
+	}
 }
 
 function purge_files()
@@ -1612,7 +1619,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//echo "<pre>function make_buff($username,$member_id,$base,$frame_delay,$seq_duration)</pr>\n";
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
-	$tokens=explode("+",$base);
+	$tokens=explode("~",$base);
 	$target_name=$tokens[0];
 	$effect_name=$tokens[1];
 	//
@@ -1751,7 +1758,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	t1    3    3     1.283     1.766   107.269 16716696 18 278
 	*/
 	//$TotalFrames = 
-/*	echo "<pre>";
+	/*	echo "<pre>";
 	print_r($dat_file_array);
 	echo "</pre>\n";*/
 	$seq_file = $dirname . "/" . $base . ".dat";
@@ -1816,15 +1823,18 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 				if(in_array($string,$window_array)) // Is this strand in our window?, 
 				{
 					fwrite($fh_seq,sprintf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line));
-			//			printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);
+					//			printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);
 				}
 			}
 		}
 		fclose($fh);
-	//	echo "<pre>unlink($full_path) has $line_counter lines</pre>\n";
+		flush();
+		//	echo "<pre>unlink($full_path) has $line_counter lines</pre>\n";
+		$full_path=realpath($full_path);
 		if (file_exists($full_path))
 		{
-			unlink($full_path);
+			/*echo "<pre>Purging $full_path</pre>\n";
+			unlink($full_path);*/
 		}
 	}
 	if (file_exists($gp_file)) unlink($gp_file);
@@ -1887,10 +1897,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	else
 	die ("frame_delay = 0, unable to create any output");
 	//	should we show 5 string mini channel preview?
-	echo "<pre>";
-	//echo "TotalFrames= (seq_duration*1000)/frame_delay;\n";
-	//echo "$TotalFrames= ($seq_duration*1000)/$frame_delay;\n";
-	echo "</pre>\n";
+	
 	$preview=0; // for now, no
 	if($preview==1)
 	{
@@ -1967,16 +1974,10 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$frame=$tok[3];	// frame#
 			$rgb=$tok[4];	// rgb#
 			$rgbhex=dechex($rgb);
-			//echo "<pre>$i .. $rgbhex $line</pre>\n";
-			//echo "<pre>string=$string,$pixel frame=$frame, rgb=$rgb\n";
-			//echo "<pre>loop=i   if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
-			//echo "<pre>loop=$i   if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";
-			/*	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel ))</pre>\n";
-			echo "<pre>if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";*/
+			
 			if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
 			{
 				fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
-				if($echo==1) printf("<pre>S %d P %d ",$old_string,$old_pixel);
 				$frameCounter=0;
 				for($loop=1;$loop<=$MaxFrameLoops;$loop++)
 				{
@@ -2024,7 +2025,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//printf("</pre>\n");
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
-	unlink($seq_file);
+	// <sean tmp> unlink($seq_file);
 	unlink ($seq_srt);
 	fclose($fh_buff);
 	return ($filename_buff);
@@ -2167,15 +2168,14 @@ function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
 	//echo "<pre>function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)</pre>\n";
 	if($sparkle_count<1) return $rgb_val;
 	$v=intval($cnt%$sparkle_count);
-/*	Sparkle is a twinkle down over 7 frames.
+	/*	Sparkle is a twinkle down over 7 frames.
 	frame 1, dark gray (#444444)
-	frame 2, Lighter gray #888888
+		frame 2, Lighter gray #888888
 	frame 3, almost white #BBBBBB
 	frame 4, pure white #FFFFFF
 	frame 5, almost white #BBBBBB
 	frame 6, Lighter gray #888888
 	frame 7, dark gray (#444444)*/
-	
 	if($v==1)
 	{
 		$rgb_val=4473924; // #444444
@@ -2208,4 +2208,3 @@ function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
 	//	echo "<pre>s,p=$s,$p cnt=$cnt v=$v, orig=$orig, rgb_val=$rgb_val, $hex</pre>\n";
 	return $rgb_val;
 }
-

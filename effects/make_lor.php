@@ -19,26 +19,8 @@ require("../effects/read_file.php");
 
 set_time_limit(0);
 
-//show_array($_SERVER,"SERVER");
-// [QUERY_STRING] => make_lor.php?base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-// base=ZZ_ZZ+USER2?full_path=workspaces/2/ZZ_ZZ+USER2_d_1.dat?frame_delay=200?member_id=2?seq_duration=2?sequencer=lors2
-//http://meighan.net/nutcracker_sean/effects/make_lor.php?base=AA+BARBERPOLE_180?full_path=workspaces/2/AA+BARBERPOLE_180_d_1.dat?frame_delay=50?member_id=2?seq_duration=9?sequencer=lors2?pixel_count=100
-$tokens=explode("?",$_SERVER['QUERY_STRING']);
-$c=count($tokens);
-$tokens2=explode("base=",$tokens[0]);
-$base=$tokens2[1];
-$tokens2=explode("full_path=",$tokens[1]);
-$full_path=$tokens2[1];
-$tokens2=explode("frame_delay=",$tokens[2]);
-$frame_delay=$tokens2[1];
-$tokens2=explode("member_id=",$tokens[3]);
-$member_id=$tokens2[1];
-$tokens2=explode("seq_duration=",$tokens[4]);
-$seq_duration=$tokens2[1];
-$tokens2=explode("sequencer=",$tokens[5]);
-$sequencer=$tokens2[1];
-$tokens2=explode("pixel_count=",$tokens[6]);
-$pixel_count=$tokens2[1];
+
+extract ($_GET);
 if($sequencer=="lors2") $file_type="lms";
 if($sequencer=="lor_lcb") $file_type="lcb";
 $path_parts = pathinfo($full_path);
@@ -83,7 +65,7 @@ if(!in_array($sequencer,$supported))
 	<?php
 	exit();
 }
-extract($_POST);
+extract($_GET);
 $path="../targets/". $member_id;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
@@ -137,7 +119,7 @@ Array
 [59] => SGASE+SEAN33_d_59.dat
 */	
 //    base=AA+SEAN3  t_dat=AA.dat  username=f
-$tokens=explode("+",$base);
+$tokens=explode("~",$base);
 $target_name=$tokens[0];
 $effect_name=$tokens[1];
 $target_array= get_info_target($username,$target_name);

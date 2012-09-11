@@ -27,7 +27,7 @@
 </head>
 <body>
 <p>&nbsp;</p>
-<form id="loginForm" name="loginForm" method="post" action="login-exec.php">
+<form id="loginForm" name="loginForm" method="get" action="login-exec.php">
 <h2>Nutcracker Login Screen</h2>
   <table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
 <tr>
