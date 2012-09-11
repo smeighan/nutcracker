@@ -17,6 +17,7 @@ function show_barmenu()
 		<a href="../admin/cleanup.php">Cleanup Old Effects and Models</a>
 		<a href="../admin/bug.php">Open a Bug or Enhancement ticket</a>
 		<a href="../effects/tutorials.html">Nutcracker Tutorials</a>
+		<a href="../admin/smeighan-nutcracker-1.0-105-gbdbbaf9.zip">Nutcracker 2.0 zip file (Sep 20,2012)</a>
 		</div>
 	</li>
 	<li><a href="#" onmouseover="mopen('m8')" onmouseout="mclosetime()">Help</a>

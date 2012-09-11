@@ -63,7 +63,7 @@ if (isset($type)) {
 		$msg_str=add_song($song_id,$username, $frame_delay, $model_name);
 	}
 	if (isset($SavePhraseEdit)) {
-		save_phrases($_GET);
+		save_phrases($_POST);
 		$msg_str=edit_song($project_id);
 		$msg_str="Edit Saved";
 	}
@@ -81,7 +81,7 @@ echo $msg_str;
 
 ?>
 <h2>Current Nutcracker projects</h2>
-<form action="<?php echo "project-exec.php"; ?>" method="get">
+<form action="<?php echo "project-exec.php"; ?>" method="post">
 <input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
 <table border=1>
 <tr>
@@ -201,7 +201,7 @@ function edit_song($project_id) {
 	//echo "edit song SQL - $sql<br />";
 	?>
 	<h2>Edit Project Details for <?php echo $song_name;?> by <?php echo $artist;?></h2>
-	<form name="project_edit" id="project_edit" action="project.php" method="get">
+	<form name="project_edit" id="project_edit" action="project.php" method="post">
 	<input type="hidden" name="project_id" id="project_id" value=<?php echo $project_id;?>>
 	Frame Rate for project : <input class="FormFieldName" type="text" name="frame_delay" id="frame_delay"0 value="<?php echo $frame_delay?>"><br />
 	<table border="1" cellpadding="1" cellspacing="1">
@@ -361,7 +361,7 @@ function select_song($username) {
 	</table>
 	<p />
 	<h2>Select a Song</h2>
-	<form name="addsong" method="get" action="project.php">
+	<form name="addsong" method="post" action="project.php">
 	<input type="hidden" name="intype" value=2>
 	<table width="375"	border="0" cellpadding="1" cellspacing="1">
 	<tr>
