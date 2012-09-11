@@ -1,6 +1,6 @@
 <?php
 $target="AA2244"; // small target 6x30, runs fast good for testing
-$target="AA";  // larger target, 2400 channes
+//$target="AA";  // larger target, 2400 channes
 $batch=2;   
 //  Batch
 //	Level     |   Html  |   Full Size Gifs  |  Thumbnail Gif's   |  NC Data file

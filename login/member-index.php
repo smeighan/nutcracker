@@ -15,13 +15,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require_once('../conf/header.php');
 /*echo "<pre>";
-print_r($_SESSION);
+print_r($_GET);
 echo "</pre>";*/
 // index.php
+extract($_GET);
 $gif_model="";
 $username= $_SESSION['SESS_LOGIN'];
-$tokens=array("","");
-$model_name="";
+
 
 $number_segments=0;
 if(!isset($model_name)) $model_name="";
@@ -238,6 +238,7 @@ function show_my_models($username,$model_name)
 	$MODEL_ONLY=0;
 	if(strlen($model_name)>=1) $MODEL_ONLY=1;
 	$query ="select * from models where username='$username'";
+	
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
@@ -293,7 +294,7 @@ function show_my_models($username,$model_name)
 			else {
 				$fileok="<font color=red>Target model needs to be resaved for $filename</font>";
 			}
-			echo "<td><a href=\"member-index.php?model=$object_name\">$object_name $fileok</a></td>";
+			echo "<td><a href=\"member-index.php?model_name=$object_name\">$object_name $fileok</a></td>";
 			echo "<td>$object_desc</td>";
 			$model="??";
 			if($model_type=="MTREE") $model="Mega-Tree";

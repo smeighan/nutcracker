@@ -30,10 +30,10 @@ $requiredFields = array(
 'total_strings', 'direction', 'orientation', 'topography', 'h1', 
 'd1'
 );
-echo "<pre>";
+/*echo "<pre>";
 print_r($_GET);
-echo "</pre>";
-die("exit");
+echo "</pre>";*/
+//die("exit");
 $errors = array();
 /*echo "<pre>process.php:";
 print_r($_GET);
@@ -157,7 +157,7 @@ else
 	if($MODEL_TYPE=="SINGLE_STRAND")
 		header("location: single_strand-form.php?username=$username&total_strings=$TOTAL_STRINGS&object_name=$OBJECT_NAME&number_segments=$number_segments");
 	else
-	header("location: target-exec.php?model=$OBJECT_NAME&user=$username");
+	header("location: target-exec.php?model_name=$OBJECT_NAME&username=$username");
 	exit();
 	//setcookie("username", "");
 }
