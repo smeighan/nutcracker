@@ -5,7 +5,10 @@ function f_butterfly($get)
 	extract($get);
 	ini_set("memory_limit","512M");
 	butterfly_main($get);
+	$t_dat = $user_target . ".dat";
 	$target_info=get_info_target($username,$t_dat);
+	$member_id=get_member_id($username);
+	$base = $user_target . "~" . $effect_name;
 	if($batch==0)
 	{
 		show_array($target_info,'MODEL: ' . $t_dat);
@@ -19,6 +22,25 @@ function f_butterfly($get)
 function butterfly_main($get)
 {
 	extract ($get);
+	$member_id=get_member_id($username);
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	$member_id=get_member_id($username);
+	$base = $user_target . "~" . $effect_name;
+	$t_dat = $user_target . ".dat";
+	$xdat = $user_target ."~".  $effect_name . ".dat";
+	$path="../targets/". $member_id;
+	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
+	$path="workspaces/". $member_id;
+	if(empty($show_frame)) $show_frame='N';
+	if(empty($background_color)) $background_color='#FFFFFF';
+	//
+	if(!isset($batch)) $batch=0;
+$get['batch']=$batch;
+	//
+	/*echo "<pre>";
+	print_r($get);
+	echo "</pre>\n";*/
 	$target_path ="../targets/$member_id";
 	$arr=read_file($t_dat,$target_path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$minStrand =$arr[0];  // lowest strand seen on target

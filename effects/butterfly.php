@@ -33,26 +33,14 @@ save_user_effect($get);
 if($batch==0) show_array($get,"Effect Settings");
 //show_array($_SESSION,"_SESSION");
 //show_array($_SERVER,"_SERVER");
-list($usec, $sec) = explode(' ', microtime());
-$script_start = (float) $sec + (float) $usec;
-$member_id=get_member_id($username);
 
-$base = $user_target . "~" . $effect_name;
-$t_dat = $user_target . ".dat";
-$xdat = $user_target ."~".  $effect_name . ".dat";
-$path="../targets/". $member_id;
-$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-$path="workspaces/". $member_id;
-if(empty($show_frame)) $show_frame='N';
-if(empty($background_color)) $background_color='#FFFFFF';
-
+/*
 $get['base']=$base;
 $get['t_dat']=$t_dat;
 $get['xdat']=$xdat;
 $get['path']=$path;
-$get['member_id']=$member_id;
+
 $get['background_color']=$background_color;
-$get['show_frame']=$show_frame;
-if(!isset($batch)) $batch=0;
-$get['batch']=$batch;
+$get['show_frame']=$show_frame;*/
+
 f_butterfly($get);

@@ -1,9 +1,10 @@
 <?php
-$target="AA2244";
-$target="AA";
-$batch=2;   // 0 = full html+gifs+nc files(normal), 1=gifs+nc files, 2=nc files
+$target="AA2244"; // small target 6x30, runs fast good for testing
+//$target="AA";  // larger target, 2400 channes
+$batch=1;   // 0 = full html+gifs+nc files(normal), 1=gifs+nc files, 2=nc files
 
 $song_list[] = array($target,"BARS1","f_bars");
+$song_list[] = array($target,"FLY_0_0","f_butterfly");
 $song_list[] = array($target,"BARS1_TEST","f_bars");
 $song_list[] = array($target,"BARBERPOLE","f_spirals");
 $song_list[] = array($target,"BARS2","f_bars");
@@ -14,7 +15,15 @@ echo "<html>";
 echo "<body>";
 require_once ("f_bars.php");
 require_once ("f_spirals.php");
+require_once ("f_butterfly.php");
 echo "<table border=2>";
+echo "<tr>";
+echo "<th>#</th>";
+echo "<th>Target</th>";
+echo "<th>Effect</th>";
+echo "<th>Elapsed<br/>Time (secs)</th>";
+echo "<th>gif</th>";
+echo "</tr>";
 foreach($song_list as $i=>$arr2)
 {
 	//
@@ -22,7 +31,8 @@ foreach($song_list as $i=>$arr2)
 	$effect=$arr2[1];
 	$program=$arr2[2];
 	echo "<tr>";
-	echo "<td>$i</td>";
+	$row=$i+1;
+	echo "<td>$row</td>";
 	echo "<td>$target</td>";
 	echo "<td>$effect</td>";
 	$get=get_user_effects($target,$effect,$username);
@@ -38,12 +48,12 @@ foreach($song_list as $i=>$arr2)
 	//
 	if($program=="f_bars")    f_bars   ($get);
 	if($program=="f_spirals") f_spirals($get);
+	if($program=="f_butterfly") f_butterfly($get);
 	//
 	list($usec, $sec) = explode(' ', microtime());
 	$script_end = (float) $sec + (float) $usec;
 	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 	echo "<td>$elapsed_time</td>";
-	echo "<td>$effect</td>";
 	$gif="workspaces/2/" . $target . "~" . $effect ."_th.gif";
 	echo "<td><img src=\"$gif\" /></td>\n";
 	//
