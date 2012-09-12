@@ -171,4 +171,30 @@ function getHeader($model_name, $username, $project_id, $sepStr=" "){
 	fclose ($f);
 	return($retArray);
 }
+
+function getUserEffect($target,$effect,$username)
+{
+	$sql = "SELECT hdr.effect_class,hdr.username,hdr.effect_name,
+	hdr.effect_desc,hdr.music_object_id,
+	hdr.start_secs,hdr.end_secs,hdr.phrase_name,
+	dtl.param_name,dtl.param_value
+	FROM `effects_user_hdr` hdr, effects_user_dtl dtl
+	where hdr.username = dtl.username
+	and hdr.effect_name = dtl.effect_name
+	and hdr.username='$username'
+	and upper(hdr.effect_name)=upper('$effect')";
+	echo "$sql <br />";
+	$result = nc_query($sql);
+	$cnt=0;
+	$string="";
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);		//	if(strncmp($param_name,"background_color",strlen("background_color"))==0 and strncmp($param_value,"#",1)==0) $param_value=hexdec($param_value);
+		$string = $string . "&" . $param_name . "=" . $param_value;
+		$get[$param_name]=$param_value;
+	}
+	// we also need teh effect class from the header
+	$get['effect_class']=$effect_class;
+	return $get;
+}
 ?>
