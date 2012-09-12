@@ -186,7 +186,7 @@ function getUserEffect($target,$effect,$username)
 	$sql = "SELECT hdr.effect_class,hdr.username,hdr.effect_name,
 	hdr.effect_desc,hdr.music_object_id,
 	hdr.start_secs,hdr.end_secs,hdr.phrase_name,
-	dtl.param_name,dtl.param_value
+	dtl.segment, dtl.param_name,dtl.param_value
 	FROM `effects_user_hdr` hdr, effects_user_dtl dtl
 	where hdr.username = dtl.username
 	and hdr.effect_name = dtl.effect_name
