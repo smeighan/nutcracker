@@ -19,15 +19,15 @@ require_once('f_butterfly.php');
 require_once("read_file.php");
 set_time_limit(0);
 $get=$_GET;
+$username=$_SESSION['SESS_LOGIN'];
 $get['OBJECT_NAME']='butterfly';
 extract ($get);
 $effect_name = strtoupper($effect_name);
 $effect_name = rtrim($effect_name);
 $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
-$frame_delay = $_GET['frame_delay'];
-$frame_delay = intval((5+$frame_delay)/10)*10; // frame frame delay to nearest 10ms number_format
-$get['frame_delay']=$frame_delay;
+$get['username']=$username;
+$get['batch']=$batch;
 save_user_effect($get);
 //show_array($_GET,"_GET");
 if($batch==0) show_array($get,"Effect Settings");

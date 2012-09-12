@@ -12,7 +12,6 @@ function f_bars($get)
 	{
 		echo "<h2>Nutcracker: RGB Effects Builder for user $username<br/>
 		On this page you build an animation of the spiral class and create an animated GIF</h2>"; 
-		show_array($get,"get");
 	}
 	//show_array($_SERVER,"_SERVER");
 	//show_array($_SESSION,"_SESSION");

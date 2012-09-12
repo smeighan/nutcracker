@@ -4,6 +4,7 @@ session_start();
 
 //Include database connection details
 require_once('../conf/config.php');
+require_once('../effects/read_file.php');
 
 //Array to store validation errors
 $errmsg_arr = array();
@@ -23,14 +24,7 @@ if(!$db) {
 	die("Unable to select database");
 }
 
-//Function to sanitize values received from the form. Prevents SQL injection
-function clean($str) {
-	$str = @trim($str);
-	if(get_magic_quotes_gpc()) {
-		$str = stripslashes($str);
-	}
-	return mysql_real_escape_string($str);
-}
+
 
 /*echo "<pre>login-exec.php:";
 print_r($_GET);

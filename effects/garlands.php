@@ -17,16 +17,14 @@ require_once('../conf/header.php');
 //
 require_once("read_file.php");
 require_once("f_garlands.php");
-set_time_limit(0); // ewmovw time limit
-ini_set("memory_limit","512M"); // increase from 128M to 512M
 $get=$_GET;
+$username=$_SESSION['SESS_LOGIN'];
 $get['OBJECT_NAME']='garlands';
 extract ($get);
 $effect_name = strtoupper($effect_name);
 $effect_name = rtrim($effect_name);
 $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
-$get['effect_name']=$effect_name;
 $get['username']=$username;
 $get['batch']=$batch;
 save_user_effect($get);

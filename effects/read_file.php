@@ -2208,3 +2208,13 @@ function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
 	//	echo "<pre>s,p=$s,$p cnt=$cnt v=$v, orig=$orig, rgb_val=$rgb_val, $hex</pre>\n";
 	return $rgb_val;
 }
+
+//Function to sanitize values received from the form. Prevents SQL injection
+
+function clean($str) {
+	$str = @trim($str);
+	if(get_magic_quotes_gpc()) {
+		$str = stripslashes($str);
+	}
+	return mysql_real_escape_string($str);
+}
