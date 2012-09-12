@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 //
-require_once("read_file.php");
+require_once("../effects/read_file.php");
 function f_life($get)
 {
 	extract ($get);
@@ -24,6 +24,8 @@ function f_life($get)
 	//
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
+	if(!isset($show_frame)) $show_frame='N';
+$get['show_frame']=$show_frame;
 	if($batch==0) show_array($get,"Effect Settings");
 	
 	$path="../targets/". $member_id;

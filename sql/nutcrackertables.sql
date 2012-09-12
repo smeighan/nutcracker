@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 07, 2012 at 12:50 PM
+-- Generation Time: Sep 12, 2012 at 08:18 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_dtl` (
   `effect_name` varchar(25) NOT NULL,
   `param_name` varchar(32) NOT NULL,
   `param_value` varchar(4000) NOT NULL,
+  `segment` int(6) DEFAULT '0',
   `created` datetime DEFAULT NULL,
   `last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `idx_login_name` (`username`,`effect_name`,`param_name`)
@@ -174,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=554 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=562 ;
 
 -- --------------------------------------------------------
 
@@ -283,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=405 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=418 ;
 
 -- --------------------------------------------------------
 
@@ -323,7 +324,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `frame_delay` int(11) NOT NULL,
   `model_name` varchar(16) NOT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 
 -- --------------------------------------------------------
 

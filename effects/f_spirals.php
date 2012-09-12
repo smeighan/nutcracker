@@ -4,7 +4,7 @@
 function f_spirals($get)
 {
 ini_set("memory_limit","512M");
-	require_once("read_file.php");
+	require_once("../effects/read_file.php");
 	extract ($get);
 	if(!isset($batch)) $batch=0;
 	$get['batch']=$batch;

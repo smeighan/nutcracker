@@ -1,5 +1,5 @@
 <?php
-require_once ("read_file.php");
+require_once("../effects/read_file.php");
 //
 
 function f_gif($get)

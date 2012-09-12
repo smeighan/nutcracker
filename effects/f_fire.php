@@ -5,7 +5,7 @@ function f_fire($get)
 	set_time_limit(0); // ewmovw time limit
 	ini_set("memory_limit","512M"); // increase from 128M to 512M
 	extract ($get);
-	require_once("read_file.php");
+	require_once("../effects/read_file.php");
 	set_time_limit(0);
 	$member_id=get_member_id($username);
 	if($batch==0) show_array($get,"Effect Settings");

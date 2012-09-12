@@ -4,7 +4,7 @@ function f_bars($get)
 {
 	ini_set("memory_limit","512M");
 	extract($get);
-	require_once("read_file.php");
+	require_once("../effects/read_file.php");
 	$member_id=get_member_id($username);
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;

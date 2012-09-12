@@ -4,6 +4,7 @@ function f_butterfly($get)
 {
 	extract($get);
 	ini_set("memory_limit","512M");
+	require_once("../effects/read_file.php");
 	butterfly_main($get);
 	$t_dat = $user_target . ".dat";
 	$target_info=get_info_target($username,$t_dat);
