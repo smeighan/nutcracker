@@ -2,6 +2,11 @@
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
 require_once('project_filer.php');
+require_once ("../effects/f_bars.php");
+require_once ("../effects/f_spirals.php");
+require_once ("../effects/f_butterfly.php");
+require_once ("../effects/f_fire.php");
+//require_once ("../effects/f_garlands.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -496,7 +501,7 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 		if ($eff=="zzeross") {
 			$outstr="zeros:$frame_cnt";
 		} else {
-			$outstr=createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id); 
+			$outstr=createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay); 
 
 		}
 		$outarray[$cnt++]=$outstr;
@@ -511,15 +516,41 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 	return($outarray);	
 }
 
-function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id) {  // this function will create the batch call to the effects to create the individual nc files
+function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
-	$outfile="$username+$model_name+$eff+$frame_cnt.nc";
-	if (file_exists($workdir.$outfile)) {
+	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
+	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
+		echo "Generating $outfile<br />";
+		$batch_type=2;
+		$get=getUserEffect($model_name,$eff,$username);
+		$get['batch']=$batch_type;
+		$get['username']=$username;
+		$get['user_target']=$model_name;
+		$get['file_out']=$outfile;
+		$get['seq_duration']=($end-$st);
+		$get['frame_delay']=$frame_delay;
+		$effect_class=$get['effect_class'];
+		//print_r($get);
+		//echo "<br />";
 		// code to gen a new individual nc file goes here
+		switch ($effect_class) {
+			case ('spirals') :
+				f_spirals($get);
+				break;
+			case ('fire') :
+				f_fire($get);
+				break;
+			case ('butterfly') :
+				f_butterfly($get);
+				break;
+			case ('bars') :
+				f_bars($get);
+				break;
+		}
 	}
-	return($workdir.$outfile); // this will be the file created 
+	return($outfile); // this will be the file created 
 }
 
 function prepMasterNCfile($project_id) {
