@@ -38,15 +38,18 @@ function isInvalidLine($in_str) { // returns false if the string starts with a #
 
 function appendStr($str_array1,$str_array2,$prepend=false, $sepStr=" ") {  // takes two array of strings and appends them together
 	$retArray = array();
-	if (count($str_array1) != count($str_array2))
+	if (count($str_array1) != count($str_array2)) {
 		echo "*** ERROR *** arrays must match length!<br />";
-	else 
+	} else { 
 		$y=count($str_array1);
-		for($x=0;$x<$y;$x++) 
-			if ($prepend) 
+		for($x=0;$x<$y;$x++) { 
+			if ($prepend) { 
 				$retArray[$x]=$str_array2[$x].sepStr.$str_array1[$x];
-			else
+			} else {
 				$retArray[$x]=$str_array1[$x].$sepStr.$str_array2[$x];
+			}
+		}
+	}
 	return($retArray);
 }
 
@@ -634,6 +637,8 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				f_garlands($get);
 				$ranNC=true;
 				break;
+			default :
+				echo "$effect_class not handled yet<br />";
 		}
 		if ($ranNC) 
 			copy($from_file, $to_file);
