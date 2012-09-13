@@ -35,7 +35,7 @@ $path="../targets/". $username;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $member_id=get_member_id($username);
-$path ="workspaces/$member_id";
+$path ="../effects/workspaces/$member_id";
 $directory=$path;
 if (file_exists($directory))
 {
@@ -77,7 +77,7 @@ $php_program = str_replace(CRLF, LF, $php_program);
 $php_program = str_replace(CR, LF, $php_program);
 $php_program = str_replace("\\\"", "\"", $php_program);
 //echo "<pre>after: $php_program</pre>\n";
-$path="workspaces/". $member_id;
+$path="../effects/workspaces/". $member_id;
 ud($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$param1,$param2,$start_color,$end_color,$php_program,$effect_name,$username);
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);

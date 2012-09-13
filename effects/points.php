@@ -39,7 +39,7 @@ $tree_xyz  =$arr[6];
 
 
 
-$path ="workspaces/" . $username;
+$path ="../effects/workspaces/" . $username;
 $directory=$path;
 if (file_exists($directory)) {
 } else {

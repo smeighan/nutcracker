@@ -46,7 +46,7 @@ $path="../targets/". $username;
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $member_id=get_member_id($username);
-$path ="workspaces/$member_id";
+$path ="../effects/workspaces/$member_id";
 $directory=$path;
 if (file_exists($directory))
 {
@@ -79,7 +79,7 @@ seq_duration	5
 submit	Submit Form to create your target model
 */
 purge_files();
-$path="workspaces/". $member_id;
+$path="../effects/workspaces/". $member_id;
 garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame,$username); 
 $target_info=get_info_target($username,$t_dat);
 show_array($target_info,'MODEL: ' . $t_dat);

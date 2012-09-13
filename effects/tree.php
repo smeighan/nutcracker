@@ -72,7 +72,7 @@ $elapsed_time = round($script_end - $script_start, 5);
 
 
 $member_id=get_member_id($username);
-$path ="workspaces/$member_id";
+$path ="../effects/workspaces/$member_id";
 $directory=$path;
 if (file_exists($directory)) {
 } else {
@@ -118,7 +118,7 @@ submit	Submit Form to create your target model
 purge_files();
 
 
-$path="workspaces/". $member_id;
+$path="../effects/workspaces/". $member_id;
 
 tree($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$show_frame,$maxTrees,$maxPhase,$random_colours);
 

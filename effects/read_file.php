@@ -1709,7 +1709,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	echo "</pre>\n";*/
 	$maxLoop=1;
 	//
-	$full_path= "workspaces/$member_id/$base";
+	$full_path= "../effects/workspaces/$member_id/$base";
 	$path_parts = pathinfo($full_path);
 	$dirname   = $path_parts['dirname'];
 	$basename  = $path_parts['basename'];

@@ -10,7 +10,7 @@ function f_gif($get)
 	if($batch==0) show_array($get,"array_to_save");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
-	$path ="workspaces/$member_id";
+	$path ="../effects/workspaces/$member_id";
 	$gifpath ="gifs/$member_id";
 	$directory=$path;
 	if (!file_exists($directory))
@@ -81,7 +81,7 @@ function f_gif($get)
 	$maxFrame=count ( $frames );
 	//$file="ball-icon.png";
 	//$image_array=get_image($batch,$file);
-	$path = "workspaces/" . $member_id;
+	$path = "../effects/workspaces/" . $member_id;
 	for ($frame = 1; $frame <= $maxFrame; $frame++)
 	{
 		$file = $file_array[$frame-1];

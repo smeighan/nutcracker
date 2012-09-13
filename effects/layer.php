@@ -39,7 +39,7 @@ show_array($array_to_save,"Effect Settings");
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $member_id=get_member_id($username);
-$path ="workspaces/$member_id";
+$path ="../effects/workspaces/$member_id";
 $directory=$path;
 if (file_exists($directory))
 {

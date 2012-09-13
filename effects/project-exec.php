@@ -162,7 +162,7 @@ if($cnt>0)
 if($frame_delay<=0) $frame_delay=100;
 $member_id=get_member_id($username);
 $dir = getcwd() . "/workspaces/" . $member_id;
-$dir = "workspaces/" . $member_id;
+$dir = "../effects/workspaces/" . $member_id;
 //echo "<pre>dir=$dir.  getFilesFromDir($dir,$target);</pre>\n";
 $array_of_nc=array();
 $array_of_nc= getFilesFromDir($dir,$target); 
@@ -265,11 +265,11 @@ foreach($phrase_array as $arr2)
 	{
 		$tok=explode(".nc",$nc_array[$phrase_name]);
 		//	echo "<td>tok[0]=$tok[0]</td><td>tok[1]=$tok[1]</td>";
-		$file = "workspaces/$member_id/" . $tok[0] . "_th.gif";
+		$file = "../effects/workspaces/$member_id/" . $tok[0] . "_th.gif";
 	}
 	else if($len2>1)
 	{
-		$file = "workspaces/$member_id/" .$target . "~" . $effect_name . "_th.gif";
+		$file = "../effects/workspaces/$member_id/" .$target . "~" . $effect_name . "_th.gif";
 	}
 	else
 	{

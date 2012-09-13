@@ -50,7 +50,7 @@ function f_bars($get)
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$member_id=get_member_id($username);
-	$path ="workspaces/" . $member_id;
+	$path ="../effects/workspaces/" . $member_id;
 	$x_dat = $user_target . "+" . $effect_name . ".dat";
 	$base = $user_target . "~" . $effect_name;
 	$directory=$path;

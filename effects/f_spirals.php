@@ -29,7 +29,7 @@ ini_set("memory_limit","512M");
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$member_id=get_member_id($username);
-	$path ="workspaces/" . $member_id;
+	$path ="../effects/workspaces/" . $member_id;
 	$directory=$path;
 	if (file_exists($directory))
 	{

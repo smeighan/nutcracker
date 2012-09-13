@@ -57,7 +57,7 @@ show_array($array_to_save,"Effect Settings");
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $member_id=get_member_id($username);
-$path ="workspaces/$member_id";
+$path ="../effects/workspaces/$member_id";
 $directory=$path;
 if (file_exists($directory))
 {
@@ -398,7 +398,7 @@ function text($text1,$text2,$path,$t_dat,$arr,$base,$frame_delay,$window_degrees
 	}
 	// for($k=1;$k<=$maxK+$windowWidth;$k++);
 	//	echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);\n";
-	$full_path = "workspaces/2/AA+TEXT2_d_8.dat";
+	$full_path = "../effects/workspaces/2/AA+TEXT2_d_8.dat";
 	//fill_in_zeros($arr,$dat_file_array);
 	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 }

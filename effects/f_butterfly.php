@@ -32,7 +32,7 @@ function butterfly_main($get)
 	$xdat = $user_target ."~".  $effect_name . ".dat";
 	$path="../targets/". $member_id;
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-	$path="workspaces/". $member_id;
+	$path="../effects/workspaces/". $member_id;
 	if(empty($show_frame)) $show_frame='N';
 	if(empty($background_color)) $background_color='#FFFFFF';
 	//

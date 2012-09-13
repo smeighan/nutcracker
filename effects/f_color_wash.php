@@ -16,7 +16,7 @@ extract ($get);
 	
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
-	$path ="workspaces/" . $member_id;
+	$path ="../effects/workspaces/" . $member_id;
 	$directory=$path;
 	if (!file_exists($directory))
 	{

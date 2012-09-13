@@ -11,37 +11,35 @@
 //*************************************************************************************************
 //Start session
 session_start();
-
 //Include database connection details
 require_once('../conf/config.php');
-
 //Array to store validation errors
 $errmsg_arr = array();
-
 //Validation error flag
 $errflag = false;
-
 //Connect to mysql server
 $link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-if(!$link) {
+if(!$link)
+{
 	die('Failed to connect to server: ' . mysql_error());
 }
-
 //Select database
 $db = mysql_select_db(DB_DATABASE);
-if(!$db) {
+if(!$db)
+{
 	die("Unable to select database");
 }
-
 //Function to sanitize values received from the form. Prevents SQL injection
-function clean($str) {
+
+function clean($str)
+{
 	$str = @trim($str);
-	if(get_magic_quotes_gpc()) {
+	if(get_magic_quotes_gpc())
+	{
 		$str = stripslashes($str);
 	}
 	return mysql_real_escape_string($str);
 }
-
 //Sanitize the POST values
 $fname = clean($_GET['fname']);
 $lname = clean($_GET['lname']);
@@ -49,39 +47,46 @@ $username = clean($_GET['login']);
 $password = clean($_GET['password']);
 $cpassword = clean($_GET['cpassword']);
 $sequencers = $_GET['sequencers'];
-
 //Input Validations
-if($fname == '') {
+if($fname == '')
+{
 	$errmsg_arr[] = 'First name missing';
 	$errflag = true;
 }
-if($lname == '') {
+if($lname == '')
+{
 	$errmsg_arr[] = 'Last name missing';
 	$errflag = true;
 }
-if($username == '') {
+if($username == '')
+{
 	$errmsg_arr[] = 'Login ID missing';
 	$errflag = true;
 }
-if($password == '') {
+if($password == '')
+{
 	$errmsg_arr[] = 'Password missing';
 	$errflag = true;
 }
-if($cpassword == '') {
+if($cpassword == '')
+{
 	$errmsg_arr[] = 'Confirm password missing';
 	$errflag = true;
 }
-if( strcmp($password, $cpassword) != 0 ) {
+if( strcmp($password, $cpassword) != 0 )
+{
 	$errmsg_arr[] = 'Passwords do not match';
 	$errflag = true;
 }
-
 //Check for duplicate login ID
-if($username != '') {
+if($username != '')
+{
 	$qry = "SELECT * FROM members WHERE username='$username'";
 	$result = mysql_query($qry);
-	if($result) {
-		if(mysql_num_rows($result) > 0) {
+	if($result)
+	{
+		if(mysql_num_rows($result) > 0)
+		{
 			$errmsg_arr[] = 'Login ID already in use';
 			$errflag = true;
 		}
@@ -91,18 +96,16 @@ if($username != '') {
 		die("Query failed");
 	}
 }
-
 //If there are input validations, redirect back to the registration form
-if($errflag) {
+if($errflag)
+{
 	$_SESSION['ERRMSG_ARR'] = $errmsg_arr;
 	session_write_close();
 	header("location: register-form.php");
 	exit();
 }
-
 //Create INSERT query
 $cnt=count($sequencers);
-
 $LSP1_8=$LSP2_0=$LSP_3=$LOR_S2=$LOR_S3=$VIXEN211=$VIXEN25=$VIXEN3=$HLS=$OTHER="N";
 for($i=0;$i<=$cnt;$i++)
 {
@@ -116,19 +119,43 @@ for($i=0;$i<=$cnt;$i++)
 	if($sequencers[$i]=="VIXEN3") $VIXEN3="Y";
 	if($sequencers[$i]=="HLS") $HLS="Y";
 	if($sequencers[$i]=="OTHER") $OTHER="Y";
-
 }
-$qry = "INSERT INTO members(firstname, lastname, username, passwd,
+require 'PasswordHash.php';
+# Try to use stronger but system-specific hashes, with a possible fallback to
+# the weaker portable hashes.
+$t_hasher = new PasswordHash(8, FALSE);
+//
+$password = $_GET['password'];
+$hash = $t_hasher->HashPassword($password);
+$passwd = md5($password);
+$passwd=$hash;
+//	original
+$method=1;
+//echo "<pre> password=$password, md5=$passwd ". strlen($passwd) . " hash=$hash " . strlen($hash) . "</pre>\n";
+//die("pause");
+if($method==1)
+{
+	$qry = "INSERT INTO members(firstname, lastname, username, passwd,
+	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER) 
+	VALUES('$fname','$lname','$username','$passwd',
+	'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
+}
+else if($method==2)
+{
+	$qry = "INSERT INTO members(firstname, lastname, username, passwd,
 	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER) 
 	VALUES('$fname','$lname','$username','".md5($_GET['password'])."',
-		'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
+	'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
+}
+echo "<pre>query=$qry</pre>\n";
 $result = @mysql_query($qry);
-
 //Check whether the query was successful or not
-if($result) {
+if($result)
+{
 	header("location: register-success.php");
 	exit();
-}else {
+}
+else {
 	die("Query failed. $qry");
 }
 ?>

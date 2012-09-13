@@ -222,7 +222,7 @@ function create_bmp($filename_buff)
 	require_once("GIFDecoder.class.php");
 	//$filename_buff = workspaces/2/AA+FLY_0_0.nc
 	$tok=explode(".",$filename_buff);
-	//$file="workspaces/2/AA+FLY_0_0_th.gif";
+	//$file="../effects/workspaces/2/AA+FLY_0_0_th.gif";
 	$file = $tok[0] . "_th.gif";
 	$fname = $tok[0] . "_tmp.gif";
 	$base64="";

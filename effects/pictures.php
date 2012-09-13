@@ -42,7 +42,7 @@ show_array($array_to_save,"Effect Settings");
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
 $member_id=get_member_id($username);
-$path ="workspaces/$member_id";
+$path ="../effects/workspaces/$member_id";
 $picturedir ="pictures";
 $picturepath ="pictures/$member_id";
 $directory=$path;
@@ -204,7 +204,7 @@ echo "<pre>";
 echo "</pre>";
 //$orig_tree_rgb=$tree_rgb;
 //$image_array=get_image($file);
-$path = "workspaces/" . $member_id;
+$path = "../effects/workspaces/" . $member_id;
 for ($f = 1; $f <= $maxFrame; $f++)
 {
 	$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model

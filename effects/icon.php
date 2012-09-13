@@ -82,7 +82,7 @@ for ($i = 0; $i < $c; $i++)
 }
 //$file="ball-icon.png";
 //$image_array=get_image($file);
-$path = "workspaces/" . $member_id;
+$path = "../effects/workspaces/" . $member_id;
 for ($frame = 1; $frame <= $maxFrame; $frame++)
 {
 	if ($frame > 500)

@@ -56,7 +56,7 @@ $elapsed_time = round($script_end - $script_start, 5);
 if($numberSpirals<1 or $numberSpirals>9) $error_message[]="Number of Spirals must be between 1-9.";
 $t_dat = $user_target . ".dat";
 $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-$path ="workspaces/" . $username;
+$path ="../effects/workspaces/" . $username;
 $directory=$path;
 if (file_exists($directory))
 {

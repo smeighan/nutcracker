@@ -76,7 +76,7 @@ $basename  = $path_parts['basename'];
 $filename  = $path_parts['filename'];
 $path=$dirname . "/" . $basename;
 /*
-* #$path="workspaces/f/SGASE+SEAN33_d_1.dat";
+* #$path="../effects/workspaces/f/SGASE+SEAN33_d_1.dat";
 #    ../targets/f/BB.dat
 #    Col 1: Your TARGET_MODEL_NAME
 #    Col 2: Strand number.
@@ -140,7 +140,7 @@ foreach($effect_user_dtl_array as $i=>$effect_array)
 //	Here we read all *.dayt's, sort them , fill in any mising cells and write it out to a *.nc file.
 //	we return a file handle to the *.nc file in read mode
 //
-$full_path= "workspaces/$member_id/$base";
+$full_path= "../effects/workspaces/$member_id/$base";
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname'];
 $basename  = $path_parts['basename'];

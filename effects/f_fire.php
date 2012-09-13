@@ -14,7 +14,7 @@ function f_fire($get)
 	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-	$path ="workspaces/" . $member_id;
+	$path ="../effects/workspaces/" . $member_id;
 	$directory=$path;
 	if (file_exists($directory))
 	{

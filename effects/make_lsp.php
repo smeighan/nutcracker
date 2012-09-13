@@ -146,7 +146,7 @@ Array
 [59] => SGASE+SEAN33_d_59.dat
 */	
 //    base=AA+SEAN3  t_dat=AA.dat  username=f
-$full_path= "workspaces/$member_id/$base";
+$full_path= "../effects/workspaces/$member_id/$base";
 if($frame_delay>0)
 	$TotalFrames= ($seq_duration*1000)/$frame_delay;
 else
@@ -162,7 +162,7 @@ $fh = fopen($seq_srt, 'r') or die("can't open file $seq_srt");*/
 $loop=$xml_loop=0;
 $outBuffer=array();
 $old_string=-1;
-$full_path= "workspaces/$member_id/$base";
+$full_path= "../effects/workspaces/$member_id/$base";
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname'];
 $basename  = $path_parts['basename'];

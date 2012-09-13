@@ -98,7 +98,7 @@ $arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used.
 echo "<pre>";
 
 
-$path ="workspaces/2";
+$path ="../effects/workspaces/2";
 $directory=$path;
 if (file_exists($directory)) {
 } else {
@@ -157,7 +157,7 @@ function circle($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$wi
 	$max=$maxPixel;
 	$p=1;
 	$base="AA+CIRCLE1";
-	$path="workspaces/2";
+	$path="../effects/workspaces/2";
 
 	for( $f= 1; $f<= $maxFrames; $f++)
 	{

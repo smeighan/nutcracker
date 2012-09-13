@@ -108,7 +108,7 @@ Array
 [59] => SGASE+SEAN33_d_59.dat
 */	
 //    base=AA+SEAN3  t_dat=AA.dat  username=f
-$full_path= "workspaces/$member_id/$base";
+$full_path= "../effects/workspaces/$member_id/$base";
 if($frame_delay>0)
 	$TotalFrames= ($seq_duration*1000)/$frame_delay;
 else
@@ -118,7 +118,7 @@ else
 }
 
 // uneeded , each effect file makes this now:  $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
-$filename_buff= "workspaces/" . $member_id . "/" . $base . ".nc";
+$filename_buff= "../effects/workspaces/" . $member_id . "/" . $base . ".nc";
 /*$create_srt_file_array=create_srt_file($full_path,$base,$username,$frame_delay,$TotalFrames);
 $maxFrame=$create_srt_file_array[0];
 $seq_srt=$create_srt_file_array[1];
@@ -126,7 +126,7 @@ $fh = fopen($seq_srt, 'r') or die("can't open file $seq_srt");*/
 $loop=$hlsnc_loop=0;
 $outBuffer=array();
 $old_string=-1;
-$full_path= "workspaces/$member_id/$base";
+$full_path= "../effects/workspaces/$member_id/$base";
 $path_parts = pathinfo($full_path);
 $dirname   = $path_parts['dirname'];
 $basename  = $path_parts['basename'];

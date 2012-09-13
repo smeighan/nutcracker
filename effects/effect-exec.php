@@ -22,7 +22,7 @@ On this page you customize an effects class and save it to your library</h2>";
 // [QUERY_STRING] => effect_name=BUTTERFLY3?username=f?effect_class=butterfly?user_targets=AA
 //
 set_time_limit(0);
-$directory ="workspaces";
+$directory ="../effects/workspaces";
 if (file_exists($directory))
 {
 	} else {
@@ -255,9 +255,9 @@ for($i=0;$i<$cnt;$i++)
 			echo "<td><table border=1>";
 			echo "<tr><th>Filename</th><th>Target</th><th>Window<br/>Degrees</th>";
 			echo "<th>Seq_Duration</th></tr>";
-			$dir="workspaces/2";
+			$dir="../effects/workspaces/2";
 			$member_id=get_member_id($username);
-			$dir="workspaces/$member_id";
+			$dir="../effects/workspaces/$member_id";
 			$files=getFilesFromDir($dir);
 			sort($files);
 			foreach($files as $filename)

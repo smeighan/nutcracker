@@ -46,5 +46,6 @@
   </table>
 </form>
 <p><a href="register-form.php">Click here</a> to create a new account.</p>
+<p><a href="ChangePassword.php">Click here</a> to change password.</p>
 </body>
 </html>

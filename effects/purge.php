@@ -52,7 +52,7 @@ function getFilesFromDir($dir)
 						}
 						else // this is any other file that is file.gif form, we will delete
 						{
-							if($dir=="workspaces/2")
+							if($dir=="../effects/workspaces/2")
 								echo "DONT DELETE SEAN: $totn: rm $fullname. dir=$dir\n";
 							else
 							{

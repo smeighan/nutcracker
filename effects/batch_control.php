@@ -75,8 +75,8 @@ foreach($song_list as $i=>$arr2)
 	$script_end = (float) $sec + (float) $usec;
 	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 	echo "<td>$elapsed_time</td>";
-	$gif="workspaces/2/" . $target . "~" . $effect ."_th.gif";
-	$gif_big="workspaces/2/" . $target . "~" . $effect .".gif";
+	$gif="../effects/workspaces/2/" . $target . "~" . $effect ."_th.gif";
+	$gif_big="../effects/workspaces/2/" . $target . "~" . $effect .".gif";
 	echo "<td><a href=$gif_big><img src=\"$gif\" /></a></td>\n";
 	//
 	echo "</tr>";

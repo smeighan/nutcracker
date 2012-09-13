@@ -8,7 +8,7 @@ function f_garlands($get)
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
 	if($batch==0) show_array($get,"Effect Settings");
-	$path ="workspaces/$member_id";
+	$path ="../effects/workspaces/$member_id";
 	$directory=$path;
 	if (file_exists($directory))
 	{
@@ -40,7 +40,7 @@ function garland($get)
 	$xdat = $user_target ."~".  $effect_name . ".dat";
 	$path="../targets/". $member_id;
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-	$path="workspaces/". $member_id;
+	$path="../effects/workspaces/". $member_id;
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
 	$maxStrand =$arr[2];  // highest strand seen on target
