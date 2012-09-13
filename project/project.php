@@ -78,8 +78,8 @@ if (isset($type)) {
 	if (isset($MasterNCSubmit)) {
 		$myarray=checkGaps($project_id);
 		$projectArray=setupNCfiles($project_id,$myarray);
-		//$myNCarray=prepMasterNCfile($project_id);
-		//processMasterNCfile($project_id, $projectArray, $myNCarray);
+		$myNCarray=prepMasterNCfile($project_id);
+		processMasterNCfile($project_id, $projectArray, $myNCarray);
 	}
 }
 echo $msg_str;

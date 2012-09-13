@@ -192,7 +192,7 @@ function getUserEffect($target,$effect,$username)
 	and hdr.effect_name = dtl.effect_name
 	and hdr.username='$username'
 	and upper(hdr.effect_name)=upper('$effect')";
-	echo "$sql <br />";
+	// echo "$sql <br />";
 	$result = nc_query($sql);
 	$cnt=0;
 	$string="";
@@ -607,7 +607,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		$get['frame_delay']=$frame_delay;
 		$effect_class=$get['effect_class'];
 		$member_id=getMemberID($username);
-		$from_file="../effects/workplace/$member_id/$model_name~$eff.nc";
+		$from_file="../effects/workspaces/$member_id/$model_name~$eff.nc";
 		$to_file="../project/workarea/$username~$model_name~$eff~$frame_cnt.nc";
 		//print_r($get);
 		//echo "<br />";
@@ -615,9 +615,8 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		$ranNC=false;
 		switch ($effect_class) {
 			case ('spirals') :
-				print_r($get);
 				f_spirals($get);
-				//$ranNC=true;
+				$ranNC=true;
 				break;
 			case ('fire') :
 				f_fire($get);
@@ -629,6 +628,10 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				break;
 			case ('bars') :
 				f_bars($get);
+				$ranNC=true;
+				break;
+			case ('garland') :
+				f_garlands($get);
 				$ranNC=true;
 				break;
 		}
