@@ -13,11 +13,8 @@ function f_butterfly($get)
 	$target_info=get_info_target($username,$t_dat);
 	$member_id=get_member_id($username);
 	$base = $user_target . "~" . $effect_name;
-	if($batch==0)
-	{
-		show_array($target_info,'MODEL: ' . $t_dat);
-		//show_elapsed_time($script_start,"Total Elapsed time for this effect:");
-	}
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
+
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 	// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 		/*function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$show_frame,$radian_shift,$start_color,$end_color,$background_chunk,$background_skip,$background_color,$formula,$username)*/

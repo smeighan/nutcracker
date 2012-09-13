@@ -13,7 +13,7 @@ function f_gif($get)
 	//
 	//
 	//show_array($_GET,"_GET");
-	if($batch==0) show_array($get,"array_to_save");
+if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
 	$path ="../effects/workspaces/$member_id";
@@ -83,46 +83,50 @@ function f_gif($get)
 			fwrite ($hfic , $frames [ $i ] );
 			fclose($hfic);
 		}
+		$maxFrame=count ( $frames );
+		//$file="ball-icon.png";
+		//$image_array=get_image($batch,$file);
+		$path = "../effects/workspaces/" . $member_id;
+		for ($frame = 1; $frame <= $maxFrame; $frame++)
+		{
+			$file = $file_array[$frame-1];
+			//
+			//	read in next frame of gif animation into array
+			$image_array=get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees);
+			/*if($batch==0) echo "<pre>";
+			print_r($image_array);
+			if($batch==0) echo "</pre>\n";*/
+			$x_dat = $base . "_d_" . $frame . ".dat";
+			// for spirals we will use a dat filename starting "S_" and the tree model
+			$dat_file[$frame] = $path . "/" . $x_dat;
+			$dat_file_array[] = $dat_file[$frame];
+			$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
+			fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
+			//
+			//	All pixels of this gif frame are in image_array, write them out to dat file.
+			draw_icon($fh_dat[$frame], $image_array, 0, $frame, $minStrand, $maxStrand, $minPixel, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees);
+			//	draw_icon(	$fh_dat [$frame],$big_image_array[4],66,$frame,$minStrand ,$maxStrand,$minPixel,$maxPixel,$tree_xyz,$strand_pixel);
+			if($batch==0) echo "</pre>\n";
+		}
+		if (!isset($show_frame))
+			$show_frame = 'N';
+		if (!isset($seq_duration))
+			$seq_duration = 5;
+		if (!isset($frame_delay))
+			$frame_delay = 100;
+		if (!isset($username))
+			$username = 'f';
+		$amperage = array();
+		$x_dat_base = $base . ".dat";
+		make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay,$amperage, $seq_duration, $show_frame);
+		list($usec, $sec) = explode(' ', microtime());
+		$script_start = (float)$sec + (float)$usec;
+		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 	}
-	$maxFrame=count ( $frames );
-	//$file="ball-icon.png";
-	//$image_array=get_image($batch,$file);
-	$path = "../effects/workspaces/" . $member_id;
-	for ($frame = 1; $frame <= $maxFrame; $frame++)
+	else
 	{
-		$file = $file_array[$frame-1];
-		//
-		//	read in next frame of gif animation into array
-		$image_array=get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees);
-		/*if($batch==0) echo "<pre>";
-		print_r($image_array);
-		if($batch==0) echo "</pre>\n";*/
-		$x_dat = $base . "_d_" . $frame . ".dat";
-		// for spirals we will use a dat filename starting "S_" and the tree model
-		$dat_file[$frame] = $path . "/" . $x_dat;
-		$dat_file_array[] = $dat_file[$frame];
-		$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
-		fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
-		//
-		//	All pixels of this gif frame are in image_array, write them out to dat file.
-		draw_icon($fh_dat[$frame], $image_array, 0, $frame, $minStrand, $maxStrand, $minPixel, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees);
-		//	draw_icon(	$fh_dat [$frame],$big_image_array[4],66,$frame,$minStrand ,$maxStrand,$minPixel,$maxPixel,$tree_xyz,$strand_pixel);
-		if($batch==0) echo "</pre>\n";
+		if($batch==0) echo "<pre><h2>Your gif file $FIC2 does not exist. please upload it</pre><h2>\n";
 	}
-	if (!isset($show_frame))
-		$show_frame = 'N';
-	if (!isset($seq_duration))
-		$seq_duration = 5;
-	if (!isset($frame_delay))
-		$frame_delay = 100;
-	if (!isset($username))
-		$username = 'f';
-	$amperage = array();
-	$x_dat_base = $base . ".dat";
-	make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay,$amperage, $seq_duration, $show_frame);
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float)$sec + (float)$usec;
-	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 }
 
 function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees)

@@ -3,6 +3,15 @@
 
 function f_spirals($get)
 {
+	if(!isset($get['color3']))    $get['color3']="#FFFFFF";
+	if(!isset($get['color4']))    $get['color4']="#FFFFFF";
+	if(!isset($get['color5']))    $get['color5']="#FFFFFF";
+	if(!isset($get['color6']))    $get['color6']="#FFFFFF";
+	if(!isset($get['direction'])) $get['direction']="down";
+	if(!isset($get['fade_3d']))   $get['fade_3d']="N";
+	if(!isset($get['fade_in']))   $get['fade_in']="0";
+	if(!isset($get['fade_out']))  $get['fade_out']="0";
+	if(!isset($get['speed']))     $get['speed']="1";
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -25,7 +34,7 @@ function f_spirals($get)
 	$f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 	$get['frame_delay']=$f_delay;
 	save_user_effect($get);
-	if($batch==0) show_array($get,"Effect Settings");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;

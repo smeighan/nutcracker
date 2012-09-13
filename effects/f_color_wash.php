@@ -10,7 +10,7 @@ function f_color_wash($get)
 	//
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
-	if($batch==0) show_array($get,"Effect Settings");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
 	$path ="../effects/workspaces/" . $member_id;

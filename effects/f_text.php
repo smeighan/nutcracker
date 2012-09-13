@@ -9,15 +9,7 @@ if(!isset($get['fade_in']))  $get['fade_in']="0";
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
 	require_once("../effects/read_file.php");
-	//
-	//
-	text($get);
-	
-	
-}
 
-function text($get)
-{
 	extract ($get);
 	if($batch==0) show_array($get,"array_to_save");
 	$member_id=get_member_id($username);

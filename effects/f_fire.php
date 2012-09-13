@@ -9,7 +9,7 @@ function f_fire($get)
 	//
 	//
 	$member_id=get_member_id($username);
-	if($batch==0) show_array($get,"Effect Settings");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;

@@ -27,7 +27,7 @@ function f_life($get)
 	$get['member_id']=$member_id;
 	if(!isset($show_frame)) $show_frame='N';
 	$get['show_frame']=$show_frame;
-	if($batch==0) show_array($get,"Effect Settings");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
 	$path ="../effects/workspaces/" . $member_id;

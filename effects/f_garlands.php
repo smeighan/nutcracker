@@ -11,7 +11,7 @@ function f_garlands($get)
 	$path="../targets/". $username;
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
-	if($batch==0) show_array($get,"Effect Settings");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path ="../effects/workspaces/$member_id";
 	$directory=$path;
 	if (file_exists($directory))

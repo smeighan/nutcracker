@@ -1,7 +1,7 @@
 <?php
 require_once("../effects/read_file.php");
-$target="AA2244"; // small target 6x30, runs fast good for testing
-$target="A";  // larger target, 2400 channes
+$target="MEGA_012";  // larger target, 2400 channes
+$username='kgustafson'; // hard coded for testing
 $batch=1;   
 //  Batch
 //	Level     |   Html  |   Full Size Gifs  |  Thumbnail Gif's   |  NC Data file
@@ -10,19 +10,17 @@ $batch=1;
 //    1       |   No    |        Yes        |       Yes          |      Yes
 //    2       |   No    |        No         |       Yes          |      Yes
 //    3       |   No    |        No         |       No           |      Yes
-$song_list[] = array($target,"BARS1","f_bars");
-$song_list[] = array($target,"FIRE1","f_fire");
-$song_list[] = array($target,"GARLAND0","f_garlands");
-$song_list[] = array($target,"FLY_0_0","f_butterfly");
-$song_list[] = array($target,"BARS1_TEST","f_bars");
-$song_list[] = array($target,"BARBERPOLE","f_spirals");
-$song_list[] = array($target,"BARBERPOLE_180","f_spirals");
-$song_list[] = array($target,"COLOR_WASH1","f_color_wash");
-$song_list[] = array($target,"GIF1","f_gif");
-$song_list[] = array($target,"LIFE","f_life");
+$song_list[] = array($target,"HORIZ_BARS","f_bars");
+$song_list[] = array($target,"MEGA_FIRE_2012","f_fire");
+$song_list[] = array($target,"WINDOW_FIRE","f_fire");
+$song_list[] = array($target,"GARLANDMEGATREE","f_garlands");
+$song_list[] = array($target,"MEGA1","f_spirals");
+$song_list[] = array($target,"TEST_SPIRAL","f_spirals");
+$song_list[] = array($target,"USAFLAG","f_gif");
 $song_list[] = array($target,"METEOR1","f_meteors");
-$song_list[] = array($target,"TEXT1","f_text");
-$username='f';
+$song_list[] = array($target,"TEXT","f_text");
+
+
 echo "<html>";
 echo "<body>";
 require_once ("../effects/f_bars.php");
@@ -59,7 +57,7 @@ foreach($song_list as $i=>$arr2)
 	echo "<td>$effect</td>";
 	$get=get_user_effects($target,$effect,$username);
 	$get['batch']=$batch;
-	$get['username']='f';
+	$get['username']=$username;
 	$get['user_target']=$target;
 	extract($get);
 	/*echo "<pre>";

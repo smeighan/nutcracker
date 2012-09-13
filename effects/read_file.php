@@ -2026,7 +2026,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
 	// <sean tmp> unlink($seq_file);
-	unlink ($seq_srt);
+	// <sean tmp> unlink ($seq_srt);
 	fclose($fh_buff);
 	return ($filename_buff);
 }
@@ -2244,7 +2244,7 @@ function get_user_effects($target,$effect,$username)
 	and hdr.effect_name = dtl.effect_name
 	and hdr.username='$username'
 	and upper(hdr.effect_name)=upper('$effect')";
-	//	echo "<pre>count_gallery: $query</pre>\n";
+//	echo "<pre>count_gallery: $query</pre>\n";
 	//
 	//
 	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());

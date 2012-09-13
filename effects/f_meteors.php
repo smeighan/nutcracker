@@ -12,7 +12,7 @@ function f_meteors($get)
 	//
 	//
 	//show_array($_GET,"_GET");
-	if($batch==0) show_array($get,"array_to_save");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
 	$path ="../effects/workspaces/$member_id";
