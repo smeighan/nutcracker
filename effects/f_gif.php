@@ -3,6 +3,9 @@
 
 function f_gif($get)
 {
+	if(!isset($get['brightness']))   $get['brightness']="0";
+	if(!isset($get['fade_in']))  $get['fade_in']="0";
+	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -253,7 +256,6 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 			$b += $rgb & 255;
 		}
 		}*/
-	echo "<pre>img_width,img_height=$img_width,$img_height ($w,$h)</pre>\n";
 	for ($x = 0; $x < $img_width; $x += $precision)
 	{
 		$s++;

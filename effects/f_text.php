@@ -3,6 +3,8 @@
 
 function f_text($get)
 {
+if(!isset($get['fade_in']))  $get['fade_in']="0";
+	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -11,7 +13,7 @@ function f_text($get)
 	//
 	text($get);
 	
-	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
+	
 }
 
 function text($get)
@@ -25,7 +27,7 @@ function text($get)
 	$directory=$path;
 	if (!file_exists($directory))
 	{
-		if($batch==0) echo "The directory $directory does not exist, creating it";
+		if($batch==0) if($batch==0) echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
 	$base = $user_target . "~" . $effect_name;
@@ -52,7 +54,7 @@ function text($get)
 	//	This array is indexed by the characters [a-z, A-Z]
 	//	this returns the $letter array, this is a 9x5 array. with 0,1. 1 indicates a pixel to be lit
 	//
-	echo "<pre>";
+	if($batch==0) echo "<pre>";
 	while (!feof($fh))
 	{
 		// load up the dotmatrix file into the $letter array
@@ -129,7 +131,7 @@ function text($get)
 			{
 				if(empty($c[$char]))
 				{
-					echo "<pre> char [$char] is not in array c</pre>\n";
+					if($batch==0) echo "<pre> char [$char] is not in array c</pre>\n";
 				}
 				else
 				$letter = $c[$char];
@@ -144,14 +146,14 @@ function text($get)
 	}
 	$maxK2=$k;
 	$maxK=max($maxK1,$maxK2);
-	/*for($s=1;$s<=$maxStrand;$s++) // print out the blank rows we are not using.
+	/*for($s=1;$s<=$maxStrand;$s++) // if($batch==0) print out the blank rows we are not using.
 	{
 		for($p=1;$p<$topPixel;$p++)
 		{
 			$x=' ';
-			printf ("%s",$x);
+			if($batch==0) printf ("%s",$x);
 		}
-		print "\n";
+		if($batch==0) print "\n";
 	}
 	*/
 	for($j=1;$j<=9;$j++)	//	 display text1
@@ -160,9 +162,9 @@ function text($get)
 		{
 			if( $scroll[$j][$k] ==1) $x='x';
 			else $x=' ';
-			printf ("%s",$x);
+			if($batch==0) printf ("%s",$x);
 		}
-		print "\n";
+		if($batch==0) print "\n";
 	}
 	for($j=1;$j<=9;$j++)	//	 display text2
 	{
@@ -170,9 +172,9 @@ function text($get)
 		{
 			if( $scroll2[$j][$k] ==1) $x='x';
 			else $x=' ';
-			printf ("%s",$x);
+			if($batch==0) printf ("%s",$x);
 		}
-		print "\n";
+		if($batch==0) print "\n";
 	}
 	/*$last_p=$topPixel+18;
 	for($s=1;$s<=$maxStrand;$s++) // print out the blank rows we are not using.
@@ -180,9 +182,9 @@ function text($get)
 		for($p=$last_p+1;$p<=$topPixel;$p++)
 		{
 			$x=' ';
-			printf ("%s",$x);
+			if($batch==0) printf ("%s",$x);
 		}
-		print "\n";
+		if($batch==0) print "\n";
 	}
 	*/
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
@@ -190,11 +192,11 @@ function text($get)
 	//$topPixel=$maxPixel/2;
 	//$topPixel=5;
 	$windowWidth = count($window_array);
-	print "windowWidth =$windowWidth\n";
+	if($batch==0) print "windowWidth =$windowWidth\n";
 	$seq_number=0;
-	echo "<pre> window_array";
-	print_r($window_array);
-	echo "</pre>\n";
+	if($batch==0) echo "<pre> window_array";
+	if($batch==0) print_r($window_array);
+	if($batch==0) echo "</pre>\n";
 	//for($k=$maxK+$windowWidth;$k>=1;$k--);
 	$fileno=0;
 	$base_s = $windowWidth;
@@ -247,9 +249,9 @@ function text($get)
 		fwrite($fh_dat,"#    Strand_Pixel[1]\n");
 		fwrite($fh_dat,"#    k\n");
 		fwrite($fh_dat,"#    seq_number\n");
-		/*echo "<pre>k=$k dat_file=$dat_file windowWidth=$windowWidth</pre>\n";*/
+		/*if($batch==0) echo "<pre>k=$k dat_file=$dat_file windowWidth=$windowWidth</pre>\n";*/
 		//print_r($dat_file_array);
-		//echo "w=$w ";
+		//if($batch==0) echo "w=$w ";
 		//print_r($window_array);
 		//$kk=$k-$w;
 		$w=$kk=0;
@@ -268,14 +270,14 @@ function text($get)
 			}*/
 		for($k0=1;$k0<=$k;$k0++) // now print out the actual text.
 		{
-			/*echo "for($k0=1;$k0<=$k;$k0++)\n";*/
+			/*if($batch==0) echo "for($k0=1;$k0<=$k;$k0++)\n";*/
 			$s=$base_s+$k0;
 			for($j=1;$j<=9;$j++)
 			{
 				$p=$topPixel+$j-1;
-				/*	echo "<pre>";
-				echo "s,k,k0,j,p =$s,$k,$k0,$j,$p,$base_s";
-				echo "</pre>\n";*/
+				/*	if($batch==0) echo "<pre>";
+				if($batch==0) echo "s,k,k0,j,p =$s,$k,$k0,$j,$p,$base_s";
+				if($batch==0) echo "</pre>\n";*/
 				if(in_array($s,$window_array) and $p<=$maxPixel)
 				{
 					$val=$scroll[$j][$k0];
@@ -319,7 +321,7 @@ function text($get)
 						}
 						$tree_rgb[$s][$p]=$rgb_val;
 						$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-						/*printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val);*/
+						/*if($batch==0) printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val);*/
 						$seq_number++;
 						$string=$user_pixel=0;
 						fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$k,$seq_number));
@@ -350,10 +352,11 @@ function text($get)
 		// for($w=0;$w<=$windowWidth;$w++);
 	}
 	// for($k=1;$k<=$maxK+$windowWidth;$k++);
-	//	echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);\n";
+	//	if($batch==0) echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);\n";
 	$full_path = "../effects/workspaces/2/AA+TEXT2_d_8.dat";
 	//fill_in_zeros($arr,$dat_file_array);
 	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
+	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 }
 
 function create_library($link,$username,$base,$MaxFrames)
@@ -363,9 +366,8 @@ function create_library($link,$username,$base,$MaxFrames)
 	$t_dat=$tokens2[0];	// AA
 	$effect_name=$tokens2[1];	// CIRCLE1
 	$target_info=get_info_target($username,$t_dat);
-	echo "<pre>get_info_target($username,$t_dat);\n";
-	print_r($target_info);
-	echo "</pre>\n";
+	if($batch==0) echo "<pre>get_info_target($username,$t_dat);\n";
+	if($batch==0) echo "</pre>\n";
 	$object_name=$target_info['target_name'];
 	$model_type=$target_info['model_type'];
 	$total_strings=$target_info['total_strings'];
@@ -386,11 +388,11 @@ function create_library($link,$username,$base,$MaxFrames)
 	//dELETE old library entry , if it is there
 	//
 	$query="SELECT library_id from library_hdr where username='$username' and object_name='$object_name' and effect_name='$effect_name'";
-	echo "<pre>query: $query</pre>\n";
+	if($batch==0) echo "<pre>query: $query</pre>\n";
 	$result=mysql_query($query,$link);
 	if(!$result)
 	{
-		echo "Error on $query\n";
+		if($batch==0) echo "Error on $query\n";
 		mysql_error();
 	}
 	while ($row = mysql_fetch_assoc($result))
@@ -398,12 +400,12 @@ function create_library($link,$username,$base,$MaxFrames)
 		extract($row);
 	}
 	$delete="DELETE from library_hdr where username='$username' and object_name='$object_name' and effect_name='$effect_name'";
-	echo "<pre>delete: $delete</pre>\n";
+	if($batch==0) echo "<pre>delete: $delete</pre>\n";
 	$result=mysql_query($delete,$link) or die("Error on $delete");
 	if(isset($library_id))
 	{
 		$delete2="DELETE from library_dtl where library_id=$library_id";
-		echo "<pre>delete: $delete2</pre>\n";
+		if($batch==0) echo "<pre>delete: $delete2</pre>\n";
 		$result=mysql_query($delete2,$link) or die("Error on $delete2");
 	}
 	//
@@ -412,11 +414,11 @@ function create_library($link,$username,$base,$MaxFrames)
 	//
 	$insert = "INSERT into library_hdr( username,object_name,effect_name)
 		values ('$username','$object_name','$effect_name')";
-	echo "<pre>insert: $insert</pre>\n";
+	if($batch==0) echo "<pre>insert: $insert</pre>\n";
 	$result=mysql_query($insert,$link);
 	if(!$result)
 	{
-		echo "Error on $insert\n";
+		if($batch==0) echo "Error on $insert\n";
 		mysql_error();
 	}
 	// Find the auto generated library_id for what we just inserted.
@@ -424,11 +426,11 @@ function create_library($link,$username,$base,$MaxFrames)
 	//	find the auto generated library_id
 	//
 	$query="SELECT library_id from library_hdr where username='$username' and object_name='$object_name' and effect_name='$effect_name'";
-	echo "<pre>query: $query</pre>\n";
+	if($batch==0) echo "<pre>query: $query</pre>\n";
 	$result=mysql_query($query,$link);
 	if(!$result)
 	{
-		echo "Error on $query\n";
+		if($batch==0) echo "Error on $query\n";
 		mysql_error();
 	}
 	while ($row = mysql_fetch_assoc($result))

@@ -30,6 +30,9 @@ $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 $get['username']=$username;
 $get['batch']=$batch;
+if(!isset($get['brightness']))   $get['brightness']="0";
+if(!isset($get['fade_in']))  $get['fade_in']="0";
+if(!isset($get['fade_out']))  $get['fade_out']="0";
 save_user_effect($get);
 //show_array($_GET,"_GET");
 

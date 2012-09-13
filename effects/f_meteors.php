@@ -3,6 +3,8 @@
 
 function f_meteors($get)
 {
+	if(!isset($get['fade_in']))  $get['fade_in']="0";
+	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
