@@ -329,6 +329,30 @@ CREATE TABLE IF NOT EXISTS `project` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `project_dtl`
+--
+
+CREATE TABLE IF NOT EXISTS `project_dtl` (
+  
+  `project_detail_id` int(11) NOT NULL AUTO_INCREMENT,
+  
+  `phrase_name` varchar(100) NOT NULL,
+  
+  `start_secs` float(12,6) NOT NULL,
+  
+  `end_secs` float(12,6) NOT NULL,
+  
+  `effect_name` varchar(25) NOT NULL,
+  
+  `project_id` int(11) NOT NULL,
+  
+  PRIMARY KEY (`project_detail_id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `project_model`
 --
 
