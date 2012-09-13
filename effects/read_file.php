@@ -2218,3 +2218,47 @@ function clean($str) {
 	}
 	return mysql_real_escape_string($str);
 }
+function get_user_effects($target,$effect,$username)
+{
+	//Include database connection details
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	$query = "SELECT hdr.effect_class,hdr.username,hdr.effect_name,
+	hdr.effect_desc,hdr.music_object_id,
+	hdr.start_secs,hdr.end_secs,hdr.phrase_name,
+	dtl.segment,dtl.param_name,dtl.param_value
+	FROM `effects_user_hdr` hdr, effects_user_dtl dtl
+	where hdr.username = dtl.username
+	and hdr.effect_name = dtl.effect_name
+	and hdr.username='$username'
+	and upper(hdr.effect_name)=upper('$effect')";
+	//	echo "<pre>count_gallery: $query</pre>\n";
+	//
+	//
+	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	$cnt=0;
+	$string="";
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+		//	if(strncmp($param_name,"color",5)==0 and strncmp($param_value,"#",1)==0) $param_value=hexdec($param_value);
+		//	if(strncmp($param_name,"background_color",strlen("background_color"))==0 and strncmp($param_value,"#",1)==0) $param_value=hexdec($param_value);
+		$string = $string . "&" . $param_name . "=" . $param_value;
+		$get[$param_name]=$param_value;
+	}
+	// we also need teh effect class from teh header
+	$get['effect_class']=$effect_class;
+	return $get;
+}
