@@ -1,11 +1,14 @@
 <?php
-require_once("../effects/read_file.php");
 //
 
 function f_gif($get)
 {
 	extract ($get);
-	
+	set_time_limit(0);
+	ini_set("memory_limit","512M");
+	require_once("../effects/read_file.php");
+	//
+	//
 	//show_array($_GET,"_GET");
 	if($batch==0) show_array($get,"array_to_save");
 	$member_id=get_member_id($username);
@@ -113,7 +116,6 @@ function f_gif($get)
 		$username = 'f';
 	$amperage = array();
 	$x_dat_base = $base . ".dat";
-	
 	make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay,$amperage, $seq_duration, $show_frame);
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float)$sec + (float)$usec;
@@ -236,21 +238,21 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 			sprintf('<span style="background:#%02X%02X%02X">&nbsp;</span>',	$c['red'], $c['green'], $c['blue']);
 		}
 		if($batch==0) echo "</table>";
-		
 	}
 	$s=0;
-	 $w = imagesx($image);
-    $h = imagesy($image);
-    $r = $g = $b = 0;
-    /*for($y = 0; $y < $h; $y++) {
-        for($x = 0; $x < $w; $x++) {
-            $rgb = imagecolorat($img, $x, $y);
-            $r += $rgb >> 16;
-            $g += $rgb >> 8 & 255;
-            $b += $rgb & 255;
-        }
-    }*/
-	
+	$w = imagesx($image);
+	$h = imagesy($image);
+	$r = $g = $b = 0;
+	/*for($y = 0; $y < $h; $y++)
+	{
+		for($x = 0; $x < $w; $x++)
+		{
+			$rgb = imagecolorat($img, $x, $y);
+			$r += $rgb >> 16;
+			$g += $rgb >> 8 & 255;
+			$b += $rgb & 255;
+		}
+		}*/
 	echo "<pre>img_width,img_height=$img_width,$img_height ($w,$h)</pre>\n";
 	for ($x = 0; $x < $img_width; $x += $precision)
 	{

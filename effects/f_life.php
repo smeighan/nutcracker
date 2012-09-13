@@ -14,20 +14,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 //
-require_once("../effects/read_file.php");
+
 function f_life($get)
 {
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
+	require_once("../effects/read_file.php");
 	//
 	//
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
 	if(!isset($show_frame)) $show_frame='N';
-$get['show_frame']=$show_frame;
+	$get['show_frame']=$show_frame;
 	if($batch==0) show_array($get,"Effect Settings");
-	
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
 	$path ="../effects/workspaces/" . $member_id;
@@ -52,7 +52,6 @@ $get['show_frame']=$show_frame;
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
-	
 	$maxFrame=intval(($seq_duration*1000)/$frame_delay);
 	//
 	//

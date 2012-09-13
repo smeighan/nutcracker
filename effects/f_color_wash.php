@@ -1,10 +1,8 @@
 <?php
-require_once("read_file.php");
-require_once("read_file.php");
 
 function f_color_wash($get)
 {
-extract ($get);
+	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
 	require_once("../effects/read_file.php");
@@ -13,7 +11,6 @@ extract ($get);
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
 	if($batch==0) show_array($get,"Effect Settings");
-	
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
 	$path ="../effects/workspaces/" . $member_id;
@@ -31,7 +28,6 @@ extract ($get);
 function color_wash($get)
 {
 	extract ($get);
-	
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
 	$base = $user_target . "~" . $effect_name;
@@ -48,10 +44,7 @@ function color_wash($get)
 	$strand_pixel=$arr[9];
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
-	
 	$maxFrame=intval(($seq_duration*1000)/$frame_delay);
-	
-	
 	/*	if($batch==0) echo "<pre>";
 	print_r($sparkles_array);*/
 	/*foreach($sparkles_array as $arr2)
@@ -107,6 +100,4 @@ function color_wash($get)
 	$x_dat_base = $base . ".dat";
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,
 	$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
-
-		
 }

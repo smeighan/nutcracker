@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require_once('../conf/header.php');
 require_once('f_life.php');
-require_once('read_file.php');
+require_once('../effects/read_file.php');
 //
 //
 $get=$_GET;

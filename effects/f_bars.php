@@ -2,16 +2,19 @@
 
 function f_bars($get)
 {
+	extract ($get);
+	set_time_limit(0);
 	ini_set("memory_limit","512M");
-	extract($get);
 	require_once("../effects/read_file.php");
+	//
+	//
 	$member_id=get_member_id($username);
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;
 	if($batch==0) // 0 indicates interactive mode
 	{
 		echo "<h2>Nutcracker: RGB Effects Builder for user $username<br/>
-		On this page you build an animation of the spiral class and create an animated GIF</h2>"; 
+		On this page you build an animation of the spiral class and create an animated GIF</h2>";
 	}
 	//show_array($_SERVER,"_SERVER");
 	//show_array($_SESSION,"_SESSION");

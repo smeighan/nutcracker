@@ -45,14 +45,16 @@ if(!empty($_GET)) // do we have something?
 //
 //	this is if someone click son an existing effect
 // http://localhost/nutcracker/effects/effect-exec.php?effect_name=BARS1&username=f&effect_class=bars&user_targets=A
-	
-	$debug=1;
+//	if(isset($user_effects)) $effect_class=$user_effects;
+	$debug=0;
 	if($debug==1)
 	{
-		echo "<pre>effect_name = $effect_name</pre>\n";
-		echo "<pre>username = $username</pre>\n";
-		echo "<pre>effect_class = $effect_class</pre>\n";
-		echo "<pre>user_targets = $user_targets</pre>\n";
+		echo "<pre>effect_name = $effect_name\n";
+		echo "<pre>username = $username\n";
+		print_r($_GET);
+		
+		echo "<pre>effect_class = $effect_class\n";
+		echo "<pre>user_targets = $user_targets\n";
 		echo "<pre>effect_name = $effect_name</pre>\n";
 	}
 	if(isset($effect_name))

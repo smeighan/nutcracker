@@ -3,9 +3,12 @@
 
 function f_spirals($get)
 {
-ini_set("memory_limit","512M");
-	require_once("../effects/read_file.php");
 	extract ($get);
+	set_time_limit(0);
+	ini_set("memory_limit","512M");
+	require_once("../effects/read_file.php");
+	//
+	//
 	if(!isset($batch)) $batch=0;
 	$get['batch']=$batch;
 	$member_id=get_member_id($username);
@@ -136,7 +139,7 @@ function spiral($get)
 		{
 			$line++;
 			$p_to_add=1;
-		//	if($effect_type=='v' or $effect_type=='V') $p_to_add=0;
+			//	if($effect_type=='v' or $effect_type=='V') $p_to_add=0;
 			if(strtoupper($handiness)=="R")
 			{
 				$strand_base=intval( ($ns-1)*$deltaStrands-$p_to_add);
@@ -285,7 +288,6 @@ function spiral($get)
 	//if($batch==0) show_elapsed_time($script_start,"Finished  Effect, spirals class:");
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	//echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
-	
 }
 
 function delete_effects($username,$model_name)

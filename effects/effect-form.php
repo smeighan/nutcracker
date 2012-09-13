@@ -161,7 +161,7 @@ echo "</select>\n";
 echo "</font>";
 echo "</td>";
 echo "<td>";
-echo "<select name=\"user_effects\">";
+echo "<select name=\"effect_class\">";
 
 $cnt=count($effect_classes);
 for($i=0;$i<$cnt;$i++)

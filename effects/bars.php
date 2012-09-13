@@ -4,8 +4,8 @@ require_once('../conf/header.php');
 	error_reporting(E_ALL);
 
 
-require_once('f_bars.php');
-require_once('read_file.php');
+require_once('../effects/f_bars.php');
+require_once('../effects/read_file.php');
 
 $get=$_GET;
 $username=$_SESSION['SESS_LOGIN'];
@@ -19,4 +19,4 @@ $get['username']=$username;
 $get['batch']=$batch;
 save_user_effect($get);
 
-f_bars($_GET);
+f_bars($get);

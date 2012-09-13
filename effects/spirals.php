@@ -14,8 +14,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require_once('../conf/header.php');
-require_once('f_spirals.php');
-require_once('read_file.php');
+require_once('../effects/f_spirals.php');
+require_once('../effects/read_file.php');
 //
 //
 $get=$_GET;

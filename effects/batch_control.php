@@ -18,17 +18,21 @@ $song_list[] = array($target,"BARBERPOLE","f_spirals");
 $song_list[] = array($target,"COLOR_WASH1","f_color_wash");
 $song_list[] = array($target,"GIF1","f_gif");
 $song_list[] = array($target,"LIFE","f_life");
+$song_list[] = array($target,"METEOR1","f_meteors");
+$song_list[] = array($target,"TEXT1","f_text");
 $username='f';
 echo "<html>";
 echo "<body>";
-require_once ("f_bars.php");
-require_once ("f_spirals.php");
-require_once ("f_butterfly.php");
-require_once ("f_fire.php");
-require_once ("f_garlands.php");
-require_once ("f_color_wash.php");
-require_once ("f_gif.php");
-require_once ("f_life.php");
+require_once ("../effects/f_bars.php");
+require_once ("../effects/f_spirals.php");
+require_once ("../effects/f_butterfly.php");
+require_once ("../effects/f_fire.php");
+require_once ("../effects/f_garlands.php");
+require_once ("../effects/f_color_wash.php");
+require_once ("../effects/f_gif.php");
+require_once ("../effects/f_life.php");
+require_once ("../effects/f_meteors.php");
+require_once ("../effects/f_text.php");
 //
 echo "<table border=2>";
 echo "<tr>";
@@ -70,6 +74,8 @@ foreach($song_list as $i=>$arr2)
 	if($program=="f_color_wash") f_color_wash($get);
 	if($program=="f_gif")        f_gif($get);
 	if($program=="f_life")       f_life($get);
+	if($program=="f_meteors")       f_meteors($get);
+	if($program=="f_text")       f_text($get);
 	//
 	list($usec, $sec) = explode(' ', microtime());
 	$script_end = (float) $sec + (float) $usec;
