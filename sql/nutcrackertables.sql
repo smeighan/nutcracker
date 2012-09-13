@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 12, 2012 at 08:18 AM
+-- Generation Time: Sep 12, 2012 at 09:05 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `firstname` varchar(100) DEFAULT NULL,
   `lastname` varchar(100) DEFAULT NULL,
   `username` varchar(25) NOT NULL,
-  `passwd` varchar(32) NOT NULL DEFAULT '',
+  `passwd` varchar(80) NOT NULL,
   `enable_projects` char(1) DEFAULT 'N',
   `LSP1_8` char(1) DEFAULT 'N',
   `LSP2_0` char(1) DEFAULT 'N',
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=562 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=564 ;
 
 -- --------------------------------------------------------
 
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=418 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=421 ;
 
 -- --------------------------------------------------------
 
@@ -393,3 +393,4 @@ CREATE TABLE IF NOT EXISTS `song_dtl` (
   PRIMARY KEY (`song_dtl_id`),
   KEY `song_id` (`song_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=88 ;
+

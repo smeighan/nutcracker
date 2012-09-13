@@ -35,10 +35,18 @@ $effect_class="";
 extract($_GET);
 
 //show_array($_GET,"_GET Settings");
-if(!empty($_GET))
+if(!empty($_GET)) // do we have something?
 {
+//
+//	this is if we come here for the first time
+// // http://localhost/nutcracker/effects/effect-exec.php?username=f&user_targets=A&user_effects=bars&submit=Submit+Form+to+customize+effect
+//
+//
+//
+//	this is if someone click son an existing effect
+// http://localhost/nutcracker/effects/effect-exec.php?effect_name=BARS1&username=f&effect_class=bars&user_targets=A
 	
-	$debug=0;
+	$debug=1;
 	if($debug==1)
 	{
 		echo "<pre>effect_name = $effect_name</pre>\n";
@@ -63,6 +71,11 @@ if(!empty($_GET))
 			//echo "<pre>i=$i paran_nam=	$param_name  value[]=" . 	$value[$param_name] . "</pre>\n";
 		}
 	}
+}
+else // http://localhost/nutcracker/effects/effect-exec.php?username=gg&user_targets=AA2244&user_effects=bars&submit=Submit+Form+to+customize+effect
+// http://localhost/nutcracker/effects/effect-exec.php?username=f&user_targets=A&user_effects=bars&submit=Submit+Form+to+customize+effect
+{
+	
 }
 
 //$effect_class=$user_effects;
@@ -620,6 +633,7 @@ function  get_value_effect_user_dtl($username,$effect_name,$param_name)
 		die("Unable to select database");
 	}
 	$query ="select * from effects_user_dtl where effect_name='$effect_name' and username = '$username' and param_name='$param_name'";
+	echo "<pre>get_value_effect_user_dtl: $query</pre>\n";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	if (!$result)
 	{
