@@ -41,7 +41,7 @@ function f_meteors($get)
 	$path="../effects/workspaces/". $member_id;
 	meteors($get);
 	$target_info=get_info_target($username,$t_dat);
-	if($batch==0) show_array($target_info,'MODEL: ' . $t_dat);
+	//if($batch==0) show_array($target_info,'MODEL: ' . $t_dat);
 	// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
 		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 }

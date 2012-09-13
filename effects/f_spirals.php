@@ -9,8 +9,11 @@ function f_spirals($get)
 	if(!isset($get['color6']))    $get['color6']="#FFFFFF";
 	if(!isset($get['direction'])) $get['direction']="down";
 	if(!isset($get['fade_3d']))   $get['fade_3d']="N";
+	if(!isset($get['rainbow_hue']))   $get['rainbow_hue']="N";
+	if(!isset($get['handiness']))   $get['handiness']="R";
 	if(!isset($get['fade_in']))   $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
+	if(!isset($get['sparkles']))  $get['sparkles']="0";
 	if(!isset($get['speed']))     $get['speed']="1";
 	extract ($get);
 	set_time_limit(0);
