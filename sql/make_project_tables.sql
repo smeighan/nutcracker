@@ -21,8 +21,24 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+-- phpMyAdmin SQL Dump
+-- version 2.11.3deb1ubuntu1.3
+-- http://www.phpmyadmin.net
+--
+-- Host: 209.240.131.239
+
+-- Generation Time: Sep 12, 2012 at 09:05 PM
+-- Server version: 5.1.63
+-- PHP Version: 5.2.4-2ubuntu5.25
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
+-- Database: `nutcracker`
+--
+
+-- --------------------------------------------------------
+
 -- Table structure for table `project`
 --
 
@@ -33,11 +49,29 @@ CREATE TABLE IF NOT EXISTS `project` (
   `frame_delay` int(11) NOT NULL,
   `model_name` varchar(16) NOT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `project_dtl`
+--
+
+CREATE TABLE IF NOT EXISTS `project_dtl` (
+  `project_dtl_id` int(11) NOT NULL AUTO_INCREMENT,
+  `phrase_name` varchar(100) NOT NULL,
+  `start_secs` float(12,6) NOT NULL,
+  `end_secs` float(12,6) NOT NULL,
+  `effect_name` varchar(25) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`project_detail_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `project_model`
+--
 
 CREATE TABLE IF NOT EXISTS `project_model` (
   `project_model_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -47,9 +81,30 @@ CREATE TABLE IF NOT EXISTS `project_model` (
   UNIQUE KEY `project_model_id` (`project_model_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+--
+-- Table structure for table `song`
+--
+
+CREATE TABLE IF NOT EXISTS `song` (
+  `song_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `active_set` varchar(1) DEFAULT 'N',
+  `song_name` varchar(256) DEFAULT NULL,
+  `artist` varchar(100) DEFAULT NULL,
+  `song_url` varchar(256) DEFAULT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `audacity_aup` varchar(256) DEFAULT NULL,
+  `music_mo_file` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`song_id`),
+  KEY `user_song` (`song_name`,`artist`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=387 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `song_dtl`
+--
 
 CREATE TABLE IF NOT EXISTS `song_dtl` (
   `song_dtl_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -63,9 +118,7 @@ CREATE TABLE IF NOT EXISTS `song_dtl` (
   KEY `song_id` (`song_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=88 ;
 
---
--- Dumping data for table `song_dtl`
---
+
 
 INSERT INTO `song_dtl` (`song_dtl_id`, `song_id`, `phrase_name`, `start_secs`, `end_secs`, `sequence`, `date_created`) VALUES
 (1, 1, 'phrase21', 191.280533, 200.690002, 0, '2012-08-14 17:42:11'),
@@ -160,18 +213,6 @@ INSERT INTO `song_dtl` (`song_dtl_id`, `song_id`, `phrase_name`, `start_secs`, `
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-CREATE TABLE IF NOT EXISTS `song` (
-  `song_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `active_set` varchar(1) DEFAULT 'N',
-  `song_name` varchar(256) DEFAULT NULL,
-  `artist` varchar(100) DEFAULT NULL,
-  `song_url` varchar(256) DEFAULT NULL,
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `audacity_aup` varchar(256) DEFAULT NULL,
-  `music_mo_file` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`song_id`),
-  KEY `user_song` (`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=387 ;
 
 --
 -- Dumping data for table `song`

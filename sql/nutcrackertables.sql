@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 12, 2012 at 09:05 PM
+-- Generation Time: Sep 13, 2012 at 07:56 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=564 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=565 ;
 
 -- --------------------------------------------------------
 
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `end_secs` float(12,6) NOT NULL,
   `effect_name` varchar(25) NOT NULL,
   `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`project_detail_id`)
+  PRIMARY KEY (`project_dtl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -409,4 +409,3 @@ CREATE TABLE IF NOT EXISTS `song_dtl` (
   PRIMARY KEY (`song_dtl_id`),
   KEY `song_id` (`song_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=88 ;
-
