@@ -6,7 +6,7 @@ require_once ("../effects/f_bars.php");
 require_once ("../effects/f_spirals.php");
 require_once ("../effects/f_butterfly.php");
 require_once ("../effects/f_fire.php");
-//require_once ("../effects/f_garlands.php");
+require_once ("../effects/f_garlands.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
