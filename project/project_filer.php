@@ -97,7 +97,10 @@ function appendFiles($in_filearray, $prepArray, $sepStr=" ") {
 	foreach($in_filearray as $infile) {
 		if (substr($infile,0,6)=="zeros:") {
 			$val=substr($infile,6);
-			echo "Appending $val zeros to master<br />";
+			if ($val==1) 
+				echo "Appending 1 zero to master as adjustment<br />";
+			else
+				echo "Appending $val zeros to master<br />";
 			if (isset($retarr)) {
 				$retarr=appendZeros($retarr,$val,false,$sepStr);
 				//echo "VAL : $val <br />";
@@ -157,7 +160,7 @@ function getHeader($model_name, $username, $project_id, $sepStr=" "){
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
 	$model_file=$mydir.$model_name.".dat";
-	echo "$model_file<br />";
+	// echo "$model_file<br />";
 	$retArray = array();
 	$f = fopen ($model_file, "r");
 	$ln= 0;
