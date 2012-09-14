@@ -293,7 +293,8 @@ function spiral($get)
 		}// for ($f=1;$f<=$maxStrand;$f++) 
 	for ($f=1;$f<=$maxStrand;$f++)
 	{
-		fclose($fh_dat[$f]);
+		if (isset($fh_dat[$f]))
+			fclose($fh_dat[$f]);
 	}
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
