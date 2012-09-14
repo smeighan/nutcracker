@@ -10,16 +10,16 @@ $batch=1;
 //    1       |   No    |        Yes        |       Yes          |      Yes
 //    2       |   No    |        No         |       Yes          |      Yes
 //    3       |   No    |        No         |       No           |      Yes
-$song_list[] = array($target,"HORIZ_BARS","f_bars");
-$song_list[] = array($target,"MEGA_FIRE_2012","f_fire");
-$song_list[] = array($target,"WINDOW_FIRE","f_fire");
-$song_list[] = array($target,"GARLANDMEGATREE","f_garlands");
-$song_list[] = array($target,"MEGA1","f_spirals");
-$song_list[] = array($target,"TEST_SPIRAL","f_spirals");
-$song_list[] = array($target,"USAFLAG","f_gif");
-$song_list[] = array($target,"METEOR1","f_meteors");
-$song_list[] = array($target,"TEXT","f_text");
-
+$song_list[] = array($target,"MEGA_WASH","f_color_wash");
+$song_list[] = array($target,"MEGA_LIFE","f_life");
+$song_list[] = array($target,"MEGA_BUTTERFLY","f_butterfly");
+$song_list[] = array($target,"MEGA_BARS","f_bars");
+$song_list[] = array($target,"MEGA_FIRE","f_fire");
+$song_list[] = array($target,"MEGA_GARLAND","f_garlands");
+$song_list[] = array($target,"MEGA_GIF","f_gif");
+$song_list[] = array($target,"MEGA_METEOR","f_meteors");
+$song_list[] = array($target,"MEGA_SPIRAL","f_spirals");
+$song_list[] = array($target,"MEGA_TEXT","f_text");
 
 echo "<html>";
 echo "<body>";
