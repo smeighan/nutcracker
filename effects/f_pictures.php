@@ -112,7 +112,7 @@ function f_pictures($get)
 		$src=$file1;
 		$dst=$filez;
 		$width=intval($maxStrand*($window_degrees/360));
-		image_resize($src, $dst,$width ,$maxPixel,0);
+		image_resize2($src, $dst,$width ,$maxPixel,0);
 	}
 	//
 	$file=$file2;
@@ -189,7 +189,7 @@ function f_pictures($get)
 		}
 	}
 	//$orig_tree_rgb=$tree_rgb;
-	//$image_array=get_image($file);
+	//$image_array=get_image2($file);
 	$path = "../effects/workspaces/" . $member_id;
 	for ($f = 1; $f <= $maxFrame; $f++)
 	{
@@ -286,7 +286,7 @@ function transition($rgb_val,$f,$s,$p,$maxStrand,$maxPixel)
 	return $rgb_val;
 }
 
-function get_image($file,$frame,$maxStrand,$maxPixel)
+function get_image2($file,$frame,$maxStrand,$maxPixel)
 {
 	$path = "";
 	$directory = $path;
@@ -305,7 +305,7 @@ function get_image($file,$frame,$maxStrand,$maxPixel)
 	$size = getimagesize($image_path);
 	$img_width = $size[0];
 	$img_height = $size[1];
-	//$image=resizeImage($Image,$maxStrand,$maxPixel); 
+	//$image=resizeImage2($Image,$maxStrand,$maxPixel); 
 	//if($batch==0) echo "<pre>img width,height = $img_width,$img_height  max strand,pixel=$maxStrand,$maxPixel</pre>\n";
 	$s = 0;
 	$precision = intval((max($img_height,$img_width) / $maxStrand) + 0.5);
@@ -364,21 +364,9 @@ function get_image($file,$frame,$maxStrand,$maxPixel)
 	return $image_array;
 }
 
-function setTransparency($new_image,$image_source)
-{
-	$transparencyIndex = imagecolortransparent($image_source); 
-	$transparencyColor = array('red' => 255, 'green' => 255, 'blue' => 255); 
-	if ($transparencyIndex >= 0)
-	{
-		$transparencyColor    = imagecolorsforindex($image_source, $transparencyIndex);
-	}
-	$transparencyIndex    = imagecolorallocate($new_image, $transparencyColor['red'], 
-	$transparencyColor['green'], $transparencyColor['blue']); 
-	imagefill($new_image, 0, 0, $transparencyIndex); 
-	imagecolortransparent($new_image, $transparencyIndex);
-}
 
-function resizeImage($originalImage,$toWidth,$toHeight)
+
+function resizeImage2($originalImage,$toWidth,$toHeight)
 {
 	list($width, $height) = getimagesize($originalImage); 
 	$xscale=$width/$toWidth; 
@@ -433,7 +421,7 @@ function gif2jpeg($p_fl, $p_new_fl, $bgcolor=false)
 	imagedestroy($img_src);
 }
 
-function image_resize($src, $dst, $width, $height, $crop=0)
+function image_resize2($src, $dst, $width, $height, $crop=0)
 {
 	if(!list($w, $h) = getimagesize($src)) return "Unsupported picture type!";
 	$type = strtolower(substr(strrchr($src,"."),1));

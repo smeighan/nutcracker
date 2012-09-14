@@ -51,6 +51,7 @@ function f_life($get)
 	$file      =$arr[7];
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
+	$path="../effects/workspaces/". $member_id;
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$maxFrame=intval(($seq_duration*1000)/$frame_delay);
 	//

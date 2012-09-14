@@ -38,6 +38,7 @@ if(!isset($get['fade_in']))  $get['fade_in']="0";
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
 	$tree_user_text1_pixel   =$arr[9];
+	$path="../effects/workspaces/". $member_id;
 	$full_path = "../effects/dotmatrix";
 	$fh = fopen($full_path, 'r') or die("can't open file $full_path");
 	$debug=0;

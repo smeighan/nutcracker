@@ -1,8 +1,8 @@
 <?php
 require_once("../effects/read_file.php");
 $target="AA2244"; // small target 6x30, runs fast good for testing
-$target="A";  // larger target, 2400 channes
-$batch=1;   
+$target="AA";  // larger target, 2400 channes
+$batch=2;   
 //  Batch
 //	Level     |   Html  |   Full Size Gifs  |  Thumbnail Gif's   |  NC Data file
 // ------------------------------------------------------------------------------
@@ -22,6 +22,9 @@ $song_list[] = array($target,"GIF1","f_gif");
 $song_list[] = array($target,"LIFE","f_life");
 $song_list[] = array($target,"METEOR1","f_meteors");
 $song_list[] = array($target,"TEXT1","f_text");
+$song_list[] = array($target,"PICT1","f_pictures");
+$song_list[] = array($target,"USER1","f_user_defined");
+$song_list[] = array($target,"SNOW1","f_snowstorm");
 $username='f';
 echo "<html>";
 echo "<body>";
@@ -35,6 +38,9 @@ require_once ("../effects/f_gif.php");
 require_once ("../effects/f_life.php");
 require_once ("../effects/f_meteors.php");
 require_once ("../effects/f_text.php");
+require_once ("../effects/f_pictures.php");
+require_once ("../effects/f_user_defined.php");
+require_once ("../effects/f_snowstorm.php");
 //
 echo "<table border=2>";
 echo "<tr>";
@@ -78,6 +84,9 @@ foreach($song_list as $i=>$arr2)
 	if($program=="f_life")       f_life      ($get);
 	if($program=="f_meteors")    f_meteors   ($get);
 	if($program=="f_text")       f_text      ($get);
+	if($program=="f_pictures")   f_pictures      ($get);
+	if($program=="f_user_defined") f_user_defined      ($get);
+	if($program=="f_snowstorm")  f_snowstorm      ($get);
 	//
 	list($usec, $sec) = explode(' ', microtime());
 	$script_end = (float) $sec + (float) $usec;
@@ -99,4 +108,3 @@ $number_effects=$i+1;
 echo "<h2>Total time to process these $number_effects effects was $elapsed_time seconds</h2>\n";
 echo "</body>";
 echo "</html>";
-

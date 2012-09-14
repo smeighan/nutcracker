@@ -44,6 +44,7 @@ function f_gif($get)
 	$file = $arr[7];
 	$min_max = $arr[8];
 	$strand_pixel = $arr[9];
+	$path="../effects/workspaces/". $member_id;
 	srand(time());
 	$maxFrame = 100;
 	//$maxTrees=6;	// how many tree to draw at one time
