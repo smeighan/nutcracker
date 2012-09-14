@@ -669,8 +669,28 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				f_bars($get);
 				$ranNC=true;
 				break;
-			case ('garland') :
+			case ('garlands') :
 				f_garlands($get);
+				$ranNC=true;
+				break;
+			case ('text') :
+				f_text($get);
+				$ranNC=true;
+				break;
+			case ('gif') :
+				f_gif($get);
+				$ranNC=true;
+				break;
+			case ('meteors') :
+				f_meteors($get);
+				$ranNC=true;
+				break;
+			case ('life') :
+				f_life($get);
+				$ranNC=true;
+				break;
+ 			case ('color_wash') :
+				f_color_wash($get);
 				$ranNC=true;
 				break;
 			default :
