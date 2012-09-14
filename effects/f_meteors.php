@@ -39,31 +39,7 @@ function f_meteors($get)
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
 	$path="../effects/workspaces/". $member_id;
-	meteors($get);
-	$target_info=get_info_target($username,$t_dat);
-	//if($batch==0) show_array($target_info,'MODEL: ' . $t_dat);
-	// function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$window_degrees,$sparkles,$seq_duration,$garland_gap,$garland,$show_frame)
-		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
-}
-
-function meteors($get)
-{
-	extract($get);
-	$base = $user_target . "~" . $effect_name;
-	$t_dat = $user_target . ".dat";
-	$xdat = $user_target ."~".  $effect_name . ".dat";
-	$path="../targets/". $member_id;
-	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
-	$minStrand =$arr[0];  // lowest strand seen on target
-	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
-	$maxStrand =$arr[2];  // highest strand seen on target
-	$maxPixel  =$arr[3];  // maximum pixel number found when reading the skeleton target
-	$maxI      =$arr[4];  // maximum number of pixels in target
-	$tree_rgb  =$arr[5];
-	$tree_xyz  =$arr[6];
-	$file      =$arr[7];
-	$min_max   =$arr[8];
-	$strand_pixel=$arr[9];
+	
 	$arr_orig=$arr;
 	srand(time());
 	$maxFrame=120;
@@ -233,6 +209,7 @@ function meteors($get)
 	$x_dat_base = $base . ".dat";
 	if(!isset($show_frame)) $show_frame='N';
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
+	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 	if($batch==0) echo "</body>";
 	if($batch==0) echo "</html>";
 }

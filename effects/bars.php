@@ -1,8 +1,6 @@
 <?php
 require_once('../conf/header.php');
 	//
-	error_reporting(E_ALL);
-
 
 require_once('../effects/f_bars.php');
 require_once('../effects/read_file.php');

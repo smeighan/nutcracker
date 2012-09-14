@@ -29,7 +29,7 @@ if (file_exists($directory))
 	echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-//echo "<pre>user_effects=$user_effects</pre>\n";
+//echo "<pre>user_effects=$effect_class</pre>\n";
 //echo "<pre>query_string = ". $_SERVER['QUERY_STRING'] . "</pre>\n";
 $effect_class="";
 extract($_GET);
@@ -45,7 +45,7 @@ if(!empty($_GET)) // do we have something?
 //
 //	this is if someone click son an existing effect
 // http://localhost/nutcracker/effects/effect-exec.php?effect_name=BARS1&username=f&effect_class=bars&user_targets=A
-//	if(isset($user_effects)) $effect_class=$user_effects;
+//	if(isset($effect_class)) $effect_class=$effect_class;
 	$debug=0;
 	if($debug==1)
 	{
@@ -80,12 +80,12 @@ else // http://localhost/nutcracker/effects/effect-exec.php?username=gg&user_tar
 	
 }
 
-//$effect_class=$user_effects;
+//$effect_class=$effect_class;
 show_my_effects($username,$user_targets);
 if(isset($effect_class)) $effect_details=get_effect_details($effect_class);
-if(isset($user_effects))
+if(isset($effect_class))
 {
-	$effect_hdr=get_effect_hdr($user_effects);
+	$effect_hdr=get_effect_hdr($effect_class);
 }
 else 
 {
@@ -102,8 +102,9 @@ else
 {
 	$extra="";
 	$desc="";
-	$user_effects="";
+	$effect_class="";
 }
+
 ?>
 <script type="text/javascript" src="jscolor.js"></script>
 <form action="<?php echo "$effect_class.php"; ?>" method="get">
@@ -111,7 +112,7 @@ else
 <input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
 <input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
 <table border="1">
-<tr><th>#</th><th>EFFECT_CLASS: <?php echo "$user_effects"; echo "<br/>" . $desc; ?></th></tr>
+<tr><th>#</th><th>EFFECT_CLASS: <?php echo "$effect_class"; echo "<br/>" . $desc; ?></th></tr>
 <?php
 // >[QUERY_STRING] => effect_name=GIF1?username=f?effect_class=gif?user_targets=AA
 //
@@ -135,10 +136,11 @@ if (file_exists("pictures"))
 }
 //
 //
-if($user_effects=="gif"  or $user_effects=="pictures")
+echo "<pre>user_effects=$effect_class, member_id=$member_id</pre>\n";
+if($effect_class=="gif"  or $effect_class=="pictures")
 {
-	if($user_effects=="gif")      $uploaddir = "gifs/$member_id"; 
-	if($user_effects=="pictures") $uploaddir = "pictures/$member_id"; 
+	if($effect_class=="gif")      $uploaddir = "gifs/$member_id"; 
+	if($effect_class=="pictures") $uploaddir = "pictures/$member_id"; 
 	if (file_exists($uploaddir))
 	{
 		} else {
@@ -147,7 +149,7 @@ if($user_effects=="gif"  or $user_effects=="pictures")
 	}
 	$dir = opendir($uploaddir); 
 	$files = array(); 
-	echo "<h2>Here is your current $user_effects library</h2>\n";
+	echo "<h2>Here is your current $effect_class library</h2>\n";
 	echo "<table border=1>";
 	echo "<tr>";
 	/*
@@ -187,7 +189,7 @@ if($user_effects=="gif"  or $user_effects=="pictures")
 	}
 	echo "</tr>";
 	echo "</table>\n";
-	echo "<h2>If you want to add images to your $user_effects library, go here: <a href=\"up.php?uploaddir=$uploaddir\">Add $user_effects to your library</a></h2>\n";
+	echo "<h2>If you want to add images to your $effect_class library, go here: <a href=\"up.php?uploaddir=$uploaddir\">Add $effect_class to your library</a></h2>\n";
 }
 echo "<table border=1>";
 $cnt=count($effect_details);

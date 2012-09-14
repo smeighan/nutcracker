@@ -84,6 +84,8 @@ echo "<form action=\"$self?username=$username&total_strings=$total_strings&objec
 ?>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 <table border="1">
+<input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
+<input type="hidden" name="object_name" value="<?php echo "$$object_name"; ?>"/>
 <?php
 for($string=1;$string<=$total_strings;$string++)
 {

@@ -14,8 +14,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require_once('../conf/header.php');
-
-
 require("../effects/read_file.php");
 if( isset($_REQUEST['group']) && $_REQUEST['group'] !='')
 {
@@ -48,8 +46,8 @@ echo "</pre>\n";*/
 //
 //$tokens=explode("?model=",$REQUEST_URI);
 $number_gifs=0;
-	$effect_class_selected=array();
-	$sort="member_id";
+$effect_class_selected=array();
+$sort="member_id";
 if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-index.php
 { // yes
 	/*$tokens=explode("?",$_SERVER['QUERY_STRING']);
@@ -73,6 +71,9 @@ if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-in
 else
 {
 	extract ($_GET);
+	/*echo "<pre>";
+	print_r($_GET);
+	echo "</pre>";*/
 	$start_pic=1;
 	if(isset($number_gifs)) $end_pic=$number_gifs;
 	else $end_pic=1;
@@ -100,10 +101,9 @@ for ($l=1;$l<=$loops;$l++)
 {
 	$start = 1+($l-1)*$number_gifs;
 	$end=$start +$number_gifs -1;
-	echo "<li><a href=gallery.php?start=$start?end=$end?number_gifs=$number_gifs?sort=$sort?effect_class_selected=$effect_class_selected_buff>$start - $end</a>";
+	echo "<li><a href=gallery.php?start=$start&end=$end&number_gifs=$number_gifs&sort=$sort&effect_class_selected=$effect_class_selected_buff>$start - $end</a>";
 }
 echo "</ol>";
-
 /*$INSERT_NEW_GIFS=0;
 if($c>0)
 {
@@ -111,7 +111,8 @@ if($c>0)
 	$tokens2=explode("INSERT_NEW_GIFS=",$tokens[0]);
 	$c1=count($tokens2);
 	if($c1>1) $INSERT_NEW_GIFS=$tokens2[1];
-}*/
+}
+*/
 if(!isset($group) or $group<1) $group=1;
 if(!isset($group_size) or $group_size<1) $group_size=40;
 $pics_in_group=$group_size;
@@ -279,12 +280,9 @@ $effect_class_selected,$start_pic,$end_pic)
 		else $target_model="";
 		if(isset($tok2[1])) $effect_name=$tok2[1];   // AA+SPIRAL_th.gif"
 		else $effect_name="";
-		
 		/*$tok3=explode("_th",$tok2[1]);
 		$effect_name=$tok3[0];
 		$username = get_username($member_id);*/
-		
-		
 		if($pics>=$start_pic and $pics<=$end_pic)
 		{
 			if($pics%$pics_per_row==1) // check if we should advance row
@@ -520,13 +518,15 @@ function count_gallery($effect_class_selected)
 	//
 	$c=count($effect_class_selected);
 	$effect_string="'xx'";
+	echo "<pre>c=$c\n";
+	print_r($effect_class_selected);
 	foreach($effect_class_selected as $i => $effect_class)
 	{
 		if($i==0)
 			$effect_string= "'" . $effect_class . "'";
 		else
 		$effect_string=$effect_string . ",'" . $effect_class . "'";
-	}	
+	}
 	/*echo "<pre>effect_string=$effect_string\n";
 	print_r($effect_class_selected);
 	echo "</pre>";*/

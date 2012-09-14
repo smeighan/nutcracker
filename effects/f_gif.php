@@ -13,7 +13,7 @@ function f_gif($get)
 	//
 	//
 	//show_array($_GET,"_GET");
-if($batch==0) show_array($get,"$effect_class Effect Settings");
+	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
 	$path ="../effects/workspaces/$member_id";
@@ -60,9 +60,7 @@ if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$FIC2=$gifpath . "/" . $FIC;
 	$FIC3=$gifpath . "/zz_" . $FIC;
 	if($batch==0) echo "<h1>Processing file $FIC2</h1>";
-	if($batch==0) echo "<pre>";
-	print_r($_FILES);
-	if($batch==0) echo "</pre>\n";
+	
 	$src=$FIC2;
 	$dst=$FIC3;
 	//rsize($src, $dst, $maxStrand, $maxPixel);
@@ -106,7 +104,6 @@ if($batch==0) show_array($get,"$effect_class Effect Settings");
 			//	All pixels of this gif frame are in image_array, write them out to dat file.
 			draw_icon($fh_dat[$frame], $image_array, 0, $frame, $minStrand, $maxStrand, $minPixel, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees);
 			//	draw_icon(	$fh_dat [$frame],$big_image_array[4],66,$frame,$minStrand ,$maxStrand,$minPixel,$maxPixel,$tree_xyz,$strand_pixel);
-			if($batch==0) echo "</pre>\n";
 		}
 		if (!isset($show_frame))
 			$show_frame = 'N';
@@ -249,6 +246,9 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 	$s=0;
 	$w = imagesx($image);
 	$h = imagesy($image);
+//	echo "<pre>w,h=$w,$h img_width,img_height=$img_width,$img_height</pre>\n";
+	$img_width=$w;
+	$img_height=$h;
 	$r = $g = $b = 0;
 	/*for($y = 0; $y < $h; $y++)
 	{
@@ -272,6 +272,7 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 			if($x1<1) $x1=1; if($x1>$img_width) $x1=$img_width;
 			if($y1<1) $y1=1; if($y1>$img_height) $y1=$img_height;
 			$rgb_index = imagecolorat($image, $x1, $y1);
+		//	echo "<pre>$rgb_index=imagecolorat( $x1, $y1)</pre>\n";
 			$cols = ImageColorsForIndex($image, $rgb_index);
 			$r = $cols['red'];
 			$g = $cols['green'];
@@ -282,7 +283,6 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 			//			if($batch==0) echo "<pre>x,y,rgb= $x,$y,($r,$g,$b), rgbval=$rgb_val</pre>";
 		}
 	}
-	if($batch==0) echo "</pre>";
 	return $image_array;
 }
 /*
