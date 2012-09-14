@@ -75,17 +75,25 @@ if (isset($effect)) {
 if (isset($target)) {
 	$c2=count($target);
 }
-echo "Deleting $c2 rows from TARGETS\n";
-if($c2>0)
+
+if($c2>0) {
+	if ($c2==1)
+		echo "Deleting 1 row from TARGETS\n";
+	else
+		echo "Deleting $c2 rows from TARGETS\n";
 	foreach($target as $i => $object_name)
 	{
 	$delete=sprintf("delete from models where username='$username' and object_name=\"$object_name\"\n");
 	echo $delete . "\n"; 	$result=mysql_query($delete) or die ("Error on $delete");
 	}
+}
 //print_r($target);
 
-echo "Deleting $c1 rows from EFFECTS\n";
-if($c1>0)
+if($c1>0) {
+	if ($c1==1)
+		echo "Deleting 1 row from EFFECTS\n";
+	else
+		echo "Deleting $c1 rows from EFFECTS\n";
 	foreach($effect as $i => $effect_name)
 	{
 	$delete=sprintf("delete from effects_user_dtl where username='$username' and effect_name=\"$effect_name\"\n");
@@ -96,7 +104,7 @@ if($c1>0)
 	echo $delete . "\n"; 	$result=mysql_query($delete) or die ("Error on $delete");
 	}
 //print_r($effect);
-
+}
 echo "</pre>";
 
 unset ($target);

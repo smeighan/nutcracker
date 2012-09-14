@@ -97,14 +97,17 @@ function appendFiles($in_filearray, $prepArray, $sepStr=" ") {
 	foreach($in_filearray as $infile) {
 		if (substr($infile,0,6)=="zeros:") {
 			$val=substr($infile,6);
-			echo "Adding $val zeros<br />";
+			if ($val==1) 
+				echo "Appending 1 zero to master as adjustment<br />";
+			else
+				echo "Appending $val zeros to master<br />";
 			if (isset($retarr)) {
 				$retarr=appendZeros($retarr,$val,false,$sepStr);
 				//echo "VAL : $val <br />";
 				// print_r($retarr);
 			}
 		} else {
-			echo "Reading file $infile<br />";
+			echo "Appending file $infile to master<br />";
 			$myarr=getFileData($infile,true,$sepStr);
 			// print_r($myarr);
 			$retarr=appendStr($retarr,$myarr);
@@ -157,7 +160,7 @@ function getHeader($model_name, $username, $project_id, $sepStr=" "){
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
 	$model_file=$mydir.$model_name.".dat";
-	echo "$model_file<br />";
+	// echo "$model_file<br />";
 	$retArray = array();
 	$f = fopen ($model_file, "r");
 	$ln= 0;
@@ -569,6 +572,17 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 	$cnt=0;
 	$outarray=array();
 	$accumulator=0;
+?>
+<!-- Progress bar holder -->
+<div id="progress" style="width:500px;border:1px solid #ccc;"></div>
+<!-- Progress information -->
+<div id="information" style="width"></div>
+<p />
+<p />
+<?php
+	$total=count($phrase_array);
+	$i=0;
+	showProgress($i, $total);
 	foreach ($phrase_array as $curr_array) {
 		$st=$curr_array[0];
 		$end=$curr_array[1];
@@ -577,6 +591,7 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 		$frame_cnt=floor($frame_cnt_raw);
 		$frame_cnt_remain=$frame_cnt_raw-$frame_cnt;
 		if ($eff=="zzeross") {
+			echo "Adding ".$frame_cnt." frames of zeros<br />";
 			$outstr="zeros:$frame_cnt";
 		} else {
 			$outstr=createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay); 
@@ -589,8 +604,29 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 			$accumulator-=$zeroframecnt;
 			$outarray[$cnt++]=$outstr;
 		}
+		$i++;
+		showProgress($i, $total);
 	}
+	echo '<script language="javascript">document.getElementById("information").innerHTML="Effect generation completed"</script>';
 	return($outarray);	
+}
+function showProgress($i, $total) {
+		$percent = intval($i/$total * 100)."%";
+		if ($i > ($total-1))
+			$i=($total-1);
+		// Javascript for updating the progress bar and information
+		echo '<script language="javascript">
+		document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#ddd;\">&nbsp;</div>";
+		document.getElementById("information").innerHTML="'.$i.' of '.($total-1). ' phrase(s) processed.";
+		</script>';
+	 
+		// This is for the buffer achieve the minimum size in order to flush data
+		echo str_repeat(' ',1024*64);
+	 
+		// Send output to browser immediately
+		flush();
+		ob_flush();
+		return;
 }
 
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
@@ -633,8 +669,28 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				f_bars($get);
 				$ranNC=true;
 				break;
-			case ('garland') :
+			case ('garlands') :
 				f_garlands($get);
+				$ranNC=true;
+				break;
+			case ('text') :
+				f_text($get);
+				$ranNC=true;
+				break;
+			case ('gif') :
+				f_gif($get);
+				$ranNC=true;
+				break;
+			case ('meteors') :
+				f_meteors($get);
+				$ranNC=true;
+				break;
+			case ('life') :
+				f_life($get);
+				$ranNC=true;
+				break;
+ 			case ('color_wash') :
+				f_color_wash($get);
 				$ranNC=true;
 				break;
 			default :
