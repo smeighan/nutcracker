@@ -698,8 +698,10 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 			default :
 				echo "$effect_class not handled yet<br />";
 		}
-		if ($ranNC) 
+		if ($ranNC) { 
+			checkDir('workarea');
 			copy($from_file, $to_file);
+		}
 	}
 	return($outfile); // this will be the file created 
 }
@@ -711,6 +713,11 @@ function prepMasterNCfile($project_id) {
 	$testarr = getHeader($model_name, $username, $project_id);
 	// print_r($testarr);
 	return($testarr);
+}
+function checkDir($inDir) {
+	if (!is_dir($inDir)) 
+		mkdir($inDir);
+	return;
 }
 
 function processMasterNCfile($project_id, $projectArray, $workArray) {
