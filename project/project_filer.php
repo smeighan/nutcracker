@@ -220,6 +220,8 @@ function save_phrases($inphp) {
 		switch ($key) {
 		case "project_id":
 			$project_id = $val;
+			$sql="UPDATE project SET last_update_date=NOW() WHERE project_id=".$project_id;
+			$result=nc_query($sql);
 			break;
 		case "frame_delay":
 			$frame_delay = $val;
@@ -273,7 +275,7 @@ function get_effects($username) {
 }
 
 function edit_song($project_id) {
-	$sql = "SELECT song_name, artist, song_url, frame_delay, username FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
+	$sql = "SELECT song_name, artist, song_url, frame_delay, username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$frame_delay=$row['frame_delay'];
@@ -281,12 +283,20 @@ function edit_song($project_id) {
 	$song_url=$row['song_url'];
 	$song_name=$row['song_name'];
 	$artist=$row['artist'];
+	$last_update_date=$row['last_update_date'];
+	$last_compile_date=$row['last_compile_date'];
 	$effect=get_effects($username);
 	//print_r($effect);
 	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
 	//echo "edit song SQL - $sql<br />";
 	?>
+
 	<h2>Edit Project Details for <?php echo $song_name;?> by <?php echo $artist;?></h2>
+	<table border="0" cellspacing="1" cellpadding="1">
+	<tr><td>Last Update :</td><td><strong><?php if (strlen(trim($last_update_date))==0) echo "Never"; else echo date("jS F Y (g:ia)",strtotime($last_update_date)); ?></strong></td></tr>
+	<tr><td>Last Output :</td><td><strong><?php if (strlen(trim($last_compile_date))==0) echo "Never"; else echo date("jS F Y (g:ia)",strtotime($last_compile_date)); ?></strong></td></tr>
+	</table>
+	<br />
 	<form name="project_edit" id="project_edit" action="project.php" method="post">
 	<input type="hidden" name="project_id" id="project_id" value=<?php echo $project_id;?>>
 	Frame Rate for project : <input class="FormFieldName" type="text" name="frame_delay" id="frame_delay"0 value="<?php echo $frame_delay?>"><br />
