@@ -435,8 +435,9 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	$DTOR = $PI/180;
 	$RTOD = 180/$PI;
 	$pixel_spacing=3.0;
-	$width_bottom = $pixel_count*3.0;	// assume 3" spacing between nodes.
-	$width_top = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	if($maxPixels==120) $pixel_spacing=1.4;
+	$width_bottom = $pixel_count*$pixel_spacing;	// assume 3" spacing between nodes.
+	$width_top = $pixel_count*$pixel_spacing;	// assume 3" spacing between nodes.
 	if($model_type=="RAY") $width_top=$width_bottom/5;
 	$height = $pixel_spacing*$maxPixels;
 	$target_array=$target_array2[0];

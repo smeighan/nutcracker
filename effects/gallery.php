@@ -80,6 +80,10 @@ else
 }
 //
 //
+echo "<pre>";
+print_r($_GET);
+print_r($effect_class_selected);
+echo "</pre>\n";
 if(isset($effect_class_selected)) $total_gifs=count_gallery($effect_class_selected);
 else $total_gifs=0;
 echo "<h1>$total_gifs gif's in Library, Start,end=$start_pic,$end_pic</h1>";
@@ -97,11 +101,20 @@ foreach ($effect_class_selected as $i => $class)
 	$effect_class_selected_buff = $effect_class_selected_buff . "|" . $class ;
 }
 echo "<ol>";
+//
+//
+// effect_class_selected%5B%5D=all&effect_class_selected%5B%5D=bars&effect_class_selected%5
+//
+$ecb="";
+foreach($effect_class_selected as $effect_class)
+{
+$ecb .= "&effect_class_selected%5B%5D="	 . $effect_class;
+}
 for ($l=1;$l<=$loops;$l++)
 {
 	$start = 1+($l-1)*$number_gifs;
 	$end=$start +$number_gifs -1;
-	echo "<li><a href=gallery.php?start=$start&end=$end&number_gifs=$number_gifs&sort=$sort&effect_class_selected=$effect_class_selected_buff>$start - $end</a>";
+	echo "<li><a href=gallery.php?start=$start&end=$end" . $ecb ."&number_gifs=$number_gifs&sort=$sort>$start - $end</a>";
 }
 echo "</ol>";
 /*$INSERT_NEW_GIFS=0;
@@ -263,7 +276,7 @@ $effect_class_selected,$start_pic,$end_pic)
 		$path_parts = pathinfo($file);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
 		$dirname   = $path_parts ['dirname']; // workspaces/nuelemma
 		$basename  = $path_parts ['basename']; // MEGA_001+SEAN_d_22.dat
-		$extension =$path_parts  ['extension']; // .dat
+		$extension = $path_parts  ['extension']; // .dat
 		$filename  = $path_parts ['filename']; // MEGA_001+SEAN_d_22
 		$tokens=explode("/",$dirname);
 		//	0 = workspaces
@@ -274,7 +287,7 @@ $effect_class_selected,$start_pic,$end_pic)
 		$th=strpos($file,"_th.gif");	
 		$checked="";	
 		$pics++;
-		//echo "<pre>pics=$pics, start_pic,end_pic=[$start_pic,$end_pic] $file member=$member_id pos=$pos, th=$th effect_class=$effect_class</pre>\n";
+		echo "<pre>i=$i  pics=$pics, start_pic,end_pic=[$start_pic,$end_pic] $file member=$member_id pos=$pos, th=$th effect_class=$effect_class</pre>\n";
 		$tok2=explode("~",$filename);
 		if(isset($tok2[0])) $target_model=$tok2[0];
 		else $target_model="";
@@ -308,7 +321,7 @@ $effect_class_selected,$start_pic,$end_pic)
 	//echo "<table border=1>";
 	?>
 	</table>
-	<input type="submit" name="submit" value="Submit Form to copy your checked effects"  class="button" />
+	<input type="submit" name="submit" value="Submit"  class="button" />
 	</form>
 	<?php
 }
@@ -373,7 +386,7 @@ function insert_into_gallery($array_of_gifs)
 		$tok3=explode("_th.",$tok2[1]);
 		$effect_name=$tok3[0];
 		$ar=get_effect_user_hdr($username,$effect_name);
-		$effect_class = $ar[0]['effect_class'];
+		if(isset($ar[0]['effect_class'])) $effect_class = $ar[0]['effect_class'];
 		$query = "replace into gallery (fullpath,effect_class,username,effect_name,linenumber,member_id) values 
 		('$fullpath','$effect_class','$username','$effect_name',$line,$member_id)";
 		echo "<pre>$line $fullpath.";

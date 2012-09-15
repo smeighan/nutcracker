@@ -50,11 +50,12 @@ echo "<h1>Gallery has $total_count effects in it</h1>";
 $self=$_SERVER['PHP_SELF'];
 echo "<form action=\"gallery.php\" method=\"GET\">\n";
 ?>
-<input type="submit" name="submit" value="Submit Form to create your target model" />
+<input type="submit" name="submit" value="Submit" />
 <table border="1">
 <tr>
 <td>How many gif's to show at a time</td>
 <td>
+<INPUT TYPE=RADIO NAME="number_gifs" VALUE="10"         >10<br/>
 <INPUT TYPE=RADIO NAME="number_gifs" VALUE="50"  CHECKED        >50<br/>
 <INPUT TYPE=RADIO NAME="number_gifs" VALUE="100"         >100<br/>
 <INPUT TYPE=RADIO NAME="number_gifs" VALUE="250"  >250<br/>
@@ -97,6 +98,9 @@ if($first_time==0)
 ?>
 </form>
 <?php
+// SELECT count(*) FROM `members` WHERE passwd like '$P%'
+$cnt =  count_active();
+echo "<h2>There are $cnt active users</h2>";
 echo "</body>\n";
 echo "</html>\n";
 
@@ -147,6 +151,32 @@ function count_gallery()
 	}
 	//
 	$query="select count(*) cnt from gallery";
+	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	return $cnt;
+}
+
+function count_active()
+{
+	//Include database connection details
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	$query="SELECT count(*) cnt FROM `members` WHERE passwd like '\$P%'";
 	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
 	{

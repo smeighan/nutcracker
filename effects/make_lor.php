@@ -23,13 +23,12 @@ set_time_limit(0);
 extract ($_GET);
 if($sequencer=="lors2") $file_type="lms";
 if($sequencer=="lor_lcb") $file_type="lcb";
-$path_parts = pathinfo($full_path);
+$path_parts = pathinfo($full_path); // full_path=../effects/workspaces/426/MTREE~WASH_SP_062_05_MA_d_1.dat
 $dirname   = $path_parts['dirname']; // workspaces/2
 $basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
 //$extension =$path_parts['extension']; // .dat
 $filename  = $path_parts['filename']; //  AA+CIRCLE1_d_1
-$tok=explode("/",$dirname);
-$member_id=$tok[1];
+
 //echo "<pre>dirname=$dirname basename=$basename extension=$extension filename=$filename\n";
 $path=$dirname;
 $tokens2=explode("_d_",$filename);

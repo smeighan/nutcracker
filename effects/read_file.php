@@ -1156,6 +1156,8 @@ function get_username($member_id)
 		die("Unable to select database");
 	}
 	$query = "select username from members where member_id='$member_id'";
+	$username='';
+	echo "$query";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{
@@ -1393,23 +1395,23 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 		echo "<tr><th colspan=3 bgcolor=lightgreen><b>EXPORT OPTIONS: Now That You Have created a sequence, you need to export it</b></th></tr>";
 		//	make_vixen
 		echo "<tr><th>Sequencer</th><th>Left Click This column to create export file</th><th>Versions</th></tr>";
-		printf ( "<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=vixen&pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
+		printf ( "<tr><td>Vixen</td><td bgcolor=#98FF73><a href=\"make_vixen.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=vixen&pixel_count=$pixel_count\">Left Click here to make *.vir and *.vix files</a></td><td>2.1,2.5 maybe 3.0</td></tr>\n");
 		//print htmlentities($buff_vixen);
 		//
 		//	make_lor *.lms
-		printf ( "<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lors2&pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
+		printf ( "<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=lors2&pixel_count=$pixel_count\">Left Click here to make *.lms file</a></td><td>S2 and S3</td></tr>\n");
 		//print htmlentities($buff_lor);
-		printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lor_lcb&pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
+		printf ("<tr><td>LOR</td><td  bgcolor=#98FF73><a href=\"make_lor.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=lor_lcb&pixel_count=$pixel_count\">Left Click here to make *.lcb file</a></td><td>S2 and S3</td></tr>\n");
 		//	make_lsp GUI I
-		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=1\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type I gui. This is the normal file. &lt;TrackGuid&gt;60cc0c76-f458-4e67-abb4-5d56a9c1d97c&lt;/TrackGuid&gt;</td></tr>\n");
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=1\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type I gui. This is the normal file. &lt;TrackGuid&gt;60cc0c76-f458-4e67-abb4-5d56a9c1d97c&lt;/TrackGuid&gt;</td></tr>\n");
 		//	make_lsp GUI II
-		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=2\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type II gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;4e2556ac-d294-490c-8b40-a40dc6504946&lt;/TrackGuid&gt;</td></tr>\n");
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=2\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type II gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;4e2556ac-d294-490c-8b40-a40dc6504946&lt;/TrackGuid&gt;</td></tr>\n");
 		//	make_lsp GUI III
-		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=3\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type III gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;ba459d0f-ce08-42d1-b660-5162ce521997&lt;/TrackGuid&gt;</td></tr>\n");
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=3\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type III gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;ba459d0f-ce08-42d1-b660-5162ce521997&lt;/TrackGuid&gt;</td></tr>\n");
 		//	make_lsp GUI IV
-		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=4\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type IV gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;a69f7e39-e70d-4f70-8173-b3b2dbeea350&lt;/TrackGuid&gt;</td></tr>\n");
+		printf ("<tr><td>LSP </td><td  bgcolor=#98FF73><a href=\"make_lsp.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=lsp&pixel_count=$pixel_count&type=4\">Left Click here to make UserPatterns.xml file</a></td><td>2.0 Type IV gui. Try this file if you are not seeing pattern display when dragging. &lt;TrackGuid&gt;a69f7e39-e70d-4f70-8173-b3b2dbeea350&lt;/TrackGuid&gt;</td></tr>\n");
 		//	make_hls
-		printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&member_id=$member_id&seq_duration=$seq_duration&sequencer=hls&pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
+		printf ("<tr><td>HLS</td><td  bgcolor=#98FF73><a href=\"make_hls.php?base=$base&full_path=$full_path&frame_delay=$frame_delay&username=$username&member_id=$member_id&seq_duration=$seq_duration&sequencer=hls&pixel_count=$pixel_count\">Left Click here to make *.hlsq file</a></td><td> versions 3a and greater</td></tr>\n");
 		echo "</table>\n";
 	}
 }
