@@ -591,7 +591,7 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 		$frame_cnt=floor($frame_cnt_raw);
 		$frame_cnt_remain=$frame_cnt_raw-$frame_cnt;
 		if ($eff=="zzeross") {
-			echo "Adding ".$frame_cnt." frames of zeros<br />";
+			echo "Generating ".$frame_cnt." frames of zeros<br />";
 			$outstr="zeros:$frame_cnt";
 		} else {
 			$outstr=createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay); 
@@ -607,7 +607,8 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 		$i++;
 		showProgress($i, $total);
 	}
-	echo '<script language="javascript">document.getElementById("information").innerHTML="Effect generation completed"</script>';
+	echo '<script language="javascript">document.getElementById("information").innerHTML="Effect generation completed";
+	document.body.style.cursor = "default";</script>';
 	return($outarray);	
 }
 function showProgress($i, $total) {
@@ -616,6 +617,7 @@ function showProgress($i, $total) {
 			$i=($total-1);
 		// Javascript for updating the progress bar and information
 		echo '<script language="javascript">
+		document.body.style.cursor = "wait";
 		document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#ddd;\">&nbsp;</div>";
 		document.getElementById("information").innerHTML="'.$i.' of '.($total-1). ' phrase(s) processed.";
 		</script>';
