@@ -287,7 +287,7 @@ $effect_class_selected,$start_pic,$end_pic)
 		$th=strpos($file,"_th.gif");	
 		$checked="";	
 		$pics++;
-		echo "<pre>i=$i  pics=$pics, start_pic,end_pic=[$start_pic,$end_pic] $file member=$member_id pos=$pos, th=$th effect_class=$effect_class</pre>\n";
+		/*echo "<pre>i=$i  pics=$pics, start_pic,end_pic=[$start_pic,$end_pic] $file member=$member_id pos=$pos, th=$th effect_class=$effect_class</pre>\n";*/
 		$tok2=explode("~",$filename);
 		if(isset($tok2[0])) $target_model=$tok2[0];
 		else $target_model="";

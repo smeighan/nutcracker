@@ -139,8 +139,8 @@ if (file_exists("pictures"))
 echo "<pre>user_effects=$effect_class, member_id=$member_id</pre>\n";
 if($effect_class=="gif"  or $effect_class=="pictures")
 {
-	if($effect_class=="gif")      $uploaddir = "gifs/$member_id"; 
-	if($effect_class=="pictures") $uploaddir = "pictures/$member_id"; 
+	if($effect_class=="gif")      $uploaddir = "../effects/gifs/$member_id"; 
+	if($effect_class=="pictures") $uploaddir = "../effects/pictures/$member_id"; 
 	if (file_exists($uploaddir))
 	{
 		} else {
@@ -279,8 +279,8 @@ for($i=0;$i<$cnt;$i++)
 			sort($files);
 			foreach($files as $filename)
 			{
-				$tok=explode("/",$filename); //workspaces/2/AA+FLY.nc
-				$file=$tok[2];
+				$tok=explode("/",$filename); //../effects/workspaces/2/AA+FLY.nc
+				$file=$tok[4];
 				$tok2=explode("~",$file);  // AA+FLY.nc
 				$target=$tok2[0];
 				$tok3=explode(".",$tok2[1]);
@@ -381,7 +381,7 @@ function getFilesFromDir($dir)
 				}
 				else 
 				{ 
-					$path_parts = pathinfo($file);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
+					$path_parts = pathinfo($file);  // ../effects/workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
 					$dirname   = $path_parts['dirname']; // workspaces/nuelemma
 					$basename  = $path_parts['basename']; // MEGA_001+SEAN_d_22.dat
 					$extension =$path_parts['extension']; // .dat

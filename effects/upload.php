@@ -19,7 +19,6 @@ if(!is_writable($uploaddir))
 	die('You cannot upload to the specified directory, please CHMOD it to 777.');
 // Upload the file to your specified path.
 $fullpath = $uploaddir . "/" . $filename;
-echo "<pre>fullpath=$fullpath</pre>\n";
 if(move_uploaded_file($_FILES['userfile']['tmp_name'],$fullpath))
 	echo 'Your file upload was successful, view the file <a href="' . $fullpath . '" title="Your File">here</a>'; // It worked.
 else
