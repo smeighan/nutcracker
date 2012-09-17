@@ -1,4 +1,6 @@
 <?php
+//
+//
 extract($_GET);
 echo "<pre>";
 print_r($_GET);
@@ -20,6 +22,12 @@ while (!feof($fh))
 		if($s>$maxString) $maxString=$s;
 		if($p>$maxPixel) $maxPixel=$p;
 		if($s==1 and $p==1) $FirstCnt=$cnt;
+		$zero=0;
+		for($i=4;$i<$cnt;$i++)
+		{
+			$zero+=$tok[$i];
+		}
+		$zero_array[$s][$p]=$zero;
 	}
 	//echo "$line,cnt=$cnt, $string,$pixel\n";
 }
@@ -39,7 +47,13 @@ for($s=1;$s<=$maxString;$s++)
 	for($p=1;$p<=$maxPixel;$p++)
 	{
 		$cnt=$rgb_array[$s][$p];
-		if($cnt==$FirstCnt) $color="lightgreen";
+		if($cnt==$FirstCnt)
+		{
+			if($zero_array[$s][$p]==0)
+				$color="#60a25e";
+			else
+			$color="#35f10e";
+		}
 		else $color="pink";
 		printf("<td bgcolor=\"$color\">%d</td>",$cnt);
 	}
