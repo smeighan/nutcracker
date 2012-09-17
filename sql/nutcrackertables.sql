@@ -323,6 +323,8 @@ CREATE TABLE IF NOT EXISTS `project` (
   `username` varchar(25) NOT NULL,
   `frame_delay` int(11) NOT NULL,
   `model_name` varchar(16) NOT NULL,
+  `last_update_date` datetime DEFAULT NULL,
+  `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 

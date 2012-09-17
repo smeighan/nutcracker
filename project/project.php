@@ -81,6 +81,8 @@ if (isset($type)) {
 		$msg_str="Song detail hidden";
 	}
 	if (isset($MasterNCSubmit)) {
+		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
+		nc_query($sql);
 		$myarray=checkGaps($project_id);
 		$projectArray=setupNCfiles($project_id,$myarray);
 		$myNCarray=prepMasterNCfile($project_id);
