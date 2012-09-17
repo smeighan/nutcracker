@@ -23,21 +23,7 @@ if(!isset($get['speed']))     $get['speed']="1";
 	if(!isset($batch)) $batch=0;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	
-	//show_array($_SERVER,"_SERVER");
-	//show_array($_SESSION,"_SESSION");
-	///*
-	/*
-	SESSION
-	Array
-	(
-	[SESS_MEMBER_ID] => 2
-	[SESS_FIRST_NAME] => sean
-	[SESS_LAST_NAME] => MEIGHAN
-	[SESS_LOGIN] => f
-	)
-		FLY_0_0_TEST?username=f?effect_class=butterfly?user_targets=AA
-	*/ 
-	$get['OBJECT_NAME']='bars';
+		$get['OBJECT_NAME']='bars';
 	if(!isset($batch)) $batch=0;
 	$get['batch']=$batch;
 	$effect_name = strtoupper($effect_name);
@@ -58,7 +44,20 @@ if(!isset($get['speed']))     $get['speed']="1";
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
+	
+	
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
+	$minStrand =$arr[0];  // lowest strand seen on target
+	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
+	$maxStrand =$arr[2];  // highest strand seen on target
+	$maxPixel  =$arr[3];  // maximum pixel number found when reading the skeleton target
+	$maxI      =$arr[4];  // maximum number of pixels in target
+	$tree_rgb  =$arr[5];
+	$tree_xyz  =$arr[6];
+	$file      =$arr[7];
+	$min_max   =$arr[8];
+	$s_pixel   =$arr[9];
+	
 	$member_id=get_member_id($username);
 	$path ="../effects/workspaces/" . $member_id;
 	$x_dat = $user_target . "+" . $effect_name . ".dat";
@@ -71,16 +70,8 @@ if(!isset($get['speed']))     $get['speed']="1";
 		mkdir($directory, 0777);
 	}
 	$x_dat = $user_target . "~" . $effect_name . ".dat";
-	$minStrand =$arr[0];  // lowest strand seen on target
-	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
-	$maxStrand =$arr[2];  // highest strand seen on target
-	$maxPixel  =$arr[3];  // maximum pixel number found when reading the skeleton target
-	$maxI      =$arr[4];  // maximum number of pixels in target
-	$tree_rgb  =$arr[5];
-	$tree_xyz  =$arr[6];
-	$file      =$arr[7];
-	$min_max   =$arr[8];
-	$s_pixel   =$arr[9];
+	
+	
 	$maxFrame=20;
 	$maxFrame=intval(($seq_duration*1000/$frame_delay)/$speed)+1;
 	$seq_number=0;

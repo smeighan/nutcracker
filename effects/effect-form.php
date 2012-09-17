@@ -43,6 +43,9 @@ if($WARN==1)
 
 $effect_classes=get_effect_classes();
 $user_targets=get_user_targets($username);
+/*echo "<pre>";
+print_r($user_targets);
+echo "</pre>";*/
 
 /*
  [0] => Array   user_targets
@@ -142,7 +145,12 @@ echo "<select name=\"user_targets\" STYLE=\"font-family : monospace; font-size :
 $cnt=count($user_targets);
 for($i=0;$i<$cnt;$i++)
 {
-	$buff=sprintf ("%16s (%dx%d) %s",$user_targets[$i]['object_name'],	$user_targets[$i]['total_strings'],
+
+if($user_targets[$i]['model_type']=='SINGLE_STRAND')
+	$buff=sprintf ("%16s (1x%d) %s",$user_targets[$i]['object_name'],	
+		$user_targets[$i]['total_pixels'],	$user_targets[$i]['object_desc']);
+		else
+		$buff=sprintf ("%16s (%dx%d) %s",$user_targets[$i]['object_name'],	$user_targets[$i]['total_strings'],
 		$user_targets[$i]['pixel_count'],	$user_targets[$i]['object_desc']);
 
 	$object_name=$user_targets[$i]['object_name'];

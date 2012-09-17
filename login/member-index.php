@@ -273,9 +273,8 @@ function show_my_models($username,$model_name)
 	//	echo "<th>Where does<br/>String#1 start <br/>(in degreees)</th>";
 	echo "<th>pixel count<br/>per string<br/><font color=\"green\">10-10000</font></th>";
 	echo "<th>Number of<br/>folds</th>";
-	echo "<th>Unit of<br/>measure</th>";
-	echo "<th>H1 . height</th>";
-	echo "<th>D1 . diameter</th>";
+	echo "<th>Total<br/>pixels</th>";
+	
 	echo "</tr>\n";
 	if(!$NO_DATA_FOUND)
 	{
@@ -318,7 +317,11 @@ function show_my_models($username,$model_name)
 			if($unit_of_measure=="in" and ($pixel_spacing < 2 or $pixel_spacing>6)) $warn="red";
 			if($unit_of_measure=="cm" and ($pixel_spacing < 5 or $pixel_spacing>30)) $warn="red";
 			echo "<td>$folds </td>";
-			echo "<td>$unit_of_measure </td>";
+			echo "<td>$total_pixels </td>";
+			//
+			//
+			//
+		//	echo "<td>$unit_of_measure </td>";
 			if($folds==1)
 				$hyptonuse=$pixel_length ;
 			else
@@ -326,13 +329,13 @@ function show_my_models($username,$model_name)
 			$guess_h1 = $hyptonuse * 0.97;
 			$buff_guess_h1 = sprintf("%5.1f",$guess_h1);
 			$warn="green";
-			echo "<td>$buff_guess_h1</font></td>";
+			//echo "<td>$buff_guess_h1</font></td>";
 			$h1=$buff_guess_h1;
 			$H1=$buff_guess_h1;
 			$guess_d1 = 2* $hyptonuse * 0.2419;
 			$buff_guess_d1 = sprintf("%5.1f",$guess_d1);
 			$warn="green";
-			echo "<td>$buff_guess_d1</font></td>";
+		//	echo "<td>$buff_guess_d1</font></td>";
 			$d1=$buff_guess_d1;
 			$D1=$buff_guess_d1;
 			echo "</tr>\n";

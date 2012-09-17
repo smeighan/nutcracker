@@ -17,9 +17,9 @@ require_once('../conf/header.php');
 // index.php
 require("../effects/read_file.php");
 $segment_array=array();
-echo "<pre>";
+/*echo "<pre>";
 print_r($_GET);
-echo "</pre>";
+echo "</pre>";*/
 // http://localhost/nutcracker/login/single_strand-form.php?user=f?total_strings=3
 // 
 //
@@ -29,13 +29,16 @@ echo "</pre>";
 //$tokens=explode("?model=",$REQUEST_URI);
 extract($_GET);
 set_time_limit(0);
-if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-index.php
+if(isset($_GET['submit'])===false or $_GET['submit']==null ) // First time here? Called by member-index.php
 { // yes
 	$pixel_array=get_strands($username,$object_name);
 	$segment_array=get_segments($username,$object_name);
-	echo "<pre>";
+	/*echo "<pre>";
+	echo "<pre>segment_array</pre>\n";
 	print_r($segment_array);
-	echo "</pre>";
+	echo "<pre>pixel_array</pre>\n";
+	print_r($pixel_array);
+	echo "</pre>";*/
 	$number_segments_arr=get_number_segments($username,$object_name);
 	$number_segments=$number_segments_arr[0];
 	$gif_model=$number_segments_arr[1];
@@ -80,12 +83,14 @@ echo "</pre>";*/
 //
 echo "<h1>Single Strand</h1>";
 $self=$_SERVER['PHP_SELF'];
-echo "<form action=\"$self?username=$username&total_strings=$total_strings&object_name=$object_name\" method=\"GET\">\n";
+echo "<form action=\"$self?username=$username\" method=\"GET\">\n";
+$model_name=$object_name;
 ?>
 <input type="submit" name="submit" value="Submit Form to create your target model" />
 <table border="1">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
-<input type="hidden" name="object_name" value="<?php echo "$$object_name"; ?>"/>
+<input type="hidden" name="total_strings" value="<?php echo "$total_strings"; ?>"/>
+<input type="hidden" name="object_name" value="<?php echo "$object_name"; ?>"/>
 <?php
 for($string=1;$string<=$total_strings;$string++)
 {
@@ -123,7 +128,7 @@ $c=count($segment_array);
 if(isset($pixel_array) and ($first_time==0 or $c>0   )) // if not first time, then we have data we can show
 {
 	echo "<table border=1>";
-	for ($loop=1;$loop<=3;$loop++)
+	for ($loop=1;$loop<=5;$loop++) // loop1=virtual pixel, loop2=string,loop3=pixel, loop4=blank line, loop5=segment
 	{
 		echo "<tr>";
 		$pixel=0;
@@ -162,12 +167,39 @@ if(isset($pixel_array) and ($first_time==0 or $c>0   )) // if not first time, th
 					$target_array[$s][$pixel]['string']=$string;
 					$target_array[$s][$pixel]['user_pixel']=$p;
 				}
+				if($loop==4)
+				{
+					if($pixel==1)
+					{
+						echo "<td>----</td>";
+					}
+					echo "<td >&nbsp;</td>";
+				}
+				if($loop==5)
+				{
+					$current_segment=$number_segments;
+					for ($segment=1;$segment<$number_segments;$segment++)
+					{
+						if(isset($segment_array[$segment]))
+						{
+							$segment1=$segment+1;
+							if($pixel >= $segment_array[$segment] and $pixel < $segment_array[$segment1])
+								$current_segment = $segment;
+						}
+					}
+					if($pixel==1)
+					{
+						echo "<td>Segment</td>";
+					}
+					echo "<td >$current_segment</td>";
+				}
 			}
 		}
 		echo "</tr>";
 	}
 	echo "</table>";
 	echo "<br/><h3>Your virtual strand is $pixel Pixels long</h3>\n";
+	$maxPixels=$pixel;
 	echo "<table border=1>";
 	if($number_segments==null) $number_segments=1;
 	for ($segment=1;$segment<=$number_segments;$segment++)
@@ -182,7 +214,7 @@ if(isset($pixel_array) and ($first_time==0 or $c>0   )) // if not first time, th
 		value=\"$start_pixel\" name=\"segment_array[$segment]\"></td>\n";
 		echo "</tr>\n";
 	}
-	single_strand($pixel,$gif_model,$username,$object_name,$target_array); // let us actually write the targets/member_id/file.dat
+	single_strand($maxPixels,$gif_model,$username,$model_name,$target_array,$number_segments,$segment_array); // let us actually write the targets/member_id/file.dat
 }
 ?>
 </form>
@@ -202,7 +234,7 @@ function display_file($full_path)
 	echo "</pre>";
 }
 
-function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array)
+function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array,$number_segments,$segment_array)
 {
 	//echo "<pre>single_strand($maxPixels,$gif_model,$username,$model_name)</pre>\n";
 	#
@@ -219,6 +251,7 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	$path="../targets/" . $member_id ;
 	##	passed in now thru runtime arg, 	strands=16;
 	$dat_file = $path . "/" . $model_name . ".dat";
+	echo "<pre>dat_file=$dat_file</pre>\n";
 	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
 	fwrite($fh,"#    $dat_file\n");
 	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
@@ -227,16 +260,28 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	fwrite($fh,"#    Col 4: X location in world coordinates\n");
 	fwrite($fh,"#    Col 5: Y location in world coordinates\n");
 	fwrite($fh,"#    Col 6: Z location in world coordinates\n");
-	fwrite($fh,"#    Col 7: User string\n");
-	fwrite($fh,"#    Col 8: User pixel\n");
+	fwrite($fh,"#    Col 7: Single Strand Segment number\n");
+	fwrite($fh,"#    Col 8: User string\n");
+	fwrite($fh,"#    Col 9: User pixel\n");
 	fwrite($fh,"# \n");
 	$s=1;
 	for ($p=1;$p<=$maxPixels;$p++)
 	{
+		$current_segment=$number_segments;
+		for ($segment=1;$segment<$number_segments;$segment++)
+		{
+			if(isset($segment_array[$segment]))
+			{
+				$segment1=$segment+1;
+				if($p >= $segment_array[$segment] and $p < $segment_array[$segment1])
+					$current_segment = $segment;
+			}
+		}
 		$x=$p*3;
-		$y=0;
+		$y=$x;
 		$h=72;
-		fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+		fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,
+		$current_segment,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
 		//printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
 	}
 	fwrite($fh, "\n" );
@@ -334,13 +379,19 @@ function update_strands($username,$object_name,$pixel_array)
 	mysql_query($delete) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $delete . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	//
 	//
+	$total_pixels=0;
 	foreach ($pixel_array as $string => $maxPixel)
 	{
+		$total_pixels+=$maxPixel;
 		$insert = "insert into models_strands( username,object_name,string,pixels,last_updated)
 			values ('$username','$object_name',$string,$maxPixel,now())";
 		//	echo "<pre>update_strands: query=$insert</pre>\n";
 		mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	}
+	$update = "update models set total_pixels=$total_pixels
+	where username='$username' and object_name='$object_name'";
+	//	echo "<pre>update_strands: delete=$delete</pre>\n";
+	mysql_query($update) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $update . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 }
 
 function get_strands($username,$object_name)

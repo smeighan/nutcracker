@@ -455,6 +455,10 @@ function gp_header($fh,$min_max,$target_info)
 	{
 		fwrite($fh,"set view 105, 0, 2.0, 1\n");
 	}
+	else if($model_type=='SINGLE_STRAND')
+	{
+		fwrite($fh,"#set view 90, 0, 1.0, 1\n");
+	}
 	else
 	{
 		fwrite($fh,"set view 105, 180, 2.0, 1\n");
@@ -1839,7 +1843,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			unlink($full_path);*/
 		}
 	}
-	if (file_exists($gp_file)) unlink($gp_file);
+//	if (file_exists($gp_file)) unlink($gp_file);
 	if (file_exists($amp_gp_file)) unlink($amp_gp_file);
 	fclose($fh_seq);
 	//
