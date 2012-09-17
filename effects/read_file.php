@@ -432,10 +432,22 @@ function gp_header($fh,$min_max,$target_info)
 	fwrite($fh,"set notitle\n" );
 	fwrite($fh,"set ylabel\n" );
 	fwrite($fh,"set xlabel\n" );
+	if($model_type=='SINGLE_STRANDx')
+	{
+	$min_x *= .5;
+	$max_x *= .9;
+	$min_y *= .8;
+	$max_y *= .8;
+	}
+	else
+	{
+		
+	
 	$min_x *= 1.1;
 	$max_x *= 1.1;
 	$min_y *= 1.1;
 	$max_y *= 1.1;
+	}
 	if($min_y<0.001) $min_y=$min_x;
 	if($max_y<0.001) $max_y=$max_x;
 	fwrite($fh,sprintf("set xrange[%5.0f:%5.0f]\n",$min_x,$max_x));
@@ -457,7 +469,7 @@ function gp_header($fh,$min_max,$target_info)
 	}
 	else if($model_type=='SINGLE_STRAND')
 	{
-		fwrite($fh,"#set view 90, 0, 1.0, 1\n");
+		fwrite($fh,"set view 80, 10, 1, 1\n");
 	}
 	else
 	{
@@ -2267,4 +2279,33 @@ function get_user_effects($target,$effect,$username)
 	// we also need teh effect class from teh header
 	$get['effect_class']=$effect_class;
 	return $get;
+}
+function get_segments($username,$object_name)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	//
+	$query = "select * from models_strand_segments where username='$username' and  object_name='$object_name'
+	order by segment";
+	//echo "<pre>update_segments: query=$query</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	$segment_array=array();
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+		$segment_array[$segment]=$starting_pixel;
+	}
+	return $segment_array;
 }

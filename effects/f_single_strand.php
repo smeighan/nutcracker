@@ -2,7 +2,6 @@
 
 function f_single_strand($get)
 {
-	
 	if(!isset($get['direction'])) $get['direction']="right";
 	if(!isset($get['fade_in']))   $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
@@ -66,9 +65,30 @@ function f_single_strand($get)
 	//$maxFrame=20;
 	$maxFrame=intval(($seq_duration*1000/$frame_delay)/$speed)+1;
 	$seq_number=0;
+	/*	$maxFrame=20;
+	$maxPixel=50;*/
+	$segment_array=get_segments($username,$user_target);
+	$number_segments=count($segment_array);
 	echo "<pre>maxFrame=$maxFrame,  maxPixel=$maxPixel</pre>\n";
-		$maxFrame=20;
-		$maxPixel=50;
+	echo "<pre>number_segments=$number_segments  get_segments($username,$effect_name);\n";
+	print_r($segment_array);
+	echo "</pre>\n";
+	$segment_max=$number_segments+1;
+	$segment_array[$segment_max]=$maxPixel+1;
+	if($number_segments>0)
+	{
+		for($segment=1;$segment<=$number_segments;$segment++)
+		{
+			$segment1=$segment+1;
+			$start_p=$segment_array[$segment];
+			$end_p=$segment_array[$segment1];
+			for($p=$start_p;$p<=$end_p;$p++)
+			{
+				$pixel_to_segment[$p]=$segment;
+			}
+		}
+	}
+	$x=$y=$z=0;
 	for($f=1;$f<=$maxFrame;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -79,22 +99,45 @@ function f_single_strand($get)
 		$s=1;
 		for($p=1;$p<=$maxPixel;$p++)
 		{
+			$segment=$pixel_to_segment[$p];
 			$string=$user_pixel=0;
 			$delta=($f*$speed);
 			if($direction=='left') $delta=-$delta;
+			if($segment%2==0) $delta=-$delta;
 			$new_p=$p-1- $delta;
 			if($new_p<1) $new_p+=$maxPixel;
-			if($new_p%4==1)
-				$rgb_val=hexdec("FF0000");
+			$on=0;
+			if($new_p%16<=7)
+			{
+			$on=1;
+			}
+			if($on==1)
+			{
+				$rgb_val=hexdec("FFFFFF");
+				$HSV=RGBVAL_TO_HSV($rgb_val);
+			}
 			else
-			$rgb_val=hexdec("0000FF");
+			{
+				$rgb_val=hexdec("0000FF");
+				$HSV=RGBVAL_TO_HSV($rgb_val);
+				$H=$HSV['H'];
+				$S=$HSV['S'];
+				$V=$HSV['V'];
+				$H+=$segment/20;
+				if($H>1.0) $H-=1.0;
+				$rgb_val=HSV_TO_RGB ($H, $S, $V);
+			}
 			$seq_number++;
 			//	echo "<pre>f,s,p = $f,$s,$p (p_new=$p, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
 			$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-		fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
+			fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
 			$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
 			,$s_pixel[$s][$p][0],$s_pixel[$s][$p][1],
 			$f,$seq_number));
+			/*printf ("<pre>seg=%3d t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d</pre>\n",$segment,
+			$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
+			,$s_pixel[$s][$p][0],$s_pixel[$s][$p][1],
+			$f,$seq_number);*/
 		}
 	}
 	$x_dat_base=$base . ".dat";

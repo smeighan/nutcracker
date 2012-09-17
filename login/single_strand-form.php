@@ -247,11 +247,13 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	#
 	#	Build a mega-Tree with arbitray strands
 	#	House is 40' wide, 25' tall
+	echo "<pre>function single_strand(maxPixels,gif_model,username,model_name,target_array,number_segments,segment_array)</pre>\n";
+	echo "<pre>function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array,$number_segments,$segment_array)</pre>\n";
 	$member_id=get_member_id($username);
 	$path="../targets/" . $member_id ;
 	##	passed in now thru runtime arg, 	strands=16;
 	$dat_file = $path . "/" . $model_name . ".dat";
-	echo "<pre>dat_file=$dat_file</pre>\n";
+	echo "<pre>dat_file=$dat_file  </pre>\n";
 	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
 	fwrite($fh,"#    $dat_file\n");
 	fwrite($fh,"#    Col 1: Your TARGET_MODEL_NAME\n");
@@ -265,29 +267,96 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	fwrite($fh,"#    Col 9: User pixel\n");
 	fwrite($fh,"# \n");
 	$s=1;
-	for ($p=1;$p<=$maxPixels;$p++)
+	$p=0;
+	$segment_max=$number_segments+1;
+	$segment_array[$segment_max]=$maxPixels+1;
+	$x=$y=$z=0;
+	for ($segment=1;$segment<$segment_max;$segment++)
 	{
-		$current_segment=$number_segments;
-		for ($segment=1;$segment<$number_segments;$segment++)
+		if(isset($segment_array[$segment]))
 		{
-			if(isset($segment_array[$segment]))
+			$segment1=$segment+1;
+			$pixels_segment=$segment_array[$segment1]-$segment_array[$segment];
+			$PI=3.1415926;
+			$diameter_array[$segment] = 2*($pixels_segment/$PI);
+			printf ("<pre>%6d  %6d-%6d  dia=%7.2f pix_per-seg=%6d</pre>\n",
+			$segment,$segment_array[$segment],$segment_array[$segment1]-1,
+			$diameter_array[$segment],$pixels_segment);
+			for($i=$segment_array[$segment]; $i< $segment_array[$segment1]; $i++)
 			{
-				$segment1=$segment+1;
-				if($p >= $segment_array[$segment] and $p < $segment_array[$segment1])
-					$current_segment = $segment;
+				$p++;
+				$start_pixel=$segment_array[$segment];
+				$xyz = get_xyz($segment,$start_pixel,$pixels_segment,$diameter_array,$p,$x,$y,$z,$gif_model);
+				$x=$xyz['x'];
+				$y=$xyz['y'];
+				$z=$xyz['z'];
+				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$z,
+				$segment,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], 
+				$username ,$model_name));
+				/*printf ("<pre>seg=%3d %s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s</pre>\n", 
+				$segment,$model_name,$s,$p,$x,$y,$z,
+				$segment,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'],
+				$username ,$model_name);*/
 			}
 		}
-		$x=$p*3;
-		$y=$x;
-		$h=72;
-		fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,
-		$current_segment,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
-		//printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
 	}
 	fwrite($fh, "\n" );
 	fclose($fh);
 	echo "</pre>\n";
 	return $dat_file;
+}
+
+function get_xyz($segment,$start_pixel,$pixels_segment,$diameter_array,$p,$x,$y,$z,$gif_model)
+{
+	$mod=$segment%4;
+	if($mod==0) $mod=4;
+	$PI=3.1415926;
+	$radius = $pixels_segment/$PI;
+	$radian = (($p-$start_pixel)/$pixels_segment)*$PI;
+	$sum_diamter=$x_offset=$z_offset=0;
+	if($segment>1)
+	{
+		for ($seg=1;$seg<$segment;$seg++)
+		{
+			$sum_diamter+=$diameter_array[$seg];
+		}
+	}
+	$x_offset=$sum_diamter+$diameter_array[$segment]/2;
+	$x=-1 * $radius * cos($radian) + $x_offset;
+	$z=$radius * sin($radian) + $z_offset;
+	//echo "<pre>n,segment,start_pixel,pixels_segment,p ,x,z = $radian,$segment,$start_pixel,$pixels_segment,$p,$x,$z</pre>\n";
+	/*switch ($mod)
+	{
+		case 1:
+		$x=$start_pixel-1 + $p*3;
+		$y=$x;
+		$z=72;
+		break;
+		//
+		case 2:
+		$x=$start_pixel-1 + $p*3;
+		$y=$x;
+		$z=96;
+		break;
+		//
+		case 3:
+		$x=$start_pixel-1 + $p*3;
+		$y=$x;
+		$z=72;
+		break;
+		//
+		case 4:
+		$x=$start_pixel-1 + $p*3;
+		$y=$x;
+		$z=96;
+		break;
+	}
+	*/
+	$y=0;
+	$xyz['x']=$x;
+	$xyz['y']=$y;
+	$xyz['z']=$z;
+	return $xyz;
 }
 
 function getx($r,$degree)
@@ -457,35 +526,6 @@ function update_segments($username,$object_name,$segment_array)
 	}
 }
 
-function get_segments($username,$object_name)
-{
-	require_once('../conf/config.php');
-	//Connect to mysql server
-	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
-		die('Failed to connect to server: ' . mysql_error());
-	}
-	//Select database
-	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
-		die("Unable to select database");
-	}
-	//
-	//
-	$query = "select * from models_strand_segments where username='$username' and  object_name='$object_name'
-	order by segment";
-	//echo "<pre>update_segments: query=$query</pre>\n";
-	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
-	$segment_array=array();
-	while ($row = mysql_fetch_assoc($result))
-	{
-		extract($row);
-		$segment_array[$segment]=$starting_pixel;
-	}
-	return $segment_array;
-}
 
 function update_number_segments($username,$object_name,$number_segments,$gif_model)
 {
