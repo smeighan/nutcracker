@@ -36,7 +36,6 @@ function f_single_strand($get)
 	extract ($get);
 	save_user_effect($get);
 	//
-	if($batch==0) show_array($get,"Effect Settings");
 	$path="../targets/". $member_id;
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
@@ -81,7 +80,9 @@ function f_single_strand($get)
 		for($p=1;$p<=$maxPixel;$p++)
 		{
 			$string=$user_pixel=0;
-			$new_p=$p-1- ($f*$speed);
+			$delta=($f*$speed);
+			if($direction=='left') $delta=-$delta;
+			$new_p=$p-1- $delta;
 			if($new_p<1) $new_p+=$maxPixel;
 			if($new_p%4==1)
 				$rgb_val=hexdec("FF0000");
