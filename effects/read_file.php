@@ -222,13 +222,10 @@ function fill_in_zeros($arr,$dat_file_array)
 				$strand=$tok[1];	// 1 strand#
 				$pixel=$tok[2];// 2 pixel#	
 				$rgb=$tok[6];
-				
-				
 				if($rgb!=0)
 					$matrix[$strand][$pixel]=$line;  // store original line
 			}
 		}
-		
 		//	okay now put out new Files
 		fclose($fh);
 		$fh = fopen($full_path, 'w') or die("can't open file $full_path");
@@ -434,19 +431,17 @@ function gp_header($fh,$min_max,$target_info)
 	fwrite($fh,"set xlabel\n" );
 	if($model_type=='SINGLE_STRANDx')
 	{
-	$min_x *= .5;
-	$max_x *= .9;
-	$min_y *= .8;
-	$max_y *= .8;
+		$min_x *= .5;
+		$max_x *= .9;
+		$min_y *= .8;
+		$max_y *= .8;
 	}
 	else
 	{
-		
-	
-	$min_x *= 1.1;
-	$max_x *= 1.1;
-	$min_y *= 1.1;
-	$max_y *= 1.1;
+		$min_x *= 1.1;
+		$max_x *= 1.1;
+		$min_y *= 1.1;
+		$max_y *= 1.1;
 	}
 	if($min_y<0.001) $min_y=$min_x;
 	if($max_y<0.001) $max_y=$max_x;
@@ -1207,19 +1202,22 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 		//
 	fill_in_zeros($arr,$dat_file_array); // modify dat files so they have missingg data
 	$target_info=get_info_target($username,$t_dat);
-	/*echo "<pre>Target Info:\n";
+	echo "<pre>Target Info:\n";
 	print_r($target_info);
-	echo "</pre>";*/
-	/*	Array
-	(
-	[target_name] => AA
-	[total_strings] => 16
-	[pixel_count] => 100
-	[pixel_length] => 3.00
-	[pixel_spacing] => 
-	[unit_of_measure] => in
-	[topography] => 
-	)
+	echo "</pre>";
+	extract ($target_info);
+	/*	Target Info:
+Array
+(
+    [target_name] => A1
+    [model_type] => SINGLE_STRAND
+    [total_strings] => 5
+    [pixel_count] => 0
+    [pixel_length] => 8.00
+    [pixel_spacing] => 
+    [unit_of_measure] => 
+    [topography] => 
+)
 		*/
 	$pixel_count=$target_info['pixel_count'];
 	//show_elapsed_time($script_start,"Making  gnuplot command file:");
@@ -1265,11 +1263,10 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	/*echo "<pre>h=$height,w=$width, aspect=$aspect_ratio,max=$max\n";
 	print_r($min_max);
 	echo "</pre>\n";*/
-	$model_type='SINGLE_STRAND';
 	if($model_type=='SINGLE_STRAND')
 	{
-	$w=1200;
-	$h=800;
+		$w=1200;
+		$h=800;
 	}
 	else if($aspect_ratio>1)
 	{
@@ -1394,17 +1391,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	$model="_d_";
 	if($batch<=2) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay);
 	//display_gif($batch,$path,$model,$gp_file_amperage,$out_file_array_amperage,$frame_delay,$script_start);
-	
 	//
-	if($username <> 'f')
-	{
-		//	remove old png and dat files
-		$mask = $path . "/*.png";
-		// lets not delete here. We want to make a file for vixen
-		//		array_map( "unlink", glob( $mask ) );
-		$mask = $path . "/*.dat";
-		//		array_map( "unlink", glob( $mask ) );
-	}
 	$full_path=$dat_file_array0;
 	$member_id=get_member_id($username);
 	$base=$base_tmp;
@@ -1853,15 +1840,15 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		}
 		fclose($fh);
 		flush();
-		//	echo "<pre>unlink($full_path) has $line_counter lines</pre>\n";
+		//echo "<pre>unlink($full_path) has $line_counter lines</pre>\n";
 		$full_path=realpath($full_path);
 		if (file_exists($full_path))
 		{
-			/*echo "<pre>Purging $full_path</pre>\n";
-			unlink($full_path);*/
+			echo "<pre>Purging $full_path</pre>\n";
+			unlink($full_path);
 		}
 	}
-//	if (file_exists($gp_file)) unlink($gp_file);
+	if (file_exists($gp_file)) unlink($gp_file);
 	if (file_exists($amp_gp_file)) unlink($amp_gp_file);
 	fclose($fh_seq);
 	//
@@ -1921,7 +1908,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	else
 	die ("frame_delay = 0, unable to create any output");
 	//	should we show 5 string mini channel preview?
-	
 	$preview=0; // for now, no
 	if($preview==1)
 	{
@@ -1998,7 +1984,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$frame=$tok[3];	// frame#
 			$rgb=$tok[4];	// rgb#
 			$rgbhex=dechex($rgb);
-			
 			if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
 			{
 				fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
@@ -2049,8 +2034,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//printf("</pre>\n");
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
-	// <sean tmp> unlink($seq_file);
-	// <sean tmp> unlink ($seq_srt);
+	unlink($seq_file);
+	unlink ($seq_srt);
 	fclose($fh_buff);
 	return ($filename_buff);
 }
@@ -2232,16 +2217,18 @@ function calculate_sparkle($s,$p,$cnt,$rgb_val,$sparkle_count)
 	//	echo "<pre>s,p=$s,$p cnt=$cnt v=$v, orig=$orig, rgb_val=$rgb_val, $hex</pre>\n";
 	return $rgb_val;
 }
-
 //Function to sanitize values received from the form. Prevents SQL injection
 
-function clean($str) {
+function clean($str)
+{
 	$str = @trim($str);
-	if(get_magic_quotes_gpc()) {
+	if(get_magic_quotes_gpc())
+	{
 		$str = stripslashes($str);
 	}
 	return mysql_real_escape_string($str);
 }
+
 function get_user_effects($target,$effect,$username)
 {
 	//Include database connection details
@@ -2268,7 +2255,7 @@ function get_user_effects($target,$effect,$username)
 	and hdr.effect_name = dtl.effect_name
 	and hdr.username='$username'
 	and upper(hdr.effect_name)=upper('$effect')";
-//	echo "<pre>count_gallery: $query</pre>\n";
+	//	echo "<pre>count_gallery: $query</pre>\n";
 	//
 	//
 	$result = mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
@@ -2286,6 +2273,7 @@ function get_user_effects($target,$effect,$username)
 	$get['effect_class']=$effect_class;
 	return $get;
 }
+
 function get_segments($username,$object_name)
 {
 	require_once('../conf/config.php');

@@ -13,28 +13,50 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once('../conf/auth.php');
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Nutcracker: RGB Effects Builder</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="last-modified" content=" 24 Feb 2012 09:57:45 GMT"/>
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
-<meta name="robots" content="index,follow"/>
-<meta name="googlebot" content="noarchive"/>
-<link rel="shortcut icon" href="barberpole.ico" type="image/x-icon"/> 
-<meta name="description" content="RGB Sequence builder for Vixen, Light-O-Rama and Light Show Pro"/>
-<meta name="keywords" content="DIY Light animation, Christmas lights, RGB Sequence builder, Vixen, Light-O-Rama or Light Show Pro"/>
-<link href="../css/loginmodule.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-<h1>Welcome <?php echo $_SESSION['SESS_FIRST_NAME'];?></h1>
-<?php $menu="effect-form"; require "../conf/menu.php"; ?>
-<?php
-require("../effects/read_file.php");
+require_once('../conf/header.php');
+// index.php
+require_once("read_file.php");
+/*echo "<pre>";
+echo "POST:";
+print_r($_POST);
+echo "GET:";
+print_r($_GET);
+echo "</pre>\n";*/
+/*GET:Array
+(
+[username] => 
+[fullpath_array] => Array
+(
+[0] => workspaces/2/A+BARS1_TEST_th.gif
+)
+	[user_effect_name] => Array
+(
+[0] => COPY_BARS4
+[1] => 
+[2] => 
+[3] => 
+[4] => 
+[5] => 
+[6] => 
+[7] => 
+[8] => 
+[9] => 
+)
+	[desc] => Array
+(
+[0] => 
+[1] => 
+[2] => 
+[3] => 
+[4] => 
+[5] => 
+[6] => 
+[7] => 
+[8] => 
+[9] => 
+)
+	[submit] => Submit
+)*/
 if( isset($_REQUEST['group']) && $_REQUEST['group'] !='')
 {
 	$group=$_REQUEST['group'];
@@ -43,9 +65,7 @@ if( isset($_REQUEST['effect_class']) && $_REQUEST['effect_class'] !='')
 {
 	$effect_class=$_REQUEST['effect_class'];
 }
-
 $group=1;
-
 // copy_model.php?filename=$filename?member_id=$member_id
 /*
 [fullpath_array] => Array
@@ -60,7 +80,7 @@ foreach($_GET['user_effect_name'] as $i=>$user_effect_name)
 {
 	if(strlen($user_effect_name)>0)
 	{
-	//	echo "<pre>user_effect_name: $i $user_effect_name</pre>\n";
+		//	echo "<pre>user_effect_name: $i $user_effect_name</pre>\n";
 		$user_effect_name_array[$i]=$user_effect_name;
 	}
 }
@@ -68,15 +88,18 @@ foreach($_GET['desc'] as $i=>$desc)
 {
 	if(strlen($desc)>0)
 	{
-	//	echo "<pre>user_effect_name: $i $user_effect_name</pre>\n";
+		//	echo "<pre>user_effect_name: $i $user_effect_name</pre>\n";
 		$desc_array[$i]=$desc;
 	}
 }
+$line=0;
 foreach($_GET['fullpath_array'] as $i=>$fullpath)
 {
 	$line++;
 	$user_effect_name=$user_effect_name_array[$i];
-	$desc=$desc_array[$i];
+	if(isset($desc_array[$i])) $desc=$desc_array[$i];
+	else
+	$desc='';
 	//echo "<pre>$line: $i; $fullpath. user_effect_name=$user_effect_name, desc=$desc</pre>\n";
 	// workspaces/2/AA+FLY_0_0_th.gif. 
 	//copy_model.php?filename=$filename?member_id=$member_id
@@ -85,7 +108,7 @@ foreach($_GET['fullpath_array'] as $i=>$fullpath)
 
 function copy_model($fullpath,$user_effect_name,$desc)
 {
-$myusername=$_SESSION['SESS_LOGIN'];
+	$myusername=$_SESSION['SESS_LOGIN'];
 	$path_parts = pathinfo($fullpath);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
 	$dirname   = $path_parts ['dirname']; // workspaces/nuelemma
 	$basename  = $path_parts ['basename']; // MEGA_001+SEAN_d_22.dat
@@ -97,6 +120,15 @@ $myusername=$_SESSION['SESS_LOGIN'];
 	//
 	$member_id=$tokens[1];
 	$tok2=explode("~",$filename);
+	$tok2a=explode("+",$filename);
+	$c=count($tok2);
+	$ca=count($tok2a);
+	/*echo "<pre>";
+	echo "copy_model($fullpath,$user_effect_name,$desc)\n";
+	print_r($path_parts);
+	echo "c=$c, ca=$ca\n";
+	echo "</pre>";*/
+	if($c==1 and $ca==2) $tok2=$tok2a; // we have a TAR+EFF file instead of TAR~EFF
 	$target=$tok2[0];
 	$tok3=explode("_th",$tok2[1]);
 	$effect_name=$tok3[0];
@@ -120,23 +152,44 @@ $myusername=$_SESSION['SESS_LOGIN'];
 	{
 		die("Unable to select database");
 	}
-	echo "<pre>";
+	
 	foreach($get_effect_user_hdr_array as $i=>$row)
 		//foreach($row as $indx=>$value)
 	{
+		/*echo "<pre>HDR:";
+		foreach($row as $indx=>$value)
+		{
+			echo "i=$i  $indx=>$value\n";
+		}
+		echo "</pre>";*/
+		//
+		//
+		/*HDR:i=0  effect_class=>bars
+		i=0  username=>f
+		i=0  effect_name=>BARS1_TEST
+		i=0  effect_desc=>desc
+		i=0  music_object_id=>
+		i=0  start_secs=>
+		i=0  end_secs=>
+		i=0  phrase_name=>
+		i=0  created=>
+		i=0  last_upd=>2012-09-18 07:16:51*/
+		
+		//
+		//
 		//	echo "$i: $indx => $value\n";
 		$new_desc=$row['effect_name'];
 		if(strlen($desc)>0) $new_desc=$desc;
 		$insert=sprintf ("replace into effects_user_hdr (username,effect_name,effect_class,effect_desc,last_upd) values 
-		('%s','%s','%s','%s',now())\n",
+		('%s',toupper('%s'),'%s','%s',now())\n",
 		$myusername,
 		$new_effect_name,
 		$row['effect_class'],
 		$desc,
 		'123-123-123');
-	//	echo $insert;
+		//	echo $insert;
 		$result=mysql_query($insert) ;
-			if (mysql_errno() == 1062)
+		if (mysql_errno() == 1062)
 		{
 			echo "<pre>Got duplicate error on $insert</pre>\n";
 		}
@@ -144,7 +197,30 @@ $myusername=$_SESSION['SESS_LOGIN'];
 	foreach($get_effect_user_dtl_array as $i=>$row)
 		//foreach($row as $indx=>$value)
 	{
-		//	echo "$i: $indx => $value\n";
+	/*	echo "<pre>DTL:";
+		foreach($row as $indx=>$value)
+		{
+			echo "i=$i  $indx=>$value\n";
+		}
+		echo "</pre>";*/
+		//
+		//
+		/*DTL:i=0  username=>f
+		i=0  effect_name=>BARS1_TEST
+		i=0  param_name=>color1
+		i=0  param_value=>#FF0000
+		i=0  segment=>0
+		i=0  created=>
+		i=0  last_upd=>2012-09-18 07:16:51
+		DTL:i=1  username=>f
+		i=1  effect_name=>BARS1_TEST
+		i=1  param_name=>color2
+		i=1  param_value=>#2BFF00
+		i=1  segment=>0
+		i=1  created=>
+		i=1  last_upd=>2012-09-18 07:16:51*/
+		//
+		//
 		if($row['param_name']=="effect_name") $new_value=$new_effect_name;
 		else
 		$new_value=$row['param_value'];
@@ -157,7 +233,7 @@ $myusername=$_SESSION['SESS_LOGIN'];
 		'123-123-123');
 		//echo $insert;
 		$result=mysql_query($insert) ;
-			if (mysql_errno() == 1062)
+		if (mysql_errno() == 1062)
 		{
 			echo "<pre>Got duplicate error on $insert</pre>\n";
 		}
