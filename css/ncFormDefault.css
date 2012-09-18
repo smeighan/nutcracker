@@ -23,3 +23,16 @@
 	background-color: #F93;
 	color: #FFF;
 }
+.smallText {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 8px;
+	font-style: normal;
+	color: #555;
+	text-align: center;
+}
+.SaveFile {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FC9;
+	font-style: bold;
+}
