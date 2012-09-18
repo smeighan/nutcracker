@@ -1,10 +1,13 @@
 <?php
 function myTokenizer($in_str, $sepStr=" ") { // Takes a string and returns an array seperated by value of $sepStr 
 	$outarray=array();
-	$words = preg_split('/\s/', $in_str);
-	foreach ($words as $word) 
-		if (strlen(trim($word))!=0) 
-			$outarray[]=$word;
+	$tempArray = explode($sepStr, $in_str);
+	foreach ($tempArray as $token) {
+		$mytoken=trim($token);
+		if (strlen($mytoken)>0) {
+			$outarray[]=$mytoken;
+		}
+	};
 	return($outarray);
 }
 
@@ -187,6 +190,33 @@ function getMemberID($username)
 	return ($retval);
 }
 
+function showThumbs($project_id) {
+	$sql = "SELECT username, phrase_name, effect_name, model_name FROM `project_dtl` AS pd \n"
+		 . "LEFT JOIN project AS p ON p.project_id=pd.project_id\n"
+		 . "WHERE pd.project_id=$project_id ORDER BY start_secs;";
+	echo "<table><tr>";
+	$result=nc_query($sql);
+	while ($row=mysql_fetch_assoc($result)) {
+		extract($row);
+		if (strlen($effect_name)==0) {
+			$gifLoc="../images/blank.gif";
+			$effect_name="None";
+		} else {
+			$sql="SELECT member_id FROM members WHERE username=\"$username\";";
+			$result2=nc_query($sql);
+			$row=mysql_fetch_assoc($result2);
+			$member_id=$row['member_id'];
+			$fileLoc="../effects/workspaces/$member_id/".$model_name."~".$effect_name."_th.gif";
+			if (is_file($fileLoc)) {
+				$gifLoc=$fileLoc;
+			} else 
+				$gifLoc="../images/noThumb.gif";
+		}
+		echo "<td class=\"smallText\"><img  height=\"100\" width=\"50\" title=\"$phrase_name\n$effect_name\" alt=\"$phrase_name:$effect_name\" src=\"$gifLoc\"><br />$phrase_name</td>\n";
+	}
+	echo "</tr></table>";
+}
+
 function getUserEffect($target,$effect,$username)
 {
 	$sql = "SELECT hdr.effect_class,hdr.username,hdr.effect_name,
@@ -217,6 +247,7 @@ function save_phrases($inphp) {
 	//print_r($inphp);
 	foreach($inphp as $key=>$val)
 	{
+		//echo "$key=>$val<br />";
 		switch ($key) {
 		case "project_id":
 			$project_id = $val;
@@ -232,6 +263,8 @@ function save_phrases($inphp) {
 			}
 			break;
 		case "SavePhraseEdit":
+			break;
+		case "outputType" :
 			break;
 		default:
 			switch (substr($key,0,3)) {
@@ -275,7 +308,7 @@ function get_effects($username) {
 }
 
 function edit_song($project_id) {
-	$sql = "SELECT song_name, artist, song_url, frame_delay, username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
+	$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$frame_delay=$row['frame_delay'];
@@ -283,6 +316,7 @@ function edit_song($project_id) {
 	$song_url=$row['song_url'];
 	$song_name=$row['song_name'];
 	$artist=$row['artist'];
+	$model_name=$row['model_name'];
 	$last_update_date=$row['last_update_date'];
 	$last_compile_date=$row['last_compile_date'];
 	$effect=get_effects($username);
@@ -291,7 +325,7 @@ function edit_song($project_id) {
 	//echo "edit song SQL - $sql<br />";
 	?>
 
-	<h2>Edit Project Details for <?php echo $song_name;?> by <?php echo $artist;?></h2>
+	<h2>Edit Project Details for "<?php echo $song_name;?>" by <?php echo $artist;?> (Model: <?php echo $model_name;?>)</h2>
 	<table border="0" cellspacing="1" cellpadding="1">
 	<tr><td>Last Update :</td><td><strong><?php if (strlen(trim($last_update_date))==0) echo "Never"; else echo date("jS F Y (g:ia)",strtotime($last_update_date)); ?></strong></td></tr>
 	<tr><td>Last Output :</td><td><strong><?php if (strlen(trim($last_compile_date))==0) echo "Never"; else echo date("jS F Y (g:ia)",strtotime($last_compile_date)); ?></strong></td></tr>
@@ -314,7 +348,18 @@ function edit_song($project_id) {
 	</table>
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
 	<p />
-	<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
+	<h2>Time Line of Effects</h2>
+	<?php showThumbs($project_id); ?>
+	<table border="0" cellpadding="1" cellspacing="1">
+	<tr><td>
+	<select class="FormFieldName" name="outputType" id="outputType">
+		<option value="">Select Output Type</option>
+		<option value="vixen">Vixen 2.1 and 2.5</option>
+		<option value="hls">HLS versions 3a and greater</option>
+	</select> </td></tr>
+	<tr><td>
+		<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
+	</tr></td></table>
 	</form>
 	<?php
 	//echo "There are $cnt records in details <br />";
@@ -730,16 +775,46 @@ function checkDir($inDir) {
 	return;
 }
 
-function processMasterNCfile($project_id, $projectArray, $workArray) {
+function getSongTime($project_id) {
+	$sql = "SELECT max(end_secs) AS totLength FROM project_dtl WHERE project_id=$project_id";
+	$result=nc_query($sql);
+	$row=mysql_fetch_array($result,MYSQL_ASSOC);
+	$retval=$row['totLength'];
+	return($retval);
+}
+
+function processMasterNCfile($project_id, $projectArray, $workArray, $outputType) {
 	// 
 	// Code to process all the Master NC Files here
 	//
 	$proj_array=getProjInfo($project_id);
 	$username=$proj_array['username'];
 	$model_name=$proj_array['model_name'];
+	$frame_delay=$proj_array['frame_delay'];
+	$song_tot_time=getSongTime($project_id);
 	$retArray=appendFiles($projectArray,$workArray);
 	$outfile="$username~$project_id~master.nc";
 	array2File($outfile, $retArray);
+	if (isset($outputType)) {
+		switch ($outputType) {
+			case 'vixen' :
+				$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
+				// echo "You selected $outputType<br />";
+				$vixFile=$VixArr[0];
+				$virFile=$VixArr[1];
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
+				echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
+				echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
+				echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
+				break;
+			case 'hls' :
+				$hlsFile=genHLS($username, $project_id);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
+				echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
+				break;
+			default :
+		}
+	} 
 	// print_r($retArray);
 	return;
 }

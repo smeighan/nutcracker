@@ -9,8 +9,8 @@ function show_barmenu()
 	<li><a href="../login/member-index.php" onmouseover="mopen('m2')" onmouseout="mclosetime()">Models</a></li>
 	<li><a href="../effects/effect-form.php" onmouseover="mopen('m3')" onmouseout="mclosetime()">Effects</a></li>
 	<li><a href="../effects/project-form.php" onmouseover="mopen('m4')" onmouseout="mclosetime()">Projects</a></li>
-	<li><a href="../project/project.php" onmouseover="mopen('m4a')" onmouseout="mclosetime()">KurtProjects</a></li>
-	<li><a href="../effects/xmas_songs.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">XmasSongs</a></li>
+	<li><a href="../project/project.php" onmouseover="mopen('m4a')" onmouseout="mclosetime()">Kurt&nbsp;Project</a></li>
+	<li><a href="../effects/xmas_songs.php" onmouseover="mopen('m5')" onmouseout="mclosetime()">Xmas&nbsp;Songs</a></li>
 	<li><a href="../effects/gallery-form.php" onmouseover="mopen('m6')" onmouseout="mclosetime()">Gallery</a></li>
 	<li><a href="../admin/admin.php" onmouseover="mopen('m7')" onmouseout="mclosetime()">Admin</a>
 		<div id="m7" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
