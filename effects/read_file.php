@@ -469,7 +469,7 @@ function gp_header($fh,$min_max,$target_info)
 	}
 	else if($model_type=='SINGLE_STRAND')
 	{
-		fwrite($fh,"set view 80, 10, 1, 1\n");
+		fwrite($fh,"set view 90, 0, 1, 1\n");
 	}
 	else
 	{
@@ -1265,7 +1265,13 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	/*echo "<pre>h=$height,w=$width, aspect=$aspect_ratio,max=$max\n";
 	print_r($min_max);
 	echo "</pre>\n";*/
-	if($aspect_ratio>1)
+	$model_type='SINGLE_STRAND';
+	if($model_type=='SINGLE_STRAND')
+	{
+	$w=1200;
+	$h=800;
+	}
+	else if($aspect_ratio>1)
 	{
 		$w=intval($max/$aspect_ratio);
 		$h=$max;
