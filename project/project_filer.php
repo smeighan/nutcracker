@@ -355,6 +355,7 @@ function edit_song($project_id) {
 	<select class="FormFieldName" name="outputType" id="outputType">
 		<option value="">Select Output Type</option>
 		<option value="vixen">Vixen 2.1 and 2.5</option>
+		<option value="hls">HLS versions 3a and greater</option>
 	</select> </td></tr>
 	<tr><td>
 		<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
@@ -795,14 +796,24 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 	$outfile="$username~$project_id~master.nc";
 	array2File($outfile, $retArray);
 	if (isset($outputType)) {
-		$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
-		// echo "You selected $outputType<br />";
-		$vixFile=$VixArr[0];
-		$virFile=$VixArr[1];
-		echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
-		echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
-		echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
-		echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
+		switch ($outputType) {
+			case 'vixen' :
+				$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
+				// echo "You selected $outputType<br />";
+				$vixFile=$VixArr[0];
+				$virFile=$VixArr[1];
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
+				echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
+				echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
+				echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
+				break;
+			case 'hls' :
+				$hlsFile=genHLS($username, $project_id);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
+				echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
+				break;
+			default :
+		}
 	} 
 	// print_r($retArray);
 	return;
