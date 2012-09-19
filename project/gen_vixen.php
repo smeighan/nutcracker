@@ -1,175 +1,79 @@
 <?php
+function create_vir($fh_buff, $fh_vixen_vir) {
+	$old_pixel=$channels=0;
+	while (!feof($fh_buff))
+	{
+		$line = fgets($fh_buff);
+		$tok=preg_split("/ +/", $line);
+		$l=strlen($line);
+		$MaxFrame= count($tok);
+		if($tok[0]=='S' and $tok[2]=='P')
+		{
+			$rStr="";
+			$gStr="";
+			$bStr="";
+			$string=$tok[1];
+			$pixel=$tok[3];
 
-function getVixHeader($timestr, $frame_delay) {
-	$retstr ="<?xml version=\"1.0\" encoding=\"utf-8\"?>
-<Program>
-<Time>".$timestr."</Time>
-<EventPeriodInMilliseconds>".$frame_delay."</EventPeriodInMilliseconds>
-<MinimumLevel>0</MinimumLevel>
-<MaximumLevel>255</MaximumLevel>
-<AudioDevice>-1</AudioDevice>
-<AudioVolume>0</AudioVolume>
-<PlugInData />\n";
-	return($retstr);
-}
-
-function writeVixHeader($fh, $time, $f_delay) {
-	fwrite($fh,getVixHeader($time, $f_delay));
-	return;
-}
-
-function getNCHeader($file_name, $sepStr=" ") {
-	$inFile=$file_name;
-	$retArray = array();
-	$f = fopen ($inFile, "r");
-	$ln= 0;
-	while ($line= fgets ($f)) {
-		if ($line) {
-			if (isInvalidLine($line) == false) {
-				$tempArray = array();
-				$myArray=myTokenizer($line, $sepStr);
-				$tempArray[]=$myArray[1];
-				$tempArray[]=$myArray[3];
-				//$myStr="S $myArray[1] P $myArray[3]";
-				$retArray[$ln++]=$tempArray;
-				//print_r($myArray);
-				// $ln++;
+			for($f=4;$f<$MaxFrame;$f++)		
+			{
+				$rgb=$tok[$f];
+				$MyR=int2rgb($rgb);
+				$rStr.=$MyR[0]." ";
+				$gStr.=$MyR[1]." ";
+				$bStr.=$MyR[2]." ";
 			}
-		}
-    }
-	fclose ($f);
-	return($retArray);
-}
-
-function getNCBody($file_name, $sepStr=" ") {
-	$inFile=$file_name;
-	$retArray = array();
-	$f = fopen ($inFile, "r");
-	while ($line= fgets ($f)) {
-		if ($line) {
-			if (isInvalidLine($line) == false) {
-				$tempStr = "";
-				$myArray=myTokenizer($line, $sepStr);
-				for ($x=4; $x<count($myArray); $x++)
-					$tempStr.=$myArray[$x]." ";
-			}
-		}
-		$retArray[]=$tempStr;
-    }
-	fclose ($f);
-	return($retArray);
-}
-
-
-function writeFile($fileout, $data) {
-	$fh = fopen($fileout, 'a');
-	fwrite($fh, $data);
-	return;
-}
-
-function getMaxSMaxP($inArray) {
-	$retArray = array();
-	$maxS = -1;
-	$maxP = -1;
-	foreach ($inArray as $row) {
-		$currS = $row[0];
-		$currP = $row[1];
-		if ($currS>$maxS) $maxS=$currS;
-		if ($currP>$maxP) $maxP=$currP;
-	}
-	$retArray[]=$maxS;
-	$retArray[]=$maxP;
-	return($retArray);
-}
-
-function getChanOut($Sval,$Pval,$maxP, $routput) {
-	$goutput = $routput+1;
-	$boutput = $routput+2;
-	$retStr="<Channel color=\"-65536\" output=\"".$routput."\" id=\"".$routput."\" enabled=\"True\">Channel ".($routput+1)." R</Channel>\n";
-	$retStr.="<Channel color=\"-16744448\" output=\"".$goutput."\" id=\"".$goutput."\" enabled=\"True\">Channel ".($goutput+1)." G</Channel>\n";
-	$retStr.="<Channel color=\"-16779661\" output=\"".$boutput."\" id=\"".$boutput."\" enabled=\"True\">Channel ".($boutput+1)." B</Channel>\n";
-	return($retStr);
-}
-
-function getRGB($Inarray) {   // reads an array of frames and returns three arrays one for R, G, and B respectively
-	$retArray=array();
-	foreach($Inarray as $line) {
-		$r_str="";
-		$g_str="";	
-		$b_str="";
-		$myTokens=myTokenizer($line);
-		foreach($myTokens as $Item) {
-			$rgb=intval($Item);
-			$r = ($rgb >> 16) & 0xFF;
-			$g = ($rgb >> 8) & 0xFF;
-			$b = $rgb & 0xFF;
-			$r_str.=$r." ";
-			$g_str.=$g." ";
-			$b_str.=$b." ";
-		}
-		$tempArray=array($r_str, $g_str, $b_str);
-		$retArray[]=$tempArray;
-	}
-	return ($retArray);
-}
-
-
-function writeVIR($fh, $rgbArray, $sepStr=" ") {
-	foreach ($rgbArray as $line) {
-		fwrite($fh, $line[0]);
-		fwrite($fh, "\n");
-		fwrite($fh, $line[1]);
-		fwrite($fh, "\n");
-		fwrite($fh, $line[2]);
-		fwrite($fh, "\n");
-	}
-	return;
-}
-
-function getEventVal($rgbArray) {
-	$eventdata='';
-	foreach($rgbArray as $rgbLine) 
-		foreach ($rgbLine as $rgb)
-			$myRGB=myTokenizer($rgb);
-			foreach($myRGB as $val)
-				$eventdata .= chr($val);
-	return(base64_encode($eventdata));
-}
-
-function genVIX($timeSec, $frame_delay, $fh, $NCfile, $rgbArray) {
-	$timeMSec = $timeSec * 1000;
-	writeVixHeader($fh, $timeMSec, $frame_delay);
-	$NCArray=getNCHeader($NCfile);
-	$SandP=getMaxSMaxP($NCArray);
-	$maxP=$SandP[1];
-	$maxS=$SandP[0];
-	$chan=0;
-	fwrite($fh,"<Channels>\n");
-	for ($y=0;$y<$maxS;$y++) {
-		for ($x=0; $x<$maxP; $x++) {
-			fwrite($fh,getChanOut($y,$x,$maxP, $chan));
-			$chan+=3;
+			$rStr.="\n";
+			$gStr.="\n";
+			$bStr.="\n";
+			fwrite($fh_vixen_vir,$rStr);
+			fwrite($fh_vixen_vir,$gStr);
+			fwrite($fh_vixen_vir,$bStr);
 		}
 	}
-	fwrite($fh, "</Channels>\n");
-	fwrite($fh, "<SortOrders lastSort=\"-1\" />\n");
-	fwrite($fh, "<EventValues>");
-	fwrite($fh, getEventVal($rgbArray));
-	fwrite($fh, "</EventValues>\n");
-	fwrite($fh, "</Program>");
 }
 
-function genVIR($fh, $NCfile) {
-	$NCArray=getNCBody($NCfile);
-	//print_r($NCArray);
-	//echo "<br />";
-	$rgbArray=getRGB($NCArray);
-	//print_r($rgbArray);
-	writeVIR($fh, $rgbArray);
-	return($rgbArray);
+function HexBase64($string)
+{
+	$hexVal= pack("H*",sprintf("%X",$string));
+	$convVal=substr(base64_encode($hexVal),0,2);
+	//echo "$convVal\n";
+	return($convVal);
 }
 
-function genAllVixen($timeSec, $frame_delay, $username, $project_id) {
+function int2rgb ($inval) { //takes an integer value and converts to three RGB values as an array
+	$r = ($inval >> 16) & 0xFF;
+	$g = ($inval >> 8) & 0xFF;
+	$b = $inval & 0xFF;
+	$retarray=array($r,$g,$b);
+	return ($retarray);
+}
+
+function convertVirLine($instr) {
+	$tok=preg_split("/ +/", $instr);
+	$retVal="";
+	foreach ($tok as $val) {
+		$convVal=HexBase64($val);
+		$retVal.=$convVal;
+	}
+	return($retVal);
+}
+
+function getEventStr($infile) {
+	$fh=fopen($infile,'r');
+	$myPartEvent="";
+	while ($line = fgets($fh)) { 
+		//echo "$line\n";
+		$noCR=rtrim($line);
+		//echo "<pre>$noCR || </pre>";
+		$test=convertVirLine($noCR);
+		//echo $test."\n";
+		$myPartEvent.=convertVirLine($line);
+	}
+	return($myPartEvent);
+}
+
+function genAllVixen($seq_duration, $frame_delay, $username, $project_id) {
 //$timeSec = 0.7;
 //$frame_delay = 50;
 	$filedir = "workarea/";
@@ -177,13 +81,159 @@ function genAllVixen($timeSec, $frame_delay, $username, $project_id) {
 	$NCFile = $fileStr."~master.nc";
 	$vixout = $fileStr.".vix";
 	$virout = $fileStr.".vir";
-	$fhvix = fopen($vixout, 'w');
-	$fhvir = fopen($virout, 'w');
-	$rgbArray=genVir($fhvir, $NCFile);
-	genVix($timeSec, $frame_delay, $fhvix, $NCFile, $rgbArray);
-	fclose($fhvix);
-	fclose($fhvir);
+	$duration = $seq_duration*1000;
+	$fh_vixen_vir=fopen($virout,'w');
+	$fh_buff=fopen($NCFile,'r');
+	create_vir($fh_buff, $fh_vixen_vir);
+	fclose($fh_vixen_vir);
+	fclose($fh_buff);
+
+	$myEvent=getEventStr($virout);
+	//echo "$myEvent\n";
+	
+	genVix($NCFile, $virout, $seq_duration, $frame_delay);
+	make_vix($virout,$duration, $frame_delay, $myEvent);
 	$retArr=array($vixout, $virout);
 	return($retArr);
+}
+
+function genVix($NCFile, $vixen_vir, $seq_duration, $frame_delay) {
+	$fh_buff=fopen($NCFile,"r") or die("Unable to open $filename_buff");
+	$fh_vixen_vir=fopen($vixen_vir,"w") or die("Unable to open $vixen_vir");
+
+	$old_pixel=$channels=0;
+	//echo "<h3>$seq_duration seconds of animation with a $frame_delay ms frame timing = $TotalFrames frames of animation</h3>\n";
+	while (!feof($fh_buff))
+	{
+		$line = fgets($fh_buff);
+		$tok=preg_split("/ +/", $line);
+		$l=strlen($line);
+		$cnt= count($tok);
+		$MaxFrame=$cnt-4;
+		//echo "<pre>cnt=$cnt MaxFrame=$MaxFrame, line=$line</pre>\n";
+		if($tok[0]=='S' and $tok[2]=='P')
+		{
+			$string=$tok[1];
+			$pixel=$tok[3];
+		//	echo "<pre>s,p=$string,$pixel: $line</pre>\n";
+			for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++)
+			{
+				for($f=1;$f<$MaxFrame;$f++)
+				{
+					$rgb=$tok[$f+3];
+					$r = ($rgb >> 16) & 0xFF;
+					$g = ($rgb >> 8) & 0xFF;
+					$b = $rgb & 0xFF;
+					if($rgbLoop==1)
+					{
+						$c='R';$color=16711680;
+						$val=$r;
+					}
+					if($rgbLoop==2)
+					{
+						$c='G';$color=65280;
+						$val=$g;
+					}
+					if($rgbLoop==3)
+					{
+						$c='B';$color=255;
+						$val=$b;
+					}
+					fwrite($fh_vixen_vir,sprintf("%d ",$val));
+					//printf("%d ",$val);
+					
+				}
+				$channels++;
+				fwrite($fh_vixen_vir,sprintf("\n"));
+				//printf("\n");
+			}
+		}
+	}
+}
+function make_vix($vixen_vir,$duration,$frame_delay,$eventdata)
+{
+	$path_parts = pathinfo($vixen_vir);
+	$dirname   = $path_parts['dirname'];
+	$basename  = $path_parts['basename']; 
+	$extension =$path_parts['extension'];
+	$filename  = $path_parts['filename'];
+	$file_vix = $dirname . "/" . $filename . ".vix";
+	$fh_vir=fopen($vixen_vir,"r") or die("Unable to open $vixen_vir");
+	$fh = fopen($file_vix,"w") or die ("unable to open $file_vix");
+	fwrite($fh,sprintf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"));
+	fwrite($fh,sprintf("<Program>\n"));
+	fwrite($fh,sprintf("<Time>$duration</Time>\n"));
+	fwrite($fh,sprintf("<EventPeriodInMilliseconds>$frame_delay</EventPeriodInMilliseconds>\n"));
+	fwrite($fh,sprintf("<MinimumLevel>0</MinimumLevel>\n"));
+	fwrite($fh,sprintf("<MaximumLevel>255</MaximumLevel>\n"));
+	fwrite($fh,sprintf("<AudioDevice>-1</AudioDevice>\n"));
+	fwrite($fh,sprintf("<AudioVolume>0</AudioVolume>\n"));
+	$lines=0;
+	rewind($fh_vir);
+	while (!feof($fh_vir))
+	{
+		$line = fgets($fh_vir);
+		$tok=preg_split("/ +/", $line);
+		$c=count($tok);
+		if($c>1) $lines++;
+	}
+	rewind($fh_vir);
+	$plugin=0;
+	if($plugin==1)
+	{
+		fwrite($fh,sprintf("<PlugInData>\n"));
+		fwrite($fh,sprintf("<PlugIn name=\"Adjustable preview\" key=\"-1193625963\" id=\"0\" enabled=\"True\" type=\"Output\" from=\"1\" to=\"$lines\">\n"));
+		fwrite($fh,sprintf("<RedirectOutputs>False</RedirectOutputs>\n"));
+		fwrite($fh,sprintf("<Display>\n"));
+		fwrite($fh,sprintf("<Height>211</Height>\n"));
+		fwrite($fh,sprintf("<Width>459</Width>\n"));
+		fwrite($fh,sprintf("<PixelSize>3</PixelSize>\n"));
+		fwrite($fh,sprintf("<Brightness>5</Brightness>\n"));
+		fwrite($fh,sprintf("</Display>\n"));
+	}
+	else
+	{
+		fwrite($fh,sprintf("<PlugInData />\n"));
+	}
+	fwrite($fh,sprintf("<Channels>\n"));
+	$channel=0;
+	while (!feof($fh_vir))
+	{
+		$line = fgets($fh_vir);
+		$tok=preg_split("/ +/", $line);
+		$c=count($tok);
+		if($c>1)
+		{
+			$channel++;
+			if($channel%3==1)
+			{
+				$color=-65536; $rgb="R";
+			}
+			if($channel%3==2)
+			{
+				$color=-16744448; $rgb="G";
+			}
+			if($channel%3==0)
+			{
+				$color=-16776961; $rgb="B";
+			}
+			$channel_name = "Channel $channel $rgb";
+			$output=$channel-1;
+			fwrite($fh,sprintf("<Channel color=\"$color\" output=\"$output\" id=\"0\" enabled=\"True\">$channel_name</Channel>\n"));
+		}
+	}
+	fwrite($fh,sprintf("</Channels>\n"));
+	if($plugin==1)
+	{
+		fwrite($fh,sprintf("</PlugIn>\n"));
+		fwrite($fh,sprintf("</PlugInData>\n"));
+	}
+	fwrite($fh,sprintf("<SortOrders lastSort=\"-1\" />\n"));
+	fwrite($fh,sprintf("<EventValues>"));
+	fwrite($fh,$eventdata);
+	fwrite($fh,sprintf("</EventValues>\n"));
+	fwrite($fh,sprintf("</Program>\n"));
+	fclose($fh);
+	fclose($fh_vir);
 }
 ?>

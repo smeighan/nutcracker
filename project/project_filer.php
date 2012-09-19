@@ -779,7 +779,7 @@ function getSongTime($project_id) {
 	$sql = "SELECT max(end_secs) AS totLength FROM project_dtl WHERE project_id=$project_id";
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
-	$retval=$row['totLength'];
+	$retval=intval($row['totLength']);
 	return($retval);
 }
 
