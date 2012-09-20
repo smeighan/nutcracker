@@ -33,14 +33,6 @@ function create_vir($fh_buff, $fh_vixen_vir) {
 	}
 }
 
-function HexBase64($string)
-{
-	$hexVal= pack("H*",sprintf("%X",$string));
-	$convVal=substr(base64_encode($hexVal),0,2);
-	//echo "$convVal\n";
-	return($convVal);
-}
-
 function int2rgb ($inval) { //takes an integer value and converts to three RGB values as an array
 	$r = ($inval >> 16) & 0xFF;
 	$g = ($inval >> 8) & 0xFF;
@@ -49,29 +41,67 @@ function int2rgb ($inval) { //takes an integer value and converts to three RGB v
 	return ($retarray);
 }
 
-function convertVirLine($instr) {
-	$tok=preg_split("/ +/", $instr);
-	$retVal="";
-	foreach ($tok as $val) {
-		$convVal=HexBase64($val);
-		$retVal.=$convVal;
-	}
-	return($retVal);
+function string2Hex($instr) {
+	$strHex=dechex($instr);
+	if (strlen($strHex)==1) 
+		$strHex="0".$strHex;
+	$evalstr=array("0"=>0,"1"=>1,"2"=>2,"3"=>3,"4"=>4,"5"=>5,"6"=>6,"7"=>7,"8"=>8,"9"=>9,"A"=>10,"B"=>11,"C"=>12,"D"=>13,"E"=>14,"F"=>15,"a"=>10,"b"=>11,"c"=>12,"d"=>13,"e"=>14,"f"=>15);
+	$firstnum=$evalstr[$strHex[0]];
+	$secondnum=$evalstr[$strHex[1]];
+	$firstnum*=16;
+	$retval=chr($firstnum+$secondnum);
+	return ($retval);
 }
 
 function getEventStr($infile) {
 	$fh=fopen($infile,'r');
-	$myPartEvent="";
+	$cnt=0;
+	$accum="";
+	$base64str="";
 	while ($line = fgets($fh)) { 
-		//echo "$line\n";
-		$noCR=rtrim($line);
-		//echo "<pre>$noCR || </pre>";
-		$test=convertVirLine($noCR);
-		//echo $test."\n";
-		$myPartEvent.=convertVirLine($line);
+		$colcnt=0;
+		$tok=preg_split("/ +/", $line);
+		foreach ($tok as $hexStr) {
+			$hexStr = trim( preg_replace( '/\s+/', ' ', $hexStr ) ); // remove unwanted gunk
+			if (strlen(trim($hexStr))>0) {
+				$cnt++;
+				$colcnt++;
+				$hexVal=string2Hex($hexStr);
+				$accum.=$hexVal;
+				if ($cnt%3==0) {
+					$base64str.=base64_encode($accum);
+					$accum="";
+				}
+				//if (($cnt%100000)==0) 
+				//	echo "."; //print out a dot for every 100,000 entries processed.
+			}
+		}
 	}
-	return($myPartEvent);
+	if (($cnt%3)!=0) {
+		$padNum=3-($cnt%3);
+		str_pad($accum,$padNum,"0");
+		$base64str.=base64_encode($accum);
+	}
+	fclose($fh);
+	return($base64str);
 }
+
+function countCol($infile) {
+	$fh=fopen($infile,'r');
+	if ($line = fgets($fh)) { 
+		$colcnt=0;
+		$tok=preg_split("/ +/", $line);
+		foreach ($tok as $hexStr) {
+			$hexStr = trim( preg_replace( '/\s+/', ' ', $hexStr ) ); // remove unwanted gunk
+			if (strlen(trim($hexStr))>0) {
+				$colcnt++;
+			}
+		}
+	}
+	fclose($fh);
+	return($colcnt);
+}
+
 
 function genAllVixen($seq_duration, $frame_delay, $username, $project_id) {
 //$timeSec = 0.7;
@@ -152,6 +182,8 @@ function genVix($NCFile, $vixen_vir, $seq_duration, $frame_delay) {
 }
 function make_vix($vixen_vir,$duration,$frame_delay,$eventdata)
 {
+	$NumCols=countCol($vixen_vir);
+	$duration=$NumCols*$frame_delay;
 	$path_parts = pathinfo($vixen_vir);
 	$dirname   = $path_parts['dirname'];
 	$basename  = $path_parts['basename']; 
