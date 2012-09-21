@@ -86,10 +86,12 @@ if (isset($type)) {
 	if (isset($MasterNCSubmit)) {
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
 		nc_query($sql);
-		$myarray=checkGaps($project_id);
+		$myarray=getPhraseArray($project_id);
 		$projectArray=setupNCfiles($project_id,$myarray);
 		$myNCarray=prepMasterNCfile($project_id);
-		processMasterNCfile($project_id, $projectArray, $myNCarray, $outputType);
+		$numEntries=count($myNCarray);
+		$myarray=checkValidNCFiles($myarray, $numEntries, $project_id);
+		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
 	}
 }
 echo $msg_str;

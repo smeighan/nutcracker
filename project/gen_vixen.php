@@ -108,10 +108,10 @@ function genAllVixen($seq_duration, $frame_delay, $username, $project_id) {
 //$frame_delay = 50;
 	$filedir = "workarea/";
 	$fileStr=$username."~".$project_id;
-	$NCFile = $fileStr."~master.nc";
-	$vixout = $fileStr.".vix";
-	$virout = $fileStr.".vir";
-	$duration = $seq_duration*1000;
+	$NCFile = $filedir.$fileStr."~master.nc";
+	$vixout = $filedir.$fileStr.".vix";
+	$virout = $filedir.$fileStr.".vir";
+	//$duration = $seq_duration;
 	$fh_vixen_vir=fopen($virout,'w');
 	$fh_buff=fopen($NCFile,'r');
 	create_vir($fh_buff, $fh_vixen_vir);
@@ -122,7 +122,7 @@ function genAllVixen($seq_duration, $frame_delay, $username, $project_id) {
 	//echo "$myEvent\n";
 	
 	genVix($NCFile, $virout, $seq_duration, $frame_delay);
-	make_vix($virout,$duration, $frame_delay, $myEvent);
+	make_vix($virout,$seq_duration, $frame_delay, $myEvent);
 	$retArr=array($vixout, $virout);
 	return($retArr);
 }
@@ -180,10 +180,10 @@ function genVix($NCFile, $vixen_vir, $seq_duration, $frame_delay) {
 		}
 	}
 }
-function make_vix($vixen_vir,$duration,$frame_delay,$eventdata)
+function make_vix($vixen_vir,$seq_duration,$frame_delay,$eventdata)
 {
-	$NumCols=countCol($vixen_vir);
-	$duration=$NumCols*$frame_delay;
+	//$NumCols=countCol($vixen_vir);
+	//$duration=$NumCols*$frame_delay;
 	$path_parts = pathinfo($vixen_vir);
 	$dirname   = $path_parts['dirname'];
 	$basename  = $path_parts['basename']; 
@@ -194,7 +194,7 @@ function make_vix($vixen_vir,$duration,$frame_delay,$eventdata)
 	$fh = fopen($file_vix,"w") or die ("unable to open $file_vix");
 	fwrite($fh,sprintf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"));
 	fwrite($fh,sprintf("<Program>\n"));
-	fwrite($fh,sprintf("<Time>$duration</Time>\n"));
+	fwrite($fh,sprintf("<Time>$seq_duration</Time>\n"));
 	fwrite($fh,sprintf("<EventPeriodInMilliseconds>$frame_delay</EventPeriodInMilliseconds>\n"));
 	fwrite($fh,sprintf("<MinimumLevel>0</MinimumLevel>\n"));
 	fwrite($fh,sprintf("<MaximumLevel>255</MaximumLevel>\n"));

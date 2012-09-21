@@ -71,23 +71,40 @@ function appendZeros($str_array1, $numZeros, $prepend=false, $sepStr=" ") {  // 
 // opens file in $infile and returns an array of strings where each string is a line of data from the file. 
 // if $stripHeader is set to true, the function will strip out the first four columns of data (aka the S X P X data)
 //
-function getFileData($infile,$stripHeader=false, $sepStr=" ") {  
-	$retArray = array();
-	$f = fopen ($infile, "r");
-	$ln= 0;
-	while ($line= fgets ($f)) {
-		if ($line) {
-			if (isInvalidLine($line) == false) {
-				$myArray=myTokenizer($line, $sepStr);
-				$myStr=revTokenizer($myArray,$stripHeader, $sepStr);
-				$retArray[$ln]=$myStr;
-				$ln++;
-			}
+function getFileData($infile, $numEntries, $sepStr=" ") {
+	$fh=fopen($infile, 'r');
+	$numEntries+=4;
+	$retVal=array();
+	while($line=fgets($fh)) {
+		$line = trim( preg_replace( '/\s+/', ' ', $line ) ); // remove unwanted gunk
+		$tempVal="";
+		$tok=preg_split("/ +/", trim($line));
+		//echo $arrayCnt."/n";
+		$numZeros=0;
+		if (($tok[0]=="S") and ($tok[2]=="P") and ($tok[0]!="#")) {
+			$arrayCnt=count($tok);
+			if ($arrayCnt < $numEntries) { 
+				$numZeros = $numEntries-$arrayCnt;
+				$arrayEnd=$arrayCnt;
+			} else {
+				$numZeros=0;
+				$arrayEnd=$numEntries;
+			}	
+			for($x=4;$x<$arrayEnd;$x++) 
+				$tempVal.=$tok[$x]." ";
 		}
-    }
-	fclose ($f);
-	return($retArray);
+		if ($numZeros > 0) {
+			$zStr=rtrim(str_repeat("0 ",$numZeros));
+			$tempVal.=$zStr;
+		}
+		if (strlen($tempVal)>0)
+			$retVal[]=$tempVal;
+	}
+	fclose($fh);
+	return($retVal);
 }
+
+/*
 // 
 // opens an array of files in the nc format and returns an array with the values appended
 // Array of files need to be of the format <filename> surrounded by quotes which delinates the file to be appended.
@@ -119,7 +136,7 @@ function appendFiles($in_filearray, $prepArray, $sepStr=" ") {
 	}
 	return($retarr);
 }
-
+*/
 function array2File($outfile,$outarray) {//writes out a file from an array
 	echo "Writing to $outfile \n";
 	$f=fopen($outfile,"w");
@@ -226,7 +243,7 @@ function getUserEffect($target,$effect,$username)
 	FROM `effects_user_hdr` hdr, effects_user_dtl dtl
 	where hdr.username = dtl.username
 	and hdr.effect_name = dtl.effect_name
-	and hdr.username='$username'
+	and hdr.username='".$username."'
 	and upper(hdr.effect_name)=upper('$effect')";
 	// echo "$sql <br />";
 	$result = nc_query($sql);
@@ -237,6 +254,7 @@ function getUserEffect($target,$effect,$username)
 		extract($row);		//	if(strncmp($param_name,"background_color",strlen("background_color"))==0 and strncmp($param_value,"#",1)==0) $param_value=hexdec($param_value);
 		$string = $string . "&" . $param_name . "=" . $param_value;
 		$get[$param_name]=$param_value;
+		$effect_class=$row['effect_class'];
 	}
 	// we also need teh effect class from the header
 	$get['effect_class']=$effect_class;
@@ -565,37 +583,194 @@ function parseSongs($result) {
 	$retVal[1]=$retStr2;
 	return($retVal);
 }
-
-function checkGaps($project_id) {  // from a finished project, start by returning an array of arrays that hold start,end,effect 
-	$start_time=0.0;
-	$subarray=array();
-	$cnt=0;
-	$outarray=array();
-	$sql="SELECT phrase_name, start_secs,end_secs, effect_name FROM `project_dtl` WHERE project_id=$project_id ORDER BY start_secs"; 
-	$result2=nc_query($sql);
-	while ($row=mysql_fetch_array($result2,MYSQL_ASSOC)) {
-		$st_time=$row['start_secs'];
-		$end_time=$row['end_secs'];
+function sec2frame($inval, $frame_delay) {
+	$retval=round($inval*1000/$frame_delay, 0);
+	return($retval);
+}
+function getPhraseArray($project_id) {
+	$sql = "SELECT phrase_name,start_secs, end_secs, effect_name, frame_delay, p.username, model_name, member_id \n"
+    . "FROM `project_dtl` as pd\n"
+    . "LEFT JOIN project as p ON p.project_id=pd.project_id\n"
+    . "LEFT JOIN members as m ON m.username=p.username \n"
+    . "WHERE pd.project_id = $project_id\n"
+    . "ORDER BY start_secs";
+	$result=nc_query($sql);
+	$retArray=array();
+	while ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
+		$phrase_name=$row['phrase_name'];
+		$st_secs=$row['start_secs'];
+		$frame_delay=$row['frame_delay'];
+		$username=$row['username'];
+		$member_id=$row['member_id'];
+		$end_secs=$row['end_secs'];
 		$effect_name=$row['effect_name'];
-		if ($start_time < $st_time) {
-			$subarray[0]=$start_time;
-			$subarray[1]=$st_time;
-			$subarray[2]="zzeross";
-			$outarray[$cnt]=$subarray;
-			$cnt+=1;
-		}
-		if (strlen($effect_name)==0)
-			$effect_name="zzeross";
-		$subarray[0]=$st_time;
-		$subarray[1]=$end_time;
-		$subarray[2]=$effect_name;
-		$outarray[$cnt]=$subarray;
-		$cnt+=1;
-		$start_time=$end_time;
+		$model_name=$row['model_name'];
+		$dur_secs=$end_secs-$st_secs;
+		$frame_cnt=sec2frame($dur_secs, $frame_delay);
+		$frame_st=sec2frame($st_secs, $frame_delay);
+		$frame_end=$frame_st+$frame_cnt;
+		$phraseArray=array($phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name);
+		$retArray[]=$phraseArray;
 	}
-	return($outarray);
+	$retArray=checkPhraseArray($retArray, $frame_delay);
+	$retArray= fixEffectFrames($retArray);
+	return($retArray);
 }
 
+function printPhrase($phraseArray) {
+	foreach($phraseArray as $phrase) { 
+		printf("<pre>%f\t%f\t%f\t%d\t%d\t%d\t%s\n</pre>", $phrase[1],$phrase[2],$phrase[3],$phrase[4],$phrase[5],$phrase[6],$phrase[7]);
+		//foreach($phrase as $val)
+		//	echo $val."\t";
+		//echo "\n";
+	}
+	return;
+}
+
+function getFrameCnt($phraseArray) {
+	$retVal=0;
+	foreach($phraseArray as $phrase)
+		if ($phrase[6]>$retVal)
+			$retVal=$phrase[6];
+	return($retVal);
+}
+
+function getTotalCnt($phraseArray, $frame_delay) {
+	return($frame_delay*getFrameCnt($phraseArray));
+}
+
+function checkPhraseArray($phraseArray, $frame_delay) {
+	$cnt=0;
+	$end_time=$start_time=0.0;
+	$retArray=array();
+	foreach($phraseArray as $phrase) {
+		$ph_st_time=$phrase[1];
+		$ph_end_time=$phrase[2];
+		$ph_end_phrase=$phrase[6];
+		if ($end_time < $ph_st_time) {  // gap exists.  Must fill with zero counts
+			$phrase_name="blank     ";
+			$new_st=$end_time;
+			$new_end=$ph_st_time;
+			$dur_secs=$new_end-$new_st;
+			$frame_cnt=sec2frame($dur_secs, $frame_delay);
+			$frame_st=sec2frame($new_st, $frame_delay);
+			$frame_end=$frame_st+$frame_cnt;
+			$effect_name="None";
+			if ($frame_cnt>0) {
+				$phraseArray=array($phrase_name,$new_st, $new_end, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name);
+				$retArray[]=$phraseArray;
+				$cnt++;
+			}
+		}
+		if ($end_time > $ph_st_time) { // overlap.  Need to adjust previous end time
+			if ($cnt>1) {
+				$prevCnt=$cnt-1;
+				$st_time=$retArray[$prevCnt][1];
+				$end_time=$ph_st_time;
+				$dur_secs=$end_time-$st_time;
+				$frame_cnt=sec2frame($dur_secs, $frame_delay);
+				$frame_st=sec2frame($st_time, $frame_delay);
+				$frame_end=$frame_st+$frame_cnt;
+				$retArray[$prevCnt][1]=$st_time;
+				$retArray[$prevCnt][2]=$end_time;
+				$retArray[$prevCnt][3]=$dur_secs;
+				$retArray[$prevCnt][4]=$frame_cnt;
+				$retArray[$prevCnt][5]=$frame_st;
+				$retArray[$prevCnt][6]=$frame_end;
+			}
+		}
+		if (strlen($phrase[7])==0)
+			$phrase[7]="None";
+		$retArray[]=$phrase;
+		$start_time=$ph_st_time;
+		$end_time=$ph_end_time;
+		$cnt++;
+	}
+	return($retArray);
+}
+
+function fixEffectFrames($phraseArray) {
+	$phrase_end=$phrase_start=0;
+	$cnt=1;
+	$numPhrase=count($phraseArray);
+	foreach($phraseArray as $phrase) {
+		$effect=$phrase[7];
+		$phrase_start=$phrase[5];
+		if ($cnt<$numPhrase) 
+			$phrase_end=$phraseArray[($cnt)][5]-1;
+		else
+			$phrase_end=$phrase[6];
+		$phraseArray[$cnt-1][6]=$phrase_end;
+		$phraseArray[$cnt-1][5]=$phrase_start;
+		$cnt++;
+	}
+	return($phraseArray);
+}
+
+function checkNCInfo($infile) {
+	$fh=fopen($infile,'r');
+	$oldColumns=-1;
+	$retArray=array();
+	while($line=fgets($fh)) {
+		$tok=preg_split("/ +/", trim($line));
+		if (($tok[0]=="S") and ($tok[2]=="P")) {
+			$numColumns=count($tok)-4;
+			if ($oldColumns<0) 
+				$oldColumns=$numColumns;
+			$outcome=($numColumns==$oldColumns);
+			$retArray[]=$outcome;
+			if ($outcome)
+				$oldColumns=$numColumns;
+		}
+			
+	}
+	fclose($fh);
+	return($retArray);
+}
+
+function getNCInfo($infile) {
+	$fh=fopen($infile,'r');
+	$numElements=$numColumns=0;
+	while($line=fgets($fh)) {
+		$tok=preg_split("/ +/", trim($line));
+		if (($tok[0]=="S") and ($tok[2]=="P")) {
+			$numColumns=count($tok)-4;
+			$numElements++;
+		}
+			
+	}
+	fclose($fh);
+	$numElements*=3; //account for the RGBs
+	$retVal=array($numColumns, $numElements);
+	return($retVal);
+}
+
+function isValidNC($infile) {
+	$valArray=checkNCInfo($infile);
+	$overcheck=true;
+	foreach($valArray as $currflag) 
+		$overcheck=$overcheck && $currflag;
+	return($overcheck);
+}	
+
+function getProjDetails($project_id) {
+	$sql = "SELECT frame_delay, p.username, model_name, member_id \n"
+    . "FROM project as p \n"
+    . "LEFT JOIN members as m ON m.username=p.username \n"
+    . "WHERE p.project_id = $project_id\n";
+	$retArray=array();
+	$result=nc_query($sql);
+	$retArray=array();
+	if ($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
+		$frame_delay=$row['frame_delay'];
+		$username=$row['username'];
+		$model_name=$row['model_name'];
+		$member_id=$row['member_id'];
+		$retArray=array('frame_delay'=>$frame_delay, 'username'=>$username, 'model_name'=>$model_name, 'member_id'=>$member_id);
+	}
+	return($retArray);
+}
+/*
 function getProjInfo($project_id) { // gets project info from database and returns it as an array
 	$retArray=array();
 	$sql="SELECT username, frame_delay,model_name FROM project WHERE project_id=$project_id";
@@ -609,7 +784,6 @@ function getFrameCnt($st,$end,$frame_delay) {
 	$retVal = ($end-$st)/($frame_delay/1000);
 	return($retVal);
 }
-
 function checkAccum($inval) {
 	$retVal=0;
 	while ($inval>1) {
@@ -618,15 +792,15 @@ function checkAccum($inval) {
 	}
 	return($retVal);
 }
-
+*/
 function setupNCfiles($project_id,$phrase_array) {  // create each of the effect nc files (or make sure they are created for each of the times
-	$proj_array=getProjInfo($project_id);
+	$proj_array=getProjDetails($project_id);
 	$frame_delay=$proj_array['frame_delay'];
 	$model_name=$proj_array['model_name'];
 	$username=$proj_array['username'];
+	$member_id=$proj_array['member_id'];
 	$cnt=0;
 	$outarray=array();
-	$accumulator=0;
 ?>
 <!-- Progress bar holder -->
 <div id="progress" style="width:500px;border:1px solid #ccc;"></div>
@@ -639,26 +813,21 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 	$i=0;
 	showProgress($i, $total);
 	foreach ($phrase_array as $curr_array) {
-		$st=$curr_array[0];
-		$end=$curr_array[1];
-		$eff=$curr_array[2];
-		$frame_cnt_raw=getFrameCnt($st,$end,$frame_delay);
-		$frame_cnt=floor($frame_cnt_raw);
-		$frame_cnt_remain=$frame_cnt_raw-$frame_cnt;
-		if ($eff=="zzeross") {
+		$phrase_name=$curr_array[0];
+		$st_secs=$curr_array[1];
+		$end_secs=$curr_array[2];
+		$dur_secs=$curr_array[3];
+		$frame_cnt=$curr_array[4];
+		$frame_st=$curr_array[5];
+		$frame_end=$curr_array[6];
+		$effect_name=$curr_array[7];
+		if ($effect_name=="None") {
 			echo "Generating ".$frame_cnt." frames of zeros<br />";
 			$outstr="zeros:$frame_cnt";
 		} else {
-			$outstr=createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay); 
+			$outstr=createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $st_secs, $end_secs, $project_id, $frame_delay); 
 		}
 		$outarray[$cnt++]=$outstr;
-		$accumulator+=$frame_cnt_remain;
-		$zeroframecnt=checkAccum($accumulator);
-		if ($zeroframecnt>0) {
-			$outstr="zeros:$zeroframecnt";
-			$accumulator-=$zeroframecnt;
-			$outarray[$cnt++]=$outstr;
-		}
 		$i++;
 		showProgress($i, $total);
 	}
@@ -666,6 +835,7 @@ function setupNCfiles($project_id,$phrase_array) {  // create each of the effect
 	document.body.style.cursor = "default";</script>';
 	return($outarray);	
 }
+
 function showProgress($i, $total) {
 		$percent = intval($i/$total * 100)."%";
 		if ($i > ($total-1))
@@ -762,11 +932,13 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 }
 
 function prepMasterNCfile($project_id) {
-	$proj_array=getProjInfo($project_id);
-	$username=$proj_array['username'];
+	$proj_array=getProjDetails($project_id);
+	$frame_delay=$proj_array['frame_delay'];
 	$model_name=$proj_array['model_name'];
+	$username=$proj_array['username'];
+	$member_id=$proj_array['member_id'];
 	$testarr = getHeader($model_name, $username, $project_id);
-	// print_r($testarr);
+	//print_r($testarr);
 	return($testarr);
 }
 function checkDir($inDir) {
@@ -783,18 +955,54 @@ function getSongTime($project_id) {
 	return($retval);
 }
 
-function processMasterNCfile($project_id, $projectArray, $workArray, $outputType) {
+function processMasterNCfile($project_id, $projectArray, $workArray, $outputType, $NCArray) {
 	// 
 	// Code to process all the Master NC Files here
 	//
-	$proj_array=getProjInfo($project_id);
-	$username=$proj_array['username'];
-	$model_name=$proj_array['model_name'];
+	$proj_array=getProjDetails($project_id);
 	$frame_delay=$proj_array['frame_delay'];
-	$song_tot_time=getSongTime($project_id);
+	$model_name=$proj_array['model_name'];
+	$username=$proj_array['username'];
+	$member_id=$proj_array['member_id'];
+	//printPhrase($workArray);
+	//print_r($NCArray);
+	//echo "Number of Entries = ".$numEntries."<br \>";
+	//echo "Song Frame Length = ".getFrameCnt($workArray)."<br \>";
+	//echo "Total Frame Count = ".getTotalCnt($workArray,$frame_delay)."<br \>";	
+	foreach($workArray as $curr_array) {
+		$phrase_name=$curr_array[0];
+		$st_secs=$curr_array[1];
+		$end_secs=$curr_array[2];
+		$dur_secs=$curr_array[3];
+		$frame_cnt=$curr_array[4];
+		$frame_st=$curr_array[5];
+		$frame_end=$curr_array[6];
+		$effect_name=$curr_array[7];
+		$numFrames = ($frame_end-$frame_st)+1;
+		$NCArraySize=count(myTokenizer($NCArray[0]))-4;
+		//echo "NCArray Size = $NCArraySize<br />";
+		if ($effect_name=="None") {
+			$NCArray=appendZeros($NCArray,$numFrames);
+			echo "Adding $numFrames zeros from frame $frame_st to frame $frame_end<br />";
+		} else {
+			$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc";
+			$effectData=getFileData($infile, $numFrames);
+			$NCArray=appendStr($NCArray,$effectData);
+			echo "Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end<br />";
+		}
+		$NCArraySize=count(myTokenizer($NCArray[0]))-4;
+		//echo "NCArray Size after = $NCArraySize<br />";
+	}
+	$outfile="workarea/".$username."~".$project_id."~master.nc";
+	array2File($outfile, $NCArray);
+	$myArray=getNCInfo($outfile);
+	$numFrames=$myArray[0];
+	$numEntities=$myArray[1];
+	$song_tot_time=$numFrames*$frame_delay;
+	//print_r($myArray);
+	/*$song_tot_time=getSongTime($project_id);
 	$retArray=appendFiles($projectArray,$workArray);
-	$outfile="$username~$project_id~master.nc";
-	array2File($outfile, $retArray);
+	array2File($outfile, $retArray); */
 	if (isset($outputType)) {
 		switch ($outputType) {
 			case 'vixen' :
@@ -824,5 +1032,37 @@ function printArray($inArray) {
 		print_r($currarray);
 		echo "<br />";
 	}
+}
+
+function checkValidNCFiles($myarray, $numEntries, $project_id) {
+	$proj_array=getProjDetails($project_id);
+	$frame_delay=$proj_array['frame_delay'];
+	$model_name=$proj_array['model_name'];
+	$username=$proj_array['username'];
+	$member_id=$proj_array['member_id'];
+	$modStr="workarea/".$username."~".$model_name."~";
+	$cnt=0;
+	foreach($myarray as $curr_array) {
+		$validFlag=false;
+		$phrase_name=$curr_array[0];
+		$st_secs=$curr_array[1];
+		$end_secs=$curr_array[2];
+		$dur_secs=$curr_array[3];
+		$frame_cnt=$curr_array[4];
+		$frame_st=$curr_array[5];
+		$frame_end=$curr_array[6];
+		$effect_name=$curr_array[7];
+		$fileName=$modStr.$effect_name."~".$frame_cnt.".nc";
+		if (is_file($fileName)) {
+			$NCArray=getNCInfo($fileName);
+			$validFlag=($NCArray[1]==($numEntries*3));
+			if ($validFlag) 
+				$validFlag=isValidNC($fileName);
+		}
+		if (!$validFlag) 
+			$myarray[$cnt][7]="None"; // if the NC file is bad, skip the effect
+		$cnt++;
+	}
+	return($myarray);
 }
 ?>
