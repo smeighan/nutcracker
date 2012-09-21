@@ -412,6 +412,7 @@ function gp_header($fh,$min_max,$target_info)
 	$max_y=$min_max[3];
 	$min_z=$min_max[4];
 	$max_z=$min_max[5];
+	extract($target_info);
 	/*	Target Info:
 	Array
 	(
@@ -425,16 +426,32 @@ function gp_header($fh,$min_max,$target_info)
 	[topography] => 
 	)
 		*/
+	/*echo "<pre>";
+	print_r($target_info);
+	echo "</pre>\n";*/
 	$model_type=$target_info['model_type'];
 	fwrite($fh,"set notitle\n" );
 	fwrite($fh,"set ylabel\n" );
 	fwrite($fh,"set xlabel\n" );
-	if($model_type=='SINGLE_STRANDx')
+	fwrite($fh,sprintf("unset xtics\n"));
+	fwrite($fh,sprintf("unset ytics\n"));
+	fwrite($fh,sprintf("unset label\n"));
+	fwrite($fh,sprintf("set bmargin 0\n"));
+	fwrite($fh,sprintf("set tmargin 0\n"));
+	fwrite($fh,sprintf("set lmargin 0\n"));
+	fwrite($fh,sprintf("set rmargin 0\n"));
+	if($model_type=='SINGLE_STRAND' and $gif_model != 'window')
 	{
 		$min_x *= .5;
 		$max_x *= .9;
 		$min_y *= .8;
 		$max_y *= .8;
+		fwrite($fh,sprintf("set autoscale\n"));
+		fwrite($fh,sprintf("set xrange[0:]\n"));
+		fwrite($fh,sprintf("set yrange[0:1]\n"));
+		//fwrite($fh,sprintf("set zrange[0:]\n"));
+		//	fwrite($fh,sprintf("set arrow from 0,0,0 to 50,0,100 nohead lc rgb 'red'\n"));
+		//	fwrite($fh,sprintf("set arrow from 0,0,0 to 50,40,0 nohead lc rgb 'green'\n"));
 	}
 	else
 	{
@@ -442,14 +459,14 @@ function gp_header($fh,$min_max,$target_info)
 		$max_x *= 1.1;
 		$min_y *= 1.1;
 		$max_y *= 1.1;
+		if($min_y<0.001) $min_y=$min_x;
+		if($max_y<0.001) $max_y=$max_x;
+		fwrite($fh,sprintf("set xrange[%5.0f:%5.0f]\n",$min_x,$max_x));
+		fwrite($fh,sprintf("set yrange[%5.0f:%5.0f]\n",$min_y,$max_y));
+		$top_height = $max_z* 1.1;
+		$bottom_height = $max_z* -0.3;
+		fwrite($fh,sprintf("set zrange[%5.0f:%5.0f]\n",$bottom_height,$top_height));
 	}
-	if($min_y<0.001) $min_y=$min_x;
-	if($max_y<0.001) $max_y=$max_x;
-	fwrite($fh,sprintf("set xrange[%5.0f:%5.0f]\n",$min_x,$max_x));
-	fwrite($fh,sprintf("set yrange[%5.0f:%5.0f]\n",$min_y,$max_y));
-	$top_height = $max_z* 1.1;
-	$bottom_height = $max_z* -0.3;
-	fwrite($fh,sprintf("set zrange[%5.0f:%5.0f]\n",$bottom_height,$top_height));
 	fwrite($fh,"unset border\n" );
 	fwrite($fh,"set angles degrees\n" );
 	fwrite($fh,"set object 1 rectangle from screen 0,0 to screen 1,1 fillcolor rgb \"black\" behind\n");
@@ -460,11 +477,11 @@ function gp_header($fh,$min_max,$target_info)
 	}
 	else if($model_type=='HORIZ_MATRIX')
 	{
-		fwrite($fh,"set view 105, 0, 2.0, 1\n");
+		fwrite($fh,"set view 105, 0, 1.0, 1\n");
 	}
 	else if($model_type=='SINGLE_STRAND')
 	{
-		fwrite($fh,"set view 90, 0, 1, 1\n");
+		fwrite($fh,"set view 90,0, 1, 1\n");
 	}
 	else
 	{
@@ -1004,9 +1021,13 @@ function save_user_effect($passed_array)
 		die("Unable to select database");
 	}
 	extract($passed_array);
+	/*echo "<pre>";
+	print_r($passed_array);
+	echo "</pre>";*/
 	$effect_name = strtoupper($effect_name);
 	$effect_name = rtrim($effect_name);
-	if(!empty($direction)) $direction = strtolower($direction);
+	if(isset($direction)) $direction = strtolower($direction);
+	else $direction='';
 	$username=str_replace("%20"," ",$username);
 	$effect_name=str_replace("%20"," ",$effect_name);
 	if(empty($sparkles)) $sparkles=0;
@@ -1017,11 +1038,13 @@ function save_user_effect($passed_array)
 	$effect_desc="desc";
 	$insert = "REPLACE into effects_user_hdr( effect_class,username,effect_name,effect_desc,last_upd)
 		values ('$effect_class','$username','$effect_name','$effect_desc',now())";
-	$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
+	$insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	//mysql_free_result($result);
 	$query = "select param_name from effects_dtl where effect_class = '$effect_class'";
 	//echo "<pre>$query</pre>\n";
-	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
+	$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	$param_name_array=array();
 	while ($row = mysql_fetch_assoc($result))
 	{
@@ -1201,28 +1224,33 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	//  make_gp($batch,workspaces/f,AA+SEAN3.dat,AA.dat,Array,Array,f,5,1331320308.6,Array)
 		//
 	fill_in_zeros($arr,$dat_file_array); // modify dat files so they have missingg data
+	$tok = explode(".dat",$t_dat);
+	$target=$tok[0];
 	$target_info=get_info_target($username,$t_dat);
-	echo "<pre>Target Info:\n";
+	$gif_model=get_gif_model($username,$target);
+	$target_info['gif_model']=$gif_model;
+	/*echo "<pre>Target Info:\n";
 	print_r($target_info);
-	echo "</pre>";
+	echo "</pre>";*/
 	extract ($target_info);
 	/*	Target Info:
-Array
-(
-    [target_name] => A1
-    [model_type] => SINGLE_STRAND
-    [total_strings] => 5
-    [pixel_count] => 0
-    [pixel_length] => 8.00
-    [pixel_spacing] => 
-    [unit_of_measure] => 
-    [topography] => 
-)
+	Array
+	(
+	[target_name] => A1
+	[model_type] => SINGLE_STRAND
+	[total_strings] => 5
+	[pixel_count] => 0
+	[pixel_length] => 8.00
+	[pixel_spacing] => 
+	[unit_of_measure] => 
+	[topography] => 
+	)
 		*/
 	$pixel_count=$target_info['pixel_count'];
 	//show_elapsed_time($script_start,"Making  gnuplot command file:");
 	//	dat_file_array[0]=workspaces/2/AA+CIRCLE1_d_1.dat
 	//
+	
 	$path_parts = pathinfo($dat_file_array[0]);
 	$dat_file_array0=$dat_file_array[0];
 	$dirname   = $path_parts['dirname']; // workspaces/2
@@ -1263,10 +1291,10 @@ Array
 	/*echo "<pre>h=$height,w=$width, aspect=$aspect_ratio,max=$max\n";
 	print_r($min_max);
 	echo "</pre>\n";*/
-	if($model_type=='SINGLE_STRAND')
+	if($model_type=='SINGLE_STRAND' and $gif_model=='arch')
 	{
-		$w=1200;
-		$h=800;
+		$w=640;
+		$h=480;
 	}
 	else if($aspect_ratio>1)
 	{
@@ -1431,21 +1459,7 @@ function purge_files()
 	//echo "<pre>purge_files: To limit disk space, everytime you create an effect all previous files are removed</pre>\n";
 	//echo "<pre>purge_files: Removing *.png, *.dat,*.vir,*.txt,*.hls,*.gp,*.srt,.*.lms</pre>\n";
 	$directory=getcwd();
-	$mask = $directory . "/*.dat";
-	array_map( "unlink", glob( $mask ) );
-	$mask = $directory . "/*.vir";
-	array_map( "unlink", glob( $mask ) );
-	$mask = $directory . "/*.txt";
-	array_map( "unlink", glob( $mask ) );
-	$mask = $directory . "/*.hls";
-	array_map( "unlink", glob( $mask ) );
-	$mask = $directory . "/*.gp";
-	array_map( "unlink", glob( $mask ) );
-	$mask = $directory . "/*.srt";
-	array_map( "unlink", glob( $mask ) );
-	$mask = $directory . "/*.lms";
-	array_map( "unlink", glob( $mask ) );
-	//	echo "<pre>purge_files: Purge completed.</pre>\n";
+	
 }
 
 function get_enable_project($username)
@@ -1844,11 +1858,11 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		$full_path=realpath($full_path);
 		if (file_exists($full_path))
 		{
-			echo "<pre>Purging $full_path</pre>\n";
-			unlink($full_path);
+		//	echo "<pre>Purging $full_path</pre>\n";
+		//	unlink($full_path);
 		}
 	}
-	if (file_exists($gp_file)) unlink($gp_file);
+	//if (file_exists($gp_file)) unlink($gp_file);
 	if (file_exists($amp_gp_file)) unlink($amp_gp_file);
 	fclose($fh_seq);
 	//
@@ -2302,4 +2316,32 @@ function get_segments($username,$object_name)
 		$segment_array[$segment]=$starting_pixel;
 	}
 	return $segment_array;
+}
+
+function get_gif_model($username,$user_target)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	$query = "select * from  models where username='$username' and object_name='$user_target' ";
+	//echo "<pre>get_number_segments: query=$query</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
+	$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	//
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	return $gif_model;
 }

@@ -51,7 +51,7 @@ else
 	if(isset($pixel_array)) update_strands($username,$object_name,$pixel_array);
 	$c=count($segment_array);
 	if(isset($gif_model)) update_number_segments($username,$object_name,$number_segments,$gif_model);
-	else $gif_model="single";
+	else $gif_model="roof_line";
 	$c=count($segment_array);
 	/*echo "<pre>";
 	print_r($segment_array);
@@ -112,13 +112,17 @@ for($string=1;$string<=$total_strings;$string++)
 </tr>
 <tr>
 <td>What Type of Gif Model to preview with</td>
-<?php $checked_single=$checked_window=$checked_arch="";
-if($gif_model=="single") $checked_single="checked"; 
+<?php $checked_roof_line=$checked_window=$checked_arch="";
+if($gif_model=="roof_line") $checked_roof_line="checked"; 
 if($gif_model=="window") $checked_window="checked"; 
 if($gif_model=="arch") $checked_arch="checked"; ?>
-<td><input type="radio" name="gif_model" value="single" <?php echo "$checked_single "; ?> />Straight Line<br/>
-<input type="radio" name="gif_model" value="window" <?php echo "$checked_window "; ?> />Window (Assumes four segments)<br/>
-<input type="radio" name="gif_model" value="arch" <?php echo "$checked_arch "; ?> />Arch (Each segment makes an arch)</td>
+<td>
+<input type="radio" name="gif_model" value="arch"   
+<?php echo "$checked_arch "; ?> />Arch (Each segment makes an arch)<br/>
+<input type="radio" name="gif_model" value="roof_line" 
+<?php echo "$checked_roof_line "; ?> />Roof Line<br/>
+<input type="radio" name="gif_model" value="window" 
+<?php echo "$checked_window "; ?> />Window (Assumes four segments)<p>
 </td>
 <td><img src="../images/single_strand.png" /></td>
 </tr>
@@ -268,32 +272,43 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	fwrite($fh,"# \n");
 	$s=1;
 	$p=0;
+	$number_segments=count($segment_array);
 	$segment_max=$number_segments+1;
 	$segment_array[$segment_max]=$maxPixels+1;
 	$x=$y=$z=0;
+	/*echo "<pre>segment_array:";
+	print_r($segment_array);
+	echo "</pre>";*/
 	for ($segment=1;$segment<$segment_max;$segment++)
 	{
 		if(isset($segment_array[$segment]))
 		{
 			$segment1=$segment+1;
-			$pixels_segment=$segment_array[$segment1]-$segment_array[$segment];
+			$pixels_segment[$segment]=$segment_array[$segment1]-$segment_array[$segment];
 			$PI=3.1415926;
-			$diameter_array[$segment] = 2*($pixels_segment/$PI);
+			$diameter_array[$segment] = 2*($pixels_segment[$segment]/$PI);
+			///
+			/*echo "<pre>segment=$segment";
+			print_r($pixels_segment);
+			print_r($diameter_array);
+			echo "</pre>";*/
+			//
 			printf ("<pre>%6d  %6d-%6d  dia=%7.2f pix_per-seg=%6d</pre>\n",
 			$segment,$segment_array[$segment],$segment_array[$segment1]-1,
-			$diameter_array[$segment],$pixels_segment);
+			$diameter_array[$segment],$pixels_segment[$segment]);
 			for($i=$segment_array[$segment]; $i< $segment_array[$segment1]; $i++)
 			{
 				$p++;
 				$start_pixel=$segment_array[$segment];
-				$xyz = get_xyz($segment,$start_pixel,$pixels_segment,$diameter_array,$p,$x,$y,$z,$gif_model);
+				$xyz = get_xyz($segment,$start_pixel,$pixels_segment,
+				$diameter_array,$p,$x,$y,$z,$gif_model);
 				$x=$xyz['x'];
 				$y=$xyz['y'];
 				$z=$xyz['z'];
 				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s\n", $model_name,$s,$p,$x,$y,$z,
 				$segment,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], 
 				$username ,$model_name));
-				/*printf ("<pre>seg=%3d %s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s</pre>\n", 
+				/*	printf ("<pre>seg=%3d %s %3d %3d %7.3f %7.3f %7.3f %5d %5d %5d %s %s</pre>\n", 
 				$segment,$model_name,$s,$p,$x,$y,$z,
 				$segment,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'],
 				$username ,$model_name);*/
@@ -308,50 +323,135 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 
 function get_xyz($segment,$start_pixel,$pixels_segment,$diameter_array,$p,$x,$y,$z,$gif_model)
 {
-	$mod=$segment%4;
-	if($mod==0) $mod=4;
-	$PI=3.1415926;
-	$radius = $pixels_segment/$PI;
-	$radian = (($p-$start_pixel)/$pixels_segment)*$PI;
-	$sum_diamter=$x_offset=$z_offset=0;
-	if($segment>1)
+	$max_pixels_segment=$pixels_segment[$segment];
+	$pixels_segment[0]=0;
+	if($gif_model=="roof_line")
 	{
-		for ($seg=1;$seg<$segment;$seg++)
+		$mod = $segment%2;
+		if($mod==0) $mod=2;
+		$x=$p*3;
+		switch ($mod)
 		{
-			$sum_diamter+=$diameter_array[$seg];
+			case 1:
+			$z=($p-$start_pixel)*3;
+			//$z=($pixels_segment[$segment-1]+($p-$start_pixel))*3;
+			break;
+			//
+			case 2:
+			$z=($pixels_segment[$segment-1]-($p-$start_pixel))*3;
+			break;
 		}
 	}
-	$x_offset=$sum_diamter+$diameter_array[$segment]/2;
-	$x=-1 * $radius * cos($radian) + $x_offset;
-	$z=$radius * sin($radian) + $z_offset;
-	//echo "<pre>n,segment,start_pixel,pixels_segment,p ,x,z = $radian,$segment,$start_pixel,$pixels_segment,$p,$x,$z</pre>\n";
-	/*switch ($mod)
+	else if($gif_model=="window")
 	{
-		case 1:
-		$x=$start_pixel-1 + $p*3;
-		$y=$x;
-		$z=72;
-		break;
-		//
-		case 2:
-		$x=$start_pixel-1 + $p*3;
-		$y=$x;
-		$z=96;
-		break;
-		//
-		case 3:
-		$x=$start_pixel-1 + $p*3;
-		$y=$x;
-		$z=72;
-		break;
-		//
-		case 4:
-		$x=$start_pixel-1 + $p*3;
-		$y=$x;
-		$z=96;
-		break;
+		$mod=$segment%4;
+		if($mod==0) $mod=4;
+		switch ($mod)
+		{
+			case 1:
+			$x=$p*3;
+			$z=0;
+			break;
+			//
+			case 2:
+			$x=$pixels_segment[1]*3;
+			$z=($p-$start_pixel)*3;
+			break;
+			//
+			case 3:
+			$x=($max_pixels_segment -($p-$start_pixel))*3;
+			$z=$pixels_segment[2]*3;
+			break;
+			//
+			case 4:
+			$x=0;
+			$z=($pixels_segment[4]-($p-$start_pixel))*3;
+			break;
+		}
 	}
-	*/
+	else if($gif_model=="window10")
+	{
+		$mod=$segment%4;
+		if($mod==0) $mod=4;
+		switch ($mod)
+		{
+			case 1:
+			$x=$pixels_segment[4]*3;
+			$z=($pixels_segment[3]-($p-$start_pixel))*3;
+			break;
+			case 2:
+			$x=($max_pixels_segment -($p-$start_pixel))*3;
+			$z=0;
+			break;
+			case 3:
+			$x=0;
+			$z=($p-$start_pixel)*3;
+			break;
+			
+			case 4:
+			$x=($p-$start_pixel)*3;
+			$z=$pixels_segment[4]*3;
+			break;
+			case 5:
+			$x=$p*3;
+			$z=0;
+			break;
+			case 6:
+			$x=$p*3;
+			$z=0;
+			break;
+			case 7:
+			$x=0;
+			$z=($pixels_segment[3]-($p-$start_pixel))*3;
+			break;
+			case 8:
+			$x=($max_pixels_segment -($p-$start_pixel))*3;
+			$z=$pixels_segment[2]*3;
+			break;
+			case 9:
+			$x=$pixels_segment[1]*3;
+			$z=($p-$start_pixel)*3;
+			break;
+			case 10:
+			$x=($max_pixels_segment -($p-$start_pixel))*3;
+			$z=$pixels_segment[2]*3;
+			break;
+			//
+			case 2:
+			$x=$pixels_segment[1]*3;
+			$z=($p-$start_pixel)*3;
+			break;
+			//
+			case 3:
+			$x=($max_pixels_segment -($p-$start_pixel))*3;
+			$z=$pixels_segment[2]*3;
+			break;
+			//
+			case 4:
+			$x=0;
+			$z=($pixels_segment[3]-($p-$start_pixel))*3;
+			break;
+		}
+	}
+	else if($gif_model=="arch")
+	{
+		$mod=$segment%4;
+		if($mod==0) $mod=4;
+		$PI=3.1415926;
+		$radius = $max_pixels_segment/$PI;
+		$radian = (($p-$start_pixel)/$max_pixels_segment)*$PI;
+		$sum_diamter=$x_offset=$z_offset=0;
+		if($segment>1)
+		{
+			for ($seg=1;$seg<$segment;$seg++)
+			{
+				$sum_diamter+=$diameter_array[$seg];
+			}
+		}
+		$x_offset=$sum_diamter+$diameter_array[$segment]/2;
+		$x=-1 * $radius * cos($radian) + $x_offset;
+		$z=$radius * sin($radian) + $z_offset;
+	}
 	$y=0;
 	$xyz['x']=$x;
 	$xyz['y']=$y;
@@ -525,7 +625,6 @@ function update_segments($username,$object_name,$segment_array)
 		mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	}
 }
-
 
 function update_number_segments($username,$object_name,$number_segments,$gif_model)
 {

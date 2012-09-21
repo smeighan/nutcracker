@@ -39,7 +39,6 @@ if(!isset($get['speed']))     $get['speed']="1";
 	extract ($get);
 	save_user_effect($get);
 	//
-	if($batch==0) show_array($get,"Effect Settings");
 	$path="../targets/". $member_id;
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
