@@ -587,7 +587,54 @@ function sec2frame($inval, $frame_delay) {
 	$retval=round($inval*1000/$frame_delay, 0);
 	return($retval);
 }
-function getPhraseArray($project_id) {
+
+function joinPhraseArray($inArray) { //$phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name
+	$savephrase_name=$inArray[0][0];
+	$savest_time=$inArray[0][1];
+	$saveend_time=$inArray[0][2];
+	$saveduration=$inArray[0][3];
+	$saveframe_cnt=$inArray[0][4];
+	$savest_phrase=$inArray[0][5];
+	$saveend_phrase=$inArray[0][6];
+	$saveeffect_name=$inArray[0][7];
+	$cnt=0;
+	$retArray=array();
+	foreach($inArray as $phrase) {
+		if ($cnt>0) {
+			$phrase_name=$phrase[0];
+			$st_time=$phrase[1];
+			$end_time=$phrase[2];
+			$duration=$phrase[3];
+			$frame_cnt=$phrase[4];
+			$st_phrase=$phrase[5];
+			$end_phrase=$phrase[6];
+			$effect_name=$phrase[7];
+			if ($saveeffect_name==$effect_name) {
+				$saveend_time=$end_time;
+				$saveduration+=$duration;
+				$saveend_phrase=$end_phrase;
+				$saveframe_cnt+=$frame_cnt;
+			} else {
+				$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name);
+				$retArray[]=$arrayEntry;
+				$savephrase_name=$phrase_name;
+				$savest_time=$st_time;
+				$saveend_time=$end_time;
+				$saveduration=$duration;
+				$saveframe_cnt=$frame_cnt;
+				$savest_phrase=$st_phrase;
+				$saveend_phrase=$end_phrase;
+				$saveeffect_name=$effect_name;				
+			}
+		}
+		$cnt++;
+	}
+	$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name);
+	$retArray[]=$arrayEntry;
+	return($retArray);
+}
+
+function getPhraseArray($project_id, $join_phrase=false) {
 	$sql = "SELECT phrase_name,start_secs, end_secs, effect_name, frame_delay, p.username, model_name, member_id \n"
     . "FROM `project_dtl` as pd\n"
     . "LEFT JOIN project as p ON p.project_id=pd.project_id\n"
@@ -612,6 +659,8 @@ function getPhraseArray($project_id) {
 		$phraseArray=array($phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name);
 		$retArray[]=$phraseArray;
 	}
+	if ($join_phrase)
+		$retArray=joinPhraseArray($retArray);
 	$retArray=checkPhraseArray($retArray, $frame_delay);
 	$retArray= fixEffectFrames($retArray);
 	return($retArray);
