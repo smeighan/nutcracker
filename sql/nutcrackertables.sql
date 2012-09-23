@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 18, 2012 at 05:13 AM
+-- Generation Time: Sep 23, 2012 at 11:58 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -104,6 +104,23 @@ CREATE TABLE IF NOT EXISTS `effects_user_hdr` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `effects_user_segment`
+--
+
+CREATE TABLE IF NOT EXISTS `effects_user_segment` (
+  `username` varchar(25) NOT NULL,
+  `effect_name` varchar(25) NOT NULL,
+  `param_name` varchar(32) NOT NULL,
+  `param_value` varchar(4000) NOT NULL,
+  `segment` int(6) DEFAULT '0',
+  `created` datetime DEFAULT NULL,
+  `last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `idx_uesp` (`username`,`effect_name`,`segment`,`param_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gallery`
 --
 
@@ -175,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=598 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=623 ;
 
 -- --------------------------------------------------------
 
@@ -284,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=427 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=439 ;
 
 -- --------------------------------------------------------
 
@@ -326,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 
@@ -342,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `effect_name` varchar(25) NOT NULL,
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=43 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=193 ;
 
 -- --------------------------------------------------------
 

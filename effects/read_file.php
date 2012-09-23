@@ -563,7 +563,7 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 		else
 		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
 		$return=system($shellCommand,$output); 
-		//	echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
+			echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
 	}
 	else
 	{
