@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_segment` (
   `segment` int(6) DEFAULT '0',
   `created` datetime DEFAULT NULL,
   `last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY `idx_uesp` (`username`,`effect_name`,`segment`,`param_name`)
+ unique  KEY `idx_uesp` (`username`,`effect_name`,`segment`,`param_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

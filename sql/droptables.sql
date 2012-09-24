@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT EXISTS nutcracker;
 	DROP TABLE IF EXISTS effects_hdr;
 	DROP TABLE IF EXISTS effects_user_dtl;
 	DROP TABLE IF EXISTS effects_user_hdr;
+	DROP TABLE IF EXISTS effects_user_segment;
 	DROP TABLE IF EXISTS gallery;
 	DROP TABLE IF EXISTS library_dtl;
 	DROP TABLE IF EXISTS library_hdr;
