@@ -18,11 +18,8 @@ require_once('../conf/header.php');
 require("../effects/read_file.php");
 // http://localhost/nutcracker/login/target-exec.php?model=AA22?user=f
 // 
-
 extract($_GET);
-
 set_time_limit(300);
-
 $username = str_replace("%20"," ",$username);
 //get_models('f','ZZ');
 get_models($username,$model_name);
@@ -313,7 +310,7 @@ function insert_target_array($target_array,$username,$model_name,$maxStrand,$max
 		$user_pixel = $target_array[$s][$p]['user_pixel'];
 		$insert = "insert into model_dtl( username,object_name,strand,pixel,string,user_pixel,last_upd)
 			values ('$username','$model_name',$s,$p,$string,$user_pixel,now())";
-		mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+		mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	}
 }
 
@@ -422,6 +419,8 @@ function megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$t
 
 function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
 {
+	echo "<pre>function matrix($folds,$maxStrands,$maxPixels,
+	$pixel_count,$directory,$object_name,$model_type,$target_array2)</pre\n";
 	#
 	#	output files are created for each segment
 	#	8 segment = t1_8.dat output file
@@ -435,9 +434,8 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	$DTOR = $PI/180;
 	$RTOD = 180/$PI;
 	$pixel_spacing=3.0;
-	if($maxPixels==120) $pixel_spacing=1.4;
-	$width_bottom = $pixel_count*$pixel_spacing;	// assume 3" spacing between nodes.
-	$width_top = $pixel_count*$pixel_spacing;	// assume 3" spacing between nodes.
+	$width_bottom = $pixel_count*3.0;	// assume 3" spacing between nodes.
+	$width_top = $pixel_count*3.0;	// assume 3" spacing between nodes.
 	if($model_type=="RAY") $width_top=$width_bottom/5;
 	$height = $pixel_spacing*$maxPixels;
 	$target_array=$target_array2[0];
@@ -460,53 +458,40 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	fwrite($fh,"# \n");
 	$pixels=$maxPixels;
 	$x_spacing=$x_spacing_top=$pixel_spacing;
-	echo "<pre>";
-	echo "x_spacing=x_spacing_top=pixel_spacing;\n";
-	echo "$x_spacing=$x_spacing_top=$pixel_spacing;\n";
-	echo "<pre>";
-	echo "model_type=$model_type";
-	echo "maxStrands=$maxStrands,maxPixels=$maxPixels\n ";
-	$s=1;
-	for ($p=1;$p<=$maxPixels;$p++)
+	if($model_type=="RAY")
+		$x_spacing_top=$width_top/$maxStrands;
+	for ($s=1;$s<=$maxStrands;$s++)
 	{
-		$mod=($p%$maxStrands)+1;
-		$mod2 = $maxPixels-$mod+1;
-		$mod2 = $maxPixels-$p;
-		
-			$h= ($mod2*$x_spacing);
-	
-		if(isset($target_array[$s][$p]['string']))
+		$hyp=0;
+		$s2=$maxStrands/2;
+		$s_delta = $s2-$s;
+		$x2=$s_delta*$x_spacing;
+		$x2_top=$s_delta*$x_spacing;
+		if($model_type=="RAY")
 		{
-			$s_orig=$s; $p_orig=$p;
-			$s0=$s; $p0=$p;
-			if($model_type=="HORIZ_MATRIX")
-			{
-				if($s_orig%$folds==1)
-				{
-					$s0=$p;
-				}
-				else{
-					$s0=$maxPixels-$p+1;
-				}
-				$p0=$s_orig;
-				$s2=$maxPixels/2;
-				$mod2 = $maxStrands-$p0;
-			}
-			if ((isset($s2))==false) {  // handle minor error
-				$s2 = 0;
-			}
-			if ((isset($y2))==false) { // handle minor error
-				$y2 = 0;
-			}
-			$x2=$s0*3 - $s2*3;
-			$h=$mod2*3;
-			fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
-			printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s0,$p0,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+			$x2_top= $s_delta*$x_spacing_top;
 		}
+		$y2=0;
+		for ($p=1;$p<=$maxPixels;$p++)
+		{
+			$mod=($p%$maxStrands)+1;
+			$mod2 = $maxPixels-$mod+1;
+			$mod2 = $maxPixels-$p;
+			if($model_type=="MATRIX")
+				$h= ($mod2*$x_spacing);
+			else 	if($model_type=="RAY")
+				$h= ($mod2*$x_spacing) - $x_spacing;
+			if(isset($target_array[$s][$p]['string']))
+			{
+				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
+				// echo "<pre>";
+				//	printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+				//echo "</pre>\n";
+			}
+		}
+		fwrite($fh, "\n" );
 	}
-	fwrite($fh, "\n" );
 	fclose($fh);
-	echo "</pre>\n";
 	return $dat_file;
 }
 

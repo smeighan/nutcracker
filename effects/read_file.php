@@ -552,7 +552,7 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 	if (file_exists($gp_file))
 	{
 		$cwd=getcwd();
-		// pcntl_exec($programexe,$programvars); 
+		// pcntl_exec($programexe,$programvars); 		
 		//   $shellCommmand = "/usr/local/bin/gnuplot '" . $pathToCommandFile .+"'";
 		//         $output = system($shellCommmand . " 2>&1");
 		//
@@ -563,44 +563,13 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 		else
 		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
 		$return=system($shellCommand,$output); 
-			echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
+		//echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
 	}
 	else
 	{
 		echo "ERROR! The file $gp_file does not exist\n";
 	}
-	/*
-	$aniGif = new Imagick();
-	$aniGif->setFormat("gif");
-	$max_i=count($out_file_array);
-	for ($i=1;$i<=$max_i;$i++)
-	{
-		$file =  $file_array[$i];
-		$full = $dir . $file;
-		$full = $out_file_array[$i-1];
-		$frame = new Imagick($full);        
-		$aniGif->addImage($frame);
-		//$delay time unit is micro second so 100 = 1s, one picture per second
-		//
-		$frame_delay = $frame_delay/10;	// chame ms passed in to hundreths of sec that we need
-		if(empty($frame_delay))
-		{
-			echo "Error! frame_delay was empty. Setting frame_delay to 100 ms</pre>\n";
-			$frame_delay=10;
-		}
-		if($frame_delay<1) $frame_delay=1;
-		$aniGif->setImageDelay($frame_delay); // 5=50ms
-	}
-	//$out_file = $dir . "ani.gif";
-	$out_file = $gif_file;
-	$aniGif->writeImages($out_file,true);
-	//	also make a thumbail from image
-	//
-	//$thumb = new Imagick($gif_file);
-	//$thumb->resizeImage(160,120,Imagick::FILTER_LANCZOS,1);
-	//$thumb->writeImage($gif_file_th);
-	*/
-	//show_elapsed_time($script_start,"Finished  Imagick to make animated GIF:");
+	
 	if($batch<=1) printf ("<img src=\"%s\"/>",$gif_file);
 }
 
@@ -1250,7 +1219,6 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	//show_elapsed_time($script_start,"Making  gnuplot command file:");
 	//	dat_file_array[0]=workspaces/2/AA+CIRCLE1_d_1.dat
 	//
-	
 	$path_parts = pathinfo($dat_file_array[0]);
 	$dat_file_array0=$dat_file_array[0];
 	$dirname   = $path_parts['dirname']; // workspaces/2
@@ -1459,7 +1427,6 @@ function purge_files()
 	//echo "<pre>purge_files: To limit disk space, everytime you create an effect all previous files are removed</pre>\n";
 	//echo "<pre>purge_files: Removing *.png, *.dat,*.vir,*.txt,*.hls,*.gp,*.srt,.*.lms</pre>\n";
 	$directory=getcwd();
-	
 }
 
 function get_enable_project($username)
@@ -1858,8 +1825,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		$full_path=realpath($full_path);
 		if (file_exists($full_path))
 		{
-		//	echo "<pre>Purging $full_path</pre>\n";
-		//	unlink($full_path);
+			//	echo "<pre>Purging $full_path</pre>\n";
+			//	unlink($full_path);
 		}
 	}
 	//if (file_exists($gp_file)) unlink($gp_file);
