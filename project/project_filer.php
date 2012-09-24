@@ -908,6 +908,10 @@ function showProgress($i, $total) {
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
+	$inHash=getProjHash($project_id, $eff);
+	$checkHasher=checkHash($inHash,$project_id, $eff);
+	if (!$checkHasher)
+		removeNCFiles($username, $model_name, $eff);
 	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
@@ -977,6 +981,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 			copy($from_file, $to_file);
 		}
 	}
+	updateHash($project_id,$eff);
 	return($outfile); // this will be the file created 
 }
 
@@ -1113,5 +1118,56 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 		$cnt++;
 	}
 	return($myarray);
+}
+
+function getHash($project_id,$effect_name) {
+	$myArray=getProjDetails($project_id);
+	$username=$myArray['username'];
+	//$sql = "SELECT username, model_name, p.check_sum, effect_name, pd.check_sum FROM `project` AS p LEFT JOIN project_dtl as pd ON pd.project_id=p.project_id WHERE p.project_id=$project_id AND pd.effect_name='$effect_name'"
+	$sql = "SELECT param_value FROM effects_user_dtl WHERE username='$username' AND effect_name='$effect_name'";
+	$result=nc_query($sql);
+	$valStr="";
+	while ($row=mysql_fetch_assoc($result)) {
+		$valStr.=trim($row['param_value']);
+	}
+	$checksum = md5($valStr);
+	return($checksum);
+}
+
+function getProjHash($project_id, $effect_name) {
+	$sql = "SELECT check_sum FROM project_dtl WHERE project_id=$project_id AND effect_name='$effect_name'";
+	$result=nc_query($sql);
+	$valStr="";
+	if ($row=mysql_fetch_assoc($result)) {
+		$check_hash=$row['check_sum'];
+		if (strlen($check_hash)> 0) {
+			$retVal=$check_hash;
+		} else {
+			$retVal="XXX";
+		}
+	} else { // no hash exists
+		$retVal="XXX";
+	}
+	return($retVal);
+}
+function removeNCFiles($username, $target, $effect) {
+	$testFile="workarea/".$username."~".$target."~".$effect."*.nc";
+	foreach (glob($testFile) as $filename) {
+		unlink($filename);
+	}
+	return;
+}
+
+function updateHash($project_id, $effect_name) {
+	$hashVal=getHash($project_id, $effect_name);
+	$sql="UPDATE project_dtl SET check_sum='$hashVal' WHERE project_id=$project_id and effect_name='$effect_name'";
+	$result=nc_query($sql);
+	return;
+}
+
+function checkHash($inHash, $project_id, $effect_name) {
+	$retVal=false;
+	$retVal=($inHash == getHash($project_id, $effect_name));
+	return($retVal);
 }
 ?>

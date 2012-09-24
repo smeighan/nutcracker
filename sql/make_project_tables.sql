@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `username` varchar(25) NOT NULL,
   `frame_delay` int(11) NOT NULL,
   `model_name` varchar(16) NOT NULL,
+  `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 
@@ -64,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `end_secs` float(12,6) NOT NULL,
   `effect_name` varchar(25) NOT NULL,
   `project_id` int(11) NOT NULL,
+  `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_detail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
