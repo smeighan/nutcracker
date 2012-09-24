@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 23, 2012 at 11:58 AM
+-- Generation Time: Sep 24, 2012 at 11:43 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_segment` (
   `segment` int(6) DEFAULT '0',
   `created` datetime DEFAULT NULL,
   `last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
- unique  KEY `idx_uesp` (`username`,`effect_name`,`segment`,`param_name`)
+  UNIQUE KEY `idx_uesp` (`username`,`effect_name`,`segment`,`param_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=623 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=626 ;
 
 -- --------------------------------------------------------
 
@@ -340,6 +340,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `username` varchar(25) NOT NULL,
   `frame_delay` int(11) NOT NULL,
   `model_name` varchar(16) NOT NULL,
+  `check_sum` varchar(50) DEFAULT NULL,
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
@@ -358,6 +359,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `end_secs` float(12,6) NOT NULL,
   `effect_name` varchar(25) NOT NULL,
   `project_id` int(11) NOT NULL,
+  `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=193 ;
 
