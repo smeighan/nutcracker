@@ -49,14 +49,14 @@ $files_array=$_GET['fullpath_array'];
 $cnt=count($files_array);
 foreach($files_array as $i=>$file0)
 {
-	; //echo "<pre>$i $file0</pre>\n";
+	echo "<pre>$i $file0</pre>\n";
 }
 $tok=explode("/",$file0);
 $dir = $tok[0] . "/" . $tok[1];
 $tok2=explode(".nc",$tok[2]);
-/*echo "<pre>";
+echo "<pre>";
 print_r($tok2);
-echo "</pre>";*/
+echo "</pre>";
 $base=$tok2[2];
 $xml = $dir . "/UserPatterns.xml";
 echo "<h3>Adding the following effects into your UserPattern Nutcracker Group</h3>\n";
