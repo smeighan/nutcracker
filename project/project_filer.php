@@ -316,13 +316,15 @@ function save_phrases($inphp) {
 function get_effects($username) {
 	$sql = "SELECT effect_name, effect_class FROM effects_user_hdr WHERE username='$username' AND effect_name IS NOT NULL ORDER BY effect_name";
 	//echo "$sql<br />";
+	$effect=array();
+	$efftype=array();
 	$result=nc_query($sql);
-	$cnt=0;
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$effect[$cnt]=$row['effect_name'];
-		$cnt+=1;
+		$effect[]=$row['effect_name'];
+		$efftype[]=$row['effect_class'];
 	}
-	return($effect);
+	$retVal=array($effect, $efftype);
+	return($retVal);
 }
 
 function edit_song($project_id) {
@@ -337,7 +339,9 @@ function edit_song($project_id) {
 	$model_name=$row['model_name'];
 	$last_update_date=$row['last_update_date'];
 	$last_compile_date=$row['last_compile_date'];
-	$effect=get_effects($username);
+	$effectArr=get_effects($username);
+	$effect=$effectArr[0];
+	$effType=$effectArr[1];
 	//print_r($effect);
 	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
 	//echo "edit song SQL - $sql<br />";
@@ -356,11 +360,11 @@ function edit_song($project_id) {
 	<tr><th>Phrase</th><th>start time (sec)</th><th>end time (sec)</th><th>Effect Assigned</th></tr>
 	<?php
 	$result3=nc_query($sql);
-	$cnt=show_phrases($result3,$effect);
+	$cnt=show_phrases($result3,$effect, $effType);
 	if ($cnt==0) { // if there currently are no phrases attached to project get them from the library
 		insert_proj_detail_from_library($project_id);
 		$result3=nc_query($sql);
-		$newcnt=show_phrases($result3,$effect);
+		$newcnt=show_phrases($result3,$effect, $effType);
 	}
 	?>
 	</table>
@@ -384,7 +388,7 @@ function edit_song($project_id) {
 	return;
 }
 
-function show_phrases($inresult,$effect) {
+function show_phrases($inresult,$effect, $effType) {
 	$cnt=0;
 	while ($row = mysql_fetch_array($inresult, MYSQL_ASSOC)) {
 		$cnt +=1;
@@ -393,14 +397,14 @@ function show_phrases($inresult,$effect) {
 		$start_secs = $row['start_secs'];
 		$end_secs = $row['end_secs'];
 		$effect_name = $row['effect_name'];
-		$effect_str=effect_select($effect,$effect_name,$project_dtl_id);
+		$effect_str=effect_select($effect,$effect_name,$project_dtl_id, $effType);
 		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$start_secs\" name=\"st-$project_dtl_id\"></td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$end_secs\" name=\"en-$project_dtl_id\"></td><td class=\"FormFieldName\" >$effect_str</td></tr>";
 		// echo "$phrase_name : $start_secs : $end_secs : $effect_name<br />";
 	}
 	return($cnt);
 }
 
-function effect_select($effect_array, $ineffect, $project_dtl_id) {
+function effect_select($effect_array, $ineffect, $project_dtl_id, $effType) {
 	$retStr='<select class="FormFieldName" name='.$project_dtl_id.' id='.$project_dtl_id.'>';
 	if (strlen($ineffect)==0) {
 		$defstr=" selected";
@@ -408,13 +412,15 @@ function effect_select($effect_array, $ineffect, $project_dtl_id) {
 		$defstr="";
 	}
 	$retStr.='<option value=""'.$defstr.'>No Effect Selected</option>';
-	foreach ($effect_array as $effect) {
+	for($x=0;$x<count($effect_array);$x++) {
+		$effect=$effect_array[$x];
+		$effect_class=$effType[$x];
 		if ($effect == $ineffect) {
 			$defstr = " selected";
 		} else {
 			$defstr = "";
 		}
-		$retStr.='<option value="'.$effect.'"'.$defstr.'>'.$effect.'</option>';
+		$retStr.='<option value="'.$effect.'"'.$defstr.'>'.$effect.' ('.$effect_class.')</option>';
 	}
 	$retStr.='</select>';
 	return($retStr);
@@ -500,7 +506,7 @@ function select_song($username) {
      . "LEFT JOIN song_dtl ON song.song_id = song_dtl.song_id\n"
      . "GROUP BY song_name, song.song_id\n";
     // . "HAVING song.song_id NOT IN (SELECT song_id from project where username='".$username."')";
-	$sql2 = "SELECT object_name FROM models WHERE username='$username'";
+	$sql2 = "SELECT object_name, model_type FROM models WHERE username='$username'";
 	//echo "$sql <br />";
 	//echo "$sql2 <br />";
 	$result = nc_query($sql);
@@ -558,7 +564,8 @@ function parseTargetSelect($result) {
 	$retStr='<select name="model_name" class="FormSelect" id="model_name">';
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$model_name=$row['object_name'];
-		$retStr.='<option value="'.$model_name.'">'.$model_name.'</option>';
+		$model_type=$row['model_type'];
+		$retStr.='<option value="'.$model_name.'">'.$model_name.' ('.$model_type.')</option>';
 	}
 	$retStr.='</select>';
 	return($retStr);
@@ -634,7 +641,7 @@ function joinPhraseArray($inArray) { //$phrase_name,$st_secs, $end_secs, $dur_se
 	return($retArray);
 }
 
-function getPhraseArray($project_id, $join_phrase=false) {
+function getPhraseArray($project_id, $join_phrase=true) {
 	$sql = "SELECT phrase_name,start_secs, end_secs, effect_name, frame_delay, p.username, model_name, member_id \n"
     . "FROM `project_dtl` as pd\n"
     . "LEFT JOIN project as p ON p.project_id=pd.project_id\n"
@@ -905,13 +912,23 @@ function showProgress($i, $total) {
 		return;
 }
 
+function showMessage($outStr) {
+	echo $outStr."<br />";
+	echo str_repeat(' ',1024*64);
+	 
+	// Send output to browser immediately
+	flush();
+	ob_flush();
+	return;
+}
+
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
-	$inHash=getProjHash($project_id, $eff);
-	$checkHasher=checkHash($inHash,$project_id, $eff);
-	if (!$checkHasher)
-		removeNCFiles($username, $model_name, $eff);
+	//$inHash=getProjHash($project_id, $eff);
+	//$checkHasher=checkHash($inHash,$project_id, $eff);
+	//if (!$checkHasher)
+	//	removeNCFiles($username, $model_name, $eff);
 	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
@@ -986,6 +1003,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 }
 
 function prepMasterNCfile($project_id) {
+	showMessage('Prepping the Master NC File');
 	$proj_array=getProjDetails($project_id);
 	$frame_delay=$proj_array['frame_delay'];
 	$model_name=$proj_array['model_name'];
@@ -1023,6 +1041,7 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 	//echo "Number of Entries = ".$numEntries."<br \>";
 	//echo "Song Frame Length = ".getFrameCnt($workArray)."<br \>";
 	//echo "Total Frame Count = ".getTotalCnt($workArray,$frame_delay)."<br \>";	
+	showMessage('Erasing gaps and joining effects');
 	foreach($workArray as $curr_array) {
 		$phrase_name=$curr_array[0];
 		$st_secs=$curr_array[1];
@@ -1096,6 +1115,7 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 	$member_id=$proj_array['member_id'];
 	$modStr="workarea/".$username."~".$model_name."~";
 	$cnt=0;
+	showMessage('checking NC Files');
 	foreach($myarray as $curr_array) {
 		$validFlag=false;
 		$phrase_name=$curr_array[0];
