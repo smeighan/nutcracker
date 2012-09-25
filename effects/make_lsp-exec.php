@@ -54,7 +54,10 @@ foreach($files_array as $i=>$file0)
 $tok=explode("/",$file0);
 $dir = $tok[0] . "/" . $tok[1];
 $tok2=explode(".nc",$tok[2]);
-$base=$tok2[0];
+/*echo "<pre>";
+print_r($tok2);
+echo "</pre>";*/
+$base=$tok2[2];
 $xml = $dir . "/UserPatterns.xml";
 echo "<h3>Adding the following effects into your UserPattern Nutcracker Group</h3>\n";
 $fh_xml=fopen($xml,"w") or die("Unable to open $xml");
