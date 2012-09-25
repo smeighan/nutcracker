@@ -316,13 +316,15 @@ function save_phrases($inphp) {
 function get_effects($username) {
 	$sql = "SELECT effect_name, effect_class FROM effects_user_hdr WHERE username='$username' AND effect_name IS NOT NULL ORDER BY effect_name";
 	//echo "$sql<br />";
+	$effect=array();
+	$efftype=array();
 	$result=nc_query($sql);
-	$cnt=0;
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$effect[$cnt]=$row['effect_name'];
-		$cnt+=1;
+		$effect[]=$row['effect_name'];
+		$efftype[]=$row['effect_class'];
 	}
-	return($effect);
+	$retVal=array($effect, $efftype);
+	return($retVal);
 }
 
 function edit_song($project_id) {
@@ -337,7 +339,9 @@ function edit_song($project_id) {
 	$model_name=$row['model_name'];
 	$last_update_date=$row['last_update_date'];
 	$last_compile_date=$row['last_compile_date'];
-	$effect=get_effects($username);
+	$effectArr=get_effects($username);
+	$effect=$effectArr[0];
+	$effType=$effectArr[1];
 	//print_r($effect);
 	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
 	//echo "edit song SQL - $sql<br />";
@@ -356,11 +360,11 @@ function edit_song($project_id) {
 	<tr><th>Phrase</th><th>start time (sec)</th><th>end time (sec)</th><th>Effect Assigned</th></tr>
 	<?php
 	$result3=nc_query($sql);
-	$cnt=show_phrases($result3,$effect);
+	$cnt=show_phrases($result3,$effect, $effType);
 	if ($cnt==0) { // if there currently are no phrases attached to project get them from the library
 		insert_proj_detail_from_library($project_id);
 		$result3=nc_query($sql);
-		$newcnt=show_phrases($result3,$effect);
+		$newcnt=show_phrases($result3,$effect, $effType);
 	}
 	?>
 	</table>
@@ -384,7 +388,7 @@ function edit_song($project_id) {
 	return;
 }
 
-function show_phrases($inresult,$effect) {
+function show_phrases($inresult,$effect, $effType) {
 	$cnt=0;
 	while ($row = mysql_fetch_array($inresult, MYSQL_ASSOC)) {
 		$cnt +=1;
@@ -393,14 +397,14 @@ function show_phrases($inresult,$effect) {
 		$start_secs = $row['start_secs'];
 		$end_secs = $row['end_secs'];
 		$effect_name = $row['effect_name'];
-		$effect_str=effect_select($effect,$effect_name,$project_dtl_id);
+		$effect_str=effect_select($effect,$effect_name,$project_dtl_id, $effType);
 		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$start_secs\" name=\"st-$project_dtl_id\"></td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$end_secs\" name=\"en-$project_dtl_id\"></td><td class=\"FormFieldName\" >$effect_str</td></tr>";
 		// echo "$phrase_name : $start_secs : $end_secs : $effect_name<br />";
 	}
 	return($cnt);
 }
 
-function effect_select($effect_array, $ineffect, $project_dtl_id) {
+function effect_select($effect_array, $ineffect, $project_dtl_id, $effType) {
 	$retStr='<select class="FormFieldName" name='.$project_dtl_id.' id='.$project_dtl_id.'>';
 	if (strlen($ineffect)==0) {
 		$defstr=" selected";
@@ -408,13 +412,15 @@ function effect_select($effect_array, $ineffect, $project_dtl_id) {
 		$defstr="";
 	}
 	$retStr.='<option value=""'.$defstr.'>No Effect Selected</option>';
-	foreach ($effect_array as $effect) {
+	for($x=0;$x<count($effect_array);$x++) {
+		$effect=$effect_array[$x];
+		$effect_class=$effType[$x];
 		if ($effect == $ineffect) {
 			$defstr = " selected";
 		} else {
 			$defstr = "";
 		}
-		$retStr.='<option value="'.$effect.'"'.$defstr.'>'.$effect.'</option>';
+		$retStr.='<option value="'.$effect.'"'.$defstr.'>'.$effect.' ('.$effect_class.')</option>';
 	}
 	$retStr.='</select>';
 	return($retStr);
