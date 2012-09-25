@@ -114,13 +114,14 @@ function genAllVixen($seq_duration, $frame_delay, $username, $project_id) {
 	//$duration = $seq_duration;
 	$fh_vixen_vir=fopen($virout,'w');
 	$fh_buff=fopen($NCFile,'r');
+	showMessage('<br />Creating VIR file from master');
 	create_vir($fh_buff, $fh_vixen_vir);
 	fclose($fh_vixen_vir);
 	fclose($fh_buff);
-
+	showMessage('Generating Event String for Vixen from VIR file');
 	$myEvent=getEventStr($virout);
 	//echo "$myEvent\n";
-	
+	showMessage('Creating VIX file from master');
 	genVix($NCFile, $virout, $seq_duration, $frame_delay);
 	make_vix($virout,$seq_duration, $frame_delay, $myEvent);
 	$retArr=array($vixout, $virout);

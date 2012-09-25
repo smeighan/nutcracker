@@ -500,7 +500,7 @@ function select_song($username) {
      . "LEFT JOIN song_dtl ON song.song_id = song_dtl.song_id\n"
      . "GROUP BY song_name, song.song_id\n";
     // . "HAVING song.song_id NOT IN (SELECT song_id from project where username='".$username."')";
-	$sql2 = "SELECT object_name FROM models WHERE username='$username'";
+	$sql2 = "SELECT object_name, model_type FROM models WHERE username='$username'";
 	//echo "$sql <br />";
 	//echo "$sql2 <br />";
 	$result = nc_query($sql);
@@ -558,7 +558,8 @@ function parseTargetSelect($result) {
 	$retStr='<select name="model_name" class="FormSelect" id="model_name">';
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$model_name=$row['object_name'];
-		$retStr.='<option value="'.$model_name.'">'.$model_name.'</option>';
+		$model_type=$row['model_type'];
+		$retStr.='<option value="'.$model_name.'">'.$model_name.' ('.$model_type.')</option>';
 	}
 	$retStr.='</select>';
 	return($retStr);
@@ -634,7 +635,7 @@ function joinPhraseArray($inArray) { //$phrase_name,$st_secs, $end_secs, $dur_se
 	return($retArray);
 }
 
-function getPhraseArray($project_id, $join_phrase=false) {
+function getPhraseArray($project_id, $join_phrase=true) {
 	$sql = "SELECT phrase_name,start_secs, end_secs, effect_name, frame_delay, p.username, model_name, member_id \n"
     . "FROM `project_dtl` as pd\n"
     . "LEFT JOIN project as p ON p.project_id=pd.project_id\n"
@@ -905,13 +906,23 @@ function showProgress($i, $total) {
 		return;
 }
 
+function showMessage($outStr) {
+	echo $outStr."<br />";
+	echo str_repeat(' ',1024*64);
+	 
+	// Send output to browser immediately
+	flush();
+	ob_flush();
+	return;
+}
+
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
-	$inHash=getProjHash($project_id, $eff);
-	$checkHasher=checkHash($inHash,$project_id, $eff);
-	if (!$checkHasher)
-		removeNCFiles($username, $model_name, $eff);
+	//$inHash=getProjHash($project_id, $eff);
+	//$checkHasher=checkHash($inHash,$project_id, $eff);
+	//if (!$checkHasher)
+	//	removeNCFiles($username, $model_name, $eff);
 	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
@@ -986,6 +997,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 }
 
 function prepMasterNCfile($project_id) {
+	showMessage('Prepping the Master NC File');
 	$proj_array=getProjDetails($project_id);
 	$frame_delay=$proj_array['frame_delay'];
 	$model_name=$proj_array['model_name'];
@@ -1023,6 +1035,7 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 	//echo "Number of Entries = ".$numEntries."<br \>";
 	//echo "Song Frame Length = ".getFrameCnt($workArray)."<br \>";
 	//echo "Total Frame Count = ".getTotalCnt($workArray,$frame_delay)."<br \>";	
+	showMessage('Erasing gaps and joining effects');
 	foreach($workArray as $curr_array) {
 		$phrase_name=$curr_array[0];
 		$st_secs=$curr_array[1];
@@ -1096,6 +1109,7 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 	$member_id=$proj_array['member_id'];
 	$modStr="workarea/".$username."~".$model_name."~";
 	$cnt=0;
+	showMessage('checking NC Files');
 	foreach($myarray as $curr_array) {
 		$validFlag=false;
 		$phrase_name=$curr_array[0];
