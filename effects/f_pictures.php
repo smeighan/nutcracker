@@ -102,7 +102,7 @@ function f_pictures($get)
 		$image->resizeToWidth($maxStrand*2);
 	else
 	$image->resizeToHeight($maxPixel*2);*/
-	$old_method=1;
+	$old_method=2;
 	if($old_method==1)
 	{
 		$image->resize(intval($maxStrand*($window_degrees/360)),$maxPixel);
@@ -305,8 +305,8 @@ function get_image2($file,$frame,$maxStrand,$maxPixel)
 	$size = getimagesize($image_path);
 	$img_width = $size[0];
 	$img_height = $size[1];
-	//$image=resizeImage2($Image,$maxStrand,$maxPixel); 
-	//if($batch==0) echo "<pre>img width,height = $img_width,$img_height  max strand,pixel=$maxStrand,$maxPixel</pre>\n";
+	$image=resizeImage2($Image,$maxStrand,$maxPixel); 
+	if($batch==0) echo "<pre>img width,height = $img_width,$img_height  max strand,pixel=$maxStrand,$maxPixel</pre>\n";
 	$s = 0;
 	$precision = intval((max($img_height,$img_width) / $maxStrand) + 0.5);
 	$precision = intval($img_width / $maxStrand + 0.5);

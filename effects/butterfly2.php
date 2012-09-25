@@ -36,7 +36,7 @@ function butterfly_main($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_d
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 	for($frame=1;$frame<=$maxFrame;$frame++)
 	{
-		if($frame>500) exit ("Too many frames in sequence");
+		if($frame>5000) exit ("Too many frames in sequence");
 		$x_dat = $base . "_d_". $frame . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
 		$dat_file[$frame] = $path . "/" .  $x_dat;
 		$dat_file_array[]=$dat_file[$frame];
