@@ -587,7 +587,54 @@ function sec2frame($inval, $frame_delay) {
 	$retval=round($inval*1000/$frame_delay, 0);
 	return($retval);
 }
-function getPhraseArray($project_id) {
+
+function joinPhraseArray($inArray) { //$phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name
+	$savephrase_name=$inArray[0][0];
+	$savest_time=$inArray[0][1];
+	$saveend_time=$inArray[0][2];
+	$saveduration=$inArray[0][3];
+	$saveframe_cnt=$inArray[0][4];
+	$savest_phrase=$inArray[0][5];
+	$saveend_phrase=$inArray[0][6];
+	$saveeffect_name=$inArray[0][7];
+	$cnt=0;
+	$retArray=array();
+	foreach($inArray as $phrase) {
+		if ($cnt>0) {
+			$phrase_name=$phrase[0];
+			$st_time=$phrase[1];
+			$end_time=$phrase[2];
+			$duration=$phrase[3];
+			$frame_cnt=$phrase[4];
+			$st_phrase=$phrase[5];
+			$end_phrase=$phrase[6];
+			$effect_name=$phrase[7];
+			if ($saveeffect_name==$effect_name) {
+				$saveend_time=$end_time;
+				$saveduration+=$duration;
+				$saveend_phrase=$end_phrase;
+				$saveframe_cnt+=$frame_cnt;
+			} else {
+				$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name);
+				$retArray[]=$arrayEntry;
+				$savephrase_name=$phrase_name;
+				$savest_time=$st_time;
+				$saveend_time=$end_time;
+				$saveduration=$duration;
+				$saveframe_cnt=$frame_cnt;
+				$savest_phrase=$st_phrase;
+				$saveend_phrase=$end_phrase;
+				$saveeffect_name=$effect_name;				
+			}
+		}
+		$cnt++;
+	}
+	$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name);
+	$retArray[]=$arrayEntry;
+	return($retArray);
+}
+
+function getPhraseArray($project_id, $join_phrase=false) {
 	$sql = "SELECT phrase_name,start_secs, end_secs, effect_name, frame_delay, p.username, model_name, member_id \n"
     . "FROM `project_dtl` as pd\n"
     . "LEFT JOIN project as p ON p.project_id=pd.project_id\n"
@@ -612,6 +659,8 @@ function getPhraseArray($project_id) {
 		$phraseArray=array($phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name);
 		$retArray[]=$phraseArray;
 	}
+	if ($join_phrase)
+		$retArray=joinPhraseArray($retArray);
 	$retArray=checkPhraseArray($retArray, $frame_delay);
 	$retArray= fixEffectFrames($retArray);
 	return($retArray);
@@ -859,6 +908,10 @@ function showProgress($i, $total) {
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
+	$inHash=getProjHash($project_id, $eff);
+	$checkHasher=checkHash($inHash,$project_id, $eff);
+	if (!$checkHasher)
+		removeNCFiles($username, $model_name, $eff);
 	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
@@ -928,6 +981,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 			copy($from_file, $to_file);
 		}
 	}
+	updateHash($project_id,$eff);
 	return($outfile); // this will be the file created 
 }
 
@@ -1064,5 +1118,56 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 		$cnt++;
 	}
 	return($myarray);
+}
+
+function getHash($project_id,$effect_name) {
+	$myArray=getProjDetails($project_id);
+	$username=$myArray['username'];
+	//$sql = "SELECT username, model_name, p.check_sum, effect_name, pd.check_sum FROM `project` AS p LEFT JOIN project_dtl as pd ON pd.project_id=p.project_id WHERE p.project_id=$project_id AND pd.effect_name='$effect_name'"
+	$sql = "SELECT param_value FROM effects_user_dtl WHERE username='$username' AND effect_name='$effect_name'";
+	$result=nc_query($sql);
+	$valStr="";
+	while ($row=mysql_fetch_assoc($result)) {
+		$valStr.=trim($row['param_value']);
+	}
+	$checksum = md5($valStr);
+	return($checksum);
+}
+
+function getProjHash($project_id, $effect_name) {
+	$sql = "SELECT check_sum FROM project_dtl WHERE project_id=$project_id AND effect_name='$effect_name'";
+	$result=nc_query($sql);
+	$valStr="";
+	if ($row=mysql_fetch_assoc($result)) {
+		$check_hash=$row['check_sum'];
+		if (strlen($check_hash)> 0) {
+			$retVal=$check_hash;
+		} else {
+			$retVal="XXX";
+		}
+	} else { // no hash exists
+		$retVal="XXX";
+	}
+	return($retVal);
+}
+function removeNCFiles($username, $target, $effect) {
+	$testFile="workarea/".$username."~".$target."~".$effect."*.nc";
+	foreach (glob($testFile) as $filename) {
+		unlink($filename);
+	}
+	return;
+}
+
+function updateHash($project_id, $effect_name) {
+	$hashVal=getHash($project_id, $effect_name);
+	$sql="UPDATE project_dtl SET check_sum='$hashVal' WHERE project_id=$project_id and effect_name='$effect_name'";
+	$result=nc_query($sql);
+	return;
+}
+
+function checkHash($inHash, $project_id, $effect_name) {
+	$retVal=false;
+	$retVal=($inHash == getHash($project_id, $effect_name));
+	return($retVal);
 }
 ?>

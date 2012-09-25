@@ -108,7 +108,7 @@ function garland($arr,$path,$t_dat,$base,$start_color,$end_color,$frame_delay,$w
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 	for( $f= 1; $f<= $maxFrames and $max>1; $f++)
 	{
-		if($f>1500) exit ("Too many frames in sequence");
+		if($f>5000) exit ("Too many frames in sequence");
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
 		$dat_file[$f] = $path . "/" .  $x_dat;
 		$dat_file_array[]=$dat_file[$f];
