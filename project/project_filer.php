@@ -369,6 +369,7 @@ function edit_song($project_id) {
 	?>
 	</table>
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
+	<p /><input type="submit"  class="SubmitButton" name="LoadPhraseFile" value="Load Phrases from CSV File">
 	<p />
 	<h2>Time Line of Effects</h2>
 	<?php showThumbs($project_id); ?>
@@ -381,7 +382,7 @@ function edit_song($project_id) {
 	</select> </td></tr>
 	<tr><td>
 		<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
-	</tr></td></table>
+	</td></tr></table>
 	</form>
 	<?php
 	//echo "There are $cnt records in details <br />";
