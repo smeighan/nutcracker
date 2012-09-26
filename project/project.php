@@ -12,6 +12,7 @@ require_once ("../effects/f_color_wash.php");
 require_once ("../effects/f_gif.php");
 require_once ("../effects/f_life.php");
 require_once ("../effects/f_meteors.php");
+require_once ("project_loader.php");
 require_once ("gen_vixen.php");
 require_once ("gen_hls.php");
 ini_set("memory_limit","512M");
@@ -20,6 +21,7 @@ ini_set("memory_limit","512M");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <script type="text/javascript" src="../js/barmenu.js"></script>
+<script type="text/javascript" src="../js/popmenu.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Nutcracker: RGB Effects Builder</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -82,6 +84,17 @@ if (isset($type)) {
 	}
 	if (isset($CancelPhraseEdit)) {
 		$msg_str="Song detail hidden";
+	}
+	if (isset($LoadPhraseFile) && (!isset($SelectFile))) {
+		$directory="uploads/";
+		echo showFilesDir($directory, $project_id);
+		printCSVInstruction();
+		$msg_str="";
+	}
+	if (isset($SelectFile)) {
+		getPhrasesFromFile($project_id, $PhraseFile);
+		echo "<br />";
+		$msg_str="loaded files for ".$PhraseFile." for project ".$project_id;
 	}
 	if (isset($MasterNCSubmit)) {
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;

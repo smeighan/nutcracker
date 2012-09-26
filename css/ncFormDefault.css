@@ -36,3 +36,9 @@
 	background-color: #FC9;
 	font-style: bold;
 }
+.WarnText {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: red;
+}
