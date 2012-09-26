@@ -94,7 +94,15 @@ if (isset($type)) {
 	if (isset($SelectFile)) {
 		getPhrasesFromFile($project_id, $PhraseFile);
 		echo "<br />";
-		$msg_str="loaded files for ".$PhraseFile." for project ".$project_id;
+		$tok=preg_split("/~+/", trim($PhraseFile));
+		$prettyFilename=$tok[1];
+		$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
+		$result=nc_query($sql);
+		$row=mysql_fetch_array($result,MYSQL_ASSOC);
+		$song_name=$row['song_name'];
+		$artist=$row['artist'];
+		$model_name=$row['model_name'];
+		$msg_str="loaded phrase file ".$prettyFilename." for project ".$song_name."/".$model_name;
 	}
 	if (isset($MasterNCSubmit)) {
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;

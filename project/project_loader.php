@@ -67,10 +67,11 @@ function showFilesDir($directory, $project_id) {
 	echo '<h2>Loading and replacing Phrases for "'.$song_name.'" by '.$artist.' (Model: '.$model_name.')</h2>';
 	echo printWarning();
 	echo "Files in the upload directory<br />";
-	$files=glob($directory. "*.csv");
+	$files=glob($directory. $username."~*.csv");
 	$retStr='<table border="0" cellpadding="1" cellspacing="1">'."\n";
 	$retStr.='<form action="project.php" method="post">'."\n";
 	$retStr.='<input type="hidden" name="project_id" value="'.$project_id.'">'."\n";
+	$retStr.='<input type="hidden" name="username" value="'.$username.'">'."\n";
 	$retStr.='<input type="hidden" name="LoadPhraseFile" value="XXX">'."\n";
 	//$retStr.='<tr><td>Directory</td><td><input class="FormFieldName" type="text" id="directory" name="directory" size="40" class="FormSelect" value="'.$directory.'" /></td><td><input type="submit" name="ChangeDirectory" class="SubmitButton" value="Change Directory"></td></tr>'."\n";
 	if (count($files)>0) { 
@@ -78,13 +79,15 @@ function showFilesDir($directory, $project_id) {
 		foreach($files as $file) {
 			$path_parts = pathinfo($file);
 			$filename = $path_parts['filename'];
-			$retStr.="<option value=\"".$file."\">".$filename."</option>\n";
+			$tok=preg_split("/~+/", trim($filename));
+			$prettyFilename=$tok[1];
+			$retStr.="<option value=\"".$file."\">".$prettyFilename."</option>\n";
 		}
 		$retStr.="</td></tr></select>\n";
 		$retStr.='<tr><td colspan="3"><input type="submit" name="SelectFile" class="SubmitButton" value="Select File for Input"></td></tr>'."\n";
 
 	} 
-	$retStr.='<tr><td colspan=3><a href="upload.html" onclick="window.open(\'upload.html\',\'popup\',\'width=300,height=100,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=0,top=0\'); return false">Upload a CSV file</a></td></tr>';
+	$retStr.='<tr><td colspan=3><a href="upload.php?username='.$username.'" onclick="window.open(\'upload.php?username='.$username.'\',\'popup\',\'width=500,height=150,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=200,top=200\'); return false">Upload a CSV file</a></td></tr>';
 	$retStr.="</form>\n";
 	if (count($files)==0) 
 		$retStr.="<tr><td colspan=2><strong>No files found in the upload directory</strong></td></tr>\n";

@@ -1,3 +1,6 @@
+<?php
+$username = $_GET['username'];
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -6,7 +9,8 @@
 </head>
 <body>
 <form enctype="multipart/form-data" action="uploader.php" method="POST">
-<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+<input type="hidden" name="MAX_FILE_SIZE" value="1000" />
+<input type="hidden" name="username" value="<?php echo $username;?>">
 Choose a file to upload: <input name="uploadedfile" type="file" /><br />
 <input type="submit" value="Upload File" /><p />
 NOTE : You will have to refresh the loader file after upload!<br />
