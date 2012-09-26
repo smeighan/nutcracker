@@ -1838,7 +1838,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//	sort it so we get the strings togeter. We will output this to TARGET+EFFECT.srt
 	//---------------------------------------------------------------------------------------
 	//
-	if($_SERVER['HTTP_HOST']=='localhost') // If this is a windows server, 
+	if($_SERVER['HTTP_HOST']!='meighan.net') // If this is a windows server, 
 	{
 		$data = file($seq_file); // we will do a memory sort
 		natsort($data);
