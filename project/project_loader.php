@@ -75,7 +75,7 @@ function showFilesDir($directory, $project_id) {
 	$retStr.='<input type="hidden" name="LoadPhraseFile" value="XXX">'."\n";
 	//$retStr.='<tr><td>Directory</td><td><input class="FormFieldName" type="text" id="directory" name="directory" size="40" class="FormSelect" value="'.$directory.'" /></td><td><input type="submit" name="ChangeDirectory" class="SubmitButton" value="Change Directory"></td></tr>'."\n";
 	if (count($files)>0) { 
-		$retStr.='<tr><td>CSV File</td><td><select name="PhraseFile" class="FormFieldName" id="PhraseFile">'."\n";
+		$retStr.='<tr><td colspan="3">CSV File : &nbsp;&nbsp;<select name="PhraseFile" class="FormFieldName" id="PhraseFile">'."\n";
 		foreach($files as $file) {
 			$path_parts = pathinfo($file);
 			$filename = $path_parts['filename'];
@@ -87,7 +87,8 @@ function showFilesDir($directory, $project_id) {
 		$retStr.='<tr><td colspan="3"><input type="submit" name="SelectFile" class="SubmitButton" value="Select File for Input"></td></tr>'."\n";
 
 	} 
-	$retStr.='<tr><td colspan=3><a href="upload.php?username='.$username.'" onclick="window.open(\'upload.php?username='.$username.'\',\'popup\',\'width=500,height=150,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=200,top=200\'); return false">Upload a CSV file</a></td></tr>';
+	$retStr.='<tr><td colspan=3>&nbsp;</td></tr>';
+	$retStr.='<tr><td>If you do not see your CSV file listed, upload it here:</td><td colspan=2><a href="upload.php?username='.$username.'" onclick="window.open(\'upload.php?username='.$username.'\',\'popup\',\'width=500,height=150,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=200,top=200\'); return false">Upload a CSV file</a></td></tr>';
 	$retStr.="</form>\n";
 	if (count($files)==0) 
 		$retStr.="<tr><td colspan=2><strong>No files found in the upload directory</strong></td></tr>\n";

@@ -6,13 +6,14 @@ $username = $_GET['username'];
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Upload CSV file for Nutcracker Phrases</title>
+<link href="../css/ncFormDefault.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<form enctype="multipart/form-data" action="uploader.php" method="POST">
+<form enctype="multipart/form-data" action="uploader.php" method="POST" class="SubmitButton" >
 <input type="hidden" name="MAX_FILE_SIZE" value="1000" />
 <input type="hidden" name="username" value="<?php echo $username;?>">
-Choose a file to upload: <input name="uploadedfile" type="file" /><br />
-<input type="submit" value="Upload File" /><p />
+Choose a file to upload: <input name="uploadedfile" type="file" class="FormFieldName" /><br />
+<input type="submit" value="Upload File" class="SubmitButton" /><p />
 NOTE : You will have to refresh the loader file after upload!<br />
 </form>
 
