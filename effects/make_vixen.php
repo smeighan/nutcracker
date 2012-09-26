@@ -22,9 +22,9 @@ set_time_limit(60*60);
 
 //
 extract($_GET);
-echo "<pre>";
+/*echo "<pre>";
 print_r($_GET);
-echo "</pre>";
+echo "</pre>";*/
 
 $path_parts = pathinfo($full_path); // full_path=../effects/workspaces/426/MTREE~WASH_SP_062_05_MA_d_1.dat
 $dirname   = $path_parts['dirname']; // workspaces/2

@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Sep 24, 2012 at 11:43 AM
+-- Generation Time: Sep 26, 2012 at 01:04 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `effects_dtl` (
   `param_prompt` varchar(60) NOT NULL,
   `param_desc` varchar(1024) DEFAULT NULL,
   `param_range` varchar(80) DEFAULT NULL,
+  `default_value` varchar(100) DEFAULT NULL COMMENT 'value to use as default',
   `created` datetime DEFAULT NULL,
   `last_upd` datetime DEFAULT NULL,
   `sequence` int(11) DEFAULT NULL,
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=626 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=634 ;
 
 -- --------------------------------------------------------
 

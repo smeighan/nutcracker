@@ -19,10 +19,9 @@ require("../effects/read_file.php");
 //echo "<pre>";
 //echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
 set_time_limit(60*60);
-
 //echo "<pre>sequencer=$sequencer</pre>\n";
-echo "<pre>";
-print_r($_GET);
+/*echo "<pre>";
+print_r($_GET);*/
 extract($_GET);
 list($usec, $sec) = explode(' ', microtime());
 $script_start = (float) $sec + (float) $usec;
@@ -49,15 +48,28 @@ $files_array=$_GET['fullpath_array'];
 $cnt=count($files_array);
 foreach($files_array as $i=>$file0)
 {
-	echo "<pre>$i $file0</pre>\n";
+	;//echo "<pre>$i $file0</pre>\n";
 }
-$tok=explode("/",$file0);
-$dir = $tok[0] . "/" . $tok[1];
-$tok2=explode(".nc",$tok[2]);
-echo "<pre>";
-print_r($tok2);
-echo "</pre>";
-$base=$tok2[2];
+$path_parts = pathinfo($file0);
+$dat_file_array0=$dat_file_array[0];
+$dirname   = $path_parts['dirname']; // workspaces/2
+$basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
+$extension =$path_parts['extension']; // .dat
+$filename  = $path_parts['filename']; //  AA+CIRCLE1_d_1
+/*path_parts
+Array
+(
+[dirname] => ../effects/workspaces/2
+[basename] => A~BARS1.nc
+[extension] => nc
+[filename] => A~BARS1
+)*/
+/*echo "<pre>";
+echo "path_parts\n";
+print_r($path_parts);
+echo "</pre>";*/
+$dir=$dirname;
+$base=$filename;
 $xml = $dir . "/UserPatterns.xml";
 echo "<h3>Adding the following effects into your UserPattern Nutcracker Group</h3>\n";
 $fh_xml=fopen($xml,"w") or die("Unable to open $xml");
@@ -88,10 +100,14 @@ $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 
 function make_xml($fh_xml,$filename_buff,$type,$frame_delay)
 {
-	$tok=explode("/",$filename_buff);
-	$dir = $tok[0] . "/" . $tok[1];
-	$tok2=explode(".nc",$tok[2]);
-	$base=$tok2[0];
+	$path_parts = pathinfo($filename_buff);
+	$dat_file_array0=$dat_file_array[0];
+	$dirname   = $path_parts['dirname']; // workspaces/2
+	$basename  = $path_parts['basename']; // AA+CIRCLE1_d_1.dat
+	$extension =$path_parts['extension']; // .dat
+	$filename  = $path_parts['filename']; //  AA+CIRCLE1_d_1
+	$dir = $dirname;
+	$base=$filename;
 	$fh_buff=fopen($filename_buff,"r") or die("Unable to open $filename_buff");
 	/*$fh_vixen_csv=fopen($vixen_csv,"w") or die("Unable to open $vixen_csv");*/
 	//	how many frames should we do?
