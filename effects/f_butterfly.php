@@ -7,7 +7,6 @@ function f_butterfly($get)
 	ini_set("memory_limit","512M");
 	require_once("../effects/read_file.php");
 	//
-
 	$member_id=get_member_id($username);
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
@@ -73,6 +72,7 @@ function f_butterfly($get)
 				$shift=($frame-1) * $new_radian_shift; // value passed in thru users form
 				//echo "<pre>$frame,$s,$p $radian_shift $new_radian_shift</pre>\n";
 				$halfs=$maxStrand/2;
+				if(!isset($formula)) $formula=1;
 				$v=butterfly($i,$p,$maxStrand,$maxPixel,$shift,$frame,$maxFrame,$formula);
 				//	echo "<pre>startend color =$start_color, $end_color\n";
 				if($start_color=="#FFFFFF" and $end_color=="#FFFFFF")
@@ -130,7 +130,8 @@ function f_butterfly($get)
 	$member_id=get_member_id($username);
 	$base = $user_target . "~" . $effect_name;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
-
+	if(!isset($fade_in)) $fade_in=0;
+	if(!isset($fade_out)) $fade_out=0;
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
 	echo "</body>";
 	echo "</html>";
