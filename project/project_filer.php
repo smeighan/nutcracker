@@ -380,7 +380,7 @@ function edit_song($project_id) {
 	<input type="hidden" name="project_id" id="project_id" value=<?php echo $project_id;?>>
 	Frame Rate for project : <input class="FormFieldName" type="text" name="frame_delay" id="frame_delay"0 value="<?php echo $frame_delay?>"><br />
 	<table border="1" cellpadding="1" cellspacing="1">
-	<tr><th>Phrase</th><th>start time (sec)</th><th>end time (sec)</th><th>Effect Assigned</th></tr>
+	<tr><th>Phrase</th><th>Start Time (sec)</th><th>End Time (sec)</th><th>Effect Assigned</th></tr>
 	<?php
 	$result3=nc_query($sql);
 	$cnt=show_phrases($result3,$effect, $effType);
