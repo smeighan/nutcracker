@@ -227,11 +227,34 @@ function showThumbs($project_id) {
 			if (is_file($fileLoc)) {
 				$gifLoc=$fileLoc;
 			} else 
-				$gifLoc="../images/noThumb.gif";
+				if (createThumb($model_name, $effect_name, $member_id)) 
+					$gifLoc=$fileLoc;
+				else
+					$gifLoc="../images/noThumb.gif";
 		}
 		echo "<td class=\"smallText\"><img  height=\"100\" width=\"50\" title=\"$phrase_name\n$effect_name\" alt=\"$phrase_name:$effect_name\" src=\"$gifLoc\"><br />$phrase_name</td>\n";
 	}
 	echo "</tr></table>";
+}
+
+function createThumb($model_name, $effect_name, $member_id) {
+	$retVal=false;
+	$basefile="..\\effects\\workspaces\\".$member_id."\\".$model_name."~".$effect_name;
+	$gp_file=$basefile.".gp";
+	$gif_file=$basefile.".gif";
+	$th_file=$basefile."_th.gif";
+	if (is_file($gp_file)) {
+		if($_SERVER['HTTP_HOST'] != 'meighan.net') {
+			$shellCommand = "..\\gnuplot\\bin\\gnuplot.exe " . $gp_file;
+	//		echo $shellCommand."<br />";
+			system($shellCommand,$output);
+	//		echo $output."<br />";
+			$shellCommand = "del ".$gif_file;
+			system($shellCommand, $output);
+			$retVal=is_file($th_file);
+		}	
+	}
+	return($retVal);
 }
 
 function getUserEffect($target,$effect,$username)
