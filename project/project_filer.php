@@ -939,20 +939,16 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		$get['batch']=$batch_type;
 		$get['username']=$username;
 		$get['user_target']=$model_name;
-		//$get['file_out']=$outfile;
 		$get['seq_duration']=($end-$st);
-		//echo $get['seq_duration']."<br />";
 		$get['frame_delay']=$frame_delay;
 		$effect_class=$get['effect_class'];
 		$member_id=getMemberID($username);
 		$from_file="../effects/workspaces/$member_id/$model_name~$eff.nc";
 		$to_file="../project/workarea/$username~$model_name~$eff~$frame_cnt.nc";
 		$sql='UPDATE effects_user_dtl SET param_value='.($end-$st).' WHERE username="'.$username.'" AND effect_name="'.$eff.'" AND param_name="seq_duration"';
-		//echo $sql."<br />";
 		nc_query($sql);
-		//print_r($get);
-		//echo "<br />";
-		// code to gen a new individual nc file goes here
+		$sql='UPDATE effects_user_dtl SET param_value='.$frame_delay.' WHERE username="'.$username.'" AND effect_name="'.$eff.'" AND param_name="frame_delay"';
+		nc_query($sql);
 		$ranNC=false;
 		switch ($effect_class) {
 			case ('spirals') :
