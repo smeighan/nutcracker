@@ -27,6 +27,8 @@
 </head>
 <body>
 <p>&nbsp;</p>
+<table>
+<tr><td>
 <form id="loginForm" name="loginForm" method="get" action="login-exec.php">
 <h2>Nutcracker Login Screen</h2>
   <table width="500" border="0" align="center" cellpadding="2" cellspacing="0">
@@ -47,5 +49,9 @@
 </form>
 <p><a href="register-form.php">Click here</a> to create a new account.</p>
 <p><a href="ChangePassword.php">Click here</a> to change password.</p>
+</td><td>
+<iframe src="https://www.google.com/calendar/embed?title=Nutcracker%20Tutorials&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=luc56lnbvsg7nlfppg069oc3c0%40group.calendar.google.com&amp;color=%232F6309&amp;src=en.usa%23holiday%40group.v.calendar.google.com&amp;color=%232952A3&amp;ctz=America%2FDenver" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe>
+</td></tr>
+</table>
 </body>
 </html>
