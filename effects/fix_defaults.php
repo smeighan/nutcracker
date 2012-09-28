@@ -16,17 +16,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 require_once('../conf/header.php');
 require("../effects/read_file.php");
 extract ($_GET);
-$arr = get_effects_user_dtl();
+$arr = get_effects_hdr();
 echo "<pre>";
 //print_r($arr);
-foreach($arr as $effect_class=>$array1)
+foreach($arr as $array1)
 {
-	echo "Effect_Class = $effect_class\n";
-	$effects_dtl_array=get_effects_dtl($effect_class);
-	echo "<font color=red>";
-	print_r($effects_dtl_array);
+	extract($array1); // now we have effect_cass, effect_name
+	echo "Effect_Class = $effect_class, username=$username, effect_name=$effect_name\n";
+	$effects_class_array = get_effects_dtl($effect_class);
+	echo "<font color=blue>";
+	$effect_array=array();
+	foreach($effects_class_array as $i =>$array2)
+	{
+		extract($array2);
+		//	echo "$username $effect_name $param_name $param_value\n";
+		$effect_array[$param_name]=$default_value;
+	}
+	print_r($effect_array);
 	echo "</font>";
-	foreach($array1 as $username=>$array2)
+	echo "<font color=red>";
+	$effects_dtl_array=get_effects_user_dtl($username,$effect_name);
+	//print_r($effects_dtl_array);
+	foreach($effects_dtl_array as $i =>$array2)
+	{
+		extract($array2);
+		echo "$username $effect_name $param_name $param_value\n";
+		$effect_array[$param_name]=$param_value;
+	}
+	echo "<font color=red>";
+	print_r($effect_array);
+	update_effects_user_dtl($username,$effect_name,$effect_array);
+	echo "</font>";
+	/*foreach($array1 as $username=>$array2)
 	{
 		$dtl_array=$effects_dtl_array;
 		foreach($array2 as $val3=>$array3)
@@ -55,40 +76,11 @@ foreach($arr as $effect_class=>$array1)
 		}
 		print_r($dtl_array);
 	}
+	*/
 }
 echo "</pre>";
 //
 //
-
-function get_effects_user_dtl()
-{
-	require_once('../conf/config.php');
-	//Connect to mysql server
-	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
-		die('Failed to connect to server: ' . mysql_error());
-	}
-	//Select database
-	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
-		die("Unable to select database");
-	}
-	// effect_class	username	effect_name	effect_desc	created	last_upd
-	$query = "SELECT hdr.effect_class, dtl. * 
-	FROM effects_user_hdr hdr,  `effects_user_dtl` dtl
-	WHERE hdr.username = dtl.username
-	AND hdr.effect_name = dtl.effect_name
-	ORDER BY dtl.username, dtl.effect_name";
-	$result=mysql_query($query) or die ("Error on $query");
-	while ($row = mysql_fetch_assoc($result))
-	{
-		extract($row);
-		$arr[$effect_class][$username][$effect_name]=$row;
-	}
-	return ($arr);
-}
 
 function get_effects_dtl($effect_class)
 {
@@ -106,23 +98,24 @@ function get_effects_dtl($effect_class)
 		die("Unable to select database");
 	}
 	// effect_class	username	effect_name	effect_desc	created	last_upd
-	$query = "SELECT param_name,default_value from effects_dtl
-	where effect_class = '$effect_class'
-	order by sequence";
+	$query = "SELECT *
+	FROM `effects_dtl`
+	WHERE effect_class='$effect_class'
+	ORDER BY sequence";
 	$result=mysql_query($query) or die ("Error on $query");
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
-		$array_effect_classes[$param_name]=$default_value;
+		$arr[]=$row;
 	}
-	return $array_effect_classes;
+	return ($arr);
 }
 
-function get_max_date_gallery()
+function get_effects_user_dtl($username,$effect_name)
 {
 	require_once('../conf/config.php');
 	//Connect to mysql server
-	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD); 
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
 	if(!$link)
 	{
 		die('Failed to connect to server: ' . mysql_error());
@@ -134,10 +127,73 @@ function get_max_date_gallery()
 		die("Unable to select database");
 	}
 	// effect_class	username	effect_name	effect_desc	created	last_upd
-	$query = "SELECT max(created) created, count(*) cnt from gallery";
-	$result=mysql_query($query);
-	$row = mysql_fetch_assoc($result);
-	extract ($row);
-	$arr=array($created,$cnt);
-	return $arr;
+	$query = "SELECT *
+	FROM `effects_user_dtl`
+	WHERE username='$username' and effect_name='$effect_name'
+	ORDER BY username, effect_name";
+	$result=mysql_query($query) or die ("Error on $query");
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+		$arr[]=$row;
+	}
+	return ($arr);
+}
+
+function get_effects_hdr()
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	// effect_class	username	effect_name	effect_desc	created	last_upd
+	$query = "SELECT * from effects_user_hdr
+	order by username,effect_name";
+	$array_effect_hdr=array();
+	$result=mysql_query($query) or die ("Error on $query");
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+		$array_effect_hdr[]=array('username'=>$username,
+		'effect_class'=>$effect_class,
+		'effect_name'=>$effect_name);
+	}
+	return $array_effect_hdr;
+}
+
+function update_effects_user_dtl($username,$effect_name,$effect_array)
+{
+	echo "<pre>username,effect_name=$username,$effect_name</pre>\n";
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	// effect_class	username	effect_name	effect_desc	created	last_upd
+	foreach($effect_array as $param_name=>$param_value)
+	{
+		$query = "REPLACE into `effects_user_dtl`
+		(username,effect_name,	param_name,	param_value,	segment,	created,	last_upd)
+			values ('$username','$effect_name','$param_name','$param_value',0,now(),now())
+			WHERE username='$username' and effect_name='$effect_name'";
+		echo "<pre>$query</pre>\n";
+		//	$result=mysql_query($query) or die ("Error on $query");
+	}
 }

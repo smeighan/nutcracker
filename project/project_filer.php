@@ -947,6 +947,8 @@ function showMessage($outStr) {
 }
 
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
+//echo "function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay)\n";
+
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
 	//$inHash=getProjHash($project_id, $eff);

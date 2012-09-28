@@ -1,5 +1,7 @@
 <?php
 //
+//	how to call progra,
+//	http://localhost/nutcracker/effects/check_nc.php?file=../project/workarea/f~A~BARS1~58.nc
 //
 extract($_GET);
 echo "<pre>";
