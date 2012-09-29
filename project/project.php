@@ -1,4 +1,4 @@
-<?php
+processMasterNCfile<?php
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
 require_once('project_filer.php');
