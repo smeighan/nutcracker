@@ -88,7 +88,7 @@ if (isset($type)) {
 	if (isset($LoadPhraseFile) && (!isset($SelectFile))) {
 		$directory="uploads/";
 		echo showFilesDir($directory, $project_id);
-		printCSVInstruction();
+		printFileLoadInstruction();
 		$msg_str="";
 	}
 	if (isset($SelectFile)) {

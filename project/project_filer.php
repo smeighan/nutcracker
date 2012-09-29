@@ -392,7 +392,7 @@ function edit_song($project_id) {
 	?>
 	</table>
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
-	<p /><input type="submit"  class="SubmitButton" name="LoadPhraseFile" value="Load Phrases from CSV File">
+	<p /><input type="submit"  class="SubmitButton" name="LoadPhraseFile" value="Load Phrases from Audacity save file">
 	<p />
 	<h2>Time Line of Effects</h2>
 	<?php showThumbs($project_id); ?>

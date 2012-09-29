@@ -11,8 +11,8 @@ if ($filesize>$max_file_size) {
 	echo "The file ".$filename." is too big!<br />";
 	die;
 }
-if ($filetype != "text/csv") {
-	echo "The file ".$filename." is not a CSV type file<br />";
+if (substr($filetype,0,4) != "text") {
+	echo "The file ".$filename." does not appear to be text<br />";
 	die;
 }
 $target_path = $target_path . $username. "~".basename( $_FILES['uploadedfile']['name']); 
