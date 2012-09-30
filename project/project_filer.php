@@ -537,7 +537,7 @@ function select_song($username) {
 	$result = nc_query($sql);
 	?>
 	<h2>Available Songs</h2>
-	<table border="1" cellpadding="1" cellspacing="1">
+	<table class="TableProp">
 	<?php
 	$rowcnt = mysql_num_rows($result);
 	if ($rowcnt == 0)
@@ -549,6 +549,8 @@ function select_song($username) {
 		$SongSel=parseSongs($result);
 		echo $SongSel[1];?>
 	</table>
+	<br />
+	<a href="">Add a Song to the Library</a>
 	<p />
 	<h2>Select a Song</h2>
 	<form name="addsong" method="post" action="project.php">
@@ -598,8 +600,10 @@ function parseTargetSelect($result) {
 function parseSongs($result) {
 	$retVal = array();
 	$retStr1='<select name="song_id" class="FormSelect" id="song_id">';
-	$retStr2='<tr><td>Song Name</td><td>Song url</td><td>Length of song (sec)</td><td>Length of song (min)</td></tr>';
+	$retStr2='<tr><th>Song Name</th><th>Song url</th><th>Length of song (sec)</th><th>Length of song (min)</th></tr>';
+	$cnt=0;
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$cnt++;
 		$song_name=$row['song_name'];
 		$song_id=$row['song_id'];
 		$song_url=$row['song_url'];
@@ -608,7 +612,11 @@ function parseSongs($result) {
 		$song_length = round(($MaxTime-$MinTime),2);
 		$song_length_min = round(($song_length/60),2);
 		$retStr1.='<option value='.$song_id.'>'.$song_name.'</option>';
-		$retStr2.='<tr><td><a href="'.$song_url.'">'.$song_name.'</a></td><td><a href="'.$song_url.'">'.$song_url.'</a><td>'.$song_length.'</td><td>'.$song_length_min.'</td></tr>';
+		if ($cnt%2==0) 
+			$trStr='<tr>';
+		else
+			$trStr='<tr class="alt">';
+		$retStr2.=$trStr.'<td><a href="'.$song_url.'">'.$song_name.'</a></td><td><a href="'.$song_url.'">'.$song_url.'</a><td>'.$song_length.'</td><td>'.$song_length_min.'</td></tr>';
 	}
 	$retStr1.='</select>';
 	$retVal[0]=$retStr1;

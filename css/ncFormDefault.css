@@ -58,14 +58,14 @@
 .TableProp td, .TableProp th
 {
 	text-align:center;
-	font-size:1em;
+	font-size:10px;
 	border:1px solid #98bf21;
 	padding:3px 7px 2px 7px;
 }
 
 .TableProp th 
 {
-	font-size:1.1em;
+	font-size:12px;
 	text-align:left;
 	padding-top:5px;
 	padding-bottom:4px;

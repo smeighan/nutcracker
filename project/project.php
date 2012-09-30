@@ -121,7 +121,7 @@ echo $msg_str;
 <h2>Current Nutcracker projects</h2>
 <form action="<?php echo "project-exec.php"; ?>" method="post">
 <input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
-<table border=1>
+<table class="TableProp">
 <tr>
 <th>Song Name</th>
 <th>Artist</th>
@@ -136,7 +136,7 @@ echo $msg_str;
 	$result = nc_query($sql);
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$cnt +=1;
+		$cnt++;
 		$project_id = $row['project_id'];
 		$song_id = $row['song_id'];
 		$artist = $row['artist'];
@@ -144,8 +144,11 @@ echo $msg_str;
 		$song_url = $row['song_url'];
 		$frame_delay = $row['frame_delay'];
 		$model_name = $row['model_name'];
-	?>
-<tr>
+		if ($cnt%2==0) 
+			$trStr='<tr>';
+		else
+			$trStr='<tr class="alt">';
+	echo $trStr;?>
 	<td><?php echo $song_name?></a></td>
 	<td><?php echo $artist?></td>
 	<td><a href="<?php echo $song_url?>"><?php echo $song_url?></a></td>
@@ -161,4 +164,4 @@ echo $msg_str;
 ?>
 </table>
 <p />
-<a href="project.php?type=1">Add a song</a><br />
+<a href="project.php?type=1">Add a Project</a><br />
