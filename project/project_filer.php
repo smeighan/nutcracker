@@ -79,7 +79,6 @@ function getFileData($infile, $numEntries, $sepStr=" ") {
 		$line = trim( preg_replace( '/\s+/', ' ', $line ) ); // remove unwanted gunk
 		$tempVal="";
 		$tok=preg_split("/ +/", trim($line));
-		//echo $arrayCnt."/n";
 		$numZeros=0;
 		if (($tok[0]=="S") and ($tok[2]=="P") and ($tok[0]!="#")) {
 			$arrayCnt=count($tok);
@@ -104,39 +103,6 @@ function getFileData($infile, $numEntries, $sepStr=" ") {
 	return($retVal);
 }
 
-/*
-// 
-// opens an array of files in the nc format and returns an array with the values appended
-// Array of files need to be of the format <filename> surrounded by quotes which delinates the file to be appended.
-// Array of files can also have the format zero:<number> surround by quotes which delinates the number of frames as zero to be appended.
-// 
-function appendFiles($in_filearray, $prepArray, $sepStr=" ") { 
-//	$stripHeader=false;
-	$retarr=$prepArray;
-	//print_r($retarr);
-	foreach($in_filearray as $infile) {
-		if (substr($infile,0,6)=="zeros:") {
-			$val=substr($infile,6);
-			if ($val==1) 
-				echo "Appending 1 zero to master as adjustment<br />";
-			else
-				echo "Appending $val zeros to master<br />";
-			if (isset($retarr)) {
-				$retarr=appendZeros($retarr,$val,false,$sepStr);
-				//echo "VAL : $val <br />";
-				// print_r($retarr);
-			}
-		} else {
-			echo "Appending file $infile to master<br />";
-			$myarr=getFileData($infile,true,$sepStr);
-			// print_r($myarr);
-			$retarr=appendStr($retarr,$myarr);
-			//print_r($retarr);
-		}
-	}
-	return($retarr);
-}
-*/
 function array2File($outfile,$outarray) {//writes out a file from an array
 	echo "Writing to $outfile \n";
 	$f=fopen($outfile,"w");
@@ -173,14 +139,12 @@ function createHeader($outfile,$model_name, $username, $project_id, $sepStr=" ")
 
 function getHeader($model_name, $username, $project_id, $sepStr=" "){
 	$sql="SELECT member_id FROM members WHERE username='".$username."'";
-	//echo "$sql <br />";
 	$stripHeader = true;
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
 	$model_file=$mydir.$model_name.".dat";
-	// echo "$model_file<br />";
 	$retArray = array();
 	$f = fopen ($model_file, "r");
 	$ln= 0;
@@ -246,9 +210,7 @@ function createThumb($model_name, $effect_name, $member_id) {
 	if (is_file($gp_file)) {
 		if($_SERVER['HTTP_HOST'] != 'meighan.net') {
 			$shellCommand = "..\\gnuplot\\bin\\gnuplot.exe " . $gp_file;
-	//		echo $shellCommand."<br />";
 			system($shellCommand,$output);
-	//		echo $output."<br />";
 			$shellCommand = "del ".$gif_file;
 			system($shellCommand, $output);
 			$retVal=is_file($th_file);
@@ -268,7 +230,6 @@ function getUserEffect($target,$effect,$username)
 	and hdr.effect_name = dtl.effect_name
 	and hdr.username='".$username."'
 	and upper(hdr.effect_name)=upper('$effect')";
-	// echo "$sql <br />";
 	$result = nc_query($sql);
 	$cnt=0;
 	$string="";
@@ -284,11 +245,8 @@ function getUserEffect($target,$effect,$username)
 	return $get;
 }
 function save_phrases($inphp) {
-	//extract($inphp);
-	//print_r($inphp);
 	foreach($inphp as $key=>$val)
 	{
-		//echo "$key=>$val<br />";
 		switch ($key) {
 		case "project_id":
 			$project_id = $val;
@@ -299,7 +257,6 @@ function save_phrases($inphp) {
 			$frame_delay = $val;
 			if (isset($project_id)) {
 				$sql="UPDATE project SET frame_delay=".$frame_delay." WHERE project_id=".$project_id;
-				//echo "$sql <br />";
 				$result=nc_query($sql);
 			}
 			break;
@@ -312,13 +269,11 @@ function save_phrases($inphp) {
 			case "en-":
 				$key=(substr($key,3));
 				$sql="UPDATE project_dtl SET end_secs=".$val." WHERE project_dtl_id=".$key;
-				//echo "$sql <br />";				
 				$result=nc_query($sql);
 				break;
 			case "st-":
 				$key=(substr($key,3));				
 				$sql="UPDATE project_dtl SET start_secs=".$val." WHERE project_dtl_id=".$key;
-				//echo "$sql <br />";
 				$result=nc_query($sql);
 				break;
 			default:
@@ -328,17 +283,14 @@ function save_phrases($inphp) {
 					$val="'".$val."'";
 				}
 				$sql="UPDATE project_dtl SET effect_name=".$val." WHERE project_dtl_id=".$key;
-				//echo "$sql <br />";
 				$result=nc_query($sql);
 			}
 		}
-		//echo "$key : $val <br />";
 	}
 }
 
 function get_effects($username) {
 	$sql = "SELECT effect_name, effect_class FROM effects_user_hdr WHERE username='$username' AND effect_name IS NOT NULL ORDER BY effect_name";
-	//echo "$sql<br />";
 	$effect=array();
 	$efftype=array();
 	$result=nc_query($sql);
@@ -365,9 +317,7 @@ function edit_song($project_id) {
 	$effectArr=get_effects($username);
 	$effect=$effectArr[0];
 	$effType=$effectArr[1];
-	//print_r($effect);
 	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
-	//echo "edit song SQL - $sql<br />";
 	?>
 
 	<h2>Edit Project Details for "<?php echo $song_name;?>" by <?php echo $artist;?> (Model: <?php echo $model_name;?>)</h2>
@@ -403,13 +353,13 @@ function edit_song($project_id) {
 		<option value="vixen">Vixen 2.1 and 2.5</option>
 		<option value="hls">HLS versions 3a and greater</option>
 		<option value="lsp">Light Show Pro</option>
+		<option value="lor">Light-O-Rama</option>
 	</select> </td></tr>
 	<tr><td>
 		<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
 	</td></tr></table>
 	</form>
 	<?php
-	//echo "There are $cnt records in details <br />";
 	return;
 }
 
@@ -424,7 +374,6 @@ function show_phrases($inresult,$effect, $effType) {
 		$effect_name = $row['effect_name'];
 		$effect_str=effect_select($effect,$effect_name,$project_dtl_id, $effType);
 		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$start_secs\" name=\"st-$project_dtl_id\"></td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$end_secs\" name=\"en-$project_dtl_id\"></td><td class=\"FormFieldName\" >$effect_str</td></tr>";
-		// echo "$phrase_name : $start_secs : $end_secs : $effect_name<br />";
 	}
 	return($cnt);
 }
@@ -452,7 +401,6 @@ function effect_select($effect_array, $ineffect, $project_dtl_id, $effType) {
 }
 
 function nc_query($sql) {
-	//echo "sql = $sql<br />";
 	require_once('../conf/config.php');
  	$DB_link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
 	mysql_select_db(DB_DATABASE, $DB_link) or die ("Could not find or access the database.");
@@ -467,7 +415,6 @@ function insert_proj_detail_from_library($project_id) {
 	$song_id=$row['song_id'];
 	$sql = "SELECT phrase_name, start_secs, end_secs FROM song_dtl where song_id = ".$song_id;
 	$cnt=0;
-	//echo "$sql<br />";
 	$result2=nc_query($sql);
 	while ($row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
 		$cnt +=1;
@@ -475,7 +422,6 @@ function insert_proj_detail_from_library($project_id) {
 		$start_secs = $row['start_secs'];
 		$end_secs = $row['end_secs'];
 		$sql="INSERT INTO project_dtl (phrase_name, start_secs, end_secs, project_id) VALUES ('".$phrase_name."',".$start_secs.",".$end_secs.",".$project_id.")";
-		//echo "$sql <br />";
 		$result3=nc_query($sql);
 	}
 	echo "Inserted $cnt new records into project detail<br />";
@@ -484,7 +430,6 @@ function insert_proj_detail_from_library($project_id) {
 
 function remove_song($project_id) {
 	$sql = "SELECT song_id, model_name FROM project where project_id=".$project_id;
-	// echo "$sql <br />";
 	$result2 = nc_query($sql);
 	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
 	$song_id = $row['song_id'];
@@ -501,8 +446,6 @@ function add_song($song_id, $username, $frame_delay, $model_name) {
 	$song_name=getSongName($song_id);
 	$sql2 = 'Select count(*) as songcnt from project WHERE song_id='.$song_id.' AND username="'.$username.'" AND model_name="'.$model_name.'"';
 	$sql = "REPLACE INTO project (song_id, username,frame_delay, model_name) VALUES (".$song_id.",'".$username."',".$frame_delay.",\"".$model_name."\")";
-	//echo "$sql <br />";
-	//echo "$sql2 <br />";
 	$result2 = nc_query($sql2);
 	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
 	if ($row['songcnt'] > 0) {
@@ -516,7 +459,6 @@ function add_song($song_id, $username, $frame_delay, $model_name) {
 function getSongName($song_id) {
 	$retVal = "Error occured";
 	$sql = "SELECT song_name FROM song WHERE song_id='$song_id'";
-	//echo "$sql <br />";
 	$result = nc_query($sql);
 	if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$retVal=$row['song_name'];
@@ -532,8 +474,6 @@ function select_song($username) {
      . "GROUP BY song_name, song.song_id\n";
     // . "HAVING song.song_id NOT IN (SELECT song_id from project where username='".$username."')";
 	$sql2 = "SELECT object_name, model_type FROM models WHERE username='$username'";
-	//echo "$sql <br />";
-	//echo "$sql2 <br />";
 	$result = nc_query($sql);
 	?>
 	<h2>Available Songs</h2>
@@ -707,12 +647,8 @@ function getPhraseArray($project_id, $join_phrase=true) {
 }
 
 function printPhrase($phraseArray) {
-	foreach($phraseArray as $phrase) { 
+	foreach($phraseArray as $phrase)
 		printf("<pre>%f\t%f\t%f\t%d\t%d\t%d\t%s\n</pre>", $phrase[1],$phrase[2],$phrase[3],$phrase[4],$phrase[5],$phrase[6],$phrase[7]);
-		//foreach($phrase as $val)
-		//	echo $val."\t";
-		//echo "\n";
-	}
 	return;
 }
 
@@ -819,10 +755,16 @@ function checkNCInfo($infile) {
 
 function getNCInfo($infile) {
 	$fh=fopen($infile,'r');
-	$numElements=$numColumns=0;
+	$numElements=$numColumns=$maxString=$maxPixel=0;
 	while($line=fgets($fh)) {
 		$tok=preg_split("/ +/", trim($line));
 		if (($tok[0]=="S") and ($tok[2]=="P")) {
+			$string=$tok[1];
+			$pixel=$tok[3];
+			if ($string>$maxString)
+				$maxString=$string;
+			if ($pixel>$maxPixel)
+				$maxPixel=$pixel;
 			$numColumns=count($tok)-4;
 			$numElements++;
 		}
@@ -830,7 +772,7 @@ function getNCInfo($infile) {
 	}
 	fclose($fh);
 	$numElements*=3; //account for the RGBs
-	$retVal=array($numColumns, $numElements);
+	$retVal=array($numColumns, $numElements, $maxString, $maxPixel);
 	return($retVal);
 }
 
@@ -859,29 +801,7 @@ function getProjDetails($project_id) {
 	}
 	return($retArray);
 }
-/*
-function getProjInfo($project_id) { // gets project info from database and returns it as an array
-	$retArray=array();
-	$sql="SELECT username, frame_delay,model_name FROM project WHERE project_id=$project_id";
-	$result=nc_query($sql);
-	$row=mysql_fetch_array($result,MYSQL_ASSOC);	
-	$retArray=$row;
-	return($retArray);
-}
 
-function getFrameCnt($st,$end,$frame_delay) {
-	$retVal = ($end-$st)/($frame_delay/1000);
-	return($retVal);
-}
-function checkAccum($inval) {
-	$retVal=0;
-	while ($inval>1) {
-		$inval--;
-		$retVal++;
-	}
-	return($retVal);
-}
-*/
 function setupNCfiles($project_id,$phrase_array) {  // create each of the effect nc files (or make sure they are created for each of the times
 	$proj_array=getProjDetails($project_id);
 	$frame_delay=$proj_array['frame_delay'];
@@ -956,8 +876,6 @@ function showMessage($outStr) {
 }
 
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
-//echo "function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay)\n";
-
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
 	//$inHash=getProjHash($project_id, $eff);
@@ -1045,7 +963,6 @@ function prepMasterNCfile($project_id) {
 	$username=$proj_array['username'];
 	$member_id=$proj_array['member_id'];
 	$testarr = getHeader($model_name, $username, $project_id);
-	//print_r($testarr);
 	return($testarr);
 }
 function checkDir($inDir) {
@@ -1063,19 +980,11 @@ function getSongTime($project_id) {
 }
 
 function processMasterNCfile($project_id, $projectArray, $workArray, $outputType, $NCArray) {
-	// 
-	// Code to process all the Master NC Files here
-	//
 	$proj_array=getProjDetails($project_id);
 	$frame_delay=$proj_array['frame_delay'];
 	$model_name=$proj_array['model_name'];
 	$username=$proj_array['username'];
 	$member_id=$proj_array['member_id'];
-	//printPhrase($workArray);
-	//print_r($NCArray);
-	//echo "Number of Entries = ".$numEntries."<br \>";
-	//echo "Song Frame Length = ".getFrameCnt($workArray)."<br \>";
-	//echo "Total Frame Count = ".getTotalCnt($workArray,$frame_delay)."<br \>";	
 	showMessage('Erasing gaps and joining effects');
 	foreach($workArray as $curr_array) {
 		$phrase_name=$curr_array[0];
@@ -1088,7 +997,6 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 		$effect_name=$curr_array[7];
 		$numFrames = ($frame_end-$frame_st)+1;
 		$NCArraySize=count(myTokenizer($NCArray[0]))-4;
-		//echo "NCArray Size = $NCArraySize<br />";
 		if ($effect_name=="None") {
 			$NCArray=appendZeros($NCArray,$numFrames);
 			echo "Adding $numFrames zeros from frame $frame_st to frame $frame_end<br />";
@@ -1099,7 +1007,6 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 			echo "Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end<br />";
 		}
 		$NCArraySize=count(myTokenizer($NCArray[0]))-4;
-		//echo "NCArray Size after = $NCArraySize<br />";
 	}
 	$outfile="workarea/".$username."~".$project_id."~master.nc";
 	array2File($outfile, $NCArray);
@@ -1107,15 +1014,10 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 	$numFrames=$myArray[0];
 	$numEntities=$myArray[1];
 	$song_tot_time=$numFrames*$frame_delay;
-	//print_r($myArray);
-	/*$song_tot_time=getSongTime($project_id);
-	$retArray=appendFiles($projectArray,$workArray);
-	array2File($outfile, $retArray); */
 	if (isset($outputType)) {
 		switch ($outputType) {
 			case 'vixen' :
 				$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
-				// echo "You selected $outputType<br />";
 				$vixFile=$VixArr[0];
 				$virFile=$VixArr[1];
 				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
@@ -1139,10 +1041,23 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP file to your computer</td>\n";
 				echo "<td><a href=\"$XMLFile\" class=\"SaveFile\">$XMLFile</a></td></tr><table>\n";
 				break;
+			case 'lor' :
+				$NCFile=$outfile;
+				$LORFile="workarea/".$username."~".$project_id.".lms";
+				$fh_lor=fopen($LORFile, 'w');
+				genLOR($fh_lor,$NCFile, $frame_delay, $song_tot_time);
+				fclose($fh_lor);
+				echo "<table class=\"TableProp\">";
+				//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lms file</h2></td>\n");
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lms file</a></h2></td>\n",$LORFile);
+				echo "<td>Save lms file into your light-o-rama/sequences directory</td></tr>\n";
+				echo "</table>";
+				break;
 			default :
+				echo "This sequencer is not support<br />";
 		}
 	} 
-	// print_r($retArray);
 	return;
 }
 	
@@ -1189,7 +1104,6 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 function getHash($project_id,$effect_name) {
 	$myArray=getProjDetails($project_id);
 	$username=$myArray['username'];
-	//$sql = "SELECT username, model_name, p.check_sum, effect_name, pd.check_sum FROM `project` AS p LEFT JOIN project_dtl as pd ON pd.project_id=p.project_id WHERE p.project_id=$project_id AND pd.effect_name='$effect_name'"
 	$sql = "SELECT param_value FROM effects_user_dtl WHERE username='$username' AND effect_name='$effect_name'";
 	$result=nc_query($sql);
 	$valStr="";
@@ -1239,9 +1153,7 @@ function checkHash($inHash, $project_id, $effect_name) {
 
 function make_xml($fh_xml,$NCFile,$type,$frame_delay)
 {
-	//echo "NC FILE ".$NCFile."<br />";
 	$tok=explode("/",$NCFile);
-	//print_r($tok);
 	$dir = $tok[0];
 	$tok2=explode(".nc",$tok[1]);
 	$base=$tok2[0];
@@ -1296,7 +1208,6 @@ function make_xml($fh_xml,$NCFile,$type,$frame_delay)
 				//
 				$last_rgb=$rgb;
 			}
-			//fwrite($fh_xml,sprintf("        <TimeInterval eff=\"7\" dat=\"\" gui=\"\" in=\"1\" out=\"1\" pos=\"%d\" sin=\"-1\" att=\"0\" />\n",$maxTime));
 			fwrite($fh_xml,sprintf("        </Intervals>\n"));
 			fwrite($fh_xml,sprintf("  </Track>\n"));
 		}
