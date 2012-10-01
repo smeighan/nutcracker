@@ -92,3 +92,31 @@
 	color:#000000;
 	background-color:#EAF2D3;
 }
+.Gallery td, .TableProp th
+{
+	text-align:left;
+	font-size:10px;
+	border:1px solid #98bf21;
+	padding:3px 7px 2px 7px;
+}
+
+.Gallery th 
+{
+	font-size:12px;
+	text-align:left;
+	padding-top:5px;
+	padding-bottom:4px;
+	background-color:#A7C942;
+	color:#ffffff;
+}
+.Gallery tr.alt td 
+{
+	text-align:left;
+	color:#000000;
+	background-color:#EAF2D3;
+}
+.GalleryFormField {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 10px;
+	background-color: #FC9;
+}

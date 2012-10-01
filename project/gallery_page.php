@@ -19,6 +19,16 @@ function filterChange()
 	myObject.value.endrecord=0;
 	ajaXFunction('fw');
 }
+
+function copyEffects()
+{
+	myForm.action="project.php";
+	myForm.CopyEffect.Value="XXXXX";
+	myForm.onSubmit="";
+	myForm.method="POST";
+	myForm.submit();
+}
+
 function ajaxFunction(val)
 {
 
@@ -53,13 +63,25 @@ function stateChanged()
     if(httpxml.readyState==4)
       {
 var myObject = JSON.parse(httpxml.responseText);
-var trstr;
-var str="<table class=TableProp><tr><th>effect class</th><th>username</th><th>effect name</th><th>created</th><th>Image</th></tr>";
+var trstr="";
+var varstring="";
+var str="<table class=Gallery><tr><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th></tr>";
 for(i=0;i<myObject.data.length;i++)
 { 
-if(i%2==0) { trstr="<tr>"; 
-}else { trstr="<tr class=alt>";}
-str = str + trstr + "<td>" + myObject.data[i].effclass + " </td><td>" + myObject.data[i].username +  " </td><td>" + myObject.data[i].effname + " </td><td>" + myObject.data[i].created + "</td><td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"></td></tr>"
+	if(i%8==0) { str = str + "</tr>"
+	} else { 
+		if(i%4==0) { trstr="</tr><tr class=alt>" } else { trstr="" }
+	}
+	varstring = myObject.data[i].username + "~" + myObject.data[i].effname;
+	str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
+	str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
+	str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
+	str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
+	str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
+	str = str + "<br />Your Name";
+	str = str + "</td>";
+	str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\"100\" width=\"50\"></td>";
+
 }
 
 var endrecord=myObject.value.endrecord 
@@ -102,11 +124,11 @@ httpxml.send(null);
 
 <body onLoad="ajaxFunction('fw')";>
 
-<body>
 <?php show_barmenu(); ?>
 <h2>Gallery View</h2>
 <form name="myForm" onSubmit="ajaxFunction(this.form); return false">
 <input type=hidden name=st value=0>
+<input type="hidden" name="CopyEffect" value="XXXX">
 <table>
 <tr>
 	<td class="normalText"># Recs to Show : <select id="mylimit" onChange="ajaxFunction('bk')">
@@ -146,8 +168,9 @@ httpxml.send(null);
 	<td align=right><input type=button class="SubmitButton" value=Next id="fwd" onClick="ajaxFunction('fw');  return false"></td></tr>
 <tr>
 </tr>
-</form>
 <tr><td colspan=2><div id="txtHint"><b>Records will be displayed here</b></div></td></tr>
 </table>
+<input type="button" class="SubmitButton" value="Copy Checked Effect(s)" onClick="copyEffects();">
+</form>
 </body>
 </html>
