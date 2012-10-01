@@ -57,7 +57,7 @@ function color_wash($get)
 	*/
 	for($frame=1;$frame<=$maxFrame;$frame++)
 	{
-		if($frame>5000) exit ("Too many frames in sequence");
+		if($frame>5000) exit ("Too many frames in sequence. maxFrame=$maxFrame");
 		$x_dat = $base . "_d_". $frame . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
 		$dat_file[$frame] = $path . "/" .  $x_dat;
 		$dat_file_array[]=$dat_file[$frame];

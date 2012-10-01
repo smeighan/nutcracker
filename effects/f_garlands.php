@@ -39,6 +39,7 @@ function f_garlands($get)
 function garland($get)
 {
 	extract ($get);
+	
 	$base = $user_target . "~" . $effect_name;
 	$t_dat = $user_target . ".dat";
 	$xdat = $user_target ."~".  $effect_name . ".dat";
@@ -164,6 +165,8 @@ function garland($get)
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
+	
+	
 	make_gp($batch,$arr_orig,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	if($batch==0) echo "</body>";
 	if($batch==0) echo "</html>";

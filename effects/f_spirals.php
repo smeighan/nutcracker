@@ -8,6 +8,8 @@ function f_spirals($get)
 	if(!isset($get['color5']))    $get['color5']="#FFFFFF";
 	if(!isset($get['color6']))    $get['color6']="#FFFFFF";
 	if(!isset($get['direction'])) $get['direction']="down";
+	if(!isset($get['$use_background'])) $get['$use_background']="N";
+	if(!isset($get['background_color'])) $get['background_color']="#FFFFFF";
 	if(!isset($get['fade_3d']))   $get['fade_3d']="N";
 	if(!isset($get['rainbow_hue']))   $get['rainbow_hue']="N";
 	if(!isset($get['handiness']))   $get['handiness']="R";
