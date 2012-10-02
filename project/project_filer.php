@@ -329,15 +329,15 @@ function edit_song($project_id) {
 	<form name="project_edit" id="project_edit" action="project.php" method="post">
 	<input type="hidden" name="project_id" id="project_id" value=<?php echo $project_id;?>>
 	Frame Rate for project : <input class="FormFieldName" type="text" name="frame_delay" id="frame_delay"0 value="<?php echo $frame_delay?>"><br />
-	<table border="1" cellpadding="1" cellspacing="1">
-	<tr><th>Phrase</th><th>Start Time (sec)</th><th>End Time (sec)</th><th>Effect Assigned</th></tr>
+	<table class="Gallery">
+	<tr><th>Phrase</th><th>Start Time (sec)</th><th>End Time (sec)</th><th>Duration</th><th>Frames</th><th>Effect Assigned</th></tr>
 	<?php
 	$result3=nc_query($sql);
-	$cnt=show_phrases($result3,$effect, $effType);
+	$cnt=show_phrases($result3,$effect, $effType, $frame_delay);
 	if ($cnt==0) { // if there currently are no phrases attached to project get them from the library
 		insert_proj_detail_from_library($project_id);
 		$result3=nc_query($sql);
-		$newcnt=show_phrases($result3,$effect, $effType);
+		$newcnt=show_phrases($result3,$effect, $effType, $frame_delay);
 	}
 	?>
 	</table>
@@ -363,7 +363,7 @@ function edit_song($project_id) {
 	return;
 }
 
-function show_phrases($inresult,$effect, $effType) {
+function show_phrases($inresult,$effect, $effType, $frame_delay) {
 	$cnt=0;
 	while ($row = mysql_fetch_array($inresult, MYSQL_ASSOC)) {
 		$cnt +=1;
@@ -371,9 +371,20 @@ function show_phrases($inresult,$effect, $effType) {
 		$phrase_name = $row['phrase_name'];
 		$start_secs = $row['start_secs'];
 		$end_secs = $row['end_secs'];
+		$duration = $end_secs - $start_secs;
+		$frames = sec2frame($duration, $frame_delay);
 		$effect_name = $row['effect_name'];
 		$effect_str=effect_select($effect,$effect_name,$project_dtl_id, $effType);
-		echo "<tr><td class=\"FormFieldName\">$phrase_name</td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$start_secs\" name=\"st-$project_dtl_id\"></td><td class=\"FormFieldName\" ><input type=\"text\" class=\"FormFieldName\" value=\"$end_secs\" name=\"en-$project_dtl_id\"></td><td class=\"FormFieldName\" >$effect_str</td></tr>";
+		if ($cnt%2==0)
+			$trStr="<tr class=\"alt\">";
+		else
+			$trStr="<tr>";
+		echo $trStr."<td>".$phrase_name."</td>";
+		echo "<td><input type=\"text\" class=\"FormFieldName\" value=\"".$start_secs."\" name=\"st-".$project_dtl_id."\"></td>";
+		echo "<td><input type=\"text\" class=\"FormFieldName\" value=\"".$end_secs."\" name=\"en-".$project_dtl_id."\"></td>";
+		echo "<td>".$duration."</td>";
+		echo "<td>".$frames."</td>";
+		echo "<td>".$effect_str."</td></tr>";
 	}
 	return($cnt);
 }
