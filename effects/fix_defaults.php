@@ -32,7 +32,7 @@ foreach($arr as $array1)
 		//	echo "$username $effect_name $param_name $param_value\n";
 		$effect_array[$param_name]=$default_value;
 	}
-	print_r($effect_array);
+	//print_r($effect_array);
 	echo "</font>";
 	echo "<font color=red>";
 	$effects_dtl_array=get_effects_user_dtl($username,$effect_name);
@@ -41,10 +41,10 @@ foreach($arr as $array1)
 	{
 		extract($array2);
 		echo "$username $effect_name $param_name $param_value\n";
-		$effect_array[$param_name]=$param_value;
+		if(strlen($param_value)>0) $effect_array[$param_name]=$param_value;
 	}
 	echo "<font color=red>";
-	print_r($effect_array);
+	//print_r($effect_array);
 	update_effects_user_dtl($username,$effect_name,$effect_array);
 	echo "</font>";
 	/*foreach($array1 as $username=>$array2)
@@ -191,9 +191,9 @@ function update_effects_user_dtl($username,$effect_name,$effect_array)
 	{
 		$query = "REPLACE into `effects_user_dtl`
 		(username,effect_name,	param_name,	param_value,	segment,	created,	last_upd)
-			values ('$username','$effect_name','$param_name','$param_value',0,now(),now())
-			WHERE username='$username' and effect_name='$effect_name'";
+			values ('$username','$effect_name','$param_name','" .
+		mysql_real_escape_string($param_value) . "',0,now(),now())";
 		echo "<pre>$query</pre>\n";
-		//	$result=mysql_query($query) or die ("Error on $query");
+		$result=mysql_query($query) or die ("Error on $query");
 	}
 }
