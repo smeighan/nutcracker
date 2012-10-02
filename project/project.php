@@ -130,7 +130,7 @@ echo $msg_str;
 <h2>Current Nutcracker projects</h2>
 <form action="<?php echo "project-exec.php"; ?>" method="post">
 <input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
-<table class="TableProp">
+<table class="Gallery">
 <tr>
 <th>Song Name</th>
 <th>Artist</th>
@@ -138,14 +138,18 @@ echo $msg_str;
 <th>Model</th>
 <th>Frame Timing (ms)</th>
 <th>Commands</th>
-</tr>
 <?php
 	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username' ORDER BY song_name, model_name";
 	//echo "$sql <br />";
 	$result = nc_query($sql);
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($cnt%2==0)
+			$trStr="<tr class=\"alt\">";
+		else
+			$trStr="<tr>";
 		$cnt++;
+		echo $trStr;
 		$project_id = $row['project_id'];
 		$song_id = $row['song_id'];
 		$artist = $row['artist'];
