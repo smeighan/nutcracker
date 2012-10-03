@@ -106,7 +106,7 @@ function showFilesDir($directory, $project_id) {
 
 	} 
 	$retStr.='<tr><td colspan=3>&nbsp;</td></tr>';
-	$retStr.='<tr><td>If you do not see your text file listed, upload it here:</td><td colspan=2><a href="upload.php?username='.$username.'" onclick="window.open(\'upload.php?username='.$username.'\',\'popup\',\'width=500,height=150,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=200,top=200\'); return false">Upload a text file</a></td></tr>';
+	$retStr.='<tr><td><h2>If you do not see your text file listed, upload it here:</td><td colspan=2><a href="upload.php?username='.$username.'" onclick="window.open(\'upload.php?username='.$username.'\',\'popup\',\'width=500,height=150,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=200,top=200\'); return false">Upload a text file</a></h2></td></tr>';
 	$retStr.="</form>\n";
 	if (count($files)==0) 
 		$retStr.="<tr><td colspan=2><strong>No files found in the upload directory</strong></td></tr>\n";
