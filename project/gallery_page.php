@@ -27,95 +27,91 @@ function copyEffects()
 	myForm.onSubmit="";
 	myForm.method="POST";
 	myForm.submit();
+	location.refresh();
 }
 
 function ajaxFunction(val)
 {
-
-var httpxml;
-try
-  {
-  // Firefox, Opera 8.0+, Safari
-  httpxml=new XMLHttpRequest();
-  }
-catch (e)
-  {
-  // Internet Explorer
-  try
-    {
-    httpxml=new ActiveXObject("Msxml2.XMLHTTP");
-    }
-  catch (e)
-    {
-    try
-      {
-      httpxml=new ActiveXObject("Microsoft.XMLHTTP");
-      }
-    catch (e)
-      {
-      alert("Your browser does not support AJAX!");
-      return false;
-      }
-    }
-  }
-function stateChanged() 
-    {
-    if(httpxml.readyState==4)
-      {
-var myObject = JSON.parse(httpxml.responseText);
-var trstr="";
-var varstring="";
-var str="<table class=Gallery><tr><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th></tr>";
-for(i=0;i<myObject.data.length;i++)
-{ 
-	if(i%8==0) { str = str + "</tr>"
-	} else { 
-		if(i%4==0) { trstr="</tr><tr class=alt>" } else { trstr="" }
+	var httpxml;
+	try
+	{
+	  // Firefox, Opera 8.0+, Safari
+		httpxml=new XMLHttpRequest();
 	}
-	varstring = myObject.data[i].username + "~" + myObject.data[i].effname;
-	str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
-	str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
-	str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
-	str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
-	str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
-	str = str + "<br />Your Name";
-	str = str + "</td>";
-	str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\"100\" width=\"50\"></td>";
+	catch (e)
+	{
+	// Internet Explorer
+		try
+		{
+			httpxml=new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e)
+		{
+			try
+			{
+				httpxml=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			catch (e)
+			{
+				alert("Your browser does not support AJAX!");
+				return false;
+			}
+		}	
+	}
+	  
+	function stateChanged() 
+	{
+		if(httpxml.readyState==4)
+		{
+			var myObject = JSON.parse(httpxml.responseText);
+			var trstr="";
+			var varstring="";
+			var str="<table class=Gallery><tr><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th></tr>";
+			for(i=0;i<myObject.data.length;i++)
+			{ 
+				if(i%8==0) { str = str + "</tr>"
+				} else { 
+					if(i%4==0) { trstr="</tr><tr class=alt>" } else { trstr="" }
+				}
+				varstring = myObject.data[i].username + "~" + myObject.data[i].effname;
+				str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
+				str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
+				str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
+				str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
+				str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
+				str = str + "<br />Your Name";
+				str = str + "</td>";
+				str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\"100\" width=\"50\"></td>";
+			}
+			var endrecord=myObject.value.endrecord 
+			str = str + "<tr><td colspan=6>" + myObject.value.nume + " records found</td></tr>"
+			myForm.st.value=endrecord;
+			if(myObject.value.end =="yes"){ document.getElementById("fwd").style.display='inline';
+			}else{document.getElementById("fwd").style.display='none';}
 
-}
+			if(myObject.value.startrecord =="yes"){ document.getElementById("back").style.display='inline';
+			}else{document.getElementById("back").style.display='none';}
+			
+			str = str + "</table>" 
+			document.getElementById("txtHint").innerHTML=str;
+		}
+	}
 
-var endrecord=myObject.value.endrecord 
-str = str + "<tr><td colspan=6>" + myObject.value.nume + " records found</td></tr>"
-
-myForm.st.value=endrecord;
-if(myObject.value.end =="yes"){ document.getElementById("fwd").style.display='inline';
-}else{document.getElementById("fwd").style.display='none';}
-
-
-if(myObject.value.startrecord =="yes"){ document.getElementById("back").style.display='inline';
-}else{document.getElementById("back").style.display='none';}
-
-
-str = str + "</table>" 
-document.getElementById("txtHint").innerHTML=str;
-    }
-    }
-
-var url="gallery_page_check.php";
-var myendrecord=myForm.st.value;
-var mylimit=myForm.mylimit.value;
-var mysort=myForm.mysort.value;
-var myfilter=myForm.myfilter.value;
-url=url+"?endrecord="+myendrecord;
-url=url+"&direction="+val;
-url=url+"&mylimit="+mylimit;
-url=url+"&mysort="+mysort;
-url=url+"&myfilter="+myfilter;
-url=url+"&sid="+Math.random();
-httpxml.onreadystatechange=stateChanged;
-httpxml.open("GET",url,true);
-httpxml.send(null);
- document.getElementById("txtHint").innerHTML="Please Wait....";
+	var url="gallery_page_check.php";
+	var myendrecord=myForm.st.value;
+	var mylimit=myForm.mylimit.value;
+	var mysort=myForm.mysort.value;
+	var myfilter=myForm.myfilter.value;
+	url=url+"?endrecord="+myendrecord;
+	url=url+"&direction="+val;
+	url=url+"&mylimit="+mylimit;
+	url=url+"&mysort="+mysort;
+	url=url+"&myfilter="+myfilter;
+	url=url+"&sid="+Math.random();
+	httpxml.onreadystatechange=stateChanged;
+	httpxml.open("GET",url,true);
+	httpxml.send(null);
+	document.getElementById("txtHint").innerHTML="Please Wait....";
 }
 </script>
 
