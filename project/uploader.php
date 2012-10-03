@@ -22,7 +22,7 @@ $fh=fopen($infile,'r');
 $isValid=true;
 while(($line=fgets($fh))&& ($isValid)) {
 	if (strlen(trim($line))>0) {
-		$tok=preg_split("/ +/", trim($line));
+		$tok=preg_split("/[\t ]+/", trim($line));
 		$isValid=(count($tok)>2);
 	}
 }
