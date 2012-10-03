@@ -954,6 +954,15 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				f_color_wash($get);
 				$ranNC=true;
 				break;
+			case ('user_defined') :
+				f_user_defined($get);
+				break;
+			case ('snowstorm') :
+				f_snowstorm($get);
+				break;
+			case ('pictures') :
+				f_pictures($get);
+				break;
 			default :
 				echo "$effect_class not handled yet<br />";
 		}
