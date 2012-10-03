@@ -134,9 +134,10 @@ if (isset($_POST)) {
 						$fldname="end_secs";
 						break;
 				}
-				if ($subchk != "ck~")
+				if ($subchk != "ck~") {
 					$sql="UPDATE song_dtl SET ".$fldname."='".$val."' WHERE song_dtl_id=".$song_dtl_id;
-				else {
+					nc_query($sql);
+				} else {
 					$sql="DELETE FROM song_dtl WHERE song_dtl_id=".$song_dtl_id;
 					//echo $sql."<br />";
 					nc_query($sql);
