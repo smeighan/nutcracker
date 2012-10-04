@@ -7,6 +7,7 @@ function f_single_strand($get)
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	if(!isset($get['speed']))     $get['speed']="1";
 	extract ($get);
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	/*echo "<pre>";
 	print_r($get);
 	echo "</pre>\n";*/

@@ -19,25 +19,23 @@ require_once('../conf/auth.php');
 $allowedFields = array(
 'username','object_name', 'object_desc', 'model_type', 'string_type', 
 'pixel_count', 'pixel_first',  'pixel_last', 'number_segments','gif_model',
-'unit_of_measure','pixel_length',   'pixel_spacing',
-'total_strings', 'direction', 'orientation', 'topography', 'h1', 
-'h2', 'd1', 'd2', 'd3' , 'd4'
+'unit_of_measure','pixel_length',   'pixel_spacing','window_degrees',
+'total_strings', 'direction', 'orientation', 'topography'
 );
 // Specify the field names that you want to require...
 $requiredFields = array(
 'username','model_type', 'string_type', 
 'pixel_count',  'pixel_length',   'pixel_spacing',
-'total_strings', 'direction', 'orientation', 'topography', 'h1', 
-'d1'
+'total_strings', 'direction', 'orientation', 'topography'
 );
 /*echo "<pre>";
 print_r($_GET);
 echo "</pre>";*/
 //die("exit");
 $errors = array();
-/*echo "<pre>process.php:";
+echo "<pre>process.php:";
 print_r($_GET);
-echo "</pre>";*/
+echo "</pre>";
 foreach($_GET AS $key => $value)
 {
 	$key=strtolower($key);
@@ -52,9 +50,8 @@ foreach($_GET AS $key => $value)
 	$n=0;
 	if(($key=="pixel_count" and  $n==0) or
 	($key=="pixel_spacing" and  $n==0) or
-	($key=="total_strings" and  $n==0) or
-	($key=="h1" and  $n==0) or
-	($key=="d1" and  $n==0) )
+	($key=="total_strings" and  $n==0) 
+	 )
 		$errors[] = "The field $key must be numeric. bad value = <font color=red>$value</font>";
 	if($key=="username" and (strlen($value)<1 or empty($value)) )
 		$errors[] = "The field $key \"$value\" must have a value";
@@ -95,37 +92,21 @@ else
 	if(empty($D3)) $D3=0;
 	if(empty($D4)) $D4=0;
 	$OBJECT_NAME = str_replace ( " " , "_" , $OBJECT_NAME);  // no embedded blanks in onject name
-	/*
-	username	varchar(15)	latin1_swedish_ci		No			 	 	 	 	 	 	 
-	object_name	varchar(8)	latin1_swedish_ci		No			 	 	 	 	 	 	 
-	object_desc	varchar(80)	latin1_swedish_ci		Yes	NULL		 	 	 	 	 	 	 
-	model_type	varchar(15)	latin1_swedish_ci		Yes	NULL		 	 	 	 	 	 	 
-	string_type	varchar(15)	latin1_swedish_ci		Yes	NULL		 	 	 	 	 	 	 
-	pixel_count	int(11)			Yes	NULL		 	 	 	 	 	 	
-	pixel_first	int(11)			Yes	NULL		 	 	 	 	 	 	
-	pixel_last	int(11)			Yes	NULL		 	 	 	 	 	 	
-	pixel_length	decimal(13,2)		UNSIGNED	Yes	NULL		 	 	 	 	 	 	
-	total_strings	int(11)			Yes	NULL		 	 	 	 	 	 	
-	direction	varchar(10)	latin1_swedish_ci		Yes	NULL		 	 	 	 	 	 	 
-	orientation	int(11)			Yes	NULL		 	 	 	 	 	 	
-	topography	varchar(20)	latin1_swedish_ci		Yes	NULL		 	 	 	 	 	 	 
-	h1	decimal(13,2)		UNSIGNED	Yes	NULL		 	 	 	 	 	 	
-	h2	decimal(13,2)		UNSIGNED	Yes	NULL		 	 	 	 	 	 	
-	d1	decimal(13,2)		UNSIGNED	Yes	NULL		 	 	 	 	 	 	
-	d2	decimal(13,2)		UNSIGNED	Yes	NULL		 	 	 	 	 	 	
-	d3	decimal(13,2)		UNSIGNED	Yes	NULL		 	 	 	 	 	 	
-	d4	decimal(13,2)	
-	Error on REPLACE into models( username,object_name, object_desc, model_type, string_type, pixel_count, pixel_first, pixel_last, unit_of_measure, pixel_length, pixel_spacing, total_strings, direction, orientation, topography, h1, h2, d1, d2, d3 , d4) values ('f','ASDF', 'sadf', 'MTREE', '', 44, 1, 44, 'in', ,3, 11, '', 0, 'BOT_TOP', 11.00, 0.00, 11.00, 1.00, 0.00, 0.00)
-		*/	
+	
 	//$PIXEL_LENGTH=$PIXEL_SPACING*$PIXEL_COUNT;
+	if($MODEL_TYPE!="MTREE") $WINDOW_DEGREES=360; // make sure every model type other than Mega-trees are defaulted to 360. This saves the user from screwing up.
+	
+	
+	if(!isset($UNIT_OF_MEASURE)) $UNIT_OF_MEASURE='in';
 	if($UNIT_OF_MEASURE=='in') $PIXEL_LENGTH=3;
 	else $PIXEL_LENGTH=8;
 	$insert = "REPLACE into models( username,object_name, object_desc, model_type,
 	pixel_count, pixel_first,  pixel_last, 
-	unit_of_measure, pixel_length, total_strings,number_segments,gif_model,folds,start_bottom)
+	unit_of_measure, pixel_length, total_strings,window_degrees,
+	number_segments,gif_model,folds,start_bottom)
 		values ('$username','$OBJECT_NAME', '$OBJECT_DESC', '$MODEL_TYPE', 
 	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
-	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM')";
+	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$WINDOW_DEGREES,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM')";
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -154,10 +135,11 @@ else
 	print_r($_GET);
 	echo "model_type = model_type\n";
 	echo "</pre>";*/
+	
 	if($MODEL_TYPE=="SINGLE_STRAND")
 		header("location: single_strand-form.php?username=$username&total_strings=$TOTAL_STRINGS&object_name=$OBJECT_NAME&number_segments=$number_segments");
 	else
-	header("location: target-exec.php?model_name=$OBJECT_NAME&username=$username");
+	header("location: target-exec.php?model_name=$OBJECT_NAME&username=$username&window_degrees=$WINDOW_DEGREES");
 	exit();
 	//setcookie("username", "");
 }

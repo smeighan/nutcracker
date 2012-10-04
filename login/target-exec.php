@@ -19,7 +19,10 @@ require("../effects/read_file.php");
 // http://localhost/nutcracker/login/target-exec.php?model=AA22?user=f
 // 
 extract($_GET);
-set_time_limit(300);
+echo "<pre>";
+print_r($_GET);
+echo "</pre>\n";
+set_time_limit(0);
 $username = str_replace("%20"," ",$username);
 //get_models('f','ZZ');
 get_models($username,$model_name);
@@ -64,12 +67,6 @@ function get_models($username,$model_name)
 	[orientation] => 0
 	[topography] => UP_DOWN_NEXT
 	[topography] => BOT_TOP
-	[h1] => 120.00
-	[h2] => 0.00
-	[d1] => 40.00
-	[d2] => 0.00
-	[d3] => 0.00
-	[d4] => 0.00
 	)
 		*/
 	//	
@@ -241,10 +238,15 @@ function get_models($username,$model_name)
 		echo "</tr>\n";
 	}
 	echo "<tr>";
+	$window_array=getWindowArray(1,$maxStrands,$window_degrees);
+	echo "<pre>getWindowArray(1,$maxStrands,$window_degrees);";
 	for($s=1;$s<=$maxStrands;$s++)
 	{
 		$s_mod=$s%$folds;
-		echo "<td >s=$s<br/>$s_mod</td>\n";
+		$color="#FFFFFF";
+		if(in_array($s,$window_array))
+			$color="#FFFF00"; 
+		echo "<td bgcolor=$color>s=$s<br/>$s_mod</td>\n";
 	}
 	echo "</tr>";
 	echo "<tr>";
@@ -258,7 +260,7 @@ function get_models($username,$model_name)
 	$target_array2= array($target_array,$username,$model_name) ;
 	if($model_type=="MTREE")
 	{
-		$full_path=megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
+		$full_path=megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
 	}
 	else if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY")
 	{
@@ -326,7 +328,7 @@ function display_file($full_path)
 	echo "</pre>";
 }
 
-function megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2)
+function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2)
 {
 	#
 	#	output files are created for each segment
@@ -357,6 +359,16 @@ function megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$t
 	$member_id=get_member_id($username);
 	$path="../targets/" . $member_id ;
 	##	passed in now thru runtime arg, 	strands=16;
+	//
+	//
+	//$window_degrees=360;
+	$window_array=getWindowArray(1,$maxStrands,$window_degrees);
+	echo "<pre>getWindowArray(1,$maxStrands,$window_degrees);";
+	print_r($window_array);
+	echo "</pre>";
+	//	if(in_array($new_s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+	//
+	//
 	$dat_file = $path . "/" . $model_name . ".dat";
 	$fh = fopen($dat_file, 'w') or die("can't open file $fh");
 	echo "<pre>#datfile    $dat_file\n";
@@ -405,7 +417,7 @@ function megatree($maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$t
 			$degree_rotation=($s-1)*$degree_per_segment;
 			$x2=getx($r,$degree_rotation);
 			$y2=gety($r,$degree_rotation);
-			//if($hyp<=$side)
+			if(in_array($s,$window_array)) // only output strands that are in our window
 			{
 				//	lave the 6yh token 0 as a place holder for the RGB value.
 				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
@@ -484,9 +496,9 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 			if(isset($target_array[$s][$p]['string']))
 			{
 				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
-				// echo "<pre>";
-				//	printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
-				//echo "</pre>\n";
+				/*echo "<pre>";
+				printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
+				echo "</pre>\n";*/
 			}
 		}
 		fwrite($fh, "\n" );

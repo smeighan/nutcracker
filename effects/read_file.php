@@ -569,7 +569,6 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 	{
 		echo "ERROR! The file $gp_file does not exist\n";
 	}
-	
 	if($batch<=1) printf ("<img src=\"%s\"/>",$gif_file);
 }
 
@@ -2135,6 +2134,59 @@ function get_target_model($username,$model_name)
 	$return_array[0]=$maxStrands;
 	$return_array[1]=$maxPixels;
 	return $return_array;
+}
+
+function get_window_degrees($username,$model_name,$in_window_degrees)
+{
+	//Include database connection details
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//	
+	$query ="select * from models where username='$username' and object_name='$model_name'";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	if (!$result)
+	{
+		$message  = 'Invalid query: ' . mysql_error() . "\n";
+		$message .= 'Whole query: ' . $query;
+		die($message);
+	}
+	$NO_DATA_FOUND=0;
+	if (mysql_num_rows($result) == 0)
+	{
+		$NO_DATA_FOUND=1;
+	}
+	$query_rows=array();
+	// While a row of data exists, put that row in $row as an associative array
+	// Note: If you're expecting just one row, no need to use a loop
+	// Note: If you put extract($row); inside the following loop, you'll
+	//       then create $userid, $fullname, and $userstatus
+	//
+	$window_degrees=0;
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	if($in_window_degrees!=$window_degrees)
+	{
+		echo "<pre>Overriding your effect window_degrees of $in_window_degrees degrees\n";
+		echo "Setting it to $window_degrees degrees to match your target model $model_name</pre>\n";
+		if(!isset($window_degrees)) $window_degrees=360;
+		$query ="update models set window_degrees=$window_degrees
+		where username='$username' and object_name='$model_name'";
+		$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	}
+	return $window_degrees;
 }
 
 function  create_sparkles($sparkles,$maxStrand,$maxPixel)

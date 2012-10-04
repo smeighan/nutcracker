@@ -2,6 +2,8 @@
 
 function f_snowstorm($get)
 {
+$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the targetdelete from s
+$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -70,7 +72,6 @@ function f_snowstorm($get)
 	//	mode_dtl: username	object_name	strand	pixel	string	user_pixel	created	last_upd
 	$counter=0;	// how many total snowflakes we have
 	$query0="delete from snowstorm  where username='$username'";
-	echo "<pre>$query0</pre>\n";
 	$result0=mysql_query($query0) or die ("Error on $query0");
 	$new_records=$maxSnowflakes;
 	for($seed=1;$seed<=$maxSnowflakes;$seed++)

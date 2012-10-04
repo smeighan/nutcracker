@@ -6,7 +6,32 @@ function f_gif($get)
 	if(!isset($get['brightness']))   $get['brightness']="0";
 	if(!isset($get['fade_in']))  $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
+	/*	Array
+	(
+	[username] => f
+	[user_target] => A
+	[effect_class] => gif
+	[effect_name] => GIF2
+	[file1] => lights11.gif
+	[frame_delay] => 111
+	[window_degrees] => 180
+	[brightness] => 0
+	[seq_duration] => 5
+	[fade_in] => 0
+	[fade_out] => 0
+	[submit] => Submit Form to create your effect
+	[OBJECT_NAME] => gif
+	[batch] => 0
+	)*/
+	/*echo "<pre>";
+	print_r($get);
+	echo "</pre>\n";*/
+	
+	// Set window_degrees to match the target
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
+	//
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
 	require_once("../effects/read_file.php");
@@ -61,7 +86,6 @@ function f_gif($get)
 	$FIC2=$gifpath . "/" . $FIC;
 	$FIC3=$gifpath . "/zz_" . $FIC;
 	if($batch==0) echo "<h1>Processing file $FIC2</h1>";
-	
 	$src=$FIC2;
 	$dst=$FIC3;
 	//rsize($src, $dst, $maxStrand, $maxPixel);
@@ -247,7 +271,7 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 	$s=0;
 	$w = imagesx($image);
 	$h = imagesy($image);
-//	echo "<pre>w,h=$w,$h img_width,img_height=$img_width,$img_height</pre>\n";
+	//	echo "<pre>w,h=$w,$h img_width,img_height=$img_width,$img_height</pre>\n";
 	$img_width=$w;
 	$img_height=$h;
 	$r = $g = $b = 0;
@@ -273,7 +297,7 @@ function get_image($batch,$file,$frame,$maxStrand,$maxPixel,$window_degrees)
 			if($x1<1) $x1=1; if($x1>$img_width) $x1=$img_width;
 			if($y1<1) $y1=1; if($y1>$img_height) $y1=$img_height;
 			$rgb_index = imagecolorat($image, $x1, $y1);
-		//	echo "<pre>$rgb_index=imagecolorat( $x1, $y1)</pre>\n";
+			//	echo "<pre>$rgb_index=imagecolorat( $x1, $y1)</pre>\n";
 			$cols = ImageColorsForIndex($image, $rgb_index);
 			$r = $cols['red'];
 			$g = $cols['green'];

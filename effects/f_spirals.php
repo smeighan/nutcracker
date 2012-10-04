@@ -17,6 +17,7 @@ function f_spirals($get)
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	if(!isset($get['sparkles']))  $get['sparkles']="0";
 	if(!isset($get['speed']))     $get['speed']="1";
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");

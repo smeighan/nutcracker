@@ -60,29 +60,7 @@ if(empty($row)) // on our first time, we have no data for this user. initializze
 $ip=@$REMOTE_ADDR; 
 //echo "<b>IP Address= $ip</b>";
 /*
-Array $row
-(
-[username] => f
-[object_name] => MT
-[object_desc] => mt
-[model_type] => MTREE
-[string_type] => SS
-[pixel_count] => 33
-[pixel_first] => 1
-[pixel_last] => 33
-[pixel_length] => 1.00
-[total_strings] => 33
-[direction] => CW
-[orientation] => 1
-[topography] => BOT_TOP
-[h1] => 111.00
-[h2] => 0.00
-[d1] => 11.00
-[d2] => 1.00
-[d3] => 0.00
-[d4] => 0.00
-[unit_of_measure] => in
-)
+
 	*/
 echo "<h2>Nutcracker: RGB Effects Builder for user $username<h2>"; 
 //
@@ -160,7 +138,7 @@ value="<?php echo $row['total_strings'] ?>" name="TOTAL_STRINGS"></td></tr>
 <tr>
 <td><table border=1>
 <tr>
-<td rowspan=3>Do not fill in these 3 questions if you are doing Single Strand Targets</td>
+<td rowspan=4>Do not fill in these 4 questions if you are doing Single Strand Targets</td>
 <td><b><font color="blue">**Total number of Pixels on this string </b>
 </font>
 <input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="5" 
@@ -170,14 +148,20 @@ This is the number of pixels .Sometimes the RGB strings might say 150 LED's
 </td>
 </tr>
 <tr>
-<td><b><font color="blue">**How many strands will you make out of each of your strings?:</b>
+<td><b><font color="blue">How many strands will you make out of each of your strings?:</b>
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
 value="<?php echo $row['folds'] ?>" name="FOLDS"></td></tr>
 <tr>
-<td><b><font color="blue">**Do you want your strings to always start at the bottom
+<td><b><font color="blue">Do you want your strings to always start at the bottom
 of the RGB device (Y or N):</b>
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="1" maxlength="1" 
 value="<?php echo $row['start_bottom'] ?>" name="START_BOTTOM"></td></tr>
+<tr>
+<td><b><font color="blue">Window Degrees (only needed for Megatrees): 360=full megatree, 180=half-megatree?:</b>
+</font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
+value="<?php if(!isset($row['window_degrees'])) $row['window_degrees']=360;
+	 echo $row['window_degrees'] ?>" name="WINDOW_DEGREES"></td></tr>
+
 </table>
 </td></tr>
 <!--<tr><td><b><font color="blue">**Unit of Measure:</b><br /> 
@@ -257,10 +241,7 @@ function show_my_models($username,$model_name)
 	// Note: If you put extract($row); inside the following loop, you'll
 	//       then create $userid, $fullname, and $userstatus
 	//
-	//$username','$OBJECT_NAME', '$OBJECT_DESC', '$MODEL_TYPE', '$STRING_TYPE', 
-	//$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, $PIXEL_LENGTH, 
-	//$TOTAL_STRINGS, '$DIRECTION', $ORIENTATION, '$TOPOGRAPHY', $H1, $H2, $D1, $D2, $D3, $D4
-	//
+	
 	echo "<table border=\"1\">\n";
 	echo "<tr>\n";
 	echo"<th>username</th>";

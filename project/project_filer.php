@@ -1115,9 +1115,9 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 				$validFlag=isValidNC($fileName);
 		}
 		if(!$validFlag)
-			echo "$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)";
+			echo "<pre>$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
 		else
-			echo "$fileName: <font color=green>Valid</font> (NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)";
+			echo "<pre>$fileName: <font color=green>Valid</font> (NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
 		if (!$validFlag) 
 			$myarray[$cnt][7]="None"; // if the NC file is bad, skip the effect
 		$cnt++;

@@ -2,6 +2,7 @@
 
 function f_user_defined($get)
 {
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -46,11 +47,10 @@ function f_user_defined($get)
 		echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
-	
-	define('CR', "\r");          // carriage return; Mac
-	define('LF', "\n");          // line feed; Unix
-	define('CRLF', "\r\n");      // carriage return and line feed; Windows
-	define('BR', '<br />' . LF); // HTML Break
+	if(!defined('CR')) define('CR', "\r");          // carriage return; Mac
+	if(!defined('LF')) define('LF', "\n");          // line feed; Unix
+	if(!defined('CRLF')) define('CRLF', "\r\n");      // carriage return and line feed; Windows
+	if(!defined('BR')) define('BR', '<br />' . LF); // HTML Break
 	//echo "<pre>before: $php_program</pre>\n";
 	$php_program = str_replace(CRLF, LF, $php_program);
 	$php_program = str_replace(CR, LF, $php_program);
@@ -65,8 +65,9 @@ function f_user_defined($get)
 	$include_file = $path . "/$effect_name.inc";
 	write_user_defined($php_program,$include_file);
 	ob_start();
-	include $include_file;
 	echo "<pre>include $include_file</pre>\n";
+	require_once $include_file;
+	
 	ob_get_clean();
 	for($frame=1;$frame<=$maxFrame;$frame++)
 	{

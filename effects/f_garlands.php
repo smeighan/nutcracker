@@ -2,6 +2,7 @@
 
 function f_garlands($get)
 {
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -39,13 +40,15 @@ function f_garlands($get)
 function garland($get)
 {
 	extract ($get);
-	
 	$base = $user_target . "~" . $effect_name;
 	$t_dat = $user_target . ".dat";
 	$xdat = $user_target ."~".  $effect_name . ".dat";
 	$path="../targets/". $member_id;
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$path="../effects/workspaces/". $member_id;
+	/*echo "<pre>read_file($t_dat,$path);";
+	print_r($arr);
+	echo "</pre>";*/
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
 	$maxStrand =$arr[2];  // highest strand seen on target
@@ -138,7 +141,7 @@ function garland($get)
 				}
 				if($p>$maxPixel) $p=$maxPixel;
 				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-				if(in_array($s,$window_array))
+				//if(in_array($s,$window_array))
 				{
 					$rgb_val=$rgb;
 					$rgb_val=sparkles($sparkles,$rgb); // if sparkles>0, then rgb_val will be changed.	
@@ -165,8 +168,6 @@ function garland($get)
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
-	
-	
 	make_gp($batch,$arr_orig,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	if($batch==0) echo "</body>";
 	if($batch==0) echo "</html>";

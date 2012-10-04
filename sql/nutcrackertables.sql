@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 02, 2012 at 08:39 AM
+-- Generation Time: Oct 04, 2012 at 08:17 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -63,6 +63,22 @@ CREATE TABLE IF NOT EXISTS `effects_hdr` (
   `last_upd` datetime DEFAULT NULL,
   `php_program` varchar(25) DEFAULT NULL,
   UNIQUE KEY `idx_effect_class` (`effect_class`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `effects_user_drl_oct2`
+--
+
+CREATE TABLE IF NOT EXISTS `effects_user_drl_oct2` (
+  `username` varchar(25) NOT NULL,
+  `effect_name` varchar(25) NOT NULL,
+  `param_name` varchar(32) NOT NULL,
+  `param_value` varchar(4000) NOT NULL,
+  `segment` int(6) DEFAULT '0',
+  `created` datetime DEFAULT NULL,
+  `last_upd` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -193,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=652 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=658 ;
 
 -- --------------------------------------------------------
 
@@ -217,6 +233,7 @@ CREATE TABLE IF NOT EXISTS `models` (
   `unit_of_measure` varchar(12) DEFAULT NULL,
   `total_strings` int(11) DEFAULT NULL,
   `total_pixels` int(12) DEFAULT NULL,
+  `window_degrees` int(6) DEFAULT '360',
   `number_segments` varchar(6) DEFAULT '0',
   `gif_model` varchar(25) DEFAULT 'single',
   `direction` varchar(10) DEFAULT NULL,
@@ -302,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=443 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=445 ;
 
 -- --------------------------------------------------------
 
@@ -345,7 +362,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=32 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=41 ;
 
 -- --------------------------------------------------------
 
@@ -362,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `project_id` int(11) NOT NULL,
   `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=361 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=487 ;
 
 -- --------------------------------------------------------
 

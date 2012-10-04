@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function f_pictures($get)
 {
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -363,8 +364,6 @@ function get_image2($file,$frame,$maxStrand,$maxPixel)
 	if($batch==0) echo "</pre>";
 	return $image_array;
 }
-
-
 
 function resizeImage2($originalImage,$toWidth,$toHeight)
 {

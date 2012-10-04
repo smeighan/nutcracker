@@ -2,16 +2,17 @@
 
 function f_bars($get)
 {
-if(!isset($get['color3']))    $get['color3']="#FFFFFF";
-if(!isset($get['color4']))    $get['color4']="#FFFFFF";
-if(!isset($get['color5']))    $get['color5']="#FFFFFF";
-if(!isset($get['color6']))    $get['color6']="#FFFFFF";
-if(!isset($get['direction'])) $get['direction']="down";
-if(!isset($get['fade_3d']))   $get['fade_3d']="N";
-if(!isset($get['fade_in']))   $get['fade_in']="0";
-if(!isset($get['fade_out']))  $get['fade_out']="0";
-if(!isset($get['highlight'])) $get['highlight']="N";
-if(!isset($get['speed']))     $get['speed']="1";
+	if(!isset($get['color3']))    $get['color3']="#FFFFFF";
+	if(!isset($get['color4']))    $get['color4']="#FFFFFF";
+	if(!isset($get['color5']))    $get['color5']="#FFFFFF";
+	if(!isset($get['color6']))    $get['color6']="#FFFFFF";
+	if(!isset($get['direction'])) $get['direction']="down";
+	if(!isset($get['fade_3d']))   $get['fade_3d']="N";
+	if(!isset($get['fade_in']))   $get['fade_in']="0";
+	if(!isset($get['fade_out']))  $get['fade_out']="0";
+	if(!isset($get['highlight'])) $get['highlight']="N";
+	if(!isset($get['speed']))     $get['speed']="1";
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
@@ -22,8 +23,7 @@ if(!isset($get['speed']))     $get['speed']="1";
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
-	
-		$get['OBJECT_NAME']='bars';
+	$get['OBJECT_NAME']='bars';
 	if(!isset($batch)) $batch=0;
 	$get['batch']=$batch;
 	$effect_name = strtoupper($effect_name);
@@ -43,8 +43,6 @@ if(!isset($get['speed']))     $get['speed']="1";
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
-	
-	
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -56,7 +54,6 @@ if(!isset($get['speed']))     $get['speed']="1";
 	$file      =$arr[7];
 	$min_max   =$arr[8];
 	$s_pixel   =$arr[9];
-	
 	$member_id=get_member_id($username);
 	$path ="../effects/workspaces/" . $member_id;
 	$x_dat = $user_target . "+" . $effect_name . ".dat";
@@ -69,8 +66,6 @@ if(!isset($get['speed']))     $get['speed']="1";
 		mkdir($directory, 0777);
 	}
 	$x_dat = $user_target . "~" . $effect_name . ".dat";
-	
-	
 	$maxFrame=20;
 	$maxFrame=intval(($seq_duration*1000/$frame_delay)/$speed)+1;
 	$seq_number=0;
