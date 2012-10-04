@@ -73,7 +73,7 @@ if (isset($_POST)) {
 						//$msg_str.="SQL : ".$sql."<br />";
 						//echo $sql;
 						nc_query($sql);
-						$sql="SELECT song_id FROM song WHERE song_name='".$song_name."' AND artist='".$song_url."' AND song_url='".$song_url."'";
+						$sql="SELECT song_id FROM song WHERE song_name='".$song_name."' AND artist='".$artist."' AND song_url='".$song_url."'";
 						//echo $sql;
 						$result=nc_query($sql);
 						if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -92,7 +92,7 @@ if (isset($_POST)) {
 										$phrase_end=$tok[1];
 										$phrase_name=$tok[2];
 										$sql="INSERT INTO song_dtl (phrase_name, start_secs, end_secs, song_id) VALUES ('".$phrase_name."','".$phrase_st."','".$phrase_end."',".$song_id.")";
-										//echo $sql."\n";
+										//echo $sql."<br />";
 										nc_query($sql);
 										//print_r($tok);
 									}
