@@ -787,6 +787,47 @@ function getNCInfo($infile) {
 	return($retVal);
 }
 
+function getModelInfo($project_id) {
+	$proj_array=getProjDetails($project_id);
+	$frame_delay=$proj_array['frame_delay'];
+	$model_name=$proj_array['model_name'];
+	$username=$proj_array['username'];
+	$member_id=$proj_array['member_id'];
+	$infile="../effects/workspaces/".$member_id."/".$model_name.".dat";
+	$fh=fopen($infile,'r');
+	$numElements=$numColumns=$maxString=$maxPixel=0;
+	while($line=fgets($fh)) {
+		if ((!substr($line,0,1) != "#")) {
+			$tok=preg_split("/ +/", trim($line));
+			$string=$tok[1];
+			$pixel=$tok[2];
+			if ($string>$maxString)
+				$maxString=$string;
+			if ($pixel>$maxPixel)
+				$maxPixel=$pixel;
+			$numElements++;
+		}
+			
+	}
+	fclose($fh);
+	$numElements*=3; //account for the RGBs
+	$retVal=array($model_name, $numElements, $maxString, $maxPixel);
+	return($retVal);
+}
+
+function isValidNCModel($project_id, $NCfile) {
+	$modInfo=getModelInfo($project_id);
+	$ModnumElements=$modInfo[1];
+	$ModmaxString=$modInfo[2];
+	$ModmaxPixel=$modInfo[3];
+	$NCInfo=getNCInfo($NCFile);
+	$NCnumElements=$NCInfo[1];
+	$NCmaxString=$NCInfo[2];
+	$NCmaxPixel=$NCInfo[3];
+	$retVal=(($ModnumElements==$NCnumElements) && ($ModmaxString==$NCmaxString) && ($ModmaxPixel==$NCmaxPixel));
+	return($retVal);
+}
+
 function isValidNC($infile) {
 	$valArray=checkNCInfo($infile);
 	$overcheck=true;
@@ -889,10 +930,14 @@ function showMessage($outStr) {
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
-	//$inHash=getProjHash($project_id, $eff);
-	//$checkHasher=checkHash($inHash,$project_id, $eff);
-	//if (!$checkHasher)
-	//	removeNCFiles($username, $model_name, $eff);
+	$inHash=getProjHash($project_id, $eff);
+	$checkHasher=checkHash($inHash,$project_id, $eff);
+	if ((file_exists($outfile)) && (!$checkHasher)) // Check to see if the values of the effect have changed, if so, we need to regen the effect (remove the existing nc file if it exists)
+		removeNCFiles($username, $model_name, $eff);
+	if ((file_exists($outfile)) && (!isValidNC($outfile)))  // Check to see if the existing NC file exists and is valid, if not, we need to regen the effect (remove the existing nc file)
+		removeNCFiles($username, $model_name, $eff);
+	if (file_exists($outfile) && (!isValidNCModel($project_id, $outfile)))  // Check to see if the nc file matches the model (same number of strings/pixels), if not, we will need to regen the effect (remove the existing nc file)
+		removeNCFiles($username, $model_name, $eff);
 	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
@@ -906,6 +951,8 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		$get['frame_delay']=$frame_delay;
 		$effect_class=$get['effect_class'];
 		$member_id=getMemberID($username);
+		// need code to grab the 360 value from the model -- right now the model does not contain 360 info (but will for the future)
+		$get['windows_degrees']=360;  // default the degrees to 360.  This will have to change for the future.
 		$from_file="../effects/workspaces/$member_id/$model_name~$eff.nc";
 		$to_file="../project/workarea/$username~$model_name~$eff~$frame_cnt.nc";
 		$sql='UPDATE effects_user_dtl SET param_value='.($end-$st).' WHERE username="'.$username.'" AND effect_name="'.$eff.'" AND param_name="seq_duration"';
@@ -1144,12 +1191,12 @@ function getProjHash($project_id, $effect_name) {
 	$valStr="";
 	if ($row=mysql_fetch_assoc($result)) {
 		$check_hash=$row['check_sum'];
-		if (strlen($check_hash)> 0) {
+		if (strlen($check_hash)> 0) { // hash exists and has a value
 			$retVal=$check_hash;
-		} else {
-			$retVal="XXX";
+		} else { // hash exists but doesn't have value
+			$retVal=updateHash($project_id, $effect_name);
 		}
-	} else { // no hash exists
+	} else { // This project ID doesn't exist
 		$retVal="XXX";
 	}
 	return($retVal);
@@ -1166,7 +1213,7 @@ function updateHash($project_id, $effect_name) {
 	$hashVal=getHash($project_id, $effect_name);
 	$sql="UPDATE project_dtl SET check_sum='$hashVal' WHERE project_id=$project_id and effect_name='$effect_name'";
 	$result=nc_query($sql);
-	return;
+	return($hashVal);
 }
 
 function checkHash($inHash, $project_id, $effect_name) {
