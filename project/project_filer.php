@@ -793,38 +793,51 @@ function getModelInfo($project_id) {
 	$model_name=$proj_array['model_name'];
 	$username=$proj_array['username'];
 	$member_id=$proj_array['member_id'];
-	$infile="../effects/workspaces/".$member_id."/".$model_name.".dat";
+	$infile="../targets/".$member_id."/".$model_name.".dat";
 	$fh=fopen($infile,'r');
 	$numElements=$numColumns=$maxString=$maxPixel=0;
 	while($line=fgets($fh)) {
-		if ((!substr($line,0,1) != "#")) {
-			$tok=preg_split("/ +/", trim($line));
-			$string=$tok[1];
-			$pixel=$tok[2];
-			if ($string>$maxString)
-				$maxString=$string;
-			if ($pixel>$maxPixel)
-				$maxPixel=$pixel;
-			$numElements++;
+		$tok=preg_split("/ +/", trim($line));
+		if ($tok[0] != "#") { 
+			//echo "<pre>Size of Tok : ".count($tok)."</pre><br />";
+			if (count($tok)>2) {
+				//print_r($tok);
+				$string=$tok[1];
+				$pixel=$tok[2];
+				if ($string>$maxString)
+					$maxString=$string;
+				if ($pixel>$maxPixel)
+					$maxPixel=$pixel;
+				$numElements++;
+			}
+			//else 
+			//	echo "<pre>Not sure what to do with this line: ".$line."<br /></pre>";
 		}
-			
 	}
 	fclose($fh);
 	$numElements*=3; //account for the RGBs
 	$retVal=array($model_name, $numElements, $maxString, $maxPixel);
+	//print_r($retVal);
 	return($retVal);
 }
 
-function isValidNCModel($project_id, $NCfile) {
+function isValidNCModel($project_id, $infile) {
 	$modInfo=getModelInfo($project_id);
 	$ModnumElements=$modInfo[1];
 	$ModmaxString=$modInfo[2];
 	$ModmaxPixel=$modInfo[3];
-	$NCInfo=getNCInfo($NCFile);
+	$NCInfo=getNCInfo($infile);
 	$NCnumElements=$NCInfo[1];
 	$NCmaxString=$NCInfo[2];
 	$NCmaxPixel=$NCInfo[3];
-	$retVal=(($ModnumElements==$NCnumElements) && ($ModmaxString==$NCmaxString) && ($ModmaxPixel==$NCmaxPixel));
+	echo "Model Elements : ".$ModnumElements.", Strings : ".$ModmaxString.", Pixels : ".$ModmaxPixel."<br />";
+	echo "NC Elements    : ".$NCnumElements.", Strings : ".$NCmaxString.", Pixels : ".$NCmaxPixel."<br />";
+	//$retVal=(($ModnumElements==$NCnumElements) && ($ModmaxString==$NCmaxString) && ($ModmaxPixel==$NCmaxPixel));
+	$retVal=($ModnumElements==$NCnumElements);
+	if ($retVal) 
+		echo "VALID!<br />";
+	else
+		echo "INVALID!<br />";
 	return($retVal);
 }
 
@@ -930,14 +943,24 @@ function showMessage($outStr) {
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay) {  // this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
-	$inHash=getProjHash($project_id, $eff);
-	$checkHasher=checkHash($inHash,$project_id, $eff);
-	if ((file_exists($outfile)) && (!$checkHasher)) // Check to see if the values of the effect have changed, if so, we need to regen the effect (remove the existing nc file if it exists)
-		removeNCFiles($username, $model_name, $eff);
-	if ((file_exists($outfile)) && (!isValidNC($outfile)))  // Check to see if the existing NC file exists and is valid, if not, we need to regen the effect (remove the existing nc file)
-		removeNCFiles($username, $model_name, $eff);
-	if (file_exists($outfile) && (!isValidNCModel($project_id, $outfile)))  // Check to see if the nc file matches the model (same number of strings/pixels), if not, we will need to regen the effect (remove the existing nc file)
-		removeNCFiles($username, $model_name, $eff);
+	if (file_exists($outfile)) {
+		$inHash=getProjHash($project_id, $eff);
+		$checkHasher=checkHash($inHash,$project_id, $eff);
+		echo "<pre>File ".$outfile." already is here.  Now I gotta check it!<br />";
+		if (!$checkHasher) {// Check to see if the values of the effect have changed, if so, we need to regen the effect (remove the existing nc file if it exists)
+			removeNCFiles($outfile);
+			echo "Looks like the effect ".$eff." has changed since the NC file created<br />";
+		}
+		if (!isValidNC($outfile)) { // Check to see if the existing NC file exists and is valid, if not, we need to regen the effect (remove the existing nc file)
+			removeNCFiles($outfile);
+			echo "NC file is invalid...<br />";
+		}
+		if (!isValidNCModel($project_id, $outfile)) { // Check to see if the nc file matches the model (same number of strings/pixels), if not, we will need to regen the effect (remove the existing nc file)
+			removeNCFiles($outfile);
+			echo "Model and Effect DO NOT match.  Erasing file...<br />";
+		}
+		echo "</pre>";
+	}
 	if (file_exists($outfile)) {
 		echo "$outfile already exist <br />";
 	} else {
@@ -1161,12 +1184,13 @@ function checkValidNCFiles($myarray, $numEntries, $project_id) {
 			if ($validFlag) 
 				$validFlag=isValidNC($fileName);
 		}
-		if(!$validFlag)
-			echo "<pre>$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
-		else
-			echo "<pre>$fileName: <font color=green>Valid</font> (NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
-		if (!$validFlag) 
-			$myarray[$cnt][7]="None"; // if the NC file is bad, skip the effect
+		if ($effect_name != "None") 
+			if(!$validFlag)
+				echo "<pre>$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
+			else
+				echo "<pre>$fileName: <font color=green>Valid</font> (NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
+			if (!$validFlag) 
+				$myarray[$cnt][7]="None"; // if the NC file is bad, skip the effect
 		$cnt++;
 	}
 	return($myarray);
@@ -1201,11 +1225,9 @@ function getProjHash($project_id, $effect_name) {
 	}
 	return($retVal);
 }
-function removeNCFiles($username, $target, $effect) {
-	$testFile="workarea/".$username."~".$target."~".$effect."*.nc";
-	foreach (glob($testFile) as $filename) {
-		unlink($filename);
-	}
+
+function removeNCFiles($testFile) {
+	unlink($testFile);
 	return;
 }
 
