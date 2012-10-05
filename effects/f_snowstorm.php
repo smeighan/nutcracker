@@ -159,7 +159,7 @@ $get['window_degrees'] = get_window_degrees($get['username'],$get['user_target']
 			//echo "</pre>\n";
 			$s=$strand;
 			$p=$pixel;
-			if(in_array($s,$window_array)) // Is this strand in our window?, 
+		//	if(in_array($s,$window_array)) // Is this strand in our window?, 
 			{
 				$i = array_search($s,$window_array)+1;
 				//	fwrite here	

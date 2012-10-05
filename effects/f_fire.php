@@ -105,7 +105,7 @@ function f_fire($get)
 		{
 			for($s=1;$s<=$maxStrand;$s++)
 			{
-				if(in_array($s,$window_array)) // Is this strand in our window?, 
+			//	if(in_array($s,$window_array)) // Is this strand in our window?, 
 				{
 					$xyz=$tree_xyz[$s][$p];
 					$index=$buff1[$s][$p]+0;

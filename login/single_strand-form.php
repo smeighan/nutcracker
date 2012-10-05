@@ -255,6 +255,12 @@ function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array
 	echo "<pre>function single_strand($maxPixels,$gif_model,$username,$model_name,$target_array,$number_segments,$segment_array)</pre>\n";
 	$member_id=get_member_id($username);
 	$path="../targets/" . $member_id ;
+	if (file_exists($path))
+	{
+		} else {
+		echo "The directory $path does not exist, creating it";
+		mkdir($path, 0777);
+	}
 	##	passed in now thru runtime arg, 	strands=16;
 	$dat_file = $path . "/" . $model_name . ".dat";
 	echo "<pre>dat_file=$dat_file  </pre>\n";

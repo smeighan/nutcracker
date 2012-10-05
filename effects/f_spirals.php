@@ -270,7 +270,7 @@ function spiral($get)
 					$seq_number++;
 					//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 					$tree_rgb[$strand][$p]=$rgb_val;
-					if(in_array($new_s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+					//if(in_array($new_s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 					{
 						if($rgb_val==0 and $use_background=='Y')
 						{

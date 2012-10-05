@@ -304,7 +304,7 @@ function f_text($get)
 					//$S=$V=1;
 					//$rgb_val=HSV_TO_RGB ($H, $S, $V);
 					//if($val>0)
-						if(in_array($s,$window_array) and $p<=$maxPixel) // Is this strand in our window?, If yes, then we output lines to the dat file;
+					//	if(in_array($s,$window_array) and $p<=$maxPixel) // Is this strand in our window?, If yes, then we output lines to the dat file;
 					{
 						if($val==1)
 							$rgb_val=hexdec($text2_color);

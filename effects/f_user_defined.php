@@ -80,7 +80,7 @@ function f_user_defined($get)
 		for($s=1;$s<=$maxStrand;$s++)
 			for($p=1;$p<=$maxPixel;$p++)
 		{
-			if(in_array($s,$window_array)) // Is this strand in our window?, 
+	//		if(in_array($s,$window_array)) // Is this strand in our window?, 
 			{
 				$i = array_search($s,$window_array)+1;
 				srand();

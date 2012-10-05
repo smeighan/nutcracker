@@ -33,9 +33,9 @@ print_r($_GET);
 echo "</pre>";*/
 //die("exit");
 $errors = array();
-echo "<pre>process.php:";
+/*echo "<pre>process.php:";
 print_r($_GET);
-echo "</pre>";
+echo "</pre>";*/
 foreach($_GET AS $key => $value)
 {
 	$key=strtolower($key);

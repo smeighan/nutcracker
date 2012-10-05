@@ -111,10 +111,10 @@ name="MODEL_TYPE"> 	Matrix(Grid) <br />
 name="MODEL_TYPE"> 	Horizontal Matrix(Grid) <font color=red>(UNDER DEVELOPMENT, DOES NOT WORK YET)</font><br />
 <input type="radio" value="SINGLE_STRAND" 
 <?php if( $row['model_type']=="SINGLE_STRAND") echo "checked=\"checked\""; ?>
-name="MODEL_TYPE">	Single Strand <font color=red>(UNDER DEVELOPMENT, DOES NOT WORK YET)</font><br />
+name="MODEL_TYPE">	Single Strand <br />
 <input type="radio" value="RAY" 
 <?php if( $row['model_type']=="RAY") echo "checked=\"checked\""; ?>
-name="MODEL_TYPE">	Ray <font color=blue>(UNDER DEVELOPMENT, DOES NOT CREATE GIF. USE HALF MEGATREE FOR NOW)</font><br />
+name="MODEL_TYPE">	Ray <font color=blue>(UNDER DEVELOPMENT, DOES NOT CREATE GIF. USE MEGATREE FOR NOW)</font><br />
 </blockquote>
 <table border="1">
 <tr>
@@ -157,7 +157,10 @@ of the RGB device (Y or N):</b>
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="1" maxlength="1" 
 value="<?php echo $row['start_bottom'] ?>" name="START_BOTTOM"></td></tr>
 <tr>
-<td><b><font color="blue">Window Degrees (only needed for Megatrees): 360=full megatree, 180=half-megatree?:</b>
+<td><b><font color="blue">
+How much of your tree should be displayed (1-360 ):
+<br/>
+Window Degrees (only needed for Megatrees): 360=full megatree, 180=half-megatree:?</b>
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
 value="<?php if(!isset($row['window_degrees'])) $row['window_degrees']=360;
 	 echo $row['window_degrees'] ?>" name="WINDOW_DEGREES"></td></tr>

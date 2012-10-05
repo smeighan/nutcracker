@@ -33,26 +33,24 @@ if (file_exists($directory))
 //echo "<pre>query_string = ". $_SERVER['QUERY_STRING'] . "</pre>\n";
 $effect_class="";
 extract($_GET);
-
 //show_array($_GET,"_GET Settings");
 if(!empty($_GET)) // do we have something?
 {
-//
-//	this is if we come here for the first time
-// // http://localhost/nutcracker/effects/effect-exec.php?username=f&user_targets=A&user_effects=bars&submit=Submit+Form+to+customize+effect
-//
-//
-//
-//	this is if someone click son an existing effect
-// http://localhost/nutcracker/effects/effect-exec.php?effect_name=BARS1&username=f&effect_class=bars&user_targets=A
-//	if(isset($effect_class)) $effect_class=$effect_class;
+	//
+	//	this is if we come here for the first time
+	// // http://localhost/nutcracker/effects/effect-exec.php?username=f&user_targets=A&user_effects=bars&submit=Submit+Form+to+customize+effect
+	//
+	//
+	//
+	//	this is if someone click son an existing effect
+	// http://localhost/nutcracker/effects/effect-exec.php?effect_name=BARS1&username=f&effect_class=bars&user_targets=A
+	//	if(isset($effect_class)) $effect_class=$effect_class;
 	$debug=0;
 	if($debug==1)
 	{
 		echo "<pre>effect_name = $effect_name\n";
 		echo "<pre>username = $username\n";
 		print_r($_GET);
-		
 		echo "<pre>effect_class = $effect_class\n";
 		echo "<pre>user_targets = $user_targets\n";
 		echo "<pre>effect_name = $effect_name</pre>\n";
@@ -77,9 +75,7 @@ if(!empty($_GET)) // do we have something?
 else // http://localhost/nutcracker/effects/effect-exec.php?username=gg&user_targets=AA2244&user_effects=bars&submit=Submit+Form+to+customize+effect
 // http://localhost/nutcracker/effects/effect-exec.php?username=f&user_targets=A&user_effects=bars&submit=Submit+Form+to+customize+effect
 {
-	
 }
-
 //$effect_class=$effect_class;
 show_my_effects($username,$user_targets);
 if(isset($effect_class)) $effect_details=get_effect_details($effect_class);
@@ -104,21 +100,19 @@ else
 	$desc="";
 	$effect_class="";
 }
-
 ?>
 <script type="text/javascript" src="jscolor.js"></script>
 <form action="<?php echo "$effect_class.php"; ?>" method="get">
 <input type="hidden" name="username" value="<?php echo "$username"; ?>"/>
 <input type="hidden" name="user_target" value="<?php echo "$user_targets"; ?>"/>
 <input type="hidden" name="effect_class" value="<?php echo "$effect_class"; ?>"/>
+<input type="submit" name="submit" value="Submit Form to create your effect"  class="button" />
 <table border="1">
 <tr><th>#</th><th>EFFECT_CLASS: <?php echo "$effect_class"; echo "<br/>" . $desc; ?></th></tr>
 <?php
 // >[QUERY_STRING] => effect_name=GIF1?username=f?effect_class=gif?user_targets=AA
 //
 extract($_GET);
-
-
 $member_id=get_member_id($username);
 if($member_id<1)
 	echo "ERROR. Member_id is not valid. username=$username\n";
@@ -201,11 +195,14 @@ $file1=$file2=$layer_method="";
 for($i=0;$i<$cnt;$i++)
 {
 	$sequence=$effect_details[$i]['sequence'];
+	/*	echo "<pre>" . $effect_details[$i]['param_name'] . "=" .
+	$effect_details[$i]['param_value'] . "</pre>\n";*/
 	if($sequence<90)
 	{
 		echo "<tr>";
 		$numb=$i+1;
-		echo "<td>#" . $effect_details[$i]['sequence'] . "</td><td>";
+		if($effect_details[$i]['param_name']!='window_degrees')
+			echo "<td>#" . $effect_details[$i]['sequence'] . "</td><td>";
 		if($effect_details[$i]['param_name']=='php_program')
 		{
 			$param_name=$effect_details[$i]['param_name'];
@@ -218,6 +215,13 @@ for($i=0;$i<$cnt;$i++)
 			echo "<textarea rows=\"20\" cols=\"120\" wrap=\"physical\" name=\"php_program\">";
 			echo "$textarea  ";
 			echo "</textarea>\n";
+		}
+		else if($effect_details[$i]['param_name']=='window_degrees')
+		{
+			$param_name=$effect_details[$i]['param_name'];
+			if(isset($value[$param_name])) $window_degrees = 	$value[$param_name];
+			if(!isset($window_degrees)) $window_degrees=360;
+			echo "<input type=\"hidden\" name=\"window_degrees\" value=\"$window_degrees\"/>\n";
 		}
 		else
 		{
@@ -256,8 +260,12 @@ for($i=0;$i<$cnt;$i++)
 			echo "STYLE=\"background-color: #ABE8EC;\" size=\"32\"  \n";
 			echo "name=\"" . $effect_details[$i]['param_name'] . "\" />";
 		}
-		echo "</td><td><br/>" . $effect_details[$i]['param_prompt'] . " (" . $effect_details[$i]['param_range'] . "):";
-		echo "<br/>" . $effect_details[$i]['param_desc'] . "</td>\n";
+		echo "</td>";
+		if($effect_details[$i]['param_name']!='window_degrees')
+		{
+			echo "<td><br/>" . $effect_details[$i]['param_prompt'] . " (" . $effect_details[$i]['param_range'] . "):";
+			echo "<br/>" . $effect_details[$i]['param_desc'] . "</td>\n";
+		}
 		echo "</tr>\n";
 		$param_name=$effect_details[$i]['param_name'];
 		if($param_name=='file1' or $param_name=='file2')

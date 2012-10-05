@@ -345,6 +345,7 @@ function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory
 	$ang=atan2(5,10); // assume a 10' tree with a 5' diameter to get the angles to model with
 	$rad = $ang;
 	$pixel_spacing=3.0;
+	if($pixel_count==120) $pixel_spacing=1.3; // flex strips have 120 nodes
 	$hypt = $pixel_count*$pixel_spacing;	// assume 3" spacing between nodes.
 	$hyp=0;
 	$h_dx = cos($rad)*$pixel_spacing;

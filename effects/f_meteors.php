@@ -197,7 +197,7 @@ function f_meteors($get)
 			$string=$user_pixel=0;
 			$xyz=$tree_xyz[$s][$p];
 			$seq_number++;
-			if(in_array($s,$window_array)) // Is this strand in our window?, 
+		//	if(in_array($s,$window_array)) // Is this strand in our window?, 
 			{
 				if($rgb_val <> 0)
 					fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));

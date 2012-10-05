@@ -43,6 +43,10 @@ function color_wash($get)
 	$file      =$arr[7];
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
+	echo "<pre>";
+	//print_r($arr);
+	echo "minStrand,minPixel,maxStrand,maxPixel=$minStrand,$minPixel,$maxStrand,$maxPixel\n";
+	echo "</pre>";
 	$path="../effects/workspaces/". $member_id;
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
@@ -77,14 +81,14 @@ function color_wash($get)
 		for($s=1;$s<=$maxStrand;$s++)
 			for($p=1;$p<=$maxPixel;$p++)
 		{
-			if(in_array($s,$window_array)) // Is this strand in our window?, 
+			//if(in_array($s,$window_array)) // Is this strand in our window?, 
 			{
 				$string=$user_pixel=0;
 				$xyz=$tree_xyz[$s][$p];
 				$seq_number++;
 				$rgb_val_orig=$rgb_val;
 				if(isset($sparkles_array[$s][$p])===false or $sparkles_array[$s][$p]==null )
-					;
+					$dummy=1;
 				else if($sparkles_array[$s][$p]>1)
 				{
 					$sparkles_array[$s][$p]++;
@@ -93,7 +97,7 @@ function color_wash($get)
 				$seq_number++;
 				fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
 				$rgb_val=$rgb_val_orig;
-				//	printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
+					printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
 			}
 		}
 		fclose($fh_dat[$frame]);
