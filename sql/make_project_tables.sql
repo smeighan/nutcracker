@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `song` (
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `audacity_aup` varchar(256) DEFAULT NULL,
   `music_mo_file` varchar(256) DEFAULT NULL,
+  `username` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`song_id`),
   KEY `user_song` (`song_name`,`artist`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=387 ;

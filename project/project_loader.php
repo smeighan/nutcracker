@@ -62,7 +62,7 @@ function checkValidPhraseFile($line) {
 }
 
 function showFilesDir($directory, $project_id) {
-	$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
+	$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, project.username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$frame_delay=$row['frame_delay'];

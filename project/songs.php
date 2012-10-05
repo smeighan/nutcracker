@@ -69,7 +69,7 @@ if (isset($_POST)) {
 					$target_path = $target_path . $username. "~".basename( $filename); 
 					if(move_uploaded_file($infile, $target_path)) {
 						$msg_str="Song '".$song_name."' added";
-						$sql="INSERT INTO song (song_name, artist, song_url, last_updated, audacity_aup) VALUES ('".$song_name."','".$artist."','".$song_url."',NOW(),'".$filename."')";
+						$sql="INSERT INTO song (song_name, artist, song_url, last_updated, audacity_aup, username) VALUES ('".$song_name."','".$artist."','".$song_url."',NOW(),'".$filename."','".$username."')";
 						//$msg_str.="SQL : ".$sql."<br />";
 						//echo $sql;
 						nc_query($sql);
@@ -200,9 +200,13 @@ purchased, and have an audacity phrase file available for setting the default ph
 <th>Song Name</th>
 <th>Artist</th>
 <th>Purchase song from here</th>
+<th>Owner</th>
 <th>Commands</th>
 <?php
-	$sql = "SELECT song_id, song_name, artist, song_url FROM song ORDER BY song_name";
+	if ($username!='f')
+		$sql = "SELECT song_id, song_name, artist, song_url, username FROM song WHERE username IN ('".$username."','f') ORDER BY song_name";
+	else
+		$sql = "SELECT song_id, song_name, artist, song_url, username FROM song ORDER BY song_name";	
 	$result = nc_query($sql);
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -216,6 +220,7 @@ purchased, and have an audacity phrase file available for setting the default ph
 		$artist = $row['artist'];
 		$song_name = $row['song_name'];
 		$song_url = $row['song_url'];
+		$song_owner=$row['username'];
 		if ($cnt%2==0) 
 			$trStr='<tr>';
 		else
@@ -224,12 +229,17 @@ purchased, and have an audacity phrase file available for setting the default ph
 	<td><?=$song_name?></a></td>
 	<td><?=$artist?></td>
 	<td><a href="<?=$song_url?>"><?=$song_url?></a></td>
+	<td><?=$song_owner?></td>
+	<?php if (($username=='f') || ($song_owner!='f')) {?>
 	<td><a href="song_edit.php?song_id=<?=$song_id?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="song_del.php?song_id=<?=$song_id?>" "><img src="../images/delete.png">Remove</a></td>
-</tr>
+	<?php } else {?>
+	<td>Global song - No edit</td>
+	<?php } ?>
+	</tr>
 <?php		
 	}
 	if ($cnt == 0) {
-		echo "<tr><td colspan=6>You do not have any current projects</td></tr>";
+		echo "<tr><td colspan=4>You do not have any songs in your library</td></tr>";
 	}
 ?>
 </table>

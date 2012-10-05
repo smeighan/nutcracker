@@ -96,13 +96,14 @@ if (isset($type)) {
 		echo showFilesDir($directory, $project_id);
 		printFileLoadInstruction();
 		$msg_str="";
+		echo "GOT HERE<br />";
 	}
 	if (isset($SelectFile)) {
 		getPhrasesFromFile($project_id, $PhraseFile);
 		echo "<br />";
 		$tok=preg_split("/~+/", trim($PhraseFile));
 		$prettyFilename=$tok[1];
-		$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
+		$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, project.username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
 		$result=nc_query($sql);
 		$row=mysql_fetch_array($result,MYSQL_ASSOC);
 		$song_name=$row['song_name'];
@@ -142,7 +143,7 @@ echo $msg_str;
 <th>Frame Timing (ms)</th>
 <th>Commands</th>
 <?php
-	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE username='$username' ORDER BY song_name, model_name";
+	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE project.username='$username' ORDER BY song_name, model_name";
 	//echo "$sql <br />";
 	$result = nc_query($sql);
 	$cnt=0;
