@@ -1033,6 +1033,9 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 			case ('pictures') :
 				f_pictures($get);
 				break;
+			case ('single_strand') :
+				f_single_strand($get);
+				break;
 			default :
 				echo "$effect_class not handled yet<br />";
 		}
