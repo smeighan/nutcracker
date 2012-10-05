@@ -56,8 +56,8 @@ function f_pictures($get)
 	$directory=$path;
 	$path="../effects/workspaces/". $member_id;
 	$path ="../effects/workspaces/$member_id";
-	$picturedir ="pictures";
-	$picturepath ="pictures/$member_id";
+	$picturedir ="../effects/pictures";
+	$picturepath ="../effects/pictures/$member_id";
 	$directory=$path;
 	if (file_exists($directory))
 	{
@@ -82,6 +82,7 @@ function f_pictures($get)
 	//$maxTrees=6;	// how many tree to draw at one time
 	$seq_number = 0;
 	$file=$picturepath . "/" . $file1;
+	echo "<pre>f_pictures: file=$file</pre>\n";
 	//$file = getcwd() . "/" . $file;
 	$file2=$picturepath . "/a_" . $file1;
 	$filez=$picturepath . "/z_" . $file1;
@@ -138,6 +139,7 @@ function f_pictures($get)
 	$h = imagesy($image);
 	$img_width=$w;
 	$img_height=$h;
+	if($precision<1) $precision=1;
 	$pixel_offset = intval($maxPixel - $img_height/$precision);
 	if($pixel_offset<0) $pixel_offset=0;
 	for($x = 0; $x < $img_width; $x += $precision)
