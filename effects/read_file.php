@@ -412,6 +412,9 @@ function gp_header($fh,$min_max,$target_info)
 	$max_y=$min_max[3];
 	$min_z=$min_max[4];
 	$max_z=$min_max[5];
+	echo "<pre>";
+	print_r($min_max);
+	echo "</pre>\n";
 	extract($target_info);
 	/*	Target Info:
 	Array
@@ -455,17 +458,36 @@ function gp_header($fh,$min_max,$target_info)
 	}
 	else
 	{
-		$min_x *= 1.1;
-		$max_x *= 1.1;
-		$min_y *= 1.1;
-		$max_y *= 1.1;
-		if($min_y<0.001) $min_y=$min_x;
-		if($max_y<0.001) $max_y=$max_x;
+		$scale=0.15;
+		$xrange=$max_x-$min_x;
+		$yrange=$max_y-$min_y;
+		$zrange=$max_z-$min_z;
+		$min_x = $min_x - $xrange*$scale;
+		$max_x = $max_x + $xrange*$scale;
+		if($min_x==0) $min_x=-1;
+		if($max_x==0) $max_x=1;
+		
+		$min_y = $min_y - $yrange*$scale;
+		$max_y = $max_y + $yrange*$scale;
+		
+		if($min_z==0) $min_z=-1;
+		if($max_z==0) $max_z=1;
+		$min_z = $min_z - $zrange*$scale;
+		$max_z = $max_z + $zrange*$scale;
+		if($min_y==0) $min_y=-1;
+		if($max_y==0) $max_y=1;
+		//	if($min_y<0.001) $min_y=$min_x;
+		//	if($max_y<0.001) $max_y=$max_x;
 		fwrite($fh,sprintf("set xrange[%5.0f:%5.0f]\n",$min_x,$max_x));
 		fwrite($fh,sprintf("set yrange[%5.0f:%5.0f]\n",$min_y,$max_y));
 		$top_height = $max_z* 1.1;
 		$bottom_height = $max_z* -0.3;
-		fwrite($fh,sprintf("set zrange[%5.0f:%5.0f]\n",$bottom_height,$top_height));
+		//	fwrite($fh,sprintf("set zrange[%5.0f:%5.0f]\n",$bottom_height,$top_height));
+		fwrite($fh,sprintf("set zrange[%5.0f:%5.0f]\n",$min_z,$max_z));
+		/*fwrite($fh,sprintf("set autoscale x\n"));
+		fwrite($fh,sprintf("set autoscale y\n"));
+		fwrite($fh,sprintf("set autoscale z\n"));*/
+		//fwrite($fh,sprintf("set autoscale\n"));
 	}
 	fwrite($fh,"unset border\n" );
 	fwrite($fh,"set angles degrees\n" );
@@ -473,7 +495,7 @@ function gp_header($fh,$min_max,$target_info)
 	fwrite($fh,"unset key\n" );
 	if($model_type=='MTREE')
 	{
-		fwrite($fh,"set view 105,270, 2.0, 1\n");  // old: fwrite($fh,"set view 105, 0, 2.0, 1\n");
+		fwrite($fh,"set view 95,270, 2.0, 1\n");  // old: fwrite($fh,"set view 105, 0, 2.0, 1\n");
 	}
 	else if($model_type=='HORIZ_MATRIX')
 	{
@@ -1265,13 +1287,19 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	}
 	else if($aspect_ratio>1)
 	{
+		$max=800;
 		$w=intval($max/$aspect_ratio);
 		$h=$max;
+		$w=500;
+		$h=800;
 	}
 	else
 	{
+		$max=400;
 		$h=intval($max*$aspect_ratio);
 		$w=$max;
+		$w=500;
+		$h=800;
 	}
 	$AMPERAGE=0;  // should we create an amperage graph also? 0=no, 1=yes
 	for($loop=1;$loop<=2;$loop++)  // loop1=1 300x66 file.gif, loop=2 100x200 file_th.gif
