@@ -975,7 +975,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		$effect_class=$get['effect_class'];
 		$member_id=getMemberID($username);
 		// need code to grab the 360 value from the model -- right now the model does not contain 360 info (but will for the future)
-		$get['windows_degrees']=360;  // default the degrees to 360.  This will have to change for the future.
+		//$get['windows_degrees']=360;  // default the degrees to 360.  This will have to change for the future.
 		$from_file="../effects/workspaces/$member_id/$model_name~$eff.nc";
 		$to_file="../project/workarea/$username~$model_name~$eff~$frame_cnt.nc";
 		$sql='UPDATE effects_user_dtl SET param_value='.($end-$st).' WHERE username="'.$username.'" AND effect_name="'.$eff.'" AND param_name="seq_duration"';
