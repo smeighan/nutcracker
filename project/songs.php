@@ -3,6 +3,7 @@ require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
 require_once('project_loader.php');
 require_once('project_filer.php');
+require_once('dbcontrol.php');
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
 ini_set("memory_limit","512M");

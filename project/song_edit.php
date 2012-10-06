@@ -3,6 +3,7 @@ require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
 require_once('project_loader.php');
 require_once('project_filer.php');
+require_once('dbcontrol.php');
 ini_set("memory_limit","512M");
 
 
