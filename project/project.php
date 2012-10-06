@@ -17,9 +17,11 @@ require_once ("../effects/f_user_defined.php");
 require_once ("../effects/f_pictures.php");
 require_once ("../effects/f_single_strand.php");
 require_once ("project_loader.php");
+require_once ("dbcontrol.php");
 require_once ("gen_vixen.php");
 require_once ("gen_hls.php");
 require_once ("gen_lor.php");
+require_once ("gen_lsp.php");
 require_once ("gallery_submit.php");
 ini_set("memory_limit","512M");
 ?>
@@ -183,3 +185,5 @@ echo $msg_str;
 </table>
 <p />
 <a href="project.php?type=1">Add a Project</a><br />
+</body>
+</html>

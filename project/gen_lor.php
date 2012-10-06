@@ -1,31 +1,54 @@
 <?php
 
+function genLCB($fh_lcb,$NCFile, $frame_delay, $seq_duration, $name_clip) {
+	$maxFrame=$seq_duration/$frame_delay;
+	$centiseconds=intval(($maxFrame*$frame_delay)/10);
+	$savedIndex=0;
+	$channel_savedIndex=array();
+	$file_type="lcb";
+	lor_lcb_header($fh_lcb,$name_clip);
+	fwrite($fh_lcb,sprintf("<cellDemarcations>\n"));
+	$fh_NC=fopen($NCFile,"r") or die("Unable to open $NCFile");
+	$loop=$channels=$savedIndex=0;
+	$myArray=getNCInfo($NCFile);
+	$pixel_count=$myArray[2];
+	$maxString=$myArray[3];
+	$maxPixel=$pixel_count;
+	while (!feof($fh_NC))
+	{
+		$line = fgets($fh_NC);
+		$tok=preg_split("/ +/", $line);
+		$l=strlen($line);
+		$c= count($tok);
+		if($tok[0]=='S' and $tok[2]=='P')
+		{
+			$string=$tok[1];
+			$pixel=$tok[3];
+			$channel_savedIndex[$string][$pixel]['1']=$savedIndex;
+			$channel_savedIndex[$string][$pixel]['2']=$savedIndex+1;
+			$channel_savedIndex[$string][$pixel]['3']=$savedIndex+2;
+			$rgbChannel_name[$string][$pixel]=sprintf("S%d-P%d",$string,$pixel);
+			$loop++;
+			$array_write_buffer=write_buffer($tok,$file_type,$fh_lcb,$maxFrame,$frame_delay,$savedIndex,$loop,$pixel_count);
+			$channels+=3;
+			$savedIndex+=3;
+		}
+	}
+	fclose($fh_NC);
+	$firstRGBIndex=$lastRGBIndex=-1;
+	fwrite($fh_lcb,sprintf("</channels>\n"));
+	fwrite($fh_lcb,sprintf("</channelsClipboard>\n"));
+	fclose($fh_lcb);
+
+}
+
 function genLOR($fh_lor,$NCFile, $frame_delay, $seq_duration) {
-	//$maxFrame= ($seq_duration*1000)/$frame_delay;
 	$maxFrame=$seq_duration/$frame_delay;
 	$centiseconds=intval(($maxFrame*$frame_delay)/10);
 	$savedIndex=0;
 	$channel_savedIndex=array();
 	$file_type="lms";
-//	if($file_type=="lms")
 	lor_lms_header($fh_lor);
-//	$name_clip=$base;
-//	if($file_type=="lcb")
-//		lor_lcb_header($fh_lor,$name_clip);
-/*	if($file_type=="lcb")
-	{
-		fwrite($fh_lor,sprintf("<cellDemarcations>\n"));
-		printf("<cellDemarcations>\n");
-		for($f=1;$f<=$maxFrame;$f++)
-		{
-			$centisecond=intval(($f-1)*$frame_delay/10);
-			fwrite($fh_lor,sprintf("<cellDemarcation centisecond=\"%d\"/>\n",$centisecond));
-		
-		}
-		fwrite($fh_lor,sprintf("</cellDemarcations>\n"));
-		fwrite($fh_lor,sprintf("<channels>\n"));
-	}
-*/
 	$fh_NC=fopen($NCFile,"r") or die("Unable to open $NCFile");
 	$loop=$channels=$savedIndex=0;
 	$myArray=getNCInfo($NCFile);
@@ -54,8 +77,6 @@ function genLOR($fh_lor,$NCFile, $frame_delay, $seq_duration) {
 	}
 	fclose($fh_NC);
 	$firstRGBIndex=$lastRGBIndex=-1;
-//	if($file_type=="lms")
-//	{
 	for($string=1;$string<=$maxString;$string++)
 	{
 		for($pixel=1;$pixel<=$maxPixel;$pixel++)
@@ -98,31 +119,8 @@ function genLOR($fh_lor,$NCFile, $frame_delay, $seq_duration) {
 	fwrite($fh_lor,sprintf("   </tracks>\n"));
 	fwrite($fh_lor,sprintf("   <animation rows=\"40\" columns=\"60\" image=\"\" hideControls=\"false\"/>\n"));
 	fwrite($fh_lor,sprintf("</sequence>\n"));
-//	}
-//	else if($file_type=="lcb")
-//	{
-//		fwrite($fh_lor,sprintf("</channels>\n"));
-//		fwrite($fh_lor,sprintf("</channelsClipboard>\n"));
-//	}
-//	fclose($fh_lor);
-//	if($sequencer=="lors2")
-//	{
-
-		
-//	}
-/*	if($sequencer=="lor_lcb")
-	{
-		
-		echo "<table border=1>";
-		printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lcb file</h2></td>\n");
-		echo "<td>Instructions</td></tr>";
-		printf ("<tr><td bgcolor=#98FF73><h2><a href=\"%s\">Right Click here for  LOR lcb file. %s</a>.</h2></td>\n",$lor_lms,$lor_lms);
-		echo "<td>Save lcb file into your light-o-rama/Clipboards directory</td></tr>\n";
-		echo "</table>";
-	}
-*/
-
 }
+
 function lor_lms_header($fh_lor)
 {
 	fwrite($fh_lor,sprintf ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"));
