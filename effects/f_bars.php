@@ -14,9 +14,7 @@ function f_bars($get)
 	if(!isset($get['speed']))     $get['speed']="1";
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
-	echo "<pre>";
-	print_r($get);
-	echo "</pre>\n";
+	
 	set_time_limit(0);
 	ini_set("memory_limit","512M");
 	require_once("../effects/read_file.php");

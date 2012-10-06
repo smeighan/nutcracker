@@ -63,11 +63,10 @@ function f_user_defined($get)
 	$seq_number=0;
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$include_file = $path . "/$effect_name.inc";
-	write_user_defined($php_program,$include_file);
+	write_user_functon($php_program,$include_file);
 	ob_start();
 	echo "<pre>include $include_file</pre>\n";
 	require_once $include_file;
-	
 	ob_get_clean();
 	for($frame=1;$frame<=$maxFrame;$frame++)
 	{
@@ -80,13 +79,13 @@ function f_user_defined($get)
 		for($s=1;$s<=$maxStrand;$s++)
 			for($p=1;$p<=$maxPixel;$p++)
 		{
-	//		if(in_array($s,$window_array)) // Is this strand in our window?, 
+			//		if(in_array($s,$window_array)) // Is this strand in our window?, 
 			{
 				$i = array_search($s,$window_array)+1;
 				srand();
-				$rgb_val=user_defined($frame,$i,$p,$maxFrame,$maxStrand,$maxPixel,$param1,$param2,$start_color,$end_color);
-				//echo "<pre>user_defined($i,$p,$maxStrand,$maxPixel,$frame,$param1)</pre>\n";
-				// user_defined(\$frame,\$s,\$p,\$maxFrame,\$maxStrand,\$maxPixel,\$param1,\$param2,$\$start_color,\$end_color)\n\n"));
+				$rgb_val=user_functon($frame,$i,$p,$maxFrame,$maxStrand,$maxPixel,$param1,$param2,$start_color,$end_color);
+				//echo "<pre>user_functon($i,$p,$maxStrand,$maxPixel,$frame,$param1)</pre>\n";
+				// user_functon(\$frame,\$s,\$p,\$maxFrame,\$maxStrand,\$maxPixel,\$param1,\$param2,$\$start_color,\$end_color)\n\n"));
 				$string=$user_pixel=0;
 				$xyz=$tree_xyz[$s][$p];
 				$seq_number++;
@@ -115,14 +114,18 @@ function f_user_defined($get)
 //	$offset .. Amount to add to the $radian to cause a color shift. Values like .05 to .1 seem best for each frame
 //
 
-function write_user_defined($php_program,$file)
+function write_user_functon($php_program,$file)
 {
 	$fh=fopen($file,"w") or die("Unable to open $file for writes\n");
 	fwrite($fh,sprintf("<?php\n"));
-	fwrite($fh,sprintf("function user_defined(\$frame,\$s,\$p,\$maxFrame,\$maxStrand,\$maxPixel,\$param1,\$param2,\$start_color,\$end_color)\n\n"));
-	fwrite($fh,sprintf("{\n\$rgb=hexdec(\"#FFFFFF\");\n"));
-		fwrite($fh,sprintf("%s\n",$php_program));
-		fwrite($fh,sprintf("	return \$rgb;\n"));
+	fwrite($fh,sprintf("if(!defined('_USER_FUNCTION_'))\n"));
+	fwrite($fh,sprintf("{\n"));
+		fwrite($fh,sprintf("define('_USER_FUNCTION_', 1);\n"));
+		fwrite($fh,sprintf("function user_functon(\$frame,\$s,\$p,\$maxFrame,\$maxStrand,\$maxPixel,\$param1,\$param2,\$start_color,\$end_color)\n\n"));
+		fwrite($fh,sprintf("{\n\$rgb=hexdec(\"#FFFFFF\");\n"));
+			fwrite($fh,sprintf("%s\n",$php_program));
+			fwrite($fh,sprintf("	return \$rgb;\n"));
+			fwrite($fh,sprintf("}\n"));
 		fwrite($fh,sprintf("}\n"));
 	fclose($fh);
 	return;

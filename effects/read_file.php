@@ -412,9 +412,9 @@ function gp_header($fh,$min_max,$target_info)
 	$max_y=$min_max[3];
 	$min_z=$min_max[4];
 	$max_z=$min_max[5];
-	echo "<pre>";
+	/*echo "<pre>";
 	print_r($min_max);
-	echo "</pre>\n";
+	echo "</pre>\n";*/
 	extract($target_info);
 	/*	Target Info:
 	Array

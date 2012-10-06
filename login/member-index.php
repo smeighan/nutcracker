@@ -132,7 +132,11 @@ name="MODEL_TYPE">	Ray <font color=blue>(UNDER DEVELOPMENT, DOES NOT CREATE GIF.
 </td> 
 </tr >
 <tr>
-<td><b><font color="blue">**How many Strings will be in your tree:</b>
+<td><b><font color="blue">**How many Strings will be in your RGB device:</b>
+<br/> If you are building a megatree, always put the number of strings needed for building a
+360 (full) megatree. <br/>If you have 12 physical strings and plan on using them to make a
+half-megatree (180 degree), <br/>you would enter 24 since that is how many strings would be needed for a full 
+	tree
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
 value="<?php echo $row['total_strings'] ?>" name="TOTAL_STRINGS"></td></tr>
 <tr>

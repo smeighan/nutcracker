@@ -836,64 +836,60 @@
 		</h3>
 		<br/>
 		<h4>
-			I have tested this with a 32bit wamp for Windows XP and a 64 bit wamp for Windows 7
-			<br/>
-				NOTE!! 90% of users will NOT need to install the Nutcracker to their local machine, just
-				run it from the httpp://meighan.net/nutcracker web page. If you install Nutcracker locally, you will be
-				able to bypass the 30 second limit that the meighan.net web site has. If you choose to go ahead and install
-				the Nutcracker locally (even though it probably is not necessary), follow the next steps below.
-		</h4>
-		<br/>
-		<ul>
-			<li>
-				Download the WAMP server software, (NOTE: WAMP Server is for windows only)
-				<a href="http://www.wampserver.com/en/">
-					Click here to download wamp server
-				</a>
-				<li>
-					Download the gnuplot graphing program,
-					<a href="http://sourceforge.net/projects/gnuplot/files/gnuplot/4.6.0/gp460-win32-setup.exe/download">
-						Click here to download Gnuplot 4.6
-					</a>
-					<br/>
-						Note! Be sure you click the last option in this screen, "Add Application dreictory to your Path environment variable"
-					<br/>
-					<img src="http://meighan.net/nutcracker/images/gnuplot_setup.png"/>
-					<li>
-						After you have installed WAMP , go get the install script for Nutcracker.
-						<a href="install.txt">
-							Rick click this link Download install.txt
-						</a>
-						After you downloaded it, move it
-						to C:\wamp\www and rename it as install.php
-						</a>
-						<br/>
-						<li>
-							Run install.php you just downloaded.  enter
-							<b>
-								localhost/install.php
-							</b>
-							into a web window.
-							Installation should take 45 seconds. This process will create a database in your local mySql that is called nutcracker. It will 
-							also create a user nc_user/nutcracker123 in your local mySql database. This current version is installing nto the directory
-							nutcracker. This process will also copy down all files needed for Nutcracker to run.
-							<li>
-								launch nutcracker: enter
-								<b>
-									localhost/nutcracker
-								</b>
-								into a web browser. Log in with the same user/password as 
-								the meighan.net/nutcracker website.
-								<li>
-									Note! you MUST resave your target models. Do this by clicking on a target and clicking on the submit button. This way a target.dat file is created in the local file system.
-									<li>
-										Now , go to the effects screen and try one of the effects. Try butterfly or spiral. You should see an animated gif.
-										<li>
-											Congratulations, you now have a local copy of Nutcracker. The 30 second limit has been removed.
-											<li>
-												If you want to update your website with the latest code, enter "localhost/nutcracker/update.php"
-											</li>
-		</ul>
+		<pre>
+		Here are the steps to install Nutcracker on your local Windows 7 or Windows XP box
+
+
+1) Download Wampp. http://www.wampserver.com/en/
+2) Take all defaults for installation
+3) Start Wamp. Click on the Pink W icon.
+4) Test Wamp by setting your browser to http://localhost
+if it is working, you will see the WAMP home page.
+
+
+Apache server uses port 80. If you have Skype or microsoft HTTP/2.0 they also use port 80.
+Here is a web page that describes how to fix this conflict. http://blog.techsoftsolutions.net/?p=315
+For Wamp; the httpd.conf file is located in c:\wamp\bin\apache\apache2.2.22\conf directory
+
+
+5) You now need to get a copy of the current Nutcracker code tree. Go to
+http://smeighan.github.com/nutcracker/ and download the zip file. This file is updated daily with the latest Nutcracker code tree and with the latest export from meighan.net/nutcracker database 
+Unzip this file into c:\wamp\www\nutcracker
+This zip file also now contains gnuplot so you dont need to install it separately.
+
+
+6) Add gnuplot into Windows PATH environment variable.
+I found a much better tool to do this and i have included the tool in the nutcracker zip file
+Run c:\wamp\www\nutcracker\gnuplot\bin\PathEditor.exe as administrator
+Add c:\wamp\www\nutcracker\gnuplot\bin
+
+
+7) When you get Localhost working, install the database.
+Http://localhost/nutcracker/install.php in a browser window
+This command will do the following
+a) Drop all the tables from your existing nutcracker database
+b) create the nutcracker database if it is missing
+c) create the nutcracker user: nc_user
+d) execute sql/nutcrackertables.sql to create all nutcracker tables
+e) execute sql/nutcrackerdata.sql to create 50,000 rows of data
+MaterDaddy wrote this script for me, Thanks!!
+
+
+
+
+Your local nutcracker should be ready
+
+go to http://localhost/nutcracker
+login using the same login and password as you have always used.
+
+
+For future code releases, you just do step (5) above. Just unzip the file on top of your local nutcracker directory. This step is only a few seconds. 
+
+If there are any database changes, you will do step (70.
+NOTE!!! You will lose any local changes you have made if you do step (7) since this a complete re-install of the database. Before doing step (7) either screen print the effects you have modified or better yet, re-enter the changes into the meighan.net database.
+
+
+</pre>
 		<br/>
 	</body>
 </html>
