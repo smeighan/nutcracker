@@ -122,7 +122,7 @@ function genAllVixen($seq_duration, $frame_delay, $username, $project_id) {
 	$myEvent=getEventStr($virout);
 	//echo "$myEvent\n";
 	showMessage('Creating VIX file from master');
-	genVix($NCFile, $virout, $seq_duration, $frame_delay);
+	//genVix($NCFile, $virout, $seq_duration, $frame_delay);
 	make_vix($virout,$seq_duration, $frame_delay, $myEvent);
 	$retArr=array($vixout, $virout);
 	return($retArr);
