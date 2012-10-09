@@ -424,6 +424,7 @@ function gif2jpeg($p_fl, $p_new_fl, $bgcolor=false)
 
 function image_resize2($src, $dst, $width, $height, $crop=0)
 {
+echo "<pre>function image_resize2($src, $dst, $width, $height, $crop=0)</pre>\n";
 	if(!list($w, $h) = getimagesize($src)) return "Unsupported picture type!";
 	$type = strtolower(substr(strrchr($src,"."),1));
 	if($type == 'jpeg') $type = 'jpg';

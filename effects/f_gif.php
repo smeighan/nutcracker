@@ -25,9 +25,9 @@ function f_gif($get)
 	[OBJECT_NAME] => gif
 	[batch] => 0
 	)*/
-	/*echo "<pre>";
+	echo "<pre>";
 	print_r($get);
-	echo "</pre>\n";*/
+	echo "</pre>\n";
 	
 	// Set window_degrees to match the target
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
@@ -153,6 +153,8 @@ function f_gif($get)
 
 function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees)
 {
+/*echo "<pre>";
+print_r($image_array);*/
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 	/*if($batch==0) echo "<pre>";
 	print_r($window_array);
@@ -176,23 +178,27 @@ function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $
 				$seq_number++;
 				$string = $user_pixel = 0;
 				//		if($s==10) $rgb_val=hexdec("#FFFF00");
-				$BRIGHT=1;
-				if(strtoupper($brightness)=='Y')
+				if($brightness>0.0)
 				{
 					$r = ($rgb_val >> 16) & 0xFF;
 					$g = ($rgb_val >> 8) & 0xFF;
 					$b = $rgb_val & 0xFF;
 					$HSV=RGB_TO_HSV($r,$g,$b);
 					$H=$HSV['H']; $S=$HSV['S']; $V=$HSV['V'];
-					if($V>0.1) $V=$V+.5;
+					if($V>0.1) $V=$V+$brightness;
 					if($V>1) $V=1;
 					$HSV['V']=$V;
+					echo "<pre>";
+					print_r($HSV);
+					echo "</pre>";
 					$rgb_val=HSV_TO_RGB($H,$S,$V);
 				}
-				if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+		//		if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 				{
+				if($rgb_val!=0) $rgb_val=hexdec("#888888");
 					fwrite($fh, sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
-					//					printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
+					$hex=dechex($rgb_val);
+//	printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %s %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$hex,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
 				}
 			}
 		}
