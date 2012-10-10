@@ -10,7 +10,7 @@ $username = $_GET['username'];
 </head>
 <body>
 <form enctype="multipart/form-data" action="uploader.php" method="POST" class="SubmitButton" >
-<input type="hidden" name="MAX_FILE_SIZE" value="1000" />
+<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
 <input type="hidden" name="username" value="<?php echo $username;?>">
 Choose a file to upload: <input name="uploadedfile" type="file" class="FormFieldName" /><br />
 <input type="submit" value="Upload File" class="SubmitButton" /><p />
