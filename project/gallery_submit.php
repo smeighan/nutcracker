@@ -8,14 +8,21 @@ function handleCopy($myArr)
 	{
 		$member_id=$_SESSION['SESS_MEMBER_ID'];
 		$newusername=$_SESSION['SESS_LOGIN'];
+		//print_r($myArr);
+		//die;
 		foreach($mySelArray as $usereffect) 
 		{
 			$tok=preg_split("/~+/", trim($usereffect));
 			$username=$tok[0];
 			$effname=$tok[1];
 			$neweffname=$myArr[$usereffect];
-			echo "Copying " . $effname . " to " . $neweffname . "<br />";
-			getEffCopySQL($username, $effname, $newusername, $neweffname);
+			if (strlen(trim($neweffname))==0)
+				echo "Sorry, didn't copy ".$effname. " because you did not give it a new name<br />";
+			else {
+				echo "Copying " . $effname . " to " . $neweffname . "<br />";
+				getEffCopySQL($username, $effname, $newusername, $neweffname);
+
+			}
 		}
 	}
 }

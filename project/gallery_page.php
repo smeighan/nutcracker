@@ -74,15 +74,17 @@ function ajaxFunction(val)
 					if(i%4==0) { trstr="</tr><tr class=alt>" } else { trstr="" }
 				}
 				varstring = myObject.data[i].username + "~" + myObject.data[i].effname;
+				//alert(varstring);
 				str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
 				str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
 				str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
 				str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
 				str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
-				str = str + "<br />Your Name";
+				str = str + "<br />Effect Name";
 				str = str + "</td>";
 				str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\"100\" width=\"50\"></td>";
 			}
+			
 			var endrecord=myObject.value.endrecord 
 			str = str + "<tr><td colspan=6>" + myObject.value.nume + " records found</td></tr>"
 			myForm.st.value=endrecord;
