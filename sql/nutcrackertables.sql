@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 04, 2012 at 08:17 AM
+-- Generation Time: Oct 09, 2012 at 08:26 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=658 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=690 ;
 
 -- --------------------------------------------------------
 
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=445 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=456 ;
 
 -- --------------------------------------------------------
 
@@ -362,7 +362,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=41 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
 
 -- --------------------------------------------------------
 
@@ -379,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `project_id` int(11) NOT NULL,
   `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=487 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=883 ;
 
 -- --------------------------------------------------------
 
@@ -427,6 +427,7 @@ CREATE TABLE IF NOT EXISTS `song` (
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `audacity_aup` varchar(256) DEFAULT NULL,
   `music_mo_file` varchar(256) DEFAULT NULL,
+  `username` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`song_id`),
   KEY `user_song` (`song_name`,`artist`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=387 ;
