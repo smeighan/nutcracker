@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 09, 2012 at 08:26 PM
+-- Generation Time: Oct 09, 2012 at 10:42 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -63,22 +63,6 @@ CREATE TABLE IF NOT EXISTS `effects_hdr` (
   `last_upd` datetime DEFAULT NULL,
   `php_program` varchar(25) DEFAULT NULL,
   UNIQUE KEY `idx_effect_class` (`effect_class`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `effects_user_drl_oct2`
---
-
-CREATE TABLE IF NOT EXISTS `effects_user_drl_oct2` (
-  `username` varchar(25) NOT NULL,
-  `effect_name` varchar(25) NOT NULL,
-  `param_name` varchar(32) NOT NULL,
-  `param_value` varchar(4000) NOT NULL,
-  `segment` int(6) DEFAULT '0',
-  `created` datetime DEFAULT NULL,
-  `last_upd` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -155,6 +139,22 @@ CREATE TABLE IF NOT EXISTS `gallery` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `issue_tracker`
+--
+
+CREATE TABLE IF NOT EXISTS `issue_tracker` (
+  `menu_name` varchar(25) NOT NULL,
+  `status` varchar(25) DEFAULT NULL,
+  `description` varchar(4000) DEFAULT NULL,
+  `Opened` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `Closed` timestamp NULL DEFAULT NULL,
+  `username` varchar(25) DEFAULT NULL,
+  `type` varchar(25) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `library_dtl`
 --
 
@@ -210,6 +210,19 @@ CREATE TABLE IF NOT EXISTS `members` (
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=690 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `menu_hdr`
+--
+
+CREATE TABLE IF NOT EXISTS `menu_hdr` (
+  `menu_name` varchar(25) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `sequence` int(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
