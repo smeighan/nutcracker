@@ -184,6 +184,7 @@ function f_bars($get)
 				}
 			}
 		}
+			fclose($fh_dat [$f]);
 	}
 	$x_dat_base=$base . ".dat";
 	$show_frame='n';

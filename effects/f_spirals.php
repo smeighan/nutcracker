@@ -293,7 +293,9 @@ function spiral($get)
 				}
 			}
 		}
-		}// for ($f=1;$f<=$maxStrand;$f++) 
+		fclose ($fh_dat [$f]);
+	}
+	// for ($f=1;$f<=$maxStrand;$f++) 
 	for ($f=1;$f<=$maxStrand;$f++)
 	{
 		if (isset($fh_dat[$f]))
