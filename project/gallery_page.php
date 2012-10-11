@@ -1,7 +1,8 @@
 <?php
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
-
+require_once ("gallery_submit.php");
+require_once ("dbcontrol.php");
 ?>
 
 <!doctype html public "-//w3c//dtd html 3.2//en">
@@ -22,7 +23,7 @@ function filterChange()
 
 function copyEffects()
 {
-	myForm.action="project.php";
+	myForm.action="gallery_page.php";
 	myForm.CopyEffect.Value="XXXXX";
 	myForm.onSubmit="";
 	myForm.method="POST";
@@ -122,7 +123,19 @@ function ajaxFunction(val)
 
 <body onLoad="ajaxFunction('fw')";>
 
-<?php show_barmenu(); ?>
+<?php show_barmenu(); 
+$msg_str="";
+if (isset($_POST)) {
+	extract($_POST);
+	if (isset($CopyEffect)) {
+	//require_once("../project/project_filer.php");
+	//print_r($_POST);
+		handleCopy($_POST);
+		$msg_str="Effects Copied";
+	}
+}
+echo $msg_str."<br />";
+?>
 <h2>Gallery View</h2>
 <form name="myForm" onSubmit="ajaxFunction(this.form); return false">
 <input type=hidden name=st value=0>
