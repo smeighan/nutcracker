@@ -551,12 +551,13 @@ function getSongName($song_id)
 
 function select_song($username)
 {
-	$sql = "SELECT song_name, song.song_id, artist, song_url, min( start_secs )AS MinTime, max( end_secs )AS MaxTime\n"
-	. "FROM song\n"
-	. "LEFT JOIN song_dtl ON song.song_id = song_dtl.song_id\n"
-	. "GROUP BY song_name, song.song_id\n";
-	// . "HAVING song.song_id NOT IN (SELECT song_id from project where username='".$username."')";
-	$sql2 = "SELECT object_name, model_type FROM models WHERE username='$username'";
+	$sql = "SELECT username, song_name, song.song_id, artist, song_url, min( start_secs )AS MinTime, max( end_secs )AS MaxTime \n"
+    . "FROM song \n"
+    . "LEFT JOIN song_dtl ON song.song_id = song_dtl.song_id \n"
+    . "GROUP BY song_name, song.song_id \n"
+    . "HAVING MaxTime>0 AND song.username IN ('f','".$username."')";
+	//echo $sql . "<br />";
+	$sql2 = "SELECT object_name, model_type FROM models WHERE username='".$username."'";
 	$result = nc_query($sql);
 	?>
 	<h2>Available Songs</h2>
