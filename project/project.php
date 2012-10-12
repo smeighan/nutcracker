@@ -22,7 +22,6 @@ require_once ("gen_vixen.php");
 require_once ("gen_hls.php");
 require_once ("gen_lor.php");
 require_once ("gen_lsp.php");
-require_once ("gallery_submit.php");
 ini_set("memory_limit","512M");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -123,12 +122,6 @@ if (isset($type)) {
 		$numEntries=count($myNCarray);
 		$myarray=checkValidNCFiles($myarray, $numEntries, $project_id);
 		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
-	}
-	if (isset($CopyEffect)) {
-	//require_once("../project/project_filer.php");
-	//print_r($_POST);
-		handleCopy($_POST);
-		$msg_str="Effects Copied";
 	}
 }
 echo $msg_str;

@@ -245,6 +245,6 @@ purchased, and have an audacity phrase file available for setting the default ph
 ?>
 </table>
 <p />
-<a href="song_add.php">Add a New Song</a><br />
+<a href="song_add.php">Add a New Song</a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="songglobal_add.php">Copy song from global library to local library</a><br />
 </body>
 </html>
