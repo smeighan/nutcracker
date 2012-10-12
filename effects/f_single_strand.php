@@ -12,7 +12,7 @@ function f_single_strand($get)
 	print_r($get);
 	echo "</pre>\n";*/
 	set_time_limit(0);
-	ini_set("memory_limit","512M");
+	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
 	//
 	//

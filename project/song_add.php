@@ -30,6 +30,7 @@ ini_set("memory_limit","512M");
 <h2>Song Add</h2>
 <p>Adding a song to your repository of songs</p>
 <form action="songs.php" id="myform" method="POST" enctype="multipart/form-data"> 
+<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
 <table class="Gallery">
 <tr><th colspan="3"><div align="center">Add New Song</div></th></tr>
 <tr><td>Song Name</td><td><input type="text" class="FormFieldName" value="" size="75" name="song_name"></td><td>Enter name of the song</td></tr>

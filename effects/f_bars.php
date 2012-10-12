@@ -16,7 +16,7 @@ function f_bars($get)
 	extract ($get);
 	
 	set_time_limit(0);
-	ini_set("memory_limit","512M");
+	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
 	//
 	//

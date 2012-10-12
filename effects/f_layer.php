@@ -16,10 +16,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function f_layer($get)
 {
-	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
+	if(isset($get['window_degrees'])) $wind=$get['window_degrees'];
+	else $wind=360;
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$wind); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
-	ini_set("memory_limit","512M");
+	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
 	//
 	$member_id=get_member_id($username);
@@ -43,6 +45,7 @@ function f_layer($get)
 	echo "</pre>\n";*/
 	$target_path ="../targets/$member_id";
 	$arr=read_file($t_dat,$target_path); //  target megatree 32 strands, all 32 being used. read data into an array
+	$tree_xyz_string=read_file2($t_dat,$target_path);
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
 	$maxStrand =$arr[2];  // highest strand seen on target
@@ -53,6 +56,9 @@ function f_layer($get)
 	$file      =$arr[7];
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
+	/*echo "<pre>";
+	print_r($arr);
+	echo "</pre>\n";*/
 	$path ="../effects/workspaces/$member_id";
 	$directory=$path;
 	if (file_exists($directory))

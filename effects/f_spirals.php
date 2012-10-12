@@ -20,7 +20,7 @@ function f_spirals($get)
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
-	ini_set("memory_limit","512M");
+	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
 	//
 	//
@@ -112,7 +112,8 @@ function spiral($get)
 	if($maxStrand<1)$maxStrand=1;
 	$pixelPerStrand=$maxPixel/$maxStrand;
 	//if( $numberStrands<1)  $numberStrands=1;
-	$deltaStrands= $maxStrand/ $number_spirals;
+	$deltaStrands= ($maxStrand* (360/$window_degrees)/ $number_spirals);
+	//$deltaStrands= ($maxStrand/ $number_spirals);
 	$line= 0;
 	$rgb=255;
 	$x_dat_base = $base . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -120,7 +121,9 @@ function spiral($get)
 	$r=115;
 	$g =115;
 	$b = 120;
-	$maxLoop = $maxStrand*$number_rotations;
+	$maxLoop = ($maxStrand* (360/$window_degrees)*$number_rotations);
+	echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
+		//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
 	$deltaPixel = $maxPixel/$maxLoop;
 	$S=$V=1;
 	$deltaH = (RED - ORANGE)/$maxLoop;

@@ -44,7 +44,7 @@ if (isset($_POST)) {
 				mkdir("uploads/");
 			$target_path = "uploads/";
 			//$username = $_POST['username'];
-			$max_file_size = 10000;
+			$max_file_size = 100000;
 			if (!is_file($infile)) {
 				$isOK=false;
 				$msg_str.= "<div class=\"WarnText\">The file ".$filename." was not uploaded.  A problem exists!</div>";

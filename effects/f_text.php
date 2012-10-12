@@ -8,7 +8,7 @@ function f_text($get)
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
-	ini_set("memory_limit","512M");
+	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
 	extract ($get);
 	if($batch==0) show_array($get,"array_to_save");

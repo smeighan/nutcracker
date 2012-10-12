@@ -307,29 +307,36 @@ for($i=0;$i<$cnt;$i++)
 				[last_upd] => 2012-07-26 19:07:49
 				)
 					*/
-				/*echo "<pre>effect_details2:";
+				/*	echo "<pre>effect_details2:";
 				print_r($effect_details2);
 				echo "</pre>";*/
+				// $get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']);
 				if(isset($effect_details2['window_degrees'])) 	$window_degrees=$effect_details2['window_degrees'];
-				$seq_duration=	$effect_details2['seq_duration'];
+				if(isset($effect_details2['seq_duration'])) $seq_duration=	$effect_details2['seq_duration'];
+				else $seq_duration=5;
+				//
 				echo "<tr><td><input type=\"checkbox\" name=\"LAYER_EFFECTS[]\" value=\"$file\"  $checked /> $file<br /></td>";
 				echo "<td>$target</td>";
-				//if(!isset($window_degrees) or $window_degrees==null) $window_degrees=0;
+				if(!isset($window_degrees) or $window_degrees==null) $window_degrees=360;
 				echo "<td>$window_degrees</td>";
-				echo "<td>$seq_duration</td></tr>";
+				echo "<td>$seq_duration</td></tr>\n";
 				//	echo "<tr><td>$filename</td></tr>";
 			}
-			echo "</table>";
+			echo "</table>\n";
 			echo "</td>";
 			echo "<td><table><tr>";
 			$cols=0;
-			foreach($files as $filename)
+			foreach($files as $fullpath)
 			{
-				$tok=explode(".",$filename); //workspaces/2/AA+FLY.nc
-				$gifname = $tok[0] . "_th.gif";
-				$tok2=explode("/",$filename); //workspaces/2/AA+FLY.nc
-				$fname = $tok2[2];
-				echo "<td>$fname<br/><img src=\"$gifname\"/></td>";
+				$path_parts = pathinfo($fullpath);  // ../effects/workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
+				$dirname   = $path_parts['dirname']; // ../effects/workspaces/nuelemma/
+				$basename  = $path_parts['basename']; // MEGA_001+SEAN_d_22.dat
+				$extension =$path_parts['extension']; // .dat
+				$filename  = $path_parts['filename']; // MEGA_001+SEAN_d_22
+				//$tok=explode(".",$filename); //../effects/workspaces/2/AA+FLY.nc
+				$gifname = $dirname . "/" . $filename . "_th.gif";
+				
+				echo "<td>$filename<br/><img src=\"$gifname\"/></td>";
 				$cols++;
 				if($cols%6==0) echo "</tr><tr>";
 			}
