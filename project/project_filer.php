@@ -415,6 +415,7 @@ function edit_song($project_id)
 	<option value="lsp">Light Show Pro</option>
 	<option value="lor">Light-O-Rama - LMS file</option>
 	<option value="lcb">Light-O-Rama - LCB file</option>
+	<option value="xml">XML (text) file</option>
 	</select> </td></tr>
 	<tr><td>
 	<input type="submit" name="MasterNCSubmit" class="SubmitButton" value="Output Project">
@@ -1227,101 +1228,109 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 	$model_name=$proj_array['model_name'];
 	$username=$proj_array['username'];
 	$member_id=$proj_array['member_id'];
-	showMessage('Erasing gaps and joining effects');
-	echo "<table border=1>";
-	foreach($workArray as $curr_array)
-	{
-		$phrase_name=$curr_array[0];
-		$st_secs=$curr_array[1];
-		$end_secs=$curr_array[2];
-		$dur_secs=$curr_array[3];
-		$frame_cnt=$curr_array[4];
-		$frame_st=$curr_array[5];
-		$frame_end=$curr_array[6];
-		$effect_name=$curr_array[7];
-		$numFrames = ($frame_end-$frame_st)+1;
-		$NCArraySize=count(myTokenizer($NCArray[0]))-4;
-		echo "<tr><td>$phrase_name</td><td>$effect_name</td>";
-		if ($effect_name=="None")
+	if ($outputType!='xml') {
+		showMessage('Erasing gaps and joining effects');
+		echo "<table border=1>";
+		foreach($workArray as $curr_array)
 		{
-			$NCArray=appendZeros($NCArray,$numFrames);
-			echo "<td>Adding $numFrames zeros from frame $frame_st to frame $frame_end</td>";
+			$phrase_name=$curr_array[0];
+			$st_secs=$curr_array[1];
+			$end_secs=$curr_array[2];
+			$dur_secs=$curr_array[3];
+			$frame_cnt=$curr_array[4];
+			$frame_st=$curr_array[5];
+			$frame_end=$curr_array[6];
+			$effect_name=$curr_array[7];
+			$numFrames = ($frame_end-$frame_st)+1;
+			$NCArraySize=count(myTokenizer($NCArray[0]))-4;
+			echo "<tr><td>$phrase_name</td><td>$effect_name</td>";
+			if ($effect_name=="None")
+			{
+				$NCArray=appendZeros($NCArray,$numFrames);
+				echo "<td>Adding $numFrames zeros from frame $frame_st to frame $frame_end</td>";
+			}
+			else {
+				$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc<";
+				$effectData=getFileData($infile, $numFrames);
+				$NCArray=appendStr($NCArray,$effectData);
+				echo "<td>Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end</td>";
+			}
+			$NCArraySize=count(myTokenizer($NCArray[0]))-4;
+			echo "</tr>";
 		}
-		else {
-			$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc<";
-			$effectData=getFileData($infile, $numFrames);
-			$NCArray=appendStr($NCArray,$effectData);
-			echo "<td>Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end</td>";
-		}
-		$NCArraySize=count(myTokenizer($NCArray[0]))-4;
-		echo "</tr>";
+		echo "</table>";
+		$outfile="workarea/".$username."~".$project_id."~master.nc";
+		array2File($outfile, $NCArray);
+		$myArray=getNCInfo($outfile);
+		$numFrames=$myArray[0];
+		$numEntities=$myArray[1];
+		$song_tot_time=$numFrames*$frame_delay;
 	}
-	echo "</table>";
-	$outfile="workarea/".$username."~".$project_id."~master.nc";
-	array2File($outfile, $NCArray);
-	$myArray=getNCInfo($outfile);
-	$numFrames=$myArray[0];
-	$numEntities=$myArray[1];
-	$song_tot_time=$numFrames*$frame_delay;
 	if (isset($outputType))
 	{
 		switch ($outputType)
 		{
 			case 'vixen' :
-			$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
-			$vixFile=$VixArr[0];
-			$virFile=$VixArr[1];
-			echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
-			echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
-			echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
-			echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
-			break;
+				$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
+				$vixFile=$VixArr[0];
+				$virFile=$VixArr[1];
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
+				echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
+				echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
+				echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
+				break;
 			case 'hls' :
-			$hlsFile=genHLS($username, $project_id);
-			echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
-			echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
-			break;
+				$hlsFile=genHLS($username, $project_id);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
+				echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
+				break;
 			case 'lsp' :
-			$NCFile=$outfile;
-			$type = 1;
-			$XMLFile="workarea/".$username."~".$project_id."~UserPattern.xml";
-			$fh_xml=fopen($XMLFile, 'w');
-			make_HdrPattern_header($fh_xml);
-			make_xml($fh_xml,$NCFile,$type,$frame_delay);
-			fclose($fh_xml);
-			echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP file to your computer</td>\n";
-			echo "<td><a href=\"$XMLFile\" class=\"SaveFile\">$XMLFile</a></td></tr><table>\n";
-			break;
+				$NCFile=$outfile;
+				$type = 1;
+				$XMLFile="workarea/".$username."~".$project_id."~UserPattern.xml";
+				$fh_xml=fopen($XMLFile, 'w');
+				make_HdrPattern_header($fh_xml);
+				make_xml($fh_xml,$NCFile,$type,$frame_delay);
+				fclose($fh_xml);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP file to your computer</td>\n";
+				echo "<td><a href=\"$XMLFile\" class=\"SaveFile\">$XMLFile</a></td></tr><table>\n";
+				break;
 			case 'lor' :
-			$NCFile=$outfile;
-			$LORFile="workarea/".$username."~".$project_id.".lms";
-			$fh_lor=fopen($LORFile, 'w');
-			genLOR($fh_lor,$NCFile, $frame_delay, $song_tot_time);
-			fclose($fh_lor);
-			echo "<table class=\"TableProp\">";
-			//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lms file</h2></td>\n");
-			echo "<tr><th colspan=2>Instructions</th></tr>";
-			printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lms file</a></h2></td>\n",$LORFile);
-			echo "<td>Save lms file into your light-o-rama/sequences directory</td></tr>\n";
-			echo "</table>";
-			break;
+				$LORFile="workarea/".$username."~".$project_id.".lms";
+				$fh_lor=fopen($LORFile, 'w');
+				genLOR($fh_lor,$NCFile, $frame_delay, $song_tot_time);
+				fclose($fh_lor);
+				echo "<table class=\"TableProp\">";
+				//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lms file</h2></td>\n");
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lms file</a></h2></td>\n",$LORFile);
+				echo "<td>Save lms file into your light-o-rama/sequences directory</td></tr>\n";
+				echo "</table>";
+				break;
 			case 'lcb' :
-			$NCFile=$outfile;
-			$LCBFile="workarea/".$username."~".$project_id.".lcb";
-			$fh_lcb=fopen($LCBFile, 'w');
-			genLCB($fh_lcb,$NCFile, $frame_delay, $song_tot_time, $LCBFile);
-			//fclose($fh_lcb);
-			echo "<table class=\"TableProp\">";
-			//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lcb file</h2></td>\n");
-			echo "<tr><th colspan=2>Instructions</th></tr>";
-			printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lcb file</a></h2></td>\n",$LCBFile);
-			echo "<td>Save lcb file into your light-o-rama/sequences directory</td></tr>\n";
-			echo "</table>";
-			break;
+				$NCFile=$outfile;
+				$LCBFile="workarea/".$username."~".$project_id.".lcb";
+				$fh_lcb=fopen($LCBFile, 'w');
+				genLCB($fh_lcb,$NCFile, $frame_delay, $song_tot_time, $LCBFile);
+				//fclose($fh_lcb);
+				echo "<table class=\"TableProp\">";
+				//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lcb file</h2></td>\n");
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lcb file</a></h2></td>\n",$LCBFile);
+				echo "<td>Save lcb file into your light-o-rama/sequences directory</td></tr>\n";
+				echo "</table>";
+				break;
+			case 'xml' :
+				$xmlFile=genXML($username, $project_id);
+				echo "<table class=\"TableProp\">";
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for XML file</a></h2></td>\n",$xmlFile);
+				echo "</table>";				
+				break;
 			default :
-			echo "This sequencer is not support<br />";
+				echo "This sequencer is not support<br />";
 		}
-		} 
+	} 
 	return;
 }
 

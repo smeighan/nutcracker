@@ -22,6 +22,7 @@ require_once ("gen_vixen.php");
 require_once ("gen_hls.php");
 require_once ("gen_lor.php");
 require_once ("gen_lsp.php");
+require_once ("gen_xml.php");
 ini_set("memory_limit","512M");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -116,11 +117,17 @@ if (isset($type)) {
 	if (isset($MasterNCSubmit)) {
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
 		nc_query($sql);
-		$myarray=getPhraseArray($project_id);
-		$projectArray=setupNCfiles($project_id,$myarray);
-		$myNCarray=prepMasterNCfile($project_id);
-		$numEntries=count($myNCarray);
-		$myarray=checkValidNCFiles($myarray, $numEntries, $project_id);
+		if ($outputType!='xml') {
+			$myarray=getPhraseArray($project_id);
+			$projectArray=setupNCfiles($project_id,$myarray);
+			$myNCarray=prepMasterNCfile($project_id);
+			$numEntries=count($myNCarray);
+			$myarray=checkValidNCFiles($myarray, $numEntries, $project_id);
+		} else {
+			$myarray=array();
+			$projectArray=array();
+			$myNCarray=array();
+		}
 		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
 	}
 }

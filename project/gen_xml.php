@@ -1,19 +1,11 @@
 <?php
-/*
- *
- * Function getXML($infile)				// read in the file into an XML element object
- * Function XMLtoArray($project)		// translates the XML element object to an array
- * Function ArraytoXMLStr($newXMLArray)	// translates the XML array to a XML string 
- * Function ArraytoXML($newXMLArray) 	// tranlates the XML array to an XML element object
- * Function SaveXML($newXML,$outfile)	//write the XML element object out to a file
-*/
-require_once ("dbcontrol.php");
-require_once('../conf/auth.php');
-
-$newXMLArray=DBtoXMLArray('11');
-$newXML=ArraytoXML($newXMLArray);
-$outfile="mytest.xml";
-SaveXML($newXML,$outfile); //write the XML element object out to a file
+function genXML($username, $project_id) {
+	$outfile="workarea/".$username."~".$project_id.".xml";
+	$newXMLArray=DBtoXMLArray($project_id);
+	$newXML=ArraytoXML($newXMLArray);
+	SaveXML($newXML,$outfile);
+	return($outfile);
+}
 
 function DBtoXMLArray($project_id) {
 	//Translate Project Information
@@ -84,14 +76,19 @@ function DBtoXMLArray($project_id) {
 	foreach($effectArray as $effect) {
 		$paramArray=array();
 		$effName=$effect;
-		$sql = "SELECT `username`, `effect_name`, `param_name`, `param_value`, `segment`, `created`, `last_upd` FROM `effects_user_dtl` WHERE username='".$username."' AND effect_name='".$effName."'";
+		$sql = "SELECT `effect_class`, username, effect_name, `effect_desc` FROM `effects_user_hdr` WHERE username='".$username."' AND effect_name='".$effName."'";
+		$sql2 = "SELECT `username`, `effect_name`, `param_name`, `param_value`, `segment`, `created`, `last_upd` FROM `effects_user_dtl` WHERE username='".$username."' AND effect_name='".$effName."'";
 		$result=nc_query($sql);
-		while($row=mysql_fetch_array($result,MYSQL_ASSOC)) {		
+		$row=mysql_fetch_array($result,MYSQL_ASSOC);
+		$effClass=$row['effect_class'];
+		$effDesc=$row['effect_desc'];
+		$result2=nc_query($sql2);
+		while($row=mysql_fetch_array($result2,MYSQL_ASSOC)) {		
 			$key=$row['param_name'];
 			$val=$row['param_value'];
 			$paramArray[$key]= $val;
 		}
-		$projEffect[]=array("EffectName"=>$effName,"Parameters"=>$paramArray);
+		$projEffect[]=array("EffectName"=>$effName,"EffectClass"=>$effClass,"EffectDesc"=>$effDesc,"Parameters"=>$paramArray);
 	}
 	$projArray['Effects']=$projEffect;
 
@@ -104,13 +101,32 @@ function DBtoXMLArray($project_id) {
 	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);	
 	$target['TargetName']=$targetName;
-	$target['TargetType']=$row['model_type'];
-	$target['Strings']=$row['total_strings'];
-	$target['Pixels']=$row['total_pixels'];
-	$target['Strands']=$row['folds'];
-	$target['bottomStart']=$row['start_bottom'];
-	$target['TargetDisplay']=$row['window_degrees'];
 	$target['TargetDesc']=$row['object_desc'];
+	$target['TargetType']=$row['model_type'];
+	$target['StringType']=$row['string_type'];
+	$target['PixelCount']=$row['pixel_count'];
+	$target['Folds']=$row['folds'];
+	$target['BottomStart']=$row['start_bottom'];
+	$target['PixelFirst']=$row['pixel_first'];
+	$target['PixelLast']=$row['pixel_last'];
+	$target['PixelLength']=$row['pixel_length'];
+	$target['Units']=$row['unit_of_measure'];
+	$target['TotalStrings']=$row['total_strings'];
+	$target['TotalPixels']=$row['total_pixels'];
+	$target['TargetDisplay']=$row['window_degrees'];
+	$target['NumSegments']=$row['number_segments'];
+	$target['GifModel']=$row['gif_model'];
+	$target['Direction']=$row['direction'];
+	$target['Orientation']=$row['orientation'];
+	$target['Topography']=$row['topography'];
+	$target['h1']=$row['h1'];
+	$target['h2']=$row['h2'];
+	$target['d1']=$row['d1'];
+	$target['d2']=$row['d2'];
+	$target['d3']=$row['d3'];
+	$target['d4']=$row['d4'];
+	//$target['Strands']=$row['folds'];
+
 	$projArray['Target']=$target;
 	return ($projArray);
 }
@@ -152,7 +168,9 @@ function ArraytoXMLStr($inar) {
 	$xmlStr.="	<Effects>\n";
 	foreach($inar['Effects'] as $effect) {
 		$name=$effect['EffectName'];
-		$xmlStr.='		<Effect EffectName="'.$name.'">'."\n";
+		$class=$effect['EffectClass'];
+		$desc=$effect['EffectDesc'];
+		$xmlStr.='		<Effect EffectName="'.$name.'" EffectClass="'.$class.'" EffectDesc="'.$desc.'">'."\n";
 		$xmlStr.="			<Parameters>\n";
 		foreach($effect['Parameters'] as $key=>$val) {
 			$xmlStr.="				<".$key.">".$val."</".$key.">\n";
@@ -163,18 +181,17 @@ function ArraytoXMLStr($inar) {
 	$xmlStr.="	</Effects>\n";
 	
 	//Translate Target
-	$xmlStr.='	<Target Name="'.$inar['Target']['TargetName'].'" Type="'.$inar['Target']['TargetType'].'" Strings="'.$inar['Target']['Strings'].'" Pixels="'.$inar['Target']['Pixels'].'"';
-	$xmlStr.=' Strands="'.$inar['Target']['Strands'].'" BotStart="'.$inar['Target']['bottomStart'].'" Display="'.$inar['Target']['TargetDisplay'].'">'."\n";
+	$TargArray=array('TargetName','TargetDesc','TargetType','StringType','PixelCount','Folds','BottomStart','PixelFirst','PixelLast','Units','TotalStrings','TotalPixels','TargetDisplay','NumSegments','GifModel','Direction','Orientation','Topography','h1','h2','d1','d2','d3','d4');
+	$xmlStr.='	<Target';
+	foreach($TargArray as $field) 
+		$xmlStr.=' '.$field.'="'.$inar['Target'][$field].'"';
+	$xmlStr.=">\n";
 	$xmlStr.="		<TargetDesc>".$inar['Target']['TargetDesc']."</TargetDesc>\n	</Target>\n";
 
 	//Translate Project Details
 	$xmlStr.="	<ProjectDetails>\n";
-	foreach($inar['projDetail'] as $detail) {
-		$xmlStr.='		<Phrase id="'.$detail['id'].'" PhraseName="'.$detail['PhraseName'].'" StartTime="'.$detail['StartTime'].'" EndTime="'.$detail['EndTime'].'">'."\n";
-		$xmlStr.='			<Effect>'.$detail['EffectName']."</Effect>\n";
-		$xmlStr.="		</Phrase>\n";
-	}
-
+	foreach($inar['projDetail'] as $detail)
+		$xmlStr.='		<Phrase id="'.$detail['id'].'" PhraseName="'.$detail['PhraseName'].'" StartTime="'.$detail['StartTime'].'" EndTime="'.$detail['EndTime'].'" EffectName="'.$detail['EffectName'].'">'."</Phrase>\n";
 	$xmlStr.="	</ProjectDetails>\n";
 	$xmlStr.="</Project>\n";
 	return($xmlStr);
@@ -188,7 +205,7 @@ function XMLtoArray($project) {
 		$st=(real) $phrase['StartTime'];
 		$et=(real) $phrase['EndTime'];
 		$id=(integer) $phrase['id'];
-		$effect=(string) $phrase->Effect;
+		$effect=(string) $phrase['EffectName'];
 		$projDetail[]=array("id"=>$id,"PhraseName"=>$pname, "StartTime"=>$st, "EndTime"=>$et, "EffectName"=>$effect);
 	}
 	//Translate Project Effects
@@ -196,25 +213,31 @@ function XMLtoArray($project) {
 	foreach($project->Effects->Effect as $effect) {
 		$paramArray=array();
 		$effName=(string) $effect['EffectName'];
+		$effClass=(string) $effect['EffectClass'];
+		$effDesc=(string) $effect['EffectDesc'];
 		foreach($effect->Parameters->children() as $param) {
 			$key=(string) $param->getName();
 			$val=(string) $param;
 			$paramArray[$key]= $val;
 		}
-		$projEffect[]=array("EffectName"=>$effName, "Parameters"=>$paramArray);
+		$projEffect[]=array("EffectName"=>$effName, "EffectClass"=>$effClass,"EffectDesc"=>$effDesc, "Parameters"=>$paramArray);
 	}
 
 	//Translate Target Information
+	$TargArray=array('TargetName','TargetDesc','TargetType','StringType','PixelCount','Folds','BottomStart','PixelFirst','PixelLast','Units','TotalStrings','TotalPixels','TargetDisplay','NumSegments','GifModel','Direction','Orientation','Topography','h1','h2','d1','d2','d3','d4');
+	$TargType=array('string','string','string','string','integer','integer','string','integer','integer','string','integer','integer','integer','integer','string','string','string','string','real','real','real','real','real','real'); 
 	$target=array();
-	$target['TargetName']=(string) $project->Target['Name'];
-	$target['TargetType']=(string) $project->Target['Type'];
-	$target['Strings']=(integer) $project->Target['Strings'];
-	$target['Pixels']=(integer) $project->Target['Pixels'];
-	$target['Strands']=(integer) $project->Target['Strands'];
-	$target['bottomStart']=(string) $project->Target['BotStart'];
-	$target['TargetDisplay']=(integer) $project->Target['Display'];
-	$target['TargetDesc']=(string) $project->Target->TargetDesc;
-
+	for ($x=0;$x<count($TargArray);$x++) {
+		$type=$TargType[$x];
+		$field=$TargArray[$x];
+		if ($type=='string')
+			$target[$field]=(string) $project->Target[$field];
+		else
+			if ($type=='integer')
+				$target[$field]=(integer) $project->Target[$field];
+			else
+				$target[$field]=(real) $project->Target[$field];
+	}
 	//Tranlate Song Information
 	$song=array();
 	$song['SongTitle']=(string) $project->Song['SongTitle'];
