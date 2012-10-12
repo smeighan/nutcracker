@@ -36,7 +36,7 @@ function DBtoXMLArray($project_id) {
 	$defaultPhrases=array();
 	$songmin=99999.0;
 	$songmax=00000.0;
-	$sql = "SELECT song_dtl_id, `phrase_name`, `start_secs`, `end_secs`, `sequence` FROM `song_dtl` WHERE song_id=".$song_id;
+	$sql = "SELECT song_dtl_id, `phrase_name`, `start_secs`, `end_secs`, `sequence` FROM `song_dtl` WHERE song_id=".$song_id." ORDER BY start_secs";
 	$result=nc_query($sql);
 	while($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
 		$id=$row['song_dtl_id'];
@@ -56,7 +56,7 @@ function DBtoXMLArray($project_id) {
 	$projArray['Song']=$song;
 
 	// Translate Project Detail
-	$sql = "SELECT `project_dtl_id`, `phrase_name`, `start_secs`, `end_secs`, `effect_name`, `project_id` FROM project_dtl WHERE project_id=".$project_id;
+	$sql = "SELECT `project_dtl_id`, `phrase_name`, `start_secs`, `end_secs`, `effect_name`, `project_id` FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
 	$result=nc_query($sql);
 	$effectArray=array();
 	while($row=mysql_fetch_array($result,MYSQL_ASSOC)) {
@@ -88,7 +88,8 @@ function DBtoXMLArray($project_id) {
 			$val=$row['param_value'];
 			$paramArray[$key]= $val;
 		}
-		$projEffect[]=array("EffectName"=>$effName,"EffectClass"=>$effClass,"EffectDesc"=>$effDesc,"Parameters"=>$paramArray);
+		if (strlen($effName)>0) 
+			$projEffect[]=array("EffectName"=>$effName,"EffectClass"=>$effClass,"EffectDesc"=>$effDesc,"Parameters"=>$paramArray);
 	}
 	$projArray['Effects']=$projEffect;
 
@@ -125,8 +126,29 @@ function DBtoXMLArray($project_id) {
 	$target['d2']=$row['d2'];
 	$target['d3']=$row['d3'];
 	$target['d4']=$row['d4'];
-	//$target['Strands']=$row['folds'];
 
+	$sql="SELECT string, pixels FROM models_strands WHERE username='".$username."' AND object_name='".$targetName."'";
+	//echo $sql ."<br />";
+	$result=nc_query($sql);
+	
+	$targetStrands=array();
+	$targetSegments=array();
+	while($row=mysql_fetch_array($result,MYSQL_ASSOC)) {	
+		$string=$row['string'];
+		$pixels=$row['pixels'];
+		$targetStrands[]=array("String"=>$string,"Pixels"=>$pixels);
+	}
+	$target['TargetStrands']=$targetStrands;
+	$sql="SELECT segment, starting_pixel FROM models_strand_segments WHERE  username='".$username."' AND object_name='".$targetName."'";
+	//echo $sql ."<br />";
+	$result=nc_query($sql);
+	while($row=mysql_fetch_array($result,MYSQL_ASSOC)) {	
+		$segment=$row['segment'];
+		$startpixel=$row['starting_pixel'];
+		$targetSegments[]=array("Segment"=>$segment,"StartPixel"=>$startpixel);
+	}	
+	$target['TargetSegments']=$targetSegments;
+	
 	$projArray['Target']=$target;
 	return ($projArray);
 }
@@ -186,7 +208,16 @@ function ArraytoXMLStr($inar) {
 	foreach($TargArray as $field) 
 		$xmlStr.=' '.$field.'="'.$inar['Target'][$field].'"';
 	$xmlStr.=">\n";
-	$xmlStr.="		<TargetDesc>".$inar['Target']['TargetDesc']."</TargetDesc>\n	</Target>\n";
+	$xmlStr.="		<TargetDesc>".$inar['Target']['TargetDesc']."</TargetDesc>\n";
+	$xmlStr.="		<TargetStrands>\n";
+	foreach($inar['Target']['TargetStrands'] as $targetStrand) 
+		$xmlStr.='			<TargetStrand String="'.$targetStrand['String'].'" Pixels="'.$targetStrand['Pixels'].'"/>'."\n";
+	$xmlStr.="		</TargetStrands>\n";
+	foreach($inar['Target']['TargetSegments'] as $targetStrand) 
+		$xmlStr.='			<TargetSegment Segment="'.$targetStrand['Segment'].'" StarPixels="'.$targetStrand['StartPixels'].'"/>'."\n";
+	$xmlStr.="		<TargetSegments>\n";
+	$xmlStr.="		</TargetSegments>\n";
+	$xmlStr.="	</Target>\n";
 
 	//Translate Project Details
 	$xmlStr.="	<ProjectDetails>\n";
@@ -238,6 +269,22 @@ function XMLtoArray($project) {
 			else
 				$target[$field]=(real) $project->Target[$field];
 	}
+	$targetStrands=array();
+	$targetSegments=array();
+	foreach($project->Target->TargetStrands->TargetStrand as $targStrand) {
+		$string=(integer) $targStrand['String'];
+		$pixels=(integer) $targStrand['Pixels'];
+		$targetStrands[]=array("String"=>$string,"Pixels"=>$pixels);
+	}
+	$target['TargetStrands']=$targetStrands;
+	foreach($project->Target->TargetSegments->TargetSegement as $targSeg) {
+		$segment=(integer) $targSeg['Segment'];
+		$startpixels=(integer) $targSeg['StartPixel'];
+		$targetSegments[]=array("Segment"=>$segment,"StartPixels"=>$startpixels);
+	}
+	$target['TargetSegements']=$targetSegments;
+	
+
 	//Tranlate Song Information
 	$song=array();
 	$song['SongTitle']=(string) $project->Song['SongTitle'];
