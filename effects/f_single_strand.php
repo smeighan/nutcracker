@@ -7,7 +7,9 @@ function f_single_strand($get)
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	if(!isset($get['speed']))     $get['speed']="1";
 	extract ($get);
-	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
+	if(isset($get['window_degrees'])) $wind=$get['window_degrees'];
+	else $wind=360;
+	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$wind); // Set window_degrees to match the target
 	/*echo "<pre>";
 	print_r($get);
 	echo "</pre>\n";*/
@@ -127,13 +129,10 @@ function f_single_strand($get)
 			}
 		}
 	}
-	effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array);
+	if($batch==0) effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array);
 	$rainbow=$fade_3d1=$fade_3d2='N';
 	extract($matrix);
-	echo "<pre>";
-	//print_r($matrix);
-	echo "for(f=1;f<=$maxFrame;f++)\n";
-	echo "</pre>";
+	
 	$x=$y=$z=0;
 	for($f=1;$f<=$maxFrame;$f++)
 	{

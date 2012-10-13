@@ -1051,8 +1051,9 @@ function save_user_effect($passed_array)
 		{
 			//	login	effect_name	param_name	param_value	created	last_upd
 			//
-			$insert2 = "REPLACE into effects_user_dtl(username,effect_name,param_name,param_value,last_upd) 
-			values ('$username','$effect_name','$key','$value',now())";
+			$effect_id = get_effect_id($username,$effect_name);
+			$insert2 = "REPLACE into effects_user_dtl(effect_id,username,effect_name,param_name,param_value,last_upd) 
+			values ($effect_id,'$username','$effect_name','$key','$value',now())";
 			mysql_query($insert2) or die ("Error on $insert2");
 			//mysql_free_result($result);
 		}
@@ -2391,4 +2392,34 @@ function get_gif_model($username,$user_target)
 		extract($row);
 	}
 	return $gif_model;
+}
+
+function get_effect_id($username,$effect_name)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	$query = "select * from  effects_user_hdr where username='$username'
+	 and effect_name='$effect_name' ";
+	//echo "<pre>get_number_segments: query=$query</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
+	$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	//
+	
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	return $effect_id;
 }

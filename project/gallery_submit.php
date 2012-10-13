@@ -1,5 +1,7 @@
 <?php
-function handleCopy($myArr) 
+require_once("../effects/read_file.php");
+
+function handleCopy($myArr)
 {
 	$mySelArray=$myArr['copyeffect'];
 	if (count($mySelArray)==0)
@@ -8,29 +10,34 @@ function handleCopy($myArr)
 	{
 		$member_id=$_SESSION['SESS_MEMBER_ID'];
 		$newusername=$_SESSION['SESS_LOGIN'];
-		//print_r($myArr);
+		//print_r($myArr);  // Array ( [0] => f~BARS1 [1] => f~BARS1 [2] => f~BARS2 )
+			//print_r($mySelArray);
 		//die;
-		foreach($mySelArray as $usereffect) 
+		foreach($mySelArray as $usereffect)
 		{
 			$tok=preg_split("/~+/", trim($usereffect));
 			$username=$tok[0];
 			$effname=$tok[1];
-			$neweffname=$myArr[$usereffect];
+			/*echo "<pre>usereffect=$usereffect\n";
+			print_r($tok);
+			echo "</pre>\n";*/
+			$neweffname=strtoupper($myArr[$usereffect]); // make sure all effects are upper case <scm>
 			if (strlen(trim($neweffname))==0)
 				echo "Sorry, didn't copy ".$effname. " because you did not give it a new name<br />";
 			else {
 				echo "Copying " . $effname . " to " . $neweffname . "<br />";
 				getEffCopySQL($username, $effname, $newusername, $neweffname);
-
 			}
 		}
 	}
 }
-function getEffCopySQL($username, $effname, $myusername, $newname) 
+
+function getEffCopySQL($username, $effname, $myusername, $newname)
 {
 	$sql="SELECT * FROM effects_user_hdr WHERE username='".$username."' AND effect_name='".$effname."'";
 	$result=nc_query($sql);
-	while ($row=mysql_fetch_assoc($result)) {
+	while ($row=mysql_fetch_assoc($result))
+	{
 		extract($row);
 		$sql="REPLACE INTO effects_user_hdr (effect_class, effect_name, username, effect_desc, created, last_upd) VALUES ('".$effect_class."','".$newname."'";
 		$sql.=",'".$myusername."','".$effect_desc."',NOW(), NOW() );";
@@ -38,9 +45,11 @@ function getEffCopySQL($username, $effname, $myusername, $newname)
 	}
 	$sql="SELECT * FROM effects_user_dtl WHERE username='".$username."' AND effect_name='".$effname."';";
 	$result3=nc_query($sql);
-	while ($row=mysql_fetch_assoc($result3)) {
+	while ($row=mysql_fetch_assoc($result3))
+	{
 		extract($row);
-		$sql="REPLACE INTO effects_user_dtl (effect_name, username, param_name, param_value, segment, created, last_upd) VALUES ('".$newname."'";
+		$effect_id = get_effect_id($myusername,$newname);
+		$sql="REPLACE INTO effects_user_dtl (effect_id,effect_name, username, param_name, param_value, segment, created, last_upd) VALUES ('".$effect_id."','" .$newname."'" ;
 		$sql.=",'".$myusername."','".$param_name."','".$param_value."',".$segment.", NOW(), NOW() );";
 		$result4=nc_query($sql);
 	}

@@ -1379,6 +1379,7 @@ function checkValidNCFiles($myarray, $numEntries, $project_id)
 		{
 			//	echo "<pre>$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
 			echo "<td>$fileName</td><td bgcolor=FF7096>INVALID </td>";
+			if(!isset($NCArray[1])) $NCArray[1]=0;
 			echo "<td>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</td>";
 		}
 		else

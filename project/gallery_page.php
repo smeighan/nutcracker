@@ -83,7 +83,12 @@ function ajaxFunction(val)
 				str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
 				str = str + "<br />Effect Name";
 				str = str + "</td>";
+				//	<scm> start
+				/*$fpath2 =  "/nutcracker/effects/"  . myObject.data[i].fullpath;
+				if(!file_exists($fpath)) $fpath2 = "/nutcracker/images/noThumb.gif";*/
+				//	<scm> end
 				str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\"100\" width=\"50\"></td>";
+			//str = str + "<td><img src=\"" . $fpath ."\"  height=\"100\" width=\"50\"></td>";
 			}
 			
 			var endrecord=myObject.value.endrecord 

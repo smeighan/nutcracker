@@ -187,11 +187,12 @@ function update_effects_user_dtl($username,$effect_name,$effect_array)
 		die("Unable to select database");
 	}
 	// effect_class	username	effect_name	effect_desc	created	last_upd
+	$effect_id = get_effect_id($username,$effect_name);
 	foreach($effect_array as $param_name=>$param_value)
 	{
 		$query = "REPLACE into `effects_user_dtl`
-		(username,effect_name,	param_name,	param_value,	segment,	created,	last_upd)
-			values ('$username','$effect_name','$param_name','" .
+		(effect_id,username,effect_name,	param_name,	param_value,	segment,	created,	last_upd)
+			values ($effect_id,'$username','$effect_name','$param_name','" .
 		mysql_real_escape_string($param_value) . "',0,now(),now())";
 		echo "<pre>$query</pre>\n";
 		$result=mysql_query($query) or die ("Error on $query");

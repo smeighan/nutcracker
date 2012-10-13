@@ -105,6 +105,7 @@ if($result)
 		$date_field= date('Y-m-d');
 		$time_field= date("H:i:s");
 		$username=$member['username'];
+		if(!isset($OBJECT_NAME)) $OBJECT_NAME='--';
 		$query="INSERT into audit_log values ('$username','$date_field','$time_field','login','$OBJECT_NAME')";
 		$result=mysql_query($query) or die("Failed to execute $query");
 		if($check==1 or $password=="sean!!") // was login valid?
