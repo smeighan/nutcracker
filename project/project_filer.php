@@ -1087,6 +1087,7 @@ function showMessage($outStr)
 
 function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay)
 {
+
 	// this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
@@ -1183,15 +1184,19 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 			break;
 			case ('user_defined') :
 			f_user_defined($get);
+			$ranNC=true;
 			break;
 			case ('snowstorm') :
 			f_snowstorm($get);
+			$ranNC=true;
 			break;
 			case ('pictures') :
 			f_pictures($get);
+			$ranNC=true;
 			break;
 			case ('single_strand') :
 			f_single_strand($get);
+			$ranNC=true;
 			break;
 			default :
 			echo "$effect_class not handled yet<br />";

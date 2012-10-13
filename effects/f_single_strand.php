@@ -144,7 +144,7 @@ function f_single_strand($get)
 		$s=1;
 		for($p=1;$p<=$maxPixel;$p++)
 		{
-			if(!isset($pixel_to_segment[$p])) $segment=$pixel_to_segment[$p];
+			if(isset($pixel_to_segment[$p])) $segment=$pixel_to_segment[$p];
 			else $segment=1;
 			$cycle=1;
 			if(isset($count1[$segment])) $cycle = $count1[$segment] + $count2[$segment];
