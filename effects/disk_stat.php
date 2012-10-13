@@ -19,11 +19,13 @@ require_once('../conf/auth.php');
 <body>
 <?php
 
-function getFilesFromDir($dir)
+function getFilesFromDir($dir,$disk_stats)
 {
 	$files = array(); 
 	$gifn=$gif=$totn=$tot=$nc=$ncn=0;
-	echo "<pre>";
+	$index_level=0;
+	//echo "<pre>dir=$dir</pre>\n";
+	//echo "<pre>";
 	if ($handle = opendir($dir))
 	{
 		while (false !== ($file = readdir($handle)))
@@ -33,7 +35,8 @@ function getFilesFromDir($dir)
 				if(is_dir($dir.'/'.$file))
 				{
 					$dir2 = $dir.'/'.$file; 
-					$files[] = getFilesFromDir($dir2);
+					//$files[] = getFilesFromDir($dir2,$disk_stats);
+					$disk_stats = getFilesFromDir($dir2,$disk_stats);
 				}
 				else { 
 					$fullname = $dir . "/" . $file;
@@ -48,16 +51,24 @@ function getFilesFromDir($dir)
 						$gif+=$filesize;
 						if($c==2) // is this gif a file_th.gif? We leave those along
 						{						
-							echo "DONT DELETE _th.gif: $totn: rm $fullname. dir=$dir\n";
+					//		echo "DONT DELETE _th.gif: $totn: rm $fullname. dir=$dir\n";
+							$disk_stats['th']['cnt']++;
+							$disk_stats['th']['size']+=$filesize;
 						}
 						else // this is any other file that is file.gif form, we will delete
 						{
 							if($dir=="../effects/workspaces/2")
-								echo "DONT DELETE SEAN: $totn: rm $fullname. dir=$dir\n";
+							{
+						//		echo "DONT DELETE SEAN: $totn: rm $fullname. dir=$dir\n";
+								$disk_stats['gif_sean']['cnt']++;
+								$disk_stats['gif_sean']['size']+=$filesize;
+							}
 							else
 							{
-								echo "DELETE GIF: $totn: rm $fullname. dir=$dir\n";
-								unlink($fullname);
+							//	echo "DELETE GIF: $totn: rm $fullname. dir=$dir\n";
+								//unlink($fullname);
+								$disk_stats['gif']['cnt']++;
+								$disk_stats['gif']['size']+=$filesize;
 							}
 							$totn++;
 							$tot+=$filesize;
@@ -65,55 +76,45 @@ function getFilesFromDir($dir)
 					}
 					else if($tok[1]=="nc") // is this a nutcracker file, file.nc?
 					{
-						$NC_PURGE=0;
-						if($NC_PURGE==1)
-						{
-							echo " DELETE NC: $totn: rm $fullname. dir=$dir\n";
-							unlink($fullname); // temporary delete on Oct 13th. we are at 18gigs
-						}
-						else
-						{
-							echo "DONT DELETE NC: $totn: rm $fullname. dir=$dir\n";
-						}
-						$totn++;
+					//	echo "DONT DELETE NC: $totn: rm $fullname. dir=$dir\n";
 						$ncn++; // yes, count stats , but dont delete
 						$nc+=$filesize;
+						$disk_stats['nc']['cnt']++;
+						$disk_stats['nc']['size']+=$filesize;
 					}
 					else // any other file is going to be deleted (*.dat, *.gp,.etc.)
 					{
-						echo "DELETE: $totn: rm $fullname. dir=$dir\n";
-						unlink($fullname);
+					//	echo "DELETE: $totn: rm $fullname. dir=$dir\n";
+						//	unlink($fullname);
 						$totn++;
 						$tot+=$filesize;
+						$disk_stats['others']['cnt']++;
+						$disk_stats['others']['size']+=$filesize;
 					}
 					//echo "dir=$dir,   file=$file $filesize</pre>\n";
 				}
 				} 
 			} 
 		closedir($handle); 
-		echo "dir=$dir\n";
-		echo "gifn=$gifn, gif=$gif\n";
-		echo "ncn=$ncn, nc=$nc\n";
-		echo "totn=$totn, tot=$tot\n";
-		echo "</pre>";
+		return $disk_stats;
 	}
 	} 
-
-function array_flat($array)
-{
-	foreach($array as $a)
-	{
-		if(is_array($a))
-		{
-			$tmp = array_merge($tmp, array_flat($a));
-		}
-		else { 
-			$tmp[] = $a;
-		}
-		} 
-	return $tmp;
-}
 // Usage 
 $dir = 'workspaces'; 
-$foo = getFilesFromDir($dir); 
+$disk_stats=array();
+$categories=array('th','gif','gif_sean','nc','others');
+foreach($categories as $category)
+{
+	$disk_stats[$category]['cnt']=0;
+	$disk_stats[$category]['size']=0;
+}
+$disk_stats = getFilesFromDir($dir,$disk_stats); 
+echo "<pre>";
+//print_r($disk_stats);
+foreach($categories as $category)
+{
+$size=$disk_stats[$category]['size']/1024/1024;
+	printf ("%-12s %9d %9d %11.2fmb\n",$category,$disk_stats[$category]['cnt'],
+	$disk_stats[$category]['size'],$size);
+}
 ?>
