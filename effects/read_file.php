@@ -578,7 +578,7 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 		//
 		if($_SERVER['HTTP_HOST'] == 'localhost')
 		{
-			$shellCommand = "gnuplot.exe " . $gp_file .  " 2>&1";
+			$shellCommand = $_SERVER['DOCUMENT_ROOT']."nutcracker/gnuplot/bin/gnuplot.exe " . $gp_file .  " 2>&1";
 		}
 		else
 		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
@@ -967,11 +967,13 @@ function show_array($array,$title)
 			$color="white";
 		else if(substr($value,0,1)=="#")
 			$color=$value;
-		else
-		$color="white";
-		echo "<td>$key</td>";
-		echo "<td bgcolor=$color>$value</td>";
-		echo "</tr>\n";
+			else
+				$color="white";
+		if (!is_array($value)){
+			echo "<td>$key</td>";
+			echo "<td bgcolor=$color>$value</td>";
+			echo "</tr>\n";
+		}
 	}
 	echo "</table>";
 }

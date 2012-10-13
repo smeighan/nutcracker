@@ -290,7 +290,8 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 	<?php
 	foreach ($get as $item=>$value)
 	{
-		echo "<input type=\"hidden\" name=\"$item\" value=\"$value\" />\n";
+		if (($item !="submit") && (!is_array($value))) 
+			echo "<input type=\"hidden\" name=\"".$item ."\" value=\"".$value."\" />\n";
 	}
 	$columns=array('color1'=>'Color #1', 'count1'=>'Number of Color1 Pixels','fade_3d1'=>'3D Fade for Color#1',
 	'color2'=>'Color #2', 'count2'=>'Number of Color2 Pixels',	'fade_3d2'=>'3D Fade for Color#2',
