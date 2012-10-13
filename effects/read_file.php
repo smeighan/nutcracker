@@ -466,10 +466,8 @@ function gp_header($fh,$min_max,$target_info)
 		$max_x = $max_x + $xrange*$scale;
 		if($min_x==0) $min_x=-1;
 		if($max_x==0) $max_x=1;
-		
 		$min_y = $min_y - $yrange*$scale;
 		$max_y = $max_y + $yrange*$scale;
-		
 		if($min_z==0) $min_z=-1;
 		if($max_z==0) $max_z=1;
 		$min_z = $min_z - $zrange*$scale;
@@ -2140,6 +2138,8 @@ function get_target_model($username,$model_name)
 	// Note: If you put extract($row); inside the following loop, you'll
 	//       then create $userid, $fullname, and $userstatus
 	//
+	if(!isset($folds)) $folds=1;
+	if($folds<1) $folds=1;
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);
@@ -2411,12 +2411,11 @@ function get_effect_id($username,$effect_name)
 	}
 	//
 	$query = "select * from  effects_user_hdr where username='$username'
-	 and effect_name='$effect_name' ";
+	and effect_name='$effect_name' ";
 	//echo "<pre>get_number_segments: query=$query</pre>\n";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
 	$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	//
-	
 	while ($row = mysql_fetch_assoc($result))
 	{
 		extract($row);

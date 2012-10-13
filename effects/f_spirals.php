@@ -111,7 +111,10 @@ function spiral($get)
 	//show_elapsed_time($script_start,"Creating  Effect, spirals class:");
 	if($maxStrand<1)$maxStrand=1;
 	$pixelPerStrand=$maxPixel/$maxStrand;
-	//if( $numberStrands<1)  $numberStrands=1;
+	//
+	if(!isset($window_degrees)) $window_degrees=360;
+	if($window_degrees<1) $window_degrees=360;
+	if( $number_spirals<1)  $number_spirals=1;
 	$deltaStrands= ($maxStrand* (360/$window_degrees)/ $number_spirals);
 	//$deltaStrands= ($maxStrand/ $number_spirals);
 	$line= 0;
@@ -120,10 +123,12 @@ function spiral($get)
 	$dat_file_array=array();
 	$r=115;
 	$g =115;
-	$b = 120;
+	$b = 120; 
+	if($number_rotations<1) $number_rotations=1;
 	$maxLoop = ($maxStrand* (360/$window_degrees)*$number_rotations);
 	echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
-		//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
+	//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
+	if($maxLoop<1) $maxLoop=1;
 	$deltaPixel = $maxPixel/$maxLoop;
 	$S=$V=1;
 	$deltaH = (RED - ORANGE)/$maxLoop;

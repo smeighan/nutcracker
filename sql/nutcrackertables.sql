@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 12, 2012 at 12:57 PM
+-- Generation Time: Oct 13, 2012 at 12:49 AM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `effects_hdr` (
 --
 
 CREATE TABLE IF NOT EXISTS `effects_user_dtl` (
+  `effect_id` int(6) DEFAULT NULL,
   `username` varchar(25) NOT NULL,
   `effect_name` varchar(25) NOT NULL,
   `param_name` varchar(32) NOT NULL,
@@ -89,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_dtl` (
 --
 
 CREATE TABLE IF NOT EXISTS `effects_user_hdr` (
+  `effect_id` int(6) NOT NULL AUTO_INCREMENT,
   `effect_class` varchar(25) NOT NULL,
   `username` varchar(25) NOT NULL,
   `effect_name` varchar(25) NOT NULL,
@@ -99,8 +101,9 @@ CREATE TABLE IF NOT EXISTS `effects_user_hdr` (
   `phrase_name` varchar(100) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `last_upd` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`effect_id`),
   UNIQUE KEY `username_effect_name` (`username`,`effect_name`,`effect_class`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3756 ;
 
 -- --------------------------------------------------------
 
@@ -209,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=705 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=706 ;
 
 -- --------------------------------------------------------
 
@@ -375,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=70 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=72 ;
 
 -- --------------------------------------------------------
 
@@ -392,7 +395,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `project_id` int(11) NOT NULL,
   `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1513 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1555 ;
 
 -- --------------------------------------------------------
 
