@@ -254,7 +254,7 @@ function showThumbs($project_id)
 function createThumb($model_name, $effect_name, $member_id)
 {
 	$retVal=false;
-	$basefile="..\\effects\\workspaces\\".$member_id."\\".$model_name."~".$effect_name;
+	$basefile="../effects/workspaces/".$member_id."/".$model_name."~".$effect_name;
 	$gp_file=$basefile.".gp";
 	$gif_file=$basefile.".gif";
 	$th_file=$basefile."_th.gif";
@@ -262,7 +262,7 @@ function createThumb($model_name, $effect_name, $member_id)
 	{
 		if($_SERVER['HTTP_HOST'] != 'meighan.net')
 		{
-			$shellCommand = "..\\gnuplot\\bin\\gnuplot.exe " . $gp_file;
+			$shellCommand = $_SERVER['DOCUMENT_ROOT']."nutcracker/gnuplot/bin/gnuplot.exe " . $gp_file;
 			system($shellCommand,$output);
 			$shellCommand = "del ".$gif_file;
 			system($shellCommand, $output);
