@@ -29,7 +29,6 @@ ini_set("memory_limit","512M");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <script type="text/javascript" src="../js/barmenu.js"></script>
-<script type="text/javascript" src="../js/popmenu.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Nutcracker: RGB Effects Builder</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
