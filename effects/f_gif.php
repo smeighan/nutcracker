@@ -28,7 +28,6 @@ function f_gif($get)
 	echo "<pre>";
 	print_r($get);
 	echo "</pre>\n";
-	
 	// Set window_degrees to match the target
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	//
@@ -153,8 +152,8 @@ function f_gif($get)
 
 function draw_icon($fh, $image_array, $offset, $frame, $minStrand, $maxStrand, $minPixe, $maxPixel, $tree_xyz, $strand_pixel,$brightness,$window_degrees)
 {
-/*echo "<pre>";
-print_r($image_array);*/
+	/*echo "<pre>";
+	print_r($image_array);*/
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 	/*if($batch==0) echo "<pre>";
 	print_r($window_array);
@@ -193,12 +192,12 @@ print_r($image_array);*/
 					echo "</pre>";
 					$rgb_val=HSV_TO_RGB($H,$S,$V);
 				}
-		//		if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+				//		if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 				{
-				if($rgb_val!=0) $rgb_val=hexdec("#888888");
+					if($rgb_val!=0) $rgb_val=hexdec("#888888");
 					fwrite($fh, sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
 					$hex=dechex($rgb_val);
-//	printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %s %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$hex,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
+					//	printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %s %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$hex,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
 				}
 			}
 		}
