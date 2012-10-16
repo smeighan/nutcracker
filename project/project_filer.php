@@ -1111,6 +1111,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 	// this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
 	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
+	$isValid=true;
 	if (file_exists($outfile))
 	{
 		$inHash=getProjHash($project_id, $effect_id);
@@ -1118,20 +1119,23 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		//echo "<pre>File ".$outfile." already is here.  Now I gotta check it!<br />";
 		if (!$checkHasher)
 		{
+			$isValid=false;
 			// Check to see if the values of the effect have changed, if so, we need to regen the effect (remove the existing nc file if it exists)
-				removeNCFiles($outfile);
+			removeNCFiles($outfile);
 			echo "<td>Looks like the effect ".$eff." has changed since the NC file created</td>";
 		}
-		if (!isValidNC($outfile))
+		if (($isValid) && (!isValidNC($outfile)))
 		{
 			// Check to see if the existing NC file exists and is valid, if not, we need to regen the effect (remove the existing nc file)
-				removeNCFiles($outfile);
+			removeNCFiles($outfile);
+			$isValid=false;
 			echo "<td>NC file is invalid...</td>";
 		}
-		if (!isValidNCModel($project_id, $outfile))
+		if (($isValid) && (!isValidNCModel($project_id, $outfile)))
 		{
 			// Check to see if the nc file matches the model (same number of strings/pixels), if not, we will need to regen the effect (remove the existing nc file)
-				removeNCFiles($outfile);
+			removeNCFiles($outfile);
+			$isValid=false;
 			echo "<td>Model and Effect DO NOT match.  Erasing file...</td>";
 		}
 		echo "</pre>";
@@ -1444,7 +1448,7 @@ function checkValidNCFiles($myarray, $numEntries, $project_id)
 	return($myarray);
 }
 
-function getHash($project_id,$effect_id)
+function getHash($effect_id)
 {
 	$sql = "SELECT param_value FROM effects_user_dtl WHERE effect_id=".$effect_id;
 	
@@ -1490,7 +1494,7 @@ function removeNCFiles($testFile)
 
 function updateHash($project_id, $effect_id)
 {
-	$hashVal=getHash($project_id, $effect_id);
+	$hashVal=getHash($effect_id);
 	$sql="UPDATE project_dtl SET check_sum='".$hashVal."' WHERE project_id=$project_id and effect_id=".$effect_id;
 	$result=nc_query($sql);
 	return($hashVal);
@@ -1499,7 +1503,14 @@ function updateHash($project_id, $effect_id)
 function checkHash($inHash, $project_id, $effect_id)
 {
 	$retVal=false;
-	$retVal=($inHash == getHash($project_id, $effect_id));
+	$retVal=($inHash == getHash($effect_id));
+	/*echo "Incoming Hash : ".$inHash."<br />";
+	echo "Hash check : ".getHash($effect_id)."<br />";
+	if ($retVal)
+		echo "They match <br />";
+	else
+		echo "They do not match<br />";
+	die; */
 	return($retVal);
 }
 ?>

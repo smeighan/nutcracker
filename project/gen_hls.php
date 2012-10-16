@@ -1,7 +1,7 @@
 <?php
 function genHLS($username, $project_id, $sepStr=" ") {
 	$filedir = "workarea/";
-	$fileStr=$username."~".$project_id;
+	$fileStr=$filedir.$username."~".$project_id;
 	$NCFile = $fileStr."~master.nc";
 	$hlsout = $fileStr.".hlsnc";
 	$fhhls = fopen($hlsout, 'w');
