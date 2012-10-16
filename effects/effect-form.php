@@ -189,9 +189,7 @@ echo "</td></tr>";
 		</form>
 <br/>
 <br/>
-<h3>If you want to see a gallery of all the effects other users have created, click below</h3>
-<br/>
-<a href="gallery.php">Click here to see the gallery of effects other users have created</a>
+
 	</body>
 </html>
 
