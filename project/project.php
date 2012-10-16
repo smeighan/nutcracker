@@ -129,6 +129,22 @@ if (isset($type)) {
 		}
 		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
 	}
+	if (isset($EffectEdit)) {
+		foreach($_POST as $key=>$value) {
+			if ($key=="project_id")
+				$project_id=$value;
+			if ($key=="effect_id")
+				$effect_id=$value;
+			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_id")) {
+				$sql='UPDATE effects_user_dtl SET param_value="'.$value.'" WHERE effect_id='.$effect_id.' AND param_name="'.$key.'"';
+				nc_query($sql);
+			}
+		}
+		$msg_str="Effect Edited<br />".edit_song($project_id);
+	}
+	if (isset($EffectEditCancel)) {
+		$msg_str="Effect Edit Cancelled<br />".edit_song($project_id);
+	}	
 }
 echo $msg_str;
 
