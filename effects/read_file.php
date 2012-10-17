@@ -576,11 +576,11 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 		//   $shellCommmand = "/usr/local/bin/gnuplot '" . $pathToCommandFile .+"'";
 		//         $output = system($shellCommmand . " 2>&1");
 		//
-		if($_SERVER['HTTP_HOST'] == 'localhost')
+		/*if($_SERVER['HTTP_HOST'] == 'localhost')
 		{
 			$shellCommand = $_SERVER['DOCUMENT_ROOT']."nutcracker/gnuplot/bin/gnuplot.exe " . $gp_file .  " 2>&1";
 		}
-		else
+		else*/
 		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
 		$return=system($shellCommand,$output); 
 		//echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
@@ -1798,7 +1798,12 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	echo "</pre>\n";*/
 	for ($frame=1;$frame<=$maxFrame;$frame++)
 	{
-		$filename=$dat_file_array[$frame];
+		if(isset($dat_file_array[$frame])) $filename=$dat_file_array[$frame];
+		else
+		
+		{
+			echo "<pre>";
+		}
 		$full_path = $dirname . "/" . $filename;
 		$fh = fopen($full_path, 'r') or die("can't open file $full_path");
 		//echo "<pre>processing $filename</pre>\n";

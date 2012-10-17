@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 13, 2012 at 12:49 AM
+-- Generation Time: Oct 17, 2012 at 02:17 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_hdr` (
   `last_upd` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`effect_id`),
   UNIQUE KEY `username_effect_name` (`username`,`effect_name`,`effect_class`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3756 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5132 ;
 
 -- --------------------------------------------------------
 
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=706 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=722 ;
 
 -- --------------------------------------------------------
 
@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=72 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=83 ;
 
 -- --------------------------------------------------------
 
@@ -395,7 +395,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `project_id` int(11) NOT NULL,
   `check_sum` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1555 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1809 ;
 
 -- --------------------------------------------------------
 

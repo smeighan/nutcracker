@@ -25,9 +25,9 @@ function f_gif($get)
 	[OBJECT_NAME] => gif
 	[batch] => 0
 	)*/
-	echo "<pre>";
+	/*echo "<pre>";
 	print_r($get);
-	echo "</pre>\n";
+	echo "</pre>\n";*/
 	// Set window_degrees to match the target
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	//
@@ -108,7 +108,7 @@ function f_gif($get)
 		if($batch==0)
 		{
 			echo "<br/><img src=\"" . $FIC2 . "\"/><br/>\n";
-			echo "<br/><img src=\"resized/1_resized.gif\"/><br/>\n";
+			echo "<br/><img src=\"resized/$member_id.gif\"/><br/>\n";
 		}
 		//	aspect ratio = width/height
 		list($width, $height, $type, $attr) = getimagesize($FIC2);
@@ -116,9 +116,9 @@ function f_gif($get)
 			$aspect = $width/$height;
 		else$aspect=1.0;
 		$our_aspect = $maxStrand/$maxPixel;
-		//	echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
-		//	echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
-		//	echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";
+		echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
+		echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
+		echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";
 		$new_width=$maxStrand;
 		$new_height=$maxPixel/$aspect;
 		if($new_height>$maxPixel) // it wont fit, go the other way
@@ -134,34 +134,39 @@ function f_gif($get)
 		$gr = new gifresizer;	//New Instance Of GIFResizer
 		$gr->temp_dir = "frames"; //Used for extracting GIF Animation Frames
 		//	$gr->resize("gifs/1.gif","resized/1_resized.gif",200,150); //Resizing the animation into a new file.
-		$file_array=$gr->resize($FIC2,"resized/1_resized.gif",$new_width,$new_height); 
+		$return_array=$gr->resize($FIC2,"resized/$member_id.gif",$new_width,$new_height); 
+		list($file_array,$offset_left_array,$offset_top_array) = $return_array;
 		echo "<pre>";
+		print_r($file_array);
+		print_r($offset_left_array);
+		print_r($offset_top_array);
 		// file=frames/frame_1350361704_00.gif
-		foreach($file_array as $file)
+		foreach($file_array as $i=>$file)
 		{
 			$tok=explode("_",$file);
 			$tok2=explode(".gif",$tok[2]);
 			$frame=$tok2[0]+0;
 			echo "file=$file\n";
-			echo "process_frame($file,$frame,$get);\n";
+			//echo "process_frame($file,$frame,$get);\n";
 			$x_dat = $base . "_d_" . $frame . ".dat";
 			// for spirals we will use a dat filename starting "S_" and the tree model
 			$dat_file[$frame] = $path . "/" . $x_dat;
 			$dat_file_array[] = $dat_file[$frame];
-			process_frame($file,$frame,$get);
+			process_frame($file,$frame,$get,$offset_left_array[$i],$offset_top_array[$i]);
 		}
-		print_r($dat_file_array);
-		echo "</pre>\n";
+		//print_r($dat_file_array);
+		//echo "</pre>\n";
 		$amperage = array();
 		$x_dat_base = $base . ".dat";
-		make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, $frame_delay,$amperage, $seq_duration, $show_frame);
+		make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, 
+		$frame_delay,$amperage, $seq_duration, $show_frame);
 		list($usec, $sec) = explode(' ', microtime());
 		$script_start = (float)$sec + (float)$usec;
+		echo "<pre>make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
 		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 		//
 		//
 		/*$GIF_frame = fread (fopen ($FIC2,'rb'), filesize($FIC2));
-		
 		$decoder = new GIFDecoder ($GIF_frame);
 		$frames = $decoder->GIFGetFrames();
 		for ( $i = 0; $i < count ( $frames ); $i++ )
@@ -184,8 +189,9 @@ function f_gif($get)
 	}
 }
 
-function process_frame($file,$frame,$get)
+function process_frame($file,$frame,$get,$offset_left,$offset_top)
 {
+	echo "<pre>function process_frame($file,$frame,$get,$offset_left,$offset_top)</pre>\n";
 	$image_path=$file;
 	extract($get);
 	/*echo "<pre>process_frame:\n";
@@ -215,19 +221,21 @@ function process_frame($file,$frame,$get)
 			if($x1<1) $x1=1; if($x1>$img_width) $x1=$img_width;
 			if($y1<1) $y1=1; if($y1>$img_height) $y1=$img_height;
 			$rgb_index = imagecolorat($image, $x1, $y1);
-			//	echo "<pre>$rgb_index=imagecolorat( $x1, $y1)</pre>\n";
+			// echo "<pre>$rgb_index=imagecolorat( $x1, $y1) left,top=$offset_left,$offset_top</pre>\n";
 			$cols = ImageColorsForIndex($image, $rgb_index);
 			$r = $cols['red'];
 			$g = $cols['green'];
 			$b = $cols['blue'];
 			$rgbhex = fromRGB ($r,$g,$b);
 			$rgb_val = hexdec($rgbhex);
+			$s=$x1+$offset_left;
+			//$s=$x1;
+			if($s>$img_width) $s=$img_width;
 			$image_array[$s][$p] = $rgb_val;
 			//			if($batch==0) echo "<pre>x,y,rgb= $x,$y,($r,$g,$b), rgbval=$rgb_val</pre>";
 		}
 	}
-	/*echo "<pre>";
-	print_r($image_array);*/
+	//print_r($image_array);
 	//
 	//
 	$seq_number = 0;
@@ -238,6 +246,8 @@ function process_frame($file,$frame,$get)
 	$dat_file[$frame] = $path . "/" . $x_dat;
 	$dat_file_array[] = $dat_file[$frame];
 	$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
+	fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
+	//echo "<pre>frame=$frame, file=$file, fh=" . $dat_file[$frame] . "\n";
 	for ($s = 0; $s <= $maxStrand; $s++)
 	{
 		for ($p = 1; $p <= $maxPixel; $p++)
@@ -256,7 +266,7 @@ function process_frame($file,$frame,$get)
 				$seq_number++;
 				$string = $user_pixel = 0;
 				//		if($s==10) $rgb_val=hexdec("#FFFF00");
-				if($brightness>0.0)
+				/*if($brightness>0.0)
 				{
 					$r = ($rgb_val >> 16) & 0xFF;
 					$g = ($rgb_val >> 8) & 0xFF;
@@ -271,32 +281,15 @@ function process_frame($file,$frame,$get)
 					echo "</pre>";
 					$rgb_val=HSV_TO_RGB($H,$S,$V);
 				}
-				//		if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
-				{
-					if($rgb_val!=0) $rgb_val=hexdec("#888888");
-					fwrite($fh_dat[$frame], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
-					$hex=dechex($rgb_val);
-					//	printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %s %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$hex,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
-				}
+				*/
+				//	if($rgb_val!=0) $rgb_val=hexdec("#888888");
+				fwrite($fh_dat[$frame], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
+				$hex=dechex($rgb_val);
+				//	printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %s %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$hex,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
 			}
 		}
 	}
-	//
-	//
-	//
-	/*if($batch==0) echo "<pre>";
-	print_r($image_array);
-	if($batch==0) echo "</pre>\n";*/
-	$x_dat = $base . "_d_" . $frame . ".dat";
-	// for spirals we will use a dat filename starting "S_" and the tree model
-	$dat_file[$frame] = $path . "/" . $x_dat;
-	$dat_file_array[] = $dat_file[$frame];
-	$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
-	fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
-	//
-	//	All pixels of this gif frame are in image_array, write them out to dat file.
-	//	draw_icon($fh_dat[$frame], $image_array, 0, $frame, $get, $tree_xyz, $strand_pixel);
-	//	draw_icon(	$fh_dat [$frame],$big_image_array[4],66,$frame,$minStrand ,$maxStrand,$minPixel,$maxPixel,$tree_xyz,$strand_pixel);
+	fclose($fh_dat[$frame]);
 }
 
 function draw_icon($fh, $image_array, $offset, $frame, $get, $tree_xyz, $strand_pixel)
@@ -337,9 +330,9 @@ function draw_icon($fh, $image_array, $offset, $frame, $get, $tree_xyz, $strand_
 					if($V>0.1) $V=$V+$brightness;
 					if($V>1) $V=1;
 					$HSV['V']=$V;
-					echo "<pre>";
+					/*echo "<pre>";
 					print_r($HSV);
-					echo "</pre>";
+					echo "</pre>";*/
 					$rgb_val=HSV_TO_RGB($H,$S,$V);
 				}
 				//		if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
