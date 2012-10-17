@@ -1054,7 +1054,7 @@ function setupNCfiles($project_id,$phrase_array)
 		$script_start = (float) $sec + (float) $usec; // ,scm>
 		if ($effect_name=="None")
 		{
-			echo "<td>Generating ".$frame_cnt." frames of zeros</td>";
+			echo "<td>Generating ".$frame_cnt." frames of zeros</td><td>Zeros made</td><td>No file needed</td>";
 			$outstr="zeros:$frame_cnt";
 		}
 		else {
@@ -1142,7 +1142,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 	}
 	if (file_exists($outfile))
 	{
-		echo "<td bgcolor=#B5C6FF>$outfile already exist </td>";
+		echo "<td>Found file</td><td bgcolor=#B5C6FF>$outfile already exist </td>";
 	}
 	else {
 		echo "<td bgcolor=#8CA7FF>Generating $outfile</td>";
@@ -1426,19 +1426,21 @@ function checkValidNCFiles($myarray, $numEntries, $project_id)
 		}
 		echo "<tr><td>".$phrase_name."</td><td>".$effect_name."</td>";
 		if ($effect_name != "None") 
-		if(!$validFlag)
-		{
-			//	echo "<pre>$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
-			echo "<td>$fileName</td><td bgcolor=FF7096>INVALID </td>";
-			if(!isset($NCArray[1])) $NCArray[1]=0;
-			echo "<td>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</td>";
-		}
+			if(!$validFlag)
+			{
+				//	echo "<pre>$fileName: <font color=red>INVALID </font>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
+				echo "<td>$fileName</td><td bgcolor=FF7096>INVALID </td>";
+				if(!isset($NCArray[1])) $NCArray[1]=0;
+				echo "<td>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</td>";
+			}
+			else
+			{
+				//echo "<pre>$fileName: <font color=green>Valid</font> (NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
+				echo "<td>$fileName</td> <td bgcolor=9EFF7A>Valid</td>";
+				echo "<td>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</td>";
+			}
 		else
-		{
-			//echo "<pre>$fileName: <font color=green>Valid</font> (NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</pre>";
-			echo "<td>$fileName</td> <td bgcolor=9EFF7A>Valid</td>";
-			echo "<td>(NCArray[1]==(numEntries*3),($NCArray[1]==($numEntries*3)</td>";
-		}
+			echo "<td>No file needed</td><td bgcolor=9EFF7A>Valid</td><td>No test needed</td>";
 		if (!$validFlag) 
 		$myarray[$cnt][7]="None"; // if the NC file is bad, skip the effect
 		$cnt++;
