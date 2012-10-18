@@ -229,8 +229,10 @@ function process_frame($file,$frame,$get,$offset_left,$offset_top)
 			$rgbhex = fromRGB ($r,$g,$b);
 			$rgb_val = hexdec($rgbhex);
 			$s=$x1+$offset_left;
+			$p=$y1+$offset_top;
 			//$s=$x1;
-			if($s>$img_width) $s=$img_width;
+			//if($s>$img_width) $s=$img_width;
+			//if($p>$img_height) $p=$img_height;
 			$image_array[$s][$p] = $rgb_val;
 			//			if($batch==0) echo "<pre>x,y,rgb= $x,$y,($r,$g,$b), rgbval=$rgb_val</pre>";
 		}
@@ -260,7 +262,7 @@ function process_frame($file,$frame,$get,$offset_left,$offset_top)
 			{
 				$rgb_val = $image_array[$s][$p];
 			}
-			if ($s >= 1 and $s <= $maxStrand and $p >= 1 and $p <= $maxPixel and isset($tree_xyz[$s][$p]))
+			if ($s >= 1 and $s <= $maxStrand and $p >= 1 and $p <= $maxPixel) // and isset($tree_xyz[$s][$p]))
 			{
 				$xyz = $tree_xyz[$s][$p];
 				$seq_number++;
