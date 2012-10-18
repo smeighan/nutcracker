@@ -2215,8 +2215,9 @@ function get_window_degrees($username,$model_name,$in_window_degrees)
 	}
 	if($in_window_degrees!=$window_degrees)
 	{
-		echo "<pre>Overriding your effect window_degrees of $in_window_degrees degrees\n";
-		echo "Setting it to $window_degrees degrees to match your target model $model_name</pre>\n";
+	//	this message confuses Jim Nealand, not really needed, more for information to us
+		//echo "<pre>Overriding your effect window_degrees of $in_window_degrees degrees\n";
+		//echo "Setting it to $window_degrees degrees to match your target model $model_name</pre>\n";
 		if(!isset($window_degrees)) $window_degrees=360;
 		$query ="update models set window_degrees=$window_degrees
 		where username='$username' and object_name='$model_name'";

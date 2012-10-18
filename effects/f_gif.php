@@ -105,10 +105,11 @@ function f_gif($get)
 	if(file_exists($FIC2))
 	{
 		//
+		$resized = "../effects/gifs/$member_id/resized_$file1";
 		if($batch==0)
 		{
 			echo "<br/><img src=\"" . $FIC2 . "\"/><br/>\n";
-			echo "<br/><img src=\"resized/$member_id.gif\"/><br/>\n";
+			echo "<br/><img src=\"$resized\"/><br/>\n";
 		}
 		//	aspect ratio = width/height
 		list($width, $height, $type, $attr) = getimagesize($FIC2);
@@ -116,9 +117,9 @@ function f_gif($get)
 			$aspect = $width/$height;
 		else$aspect=1.0;
 		$our_aspect = $maxStrand/$maxPixel;
-		echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
+		/*	echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
 		echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
-		echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";
+		echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";*/
 		$new_width=$maxStrand;
 		$new_height=$maxPixel/$aspect;
 		if($new_height>$maxPixel) // it wont fit, go the other way
@@ -134,35 +135,37 @@ function f_gif($get)
 		$gr = new gifresizer;	//New Instance Of GIFResizer
 		$gr->temp_dir = "frames"; //Used for extracting GIF Animation Frames
 		//	$gr->resize("gifs/1.gif","resized/1_resized.gif",200,150); //Resizing the animation into a new file.
-		$return_array=$gr->resize($FIC2,"resized/$member_id.gif",$new_width,$new_height); 
+		$return_array=$gr->resize($FIC2,$resized,$new_width,$new_height); 
 		list($file_array,$offset_left_array,$offset_top_array) = $return_array;
-		echo "<pre>";
+		/*echo "<pre>";
 		print_r($file_array);
 		print_r($offset_left_array);
 		print_r($offset_top_array);
+		//echo "</pre>\n";
+		*/
 		// file=frames/frame_1350361704_00.gif
 		foreach($file_array as $i=>$file)
 		{
 			$tok=explode("_",$file);
 			$tok2=explode(".gif",$tok[2]);
 			$frame=$tok2[0]+0;
-			echo "file=$file\n";
+			//	echo "file=$file\n";
 			//echo "process_frame($file,$frame,$get);\n";
 			$x_dat = $base . "_d_" . $frame . ".dat";
 			// for spirals we will use a dat filename starting "S_" and the tree model
 			$dat_file[$frame] = $path . "/" . $x_dat;
 			$dat_file_array[] = $dat_file[$frame];
 			process_frame($file,$frame,$get,$offset_left_array[$i],$offset_top_array[$i]);
+			//	unlink($dat_file[$frame]);
 		}
 		//print_r($dat_file_array);
-		//echo "</pre>\n";
 		$amperage = array();
 		$x_dat_base = $base . ".dat";
 		make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, 
 		$frame_delay,$amperage, $seq_duration, $show_frame);
 		list($usec, $sec) = explode(' ', microtime());
 		$script_start = (float)$sec + (float)$usec;
-		echo "<pre>make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
+		//	echo "<pre>make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
 		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 		//
 		//
@@ -191,7 +194,7 @@ function f_gif($get)
 
 function process_frame($file,$frame,$get,$offset_left,$offset_top)
 {
-	echo "<pre>function process_frame($file,$frame,$get,$offset_left,$offset_top)</pre>\n";
+	//	echo "<pre>function process_frame($file,$frame,$get,$offset_left,$offset_top)</pre>\n";
 	$image_path=$file;
 	extract($get);
 	/*echo "<pre>process_frame:\n";
@@ -250,6 +253,22 @@ function process_frame($file,$frame,$get,$offset_left,$offset_top)
 	$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
 	fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
 	//echo "<pre>frame=$frame, file=$file, fh=" . $dat_file[$frame] . "\n";
+	$shift=intval(($f-1)*$speed);
+	switch ($direction)
+	{
+		case 'down':
+		$p0-=$shift;
+		break;
+		case 'up':
+		$p0+=$shift;
+		break;
+		case 'right':
+		$s0+=$shift;
+		break;
+		case 'left':
+		$s0-=$shift;
+		break;
+	}
 	for ($s = 0; $s <= $maxStrand; $s++)
 	{
 		for ($p = 1; $p <= $maxPixel; $p++)
