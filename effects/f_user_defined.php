@@ -59,6 +59,7 @@ function f_user_defined($get)
 	$path="../effects/workspaces/". $member_id;
 	srand(time());
 	$maxFrame=$maxPixel;
+	$maxFrame=intval(($seq_duration*1000/$frame_delay))+1;
 	//$maxTrees=6;	// how many tree to draw at one time
 	$seq_number=0;
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);

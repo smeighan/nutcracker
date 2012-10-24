@@ -76,36 +76,33 @@ for($p = $result;$p>=1;$p--)
 			if($x % pow(2 ,($p + 1)) == 0 and $y % pow(2,($p + 1)) == 0) GOTO nxt
 			if($x % pow(2 ,($p + 1)) == 0)
 			{
-				$average = ($plasma($x, $y + 2 ^ $p) + $plasma($x, $y - 2 ^ $p)) / 2;
+				$average = ($plasma($x, $y + pow(2,$p) + $plasma($x, $y - pow( 2, $p)) / 2;
 				$color = $average + $roughness * (RND - .5);
 				$plasma($x, $y) = $color;
 				// GOTO nxt
 			}
-			if($y % pow(2 ,($p + 1)) == 0)
+			else if($y % pow(2 ,($p + 1)) == 0)
 			{
-				$average = ($plasma($x + 2 ^ $p, $y) + $plasma($x - 2 ^ $p, $y)) / 2;
+				$average = ($plasma($x + pow(2,$p), $y) + $plasma($x - pow(2,$p), $y)) / 2;
 				$color = $average + $roughness * (RND - .5);
 				$plasma($x, $y) = $color;
 				// GOTO nxt
 			}
-			if($x % pow(2 ,($p + 1)) > 0 and  $y % pow(2,($p + 1)) > 0 )
+			else if($x % pow(2 ,($p + 1)) > 0 and  $y % pow(2,($p + 1)) > 0 )
 			{
-				$v1 = $plasma($x + 2 ^ $p, $y + 2 ^ $p);
-				$v2 = $plasma($x + 2 ^ $p, $x - 2 ^ $p);
-				$v3 = $plasma($x - 2 ^ $p, $x + 2 ^ $p);
-				$v4 = $plasma($x - 2 ^ $p, $y - 2 ^ $p);
+				$v1 = $plasma($x + pow(2,$p), $y + pow(2,$p));
+				$v2 = $plasma($x + pow(2,$p), $x - pow(2,$p));
+				$v3 = $plasma($x - pow(2,$p), $x + pow(2,$p));
+				$v4 = $plasma($x - pow(2,$p), $y - pow(2,$p));
 				$average = ($v1 + $v2 + $v3 + $v4) / 4;
 				$color = $average + $roughness * (RND - .5);
 				$plasma($x, $y) = $color;
 				//: GOTO nxt
 			}
-			nxt:
-			NEXT y
-			NEXT x
-			NEXT p
-		}
-	}
-}
+			//		nxt:
+			} //NEXT y
+		} // NEXT x
+	} // 	NEXT p
 
 function f_bars($get)
 {
