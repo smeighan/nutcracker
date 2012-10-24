@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 17, 2012 at 03:24 PM
+-- Generation Time: Oct 23, 2012 at 05:42 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_hdr` (
   `last_upd` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`effect_id`),
   UNIQUE KEY `username_effect_name` (`username`,`effect_name`,`effect_class`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5137 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8188 ;
 
 -- --------------------------------------------------------
 
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=722 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=740 ;
 
 -- --------------------------------------------------------
 
@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=83 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=92 ;
 
 -- --------------------------------------------------------
 
@@ -396,7 +396,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `check_sum` varchar(50) DEFAULT NULL,
   `effect_id` varchar(11) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1809 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2061 ;
 
 -- --------------------------------------------------------
 
@@ -447,7 +447,7 @@ CREATE TABLE IF NOT EXISTS `song` (
   `username` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`song_id`),
   KEY `user_song` (`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=393 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=395 ;
 
 -- --------------------------------------------------------
 
@@ -465,5 +465,5 @@ CREATE TABLE IF NOT EXISTS `song_dtl` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`song_dtl_id`),
   KEY `song_id` (`song_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=643 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=698 ;
 
