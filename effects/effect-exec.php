@@ -171,13 +171,14 @@ if($effect_class=="gif"  or $effect_class=="pictures")
 			$pos=0;
 			if($pos1===true and $pos1==1) $pos=1;
 			if($pos2===true and $pos2==0) $pos=2;
-			echo "<pre>$file,pos,pos1,pos2=$pos,$pos1,$pos2</pre>\n";
+			//	echo "<pre>$file,pos,pos1,pos2=$pos,$pos1,$pos2</pre>\n";
 			// Note our use of ===.  Simply == would not work as expected
 			// because the position of 'a' was the 0th (first) character.
 			if ($pos == 0)
 			{
 				//	echo "<pre>ifull=$fullname, file=$file, tok1=$tok[1]</pre>\n";
 				$result_array=getimagesize($fullname);
+				$is_animated_gif=is_ani($fullname)+0;
 				$images++;
 				if($images%10==0) echo "</tr><tr>\n";  // 10 images per row
 				if ($result_array !== false)
@@ -185,7 +186,19 @@ if($effect_class=="gif"  or $effect_class=="pictures")
 					$w=$result_array[0];
 					$h=$result_array[1];
 					$images_array[]=$file;
-					echo "<td><a href=\"$fullname\"> <img src=\"$fullname\"  height=\"100\" width=\"100\"/><br/>$file<br/> $w x $h</a></td>";
+					$color_ani = "#000000"; 
+						$color_bg="#FFFFFF";
+						//($is_animated_gif==0) $color_ani = "#AAAAAA";
+						//if($effect_class=="gif" and $is_animated_gif==0) $color_ani = "#AAAAAA"; // static images will be grayed out
+						//if($effect_class=="pictures" and  $is_animated_gif==1) $color_ani = "#AAAAAA"; // animated images grayed out
+						if($effect_class=="gif" and $is_animated_gif==0) $color_bg = "#AAAAAA"; // static images will be grayed out
+						if($effect_class=="pictures" and  $is_animated_gif==1) $color_bg = "#AAAAAA"; // animated images grayed out
+						//$color_bg=$color_ani;
+						//if($color_ani=="#000000") $color_bg="#FFFFFF";
+						if($w<100 and $h<100)
+							echo "<td bgcolor=$color_bg><a href=\"$fullname\"> <img src=\"$fullname\"/><br/><font color=$color_ani>$file<br/> $w x $h</font></a></td>";
+						else
+						echo "<td><a href=\"$fullname\"> <img src=\"$fullname\"  height=\"100\" width=\"100\"/><br/><font color=$color_ani>$file<br/> $w x $h</font></a></td>";
 				}
 				else
 				{

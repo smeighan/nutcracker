@@ -22,6 +22,7 @@ function show_barmenu()
 	<a href="../admin/bug.php">Open a Bug or Enhancement ticket</a>
 	<a href="../effects/tutorials.html">Nutcracker Tutorials</a>
 	<a href="../admin/smeighan-nutcracker-1.0-105-gbdbbaf9.zip">Nutcracker 2.0 zip file (Sep 20,2012)</a>
+	<a href="../effects/image_library.php?member_id=2">Image Library of a user</a>
 	</div>
 	</li>
 	<li><a href="#" onmouseover="mopen('m8')" onmouseout="mclosetime()">Help</a>

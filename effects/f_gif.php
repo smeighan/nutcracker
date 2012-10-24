@@ -253,7 +253,7 @@ function process_frame($file,$frame,$get,$offset_left,$offset_top)
 	$fh_dat[$frame] = fopen($dat_file[$frame], 'w') or die("can't open file");
 	fwrite($fh_dat[$frame], "#    " . $dat_file[$frame] . "\n");
 	//echo "<pre>frame=$frame, file=$file, fh=" . $dat_file[$frame] . "\n";
-	$shift=intval(($f-1)*$speed);
+	/*$shift=intval(($f-1)*$speed);
 	switch ($direction)
 	{
 		case 'down':
@@ -268,7 +268,7 @@ function process_frame($file,$frame,$get,$offset_left,$offset_top)
 		case 'left':
 		$s0-=$shift;
 		break;
-	}
+	}*/
 	for ($s = 0; $s <= $maxStrand; $s++)
 	{
 		for ($p = 1; $p <= $maxPixel; $p++)
