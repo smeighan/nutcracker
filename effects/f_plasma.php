@@ -1,64 +1,111 @@
 
 <?php
-
 /*Algorithms   
-
 Plasma Fractals
-
 http://library.thinkquest.org/26242/full/types/ch10.html
-
-
 The generation of plasma fractals is discussed in the Types of Fractals section. Basically, the description you can find there is implemented in the algorithm below. The fractal is stored entirely in a 2-dimensional array and then the points from the array are plotted on the screen.
-
 Constants used:
-
 number_of_colors: number of colors available in the computer language you’re using
 size: size of the fractal; must be a power of 2
 roughness: higher values make the fractal more fragmented
-
- ‘ randomly choose the rectangle’s corners
+‘ randomly choose the rectangle’s corners
 array(0, 0) = RND * number_of_colors
 array(size, 0) = RND * number_of_colors
 array(0, size) = RND * number_of_colors
 array(size, size) = RND * number_of_colors
 ‘ go through the array, decreasing the interval size every time
 FOR p = LOG(size) / LOG(2) TO 0 STEP -1
-  FOR x = 0 TO size STEP 2 ^ p
-     FOR y = 0 TO size STEP 2 ^ p
-        IF x MOD 2 ^ (p + 1) = 0 AND y MOD 2 ^ (p + 1) = 0 GOTO nxt
-        IF x MOD 2 ^ (p + 1) = 0 THEN
-          average = (array(x, y + 2 ^ p) + array(x, y - 2 ^ p)) / 2
-          color = average + roughness * (RND - .5)
-          array(x, y) = color: GOTO nxt
-        END IF
-        IF y MOD 2 ^ (p + 1) = 0 THEN
-          average = (array(x + 2 ^ p, y) + array(x - 2 ^ p, y)) / 2
-          color = average + roughness * (RND - .5)
-          array(x, y) = color: GOTO nxt
-        END IF
-        IF x MOD 2 ^ (p + 1) > 0 AND y MOD 2 ^ (p + 1) > 0 THEN
-          v1 = array(x + 2 ^ p, y + 2 ^ p)
-          v2 = array(x + 2 ^ p, x - 2 ^ p)
-          v3 = array(x - 2 ^ p, x + 2 ^ p)
-          v4 = array(x - 2 ^ p, y - 2 ^ p)
-          average = (v1 + v2 + v3 + v4) / 4
-          color = average + roughness * (RND - .5)
-          array(x, y) = color: GOTO nxt
-        END IF
-        nxt:
-    NEXT y
-  NEXT x
+FOR x = 0 TO size STEP 2 ^ p
+FOR y = 0 TO size STEP 2 ^ p
+IF x MOD 2 ^ (p + 1) = 0 AND y MOD 2 ^ (p + 1) = 0 GOTO nxt
+IF x MOD 2 ^ (p + 1) = 0 THEN
+average = (array(x, y + 2 ^ p) + array(x, y - 2 ^ p)) / 2
+color = average + roughness * (RND - .5)
+	array(x, y) = color: GOTO nxt
+END IF
+IF y MOD 2 ^ (p + 1) = 0 THEN
+average = (array(x + 2 ^ p, y) + array(x - 2 ^ p, y)) / 2
+color = average + roughness * (RND - .5)
+	array(x, y) = color: GOTO nxt
+END IF
+IF x MOD 2 ^ (p + 1) > 0 AND y MOD 2 ^ (p + 1) > 0 THEN
+v1 = array(x + 2 ^ p, y + 2 ^ p)
+	v2 = array(x + 2 ^ p, x - 2 ^ p)
+	v3 = array(x - 2 ^ p, x + 2 ^ p)
+	v4 = array(x - 2 ^ p, y - 2 ^ p)
+	average = (v1 + v2 + v3 + v4) / 4
+color = average + roughness * (RND - .5)
+	array(x, y) = color: GOTO nxt
+END IF
+nxt:
+NEXT y
+NEXT x
 NEXT p
 ‘ go through the array, plotting the points
 FOR x = 0 TO size
-      FOR y = 0 TO size
-           PSET (x, y), array(x, y)
-      NEXT y
+FOR y = 0 TO size
+PSET (x, y), array(x, y)
+	NEXT y
 NEXT x
-
 */
-
-
+require_once("../effects/read_file.php");
+$size=8;
+$color1=$color3="#00FF00";
+$color2=$color4="#0000FF";
+$plasma[1][1]=RGBVAL_TO_HSV($color1);
+$plasma[1][$size]=RGBVAL_TO_HSV($color2);
+$plasma[$size][1]=RGBVAL_TO_HSV($color3);
+$plasma[$size][$size]=RGBVAL_TO_HSV($color4);
+$log_size=log($size);
+$log2 = log(2);
+echo "<pre>";
+echo "size=$size\n";
+echo "log_size=$log_size\n";
+echo "log2=$log2\n";
+$result = $log_size/$log2;
+echo "result=$result\n";
+for($p = $result;$p>=1;$p--)
+{
+	$pow2=	pow(2, $p);
+	echo "<pre>p,pow2,size=$p,$pow2,$size</pre>\n";
+	for($x=1;$x<=$size;$x+=$pow2)
+	{
+		for($y=1;$y<=$size;$y+=$pow2)
+		{
+			echo "<pre>p,x,y=$p,$x,$y</pre>\n";
+			if($x % pow(2 ,($p + 1)) == 0 and $y % pow(2,($p + 1)) == 0) GOTO nxt
+			if($x % pow(2 ,($p + 1)) == 0)
+			{
+				$average = ($plasma($x, $y + 2 ^ $p) + $plasma($x, $y - 2 ^ $p)) / 2;
+				$color = $average + $roughness * (RND - .5);
+				$plasma($x, $y) = $color;
+				// GOTO nxt
+			}
+			if($y % pow(2 ,($p + 1)) == 0)
+			{
+				$average = ($plasma($x + 2 ^ $p, $y) + $plasma($x - 2 ^ $p, $y)) / 2;
+				$color = $average + $roughness * (RND - .5);
+				$plasma($x, $y) = $color;
+				// GOTO nxt
+			}
+			if($x % pow(2 ,($p + 1)) > 0 and  $y % pow(2,($p + 1)) > 0 )
+			{
+				$v1 = $plasma($x + 2 ^ $p, $y + 2 ^ $p);
+				$v2 = $plasma($x + 2 ^ $p, $x - 2 ^ $p);
+				$v3 = $plasma($x - 2 ^ $p, $x + 2 ^ $p);
+				$v4 = $plasma($x - 2 ^ $p, $y - 2 ^ $p);
+				$average = ($v1 + $v2 + $v3 + $v4) / 4;
+				$color = $average + $roughness * (RND - .5);
+				$plasma($x, $y) = $color;
+				//: GOTO nxt
+			}
+			nxt:
+			NEXT y
+			NEXT x
+			NEXT p
+		}
+	}
+}
 
 function f_bars($get)
 {

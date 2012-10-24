@@ -180,21 +180,21 @@ function f_text($get)
 		if($batch==0) print "\n";
 	}
 	*/
-	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
+	//$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
 	//$topPixel=$maxStrand*0.40;
 	//$topPixel=$maxPixel/2;
 	//$topPixel=5;
-	$windowWidth = count($window_array);
-	if($batch==0) print "windowWidth =$windowWidth\n";
+	//	$windowWidth = count($window_array);
+	//	if($batch==0) print "windowWidth =$windowWidth\n";
 	$seq_number=0;
-	if($batch==0) echo "<pre> window_array";
-	if($batch==0) print_r($window_array);
-	if($batch==0) echo "</pre>\n";
+	//	if($batch==0) echo "<pre> window_array";
+	//	if($batch==0) print_r($window_array);
+	//	if($batch==0) echo "</pre>\n";
 	//for($k=$maxK+$windowWidth;$k>=1;$k--);
 	$fileno=0;
-	$base_s = $windowWidth;
+	//	$base_s = $windowWidth;
 	$MaxFrames=$maxK;
-	$effect_name="SPIRALS1";
+	//	$effect_name="SPIRALS1";
 	$object_name=$t_dat;
 	//
 	//
@@ -204,7 +204,7 @@ function f_text($get)
 	//	$base = target+effect. Example: AA+SPIRAL1, AA24+FLY00
 	//
 	//Include database connection details
-	require_once('../conf/config.php');
+	/*require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
 	if(!$link)
@@ -217,248 +217,147 @@ function f_text($get)
 	{
 		die("Unable to select database");
 	}
+	$tree_rgb
 	//
 	//
-	$library_id=create_library($link,$username,$base,$MaxFrames);
-	for($k=1;$k<=$maxK;$k++)
+	$library_id=create_library($link,$username,$base,$MaxFrames);*/
+	$maxFrame=intval(($seq_duration*1000)/$frame_delay);
+	if(!isset($speed)) $speed=1;
+	if(strtolower($direction)=="up") $direction="up";
+	else if(strtolower($direction)=="down") $direction="down";
+	else if(strtolower($direction)=="left") $direction="left";
+	else $direction="left";
+	for($f=1;$f<=$maxFrame;$f++)
 	{
-		$fileno++;
-		$x_dat= $base ."_d_$fileno.dat";
-		$dat_file = $path . "/" . $base . "_d_" . $fileno . ".dat" ; // for spirals we will use a dat filename starting "S_" and the tree model
-		$dat_file_array[]=$dat_file;
-		$fh_dat = fopen($dat_file, 'w') or die("can't open file");
-		fwrite($fh_dat,"#    $dat_file\n");
-		//	fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$k,$seq_number));
-		fwrite($fh_dat,"#    Token\n");
-		fwrite($fh_dat,"#    Strand\n");
-		fwrite($fh_dat,"#    Pixel\n");
-		fwrite($fh_dat,"#    X\n");
-		fwrite($fh_dat,"#    Y\n");
-		fwrite($fh_dat,"#    ZZ\n");
-		fwrite($fh_dat,"#    rgb_val\n");
-		fwrite($fh_dat,"#    User_String\n");
-		fwrite($fh_dat,"#    User_pixel\n");
-		fwrite($fh_dat,"#    Strand_Pixel[0]\n");
-		fwrite($fh_dat,"#    Strand_Pixel[1]\n");
-		fwrite($fh_dat,"#    k\n");
-		fwrite($fh_dat,"#    seq_number\n");
-		/*if($batch==0) echo "<pre>k=$k dat_file=$dat_file windowWidth=$windowWidth</pre>\n";*/
-		//print_r($dat_file_array);
-		//if($batch==0) echo "w=$w ";
-		//print_r($window_array);
-		//$kk=$k-$w;
-		$w=$kk=0;
-		$base_s--;
-		$s=1;
-		/*	for($s=1;$s<=$maxStrand;$s++) // print out the blank rows we are not using.
+		for($j=1;$j<=9;$j++)	//	 display text1. Vertical
 		{
-			for($p=1;$p<$topPixel;$p++)
+			for($k=1;$k<=$f;$k++) // Horizontal
 			{
-				$rgb_val=0;
-				$tree_rgb[$s][$p]=$rgb_val;
-				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-				$string=$user_pixel=0;
-				fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$k,$seq_number));
-			}
-			}*/
-		for($k0=1;$k0<=$k;$k0++) // now print out the actual text.
-		{
-			/*if($batch==0) echo "for($k0=1;$k0<=$k;$k0++)\n";*/
-			$s=$base_s+$k0;
-			for($j=1;$j<=9;$j++)
-			{
-				$p=$topPixel+$j-1;
-				/*	if($batch==0) echo "<pre>";
-				if($batch==0) echo "s,k,k0,j,p =$s,$k,$k0,$j,$p,$base_s";
-				if($batch==0) echo "</pre>\n";*/
-				if(in_array($s,$window_array) and $p<=$maxPixel)
+				if($direction=="left")
 				{
-					$val=$scroll[$j][$k0];
-					//$H=RED;
-					//$S=$V=1;
-					//$rgb_val=HSV_TO_RGB ($H, $S, $V);
-					if($val==1)
-						$rgb_val=hexdec($text1_color);
-					else
-					{
-						$rgb_val=0;
-					}
-					//if($s==1) $rgb_val=hexdec("#00FFFF"); // debug to mark strand 1
-					//	if($s==5) $rgb_val=hexdec("#FF0000");
-					//	if($p==5) $rgb_val=hexdec("#00FF00");
+					$p= $j + $topPixel;
+					$p2= $j + $topPixel +10;
+					if($speed<1) $k1=intval($k*$speed);
+					else $k1=$k;
+					//if($k1<1) $k1=1;
+					$s = $maxStrand-intval(($f-$k)*$speed);
+					if(isset($scroll[$j][$k1]) and  $scroll[$j][$k1] ==1) $rgb_val=$text1_color;
+					else $rgb_val=0;
 					$tree_rgb[$s][$p]=$rgb_val;
-					$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-					//		fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val));
-					$seq_number++;
-					$string=$user_pixel=0;
-					fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$k,$seq_number));
-					$string=$strand_pixel[$s][$p][0];
-					$pixel=$strand_pixel[$s][$p][1];
-					if($rgb_val != 0)
-					{
-						store_into_library_dtl($link,$username,$library_id,$base,$string,$pixel,$k,$rgb_val);
-					}
-					$val=$scroll2[$j][$k0];
-					$p=$topPixel+$j-1 +9;
-					//$H=GREEN;
-					//$S=$V=1;
-					//$rgb_val=HSV_TO_RGB ($H, $S, $V);
-					//if($val>0)
-					//	if(in_array($s,$window_array) and $p<=$maxPixel) // Is this strand in our window?, If yes, then we output lines to the dat file;
-					{
-						if($val==1)
-							$rgb_val=hexdec($text2_color);
-						else
-						{
-							$rgb_val=0;
-						}
-						$tree_rgb[$s][$p]=$rgb_val;
-						$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-						/*if($batch==0) printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val);*/
-						$seq_number++;
-						$string=$user_pixel=0;
-						fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$k,$seq_number));
-						$string=$strand_pixel[$s][$p][0];
-						$pixel=$strand_pixel[$s][$p][1];
-						if($rgb_val != 0)
-						{
-							store_into_library_dtl($link,$username,$library_id,$base,$string,$pixel,$k,$rgb_val);
-						}
-					}
+					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
+					else $rgb_val2=0;
+					$tree_rgb[$s][$p2]=$rgb_val2;
+					//	echo "<pre>f,s,p,p2,j,k,rgb_val1,rgb_val2=$f,$s,$p,$p2,[$j,$k],$rgb_val,$rgb_val2</pre>\n";
+				}
+				else if($direction=="up")
+				{
+					$s= ($maxStrand-$topPixel) - $j;
+					$s2= ($maxStrand-$topPixel) - $j -10;
+					$p = $maxPixel-intval(($f-$k)*$speed);
+					if($speed<1) $k1=intval($k*$speed);
+					else $k1=$k;
+					if(isset($scroll[$j][$k1]) and  $scroll[$j][$k1] ==1) $rgb_val=$text1_color;
+					else $rgb_val=0;
+					$tree_rgb[$s][$p]=$rgb_val;
+					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val=$text2_color;
+					else $rgb_val=0;
+					$tree_rgb[$s2][$p]=$rgb_val;
+				}
+				else if($direction=="down")
+				{
+					$s= 1+$topPixel + $j;
+					$s2= 1+$topPixel + $j + 10;
+					$p = 1+ intval(($f-$k)*$speed);
+					if($speed<1) $k1=intval($k*$speed);
+					else $k1=$k;
+					if(isset($scroll[$j][$k1]) and  $scroll[$j][$k1] ==1) $rgb_val=$text1_color;
+					else $rgb_val=0;
+					$tree_rgb[$s][$p]=$rgb_val;
+					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val=$text2_color;
+					else $rgb_val=0;
+					$tree_rgb[$s2][$p]=$rgb_val;
 				}
 			}
 		}
-		$last_p=$p;
-		/*for($s=1;$s<=$maxStrand;$s++) // print out the blank rows we are not using.
+		$get['tree_xyz']=$tree_xyz;
+		$get['strand_pixel']=$strand_pixel;
+		$get['base']=$base;
+		$get['maxStrand']=$maxStrand;
+		$get['maxPixel']=$maxPixel;
+		$get['path']=$path;
+		$dat_filename = write_frame($get,$tree_rgb,$f,$maxFrame);
+		$dat_file_array[]=$dat_filename;
+		//
+		/*echo "<table border=1>";
+		for($p=1;$p<=$maxPixel;$p++)
 		{
-			for($p=$last_p+1;$p<=$topPixel;$p++)
+			echo "<tr>";
+			for($s=1;$s<=$maxStrand;$s++)
 			{
-				$rgb_val=0;
-				$tree_rgb[$s][$p]=$rgb_val;
-				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-				$string=$user_pixel=0;
-				fwrite($fh_dat,sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$k,$seq_number));
+				$color=$tree_rgb[$s][$p];
+				echo "<td bgcolor=$color>&nbsp;</td>";
 			}
-			}*/
-		fclose($fh_dat);
-		$amperage=array();
-		// for($w=0;$w<=$windowWidth;$w++);
+			echo "</tr>\n";
+		}
+		echo "</table>\n";*/
 	}
 	// for($k=1;$k<=$maxK+$windowWidth;$k++);
 	//	if($batch==0) echo "make_gp($batch,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);\n";
 	$full_path = "../effects/workspaces/2/AA+TEXT2_d_8.dat";
 	//fill_in_zeros($arr,$dat_file_array);
+	$amperage=array();
 	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 }
 
-function create_library($link,$username,$base,$MaxFrames)
+function write_frame($get,$tree_rgb,$f,$maxFrame)
 {
-	return 0;
-	$tokens2=explode("~",$base); // AA+CIRCLE1
-	$t_dat=$tokens2[0];	// AA
-	$effect_name=$tokens2[1];	// CIRCLE1
-	$target_info=get_info_target($username,$t_dat);
-	if($batch==0) echo "<pre>get_info_target($username,$t_dat);\n";
-	if($batch==0) echo "</pre>\n";
-	$object_name=$target_info['target_name'];
-	$model_type=$target_info['model_type'];
-	$total_strings=$target_info['total_strings'];
-	$pixel_count=$target_info['pixel_count'];
-	$pixel_length=$target_info['pixel_length'];
-	$pixel_spacing=$target_info['pixel_spacing']; // PIXEL FIX
-	$unit_of_measure=$target_info['unit_of_measure'];
-	$topography=$target_info['topography'];
-	//
-	/*
-	username	varchar(25)	latin1_swedish_ci		No			 	 	 	 	 	 	 
-	object_name	varchar(16)	latin1_swedish_ci		No			 	 	 	 	 	 	 
-	effect_name	varchar(25)	latin1_swedish_ci		No			 	 	 	 	 	 	 
-	library_id	int(12)			No		auto_increment	 	 	 	 	 	 	
-	date_updated	timestamp		ON UPDATE CURRENT_TIMESTAMP	Yes	CURRENT_TIMESTAMP	on update CURRENT_TIMESTAMP	 	 	 	 	 	 	
-	*/
-	//
-	//dELETE old library entry , if it is there
-	//
-	$query="SELECT library_id from library_hdr where username='$username' and object_name='$object_name' and effect_name='$effect_name'";
-	if($batch==0) echo "<pre>query: $query</pre>\n";
-	$result=mysql_query($query,$link);
-	if(!$result)
+	extract ($get);
+	/*echo "<pre>frame=$f";
+	print_r($tree_rgb);*/
+	$show_display=0;
+	if($show_display)
 	{
-		if($batch==0) echo "Error on $query\n";
-		mysql_error();
+		echo "<table border=1>";
+		for($p=1;$p<=$maxPixel;$p++)
+		{
+			echo "<tr><td>f:p $f:$p</td>";
+			for($s=1;$s<=$maxStrand;$s++)
+			{
+				$color=$tree_rgb[$s][$p];
+				if($color<>0)
+					echo "<td bgcolor=$color>$s,$p</td>";
+				else
+				echo "<td bgcolor=$color>&nbsp;</td>";
+			}
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
 	}
-	while ($row = mysql_fetch_assoc($result))
+	$seq_number=0;
+	$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
+	$dat_file[$f] = $path . "/" .  $x_dat;
+	$filename=$dat_file[$f];
+	$dat_file_array[]=$dat_file[$f];
+	$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
+	fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
+	for($s=1;$s<=$maxStrand;$s++)
 	{
-		extract($row);
+		for($p=1;$p<=$maxPixel;$p++)
+		{
+			$string=$user_pixel=0;
+			$seq_number++;
+			$rgb_val=hexdec($tree_rgb[$s][$p]);
+			$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
+			fwrite($fh_dat [$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],
+			$rgb_val, $string, $user_pixel,$strand_pixel[$s][$p][0],
+			$strand_pixel[$s][$p][1],$f,$seq_number));
+			//
+			/*printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],
+			$rgb_val, $string, $user_pixel,$strand_pixel[$s][$p][0],
+			$strand_pixel[$s][$p][1],$f,$seq_number);*/
+		}
 	}
-	$delete="DELETE from library_hdr where username='$username' and object_name='$object_name' and effect_name='$effect_name'";
-	if($batch==0) echo "<pre>delete: $delete</pre>\n";
-	$result=mysql_query($delete,$link) or die("Error on $delete");
-	if(isset($library_id))
-	{
-		$delete2="DELETE from library_dtl where library_id=$library_id";
-		if($batch==0) echo "<pre>delete: $delete2</pre>\n";
-		$result=mysql_query($delete2,$link) or die("Error on $delete2");
-	}
-	//
-	//
-	//	Insert header data for this library object
-	//
-	$insert = "INSERT into library_hdr( username,object_name,effect_name)
-		values ('$username','$object_name','$effect_name')";
-	if($batch==0) echo "<pre>insert: $insert</pre>\n";
-	$result=mysql_query($insert,$link);
-	if(!$result)
-	{
-		if($batch==0) echo "Error on $insert\n";
-		mysql_error();
-	}
-	// Find the auto generated library_id for what we just inserted.
-	//
-	//	find the auto generated library_id
-	//
-	$query="SELECT library_id from library_hdr where username='$username' and object_name='$object_name' and effect_name='$effect_name'";
-	if($batch==0) echo "<pre>query: $query</pre>\n";
-	$result=mysql_query($query,$link);
-	if(!$result)
-	{
-		if($batch==0) echo "Error on $query\n";
-		mysql_error();
-	}
-	while ($row = mysql_fetch_assoc($result))
-	{
-		extract($row);
-	}
-	//
-	//
-	/* Now we insert an entry for enery potential rgbval
-	library_id	int(12)			No			 	 	 	 	 	 	
-	string	int(12)			No			 	 	 	 	 	 	
-	pixel	int(12)			No			 	 	 	 	 	 	
-	frame	int(12)			No			 	 	 	 	 	 	
-	rgb_val	int(12)			No			 	 	 	 	 	 	
-	*/
-	$rgb_val=0;
-	for($string=1; $string<=$total_strings; $string++)
-		for($pixel=1;$pixel<=$pixel_count;$pixel++)
-		for($frame=1;$frame<=$MaxFrames;$frame++)
-	{
-		$insert_dtl="INSERT into library_dtl(library_id,string,pixel,frame,rgb_val )
-			values ('$library_id','$string','$pixel','$frame','$rgb_val')";
-		$result=mysql_query($insert_dtl,$link) or die ("Error on $insert_dtl");
-	}
-	return $library_id;
+	fclose($fh_dat [$f]);
+	return $filename;
 }
-
-function store_into_library_dtl($link,$username,$library_id,$base,$string,$pixel,$frame,$rgb_val)
-{
-	return 0;
-	$tokens2=explode("~",$base); // AA+CIRCLE1
-	$t_dat=$tokens2[0];	// AA
-	$effect_name=$tokens2[1];	// CIRCLE1
-	$update_dtl="UPDATE  library_dtl set rgb_val = '$rgb_val'
-	where library_id = '$library_id' and string='$string' and pixel='$pixel' and frame='$frame'";
-	$result=mysql_query($update_dtl,$link) or die ("Error on $update_dtl");
-}
-?>

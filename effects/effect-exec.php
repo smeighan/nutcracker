@@ -12,8 +12,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
 */
 require_once('../conf/header.php');
 //
@@ -162,24 +160,37 @@ if($effect_class=="gif"  or $effect_class=="pictures")
 		$tok=explode(".",$file);
 		$ext=$tok[1];
 		$ext=strtolower($ext);
-		$image_types=array('gif','png','jpg');
+		$image_types=array('gif','png','jpg','bmp');
 		if(in_array($ext,$image_types))
 		{
 			$fullname = $uploaddir . "/" . $file;
-			//	echo "<pre>ifull=$fullname, file=$file, tok1=$tok[1]</pre>\n";
-			$result_array=getimagesize($fullname);
-			$images++;
-			if($images%8==0) echo "</tr><tr>\n";
-			if ($result_array !== false)
+			$findme="esized_";
+			$pos1 = strpos($file, $findme);
+			$findme="a_";
+			$pos2 = strpos($file, $findme);
+			$pos=0;
+			if($pos1===true and $pos1==1) $pos=1;
+			if($pos2===true and $pos2==0) $pos=2;
+			echo "<pre>$file,pos,pos1,pos2=$pos,$pos1,$pos2</pre>\n";
+			// Note our use of ===.  Simply == would not work as expected
+			// because the position of 'a' was the 0th (first) character.
+			if ($pos == 0)
 			{
-				$w=$result_array[0];
-				$h=$result_array[1];
-				$images_array[]=$file;
-				echo "<td><img src=\"$fullname\"/><br/>$file<br/> $w x $h</td>";
-			}
-			else
-			{
-				echo "<td>File $file had an error</td>";
+				//	echo "<pre>ifull=$fullname, file=$file, tok1=$tok[1]</pre>\n";
+				$result_array=getimagesize($fullname);
+				$images++;
+				if($images%10==0) echo "</tr><tr>\n";  // 10 images per row
+				if ($result_array !== false)
+				{
+					$w=$result_array[0];
+					$h=$result_array[1];
+					$images_array[]=$file;
+					echo "<td><a href=\"$fullname\"> <img src=\"$fullname\"  height=\"100\" width=\"100\"/><br/>$file<br/> $w x $h</a></td>";
+				}
+				else
+				{
+					echo "<td>File $file had an error</td>";
+				}
 			}
 		}
 	}
@@ -337,7 +348,6 @@ for($i=0;$i<$cnt;$i++)
 				$filename  = $path_parts['filename']; // MEGA_001+SEAN_d_22
 				//$tok=explode(".",$filename); //../effects/workspaces/2/AA+FLY.nc
 				$gifname = $dirname . "/" . $filename . "_th.gif";
-				
 				echo "<td>$filename<br/><img src=\"$gifname\"/></td>";
 				$cols++;
 				if($cols%6==0) echo "</tr><tr>";
