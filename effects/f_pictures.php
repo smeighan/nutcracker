@@ -266,10 +266,10 @@ function process_picture_frame($file,$image_type,$frame,$get,$offset_left,$offse
 				$p0+=$shift;
 				break;
 				case 'right':
-				$s0+=$shift;
+				$s0-=$shift;
 				break;
 				case 'left':
-				$s0-=$shift;
+				$s0+=$shift;
 				break;
 			}
 			$s1=($s0%$maxStrand);
@@ -294,6 +294,18 @@ function process_picture_frame($file,$image_type,$frame,$get,$offset_left,$offse
 				$seq_number++;
 				$string = $user_pixel = 0;
 				//	if($rgb_val!=0) $rgb_val=hexdec("#888888");
+				if($brightness>0.0)
+				{
+					$r = ($rgb_val >> 16) & 0xFF;
+					$g = ($rgb_val >> 8) & 0xFF;
+					$b = $rgb_val & 0xFF;
+					$HSV=RGB_TO_HSV($r,$g,$b);
+					$H=$HSV['H']; $S=$HSV['S']; $V=$HSV['V'];
+					if($V>0.1) $V=$V+$brightness;
+					if($V>1) $V=1;
+					$HSV['V']=$V;
+					$rgb_val=HSV_TO_RGB($H,$S,$V);
+				}
 				fwrite($fh_dat[$frame], sprintf("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n", $s, $p, $xyz[0], $xyz[1], $xyz[2], $rgb_val, $string, $user_pixel, $strand_pixel[$s][$p][0], $strand_pixel[$s][$p][1], $frame, $seq_number));
 				$hex=dechex($rgb_val);
 				//	printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %s %d %d %d %d</pre>\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$hex,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
