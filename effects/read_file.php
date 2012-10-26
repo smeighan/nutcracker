@@ -1385,6 +1385,8 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 			$out_file_array[] = $out_file;
 			//echo "<pre> $dat_file $dirname $basename $filename $out_file</pre>\n";
 			$imagick=0;
+			fwrite($fh_gp_file,sprintf ("set title 'Frame %4d'\n",$frame) );
+		//	echo "<pre> (set title 'Frame %4d',$frame)</pre>\n";
 			if($show_frame== 'Y' or $show_frame=='y')
 			{
 				fwrite($fh_gp_file,sprintf ("splot '%s' using 4:5:6 with points ls 7 notitle \\\n",$target_dat) );

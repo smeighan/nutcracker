@@ -4,7 +4,7 @@
 --
 -- Host: 209.240.131.239
 
--- Generation Time: Oct 23, 2012 at 05:42 PM
+-- Generation Time: Oct 25, 2012 at 05:08 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.2.4-2ubuntu5.25
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `effects_user_hdr` (
   `last_upd` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`effect_id`),
   UNIQUE KEY `username_effect_name` (`username`,`effect_name`,`effect_class`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8188 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8869 ;
 
 -- --------------------------------------------------------
 
@@ -158,38 +158,6 @@ CREATE TABLE IF NOT EXISTS `issue_tracker` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `library_dtl`
---
-
-CREATE TABLE IF NOT EXISTS `library_dtl` (
-  `library_id` int(12) NOT NULL,
-  `string` int(12) NOT NULL,
-  `pixel` int(12) NOT NULL,
-  `frame` int(12) NOT NULL,
-  `rgb_val` int(12) NOT NULL,
-  KEY `library_id` (`library_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `library_hdr`
---
-
-CREATE TABLE IF NOT EXISTS `library_hdr` (
-  `username` varchar(25) NOT NULL,
-  `object_name` varchar(16) NOT NULL,
-  `effect_name` varchar(25) NOT NULL,
-  `library_id` int(12) NOT NULL AUTO_INCREMENT,
-  `date_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`library_id`),
-  KEY `username_object_name` (`username`,`object_name`),
-  KEY `username_effect_name` (`username`,`effect_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `members`
 --
 
@@ -212,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `OTHER` char(1) DEFAULT 'N',
   `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=740 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=743 ;
 
 -- --------------------------------------------------------
 
@@ -335,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `music_object_hdr` (
   `object_name` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`music_object_id`),
   KEY `user_song` (`username`,`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=457 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=458 ;
 
 -- --------------------------------------------------------
 
@@ -378,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `last_update_date` datetime DEFAULT NULL,
   `last_compile_date` datetime DEFAULT NULL,
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=92 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=96 ;
 
 -- --------------------------------------------------------
 
@@ -396,7 +364,7 @@ CREATE TABLE IF NOT EXISTS `project_dtl` (
   `check_sum` varchar(50) DEFAULT NULL,
   `effect_id` varchar(11) DEFAULT NULL,
   PRIMARY KEY (`project_dtl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2061 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2389 ;
 
 -- --------------------------------------------------------
 
@@ -447,7 +415,7 @@ CREATE TABLE IF NOT EXISTS `song` (
   `username` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`song_id`),
   KEY `user_song` (`song_name`,`artist`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=395 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=397 ;
 
 -- --------------------------------------------------------
 
@@ -465,5 +433,5 @@ CREATE TABLE IF NOT EXISTS `song_dtl` (
   `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`song_dtl_id`),
   KEY `song_id` (`song_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=698 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=726 ;
 

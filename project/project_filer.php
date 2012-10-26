@@ -56,9 +56,12 @@ function appendStr($str_array1,$str_array2,$prepend=false, $sepStr=" ")
 {
 	// takes two array of strings and appends them together
 	$retArray = array();
-	if (count($str_array1) != count($str_array2))
+	$cnt1=count($str_array1) ;
+	$cnt2=count($str_array2) ;
+	if ($cnt1 != $cnt2)
 	{
-		echo "*** ERROR *** arrays must match length!<br />";
+		echo "*** ERROR *** arrays must match length! (str_array1=$cnt1,str_array2=$cnt2)<br />";
+		if($cnt1>0) $retArray=$str_array1; // <scm>
 	}
 	else { 
 		$y=count($str_array1);
@@ -990,6 +993,9 @@ function isValidNCModel($project_id, $infile)
 function isValidNC($infile)
 {
 	$valArray=checkNCInfo($infile);
+	/*echo "<pre>";
+	print_r($valArray);
+	echo "</pre>\n";*/
 	$overcheck=true;
 	foreach($valArray as $currflag) 
 	$overcheck=$overcheck && $currflag;

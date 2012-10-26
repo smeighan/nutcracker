@@ -12,6 +12,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Tun update gallery database
+
+gallery.php?INSERT_NEW_GIFS=1
+
+
 */
 require_once('../conf/header.php');
 require("../effects/read_file.php");
