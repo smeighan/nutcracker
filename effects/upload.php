@@ -3,7 +3,7 @@
 $tokens=explode("=",$_SERVER['QUERY_STRING']);
 $uploaddir = $tokens[1];
 $allowed_filetypes = array('.jpg','.gif','.bmp','.png'); // These will be the types of file that will pass the validation.
-$max_filesize = 524288*2; // Maximum filesize in BYTES (currently 0.5MB).
+$max_filesize = 524288*5; // Maximum filesize in BYTES (currently 2.5MB).
 $filename = $_FILES['userfile']['name']; // Get the name of the file (including file extension).
 $ext = substr($filename, strpos($filename,'.'), strlen($filename)-1); // Get the extension from the filename.
 // Check if the filetype is allowed, if not DIE and inform the user.
