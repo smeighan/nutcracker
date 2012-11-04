@@ -1847,7 +1847,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 				//
 				//	$string_array[$string][$user_pixel][$frame]=$rgb;
 				//	echo "<pre>string,s,p=$string,$s,$p</pre>\n";
-				if(in_array($string,$window_array)) // Is this strand in our window?, 
+				//if(in_array($string,$window_array)) // Is this strand in our window?, 
 				{
 					fwrite($fh_seq,sprintf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line));
 					//			printf("%6d %6d %6d %9d # $loop  %s",$string,$user_pixel,$frame,$rgb,$line);

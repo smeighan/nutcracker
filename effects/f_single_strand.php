@@ -116,6 +116,9 @@ function f_single_strand($get)
 	echo "</pre>\n";*/
 	$segment_max=$number_segments+1;
 	$segment_array[$segment_max]=$maxPixel+1;
+	//
+	//$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
+	//
 	if($number_segments>0)
 	{
 		for($segment=1;$segment<=$number_segments;$segment++)
@@ -132,7 +135,6 @@ function f_single_strand($get)
 	if($batch==0) effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array);
 	$rainbow=$fade_3d1=$fade_3d2='N';
 	extract($matrix);
-	
 	$x=$y=$z=0;
 	for($f=1;$f<=$maxFrame;$f++)
 	{
@@ -216,6 +218,15 @@ function f_single_strand($get)
 				$S=$V=1;
 				$rgb_val=HSV_TO_RGB ($H, $S, $V);
 			}
+			/*if(isset($sparkles_array[$strand][$p])===false 
+			or $sparkles_array[$strand][$p]==null )
+				$x=0;
+			else if($sparkles_array[$strand][$p]>1)
+			{
+				$sparkles_array[$strand][$p]++;
+				$rgb_val=calculate_sparkle($strand,$p,
+				$sparkles_array[$strand][$p],$rgb_val,$sparkles_count);
+			}*/
 			$seq_number++;
 			//	echo "<pre>f,s,p = $f,$s,$p (p_new=$p, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
 			$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
@@ -291,7 +302,7 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 	foreach ($get as $item=>$value)
 	{
 		if (($item !="submit") && (!is_array($value))) 
-			echo "<input type=\"hidden\" name=\"".$item ."\" value=\"".$value."\" />\n";
+		echo "<input type=\"hidden\" name=\"".$item ."\" value=\"".$value."\" />\n";
 	}
 	$columns=array('color1'=>'Color #1', 'count1'=>'Number of Color1 Pixels','fade_3d1'=>'3D Fade for Color#1',
 	'color2'=>'Color #2', 'count2'=>'Number of Color2 Pixels',	'fade_3d2'=>'3D Fade for Color#2',
