@@ -64,24 +64,16 @@ function f_spirals($get)
 	$get['base']=$base;
 	$get['path']=$path;
 	$get['f_delay']=$f_delay;
+	$dir="workspaces";
+	SpiralgetFilesFromDir($dir,$base);
 	/*//spiral($arr,$path,$t_dat,$number_spirals,$number_rotations,$spiral_thickness,$base,
 	$color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
 	$direction,$f_delay,$sparkles,$window_degrees,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkles_count); */
-	spiral($get);
-	$target_info=get_info_target($username,$t_dat);
-	//show_array($target_info,'MODEL: ' . $t_dat);
-	if($batch==0) $description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-	//if($description = 'Total Elapsed time for this effect:')
-		if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
-}
-
-function spiral($get)
-{
-	extract($get);
+	//
+	//
+	//$dat_file_array=spiral($get);
+	//
+	//
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
 	$maxStrand =$arr[2];  // highest strand seen on target
@@ -119,7 +111,7 @@ function spiral($get)
 	$r=115;
 	$g =115;
 	$b = 120; 
-	if($number_rotations<1) $number_rotations=1;
+	//if($number_rotations<1) $number_rotations=1;
 	$maxLoop = ($maxStrand* (360/$window_degrees)*$number_rotations);
 	echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
 	//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
@@ -152,7 +144,6 @@ function spiral($get)
 	//
 	$spiral=create_spiral($get,$arr);
 	display_spiral($spiral,$maxStrand,$maxPixel);
-	//die();
 	for ($f=1;$f<=$maxFrames;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -163,17 +154,16 @@ function spiral($get)
 		//echo "<pre>f=$f; deltaStrands=$deltaStrands for( ns= minStrand; ns<= number_spirals; ns++) = for( $ns= $minStrand; $ns<= $number_spirals; $ns++)</pre>\n";
 		for($s=1;$s<=$maxStrand;$s++)
 		{
+			if($direction=="ccw")
+			{
+				$new_s = $s-intval(($f-1)*$speed); // CCW
+			}
+			else
+			{
+				$new_s = $s+intval(($f-1)*$speed); // CW
+			}
 			for($p=1;$p<=$maxPixel;$p++)
 			{
-				$p_offset = 0; // intval(($p-0)*$number_rotations);
-				if($direction=="ccw")
-				{
-					$new_s = $s+intval(($f-1)*$speed)+$p_offset; // CCW
-				}
-				else
-				{
-					$new_s = $s-intval(($f-1)*$speed)-$p_offset; // CW
-				}
 				//	echo "<pre> f,s,p=$f,$s,$p  ns,thick=$ns,$thick.  new_s=$new_s</pre>\n";
 				if($new_s>$maxStrand) $new_s = $new_s-$maxStrand;
 				if($new_s<$minStrand) $new_s = $new_s+$maxStrand;
@@ -181,16 +171,16 @@ function spiral($get)
 				if($new_s<0) $new_s+=$maxStrand;
 				//	$new_s = $s;
 				//	$s=$new_s;
-				$rgb_val=$spiral[$new_s][$p];
-				$rgb_val=$spiral[$s][$p];
-				echo "<pre>rgb_val=spiral[s][p] $rgb_val=spiral[$s][$p];</pre>\n";
+				$rgb_val=$spiral[$new_s][$p]; // really rotate
+				//	$rgb_val=$spiral[$s][$p]; // this will make all images static, no rotation
+				//echo "<pre>rgb_val=spiral[s][p] $rgb_val=spiral[$s][$p];</pre>\n";
 				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
 				$tree_rgb[$s][$p]=$rgb_val;
 				//	$xyz=$tree_xyz[$s][$p];
 				$seq_number++;
 				//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 				$hex=dechex($rgb_val);
-				if(isset($sparkles_array[$s][$p])===false 
+				/*	if(isset($sparkles_array[$s][$p])===false 
 				or $sparkles_array[$s][$p]==null )
 					$x=0;
 				else if($sparkles_array[$s][$p]>1)
@@ -200,6 +190,7 @@ function spiral($get)
 					$sparkles_array[$s][$p],
 					$rgb_val,$sparkles_count);
 				}
+				*/
 				$string=$user_pixel=0;
 				//	$sparkles_array[$s][$p]=$sparkles_array[$s][$p]+0;
 				if($s<=$maxStrand)
@@ -209,18 +200,42 @@ function spiral($get)
 				}
 			}
 		}
-	}
-	// for ($f=1;$f<=$maxStrand;$f++) 
-	for ($f=1;$f<=$maxStrand;$f++)
-	{
 		if (isset($fh_dat[$f]))
 			fclose($fh_dat[$f]);
 	}
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	//if($batch==0) show_elapsed_time($script_start,"Finished  Effect, spirals class:");
+	//
+	//
+	//
+	//
+	$target_info=get_info_target($username,$t_dat);
+	//show_array($target_info,'MODEL: ' . $t_dat);
+	if($batch==0) $description ="Total Elapsed time for this effect:";
+	list($usec, $sec) = explode(' ', microtime());
+	$script_end = (float) $sec + (float) $usec;
+	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
+	//if($description = 'Total Elapsed time for this effect:')
+		$x_dat_base=$base . ".dat";
+	$show_frame='n';
+	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
-	//echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
+	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
+	$description ="Total Elapsed time for this effect:";
+	list($usec, $sec) = explode(' ', microtime());
+	$script_end = (float) $sec + (float) $usec;
+	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
+	if($batch==0)
+	{
+		printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
+		echo "<pre>Location: bc.php?batch=$batch</pre>\n";
+	}
+	/*$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
+	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
+	echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
+	echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
+	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
 }
 
 function delete_effects($username,$model_name)
@@ -294,18 +309,17 @@ function create_spiral($get,$arr)
 	if($rainbow_hue == null or !isset($rainbow_hue)) $rainbow_hue="Y";
 	if($speed == null or !isset($speed)) $speed=0.5;
 	//
+	$get['maxStrand']=$maxStrand;
+	$get['maxPixel']=$maxPixel;
 	$direction=strtolower($direction);
 	$fade_3d=strtoupper($fade_3d);
 	//
 	//
-	echo "<pre>color1,color2=$color1,$color2</pre>\n";
 	for($s=1;$s<=$maxStrand;$s++)
 	{
 		for($p=1;$p<=$maxPixel;$p++)
 		{
 			$spiral[$s][$p]=0;
-			/*	if($s%2==0 and $p%2==0) 	$spiral[$s][$p]=hexdec("#FF0000");
-			if($s%2==0 and $p%3==1) 	$spiral[$s][$p]=hexdec("#FFFF00");*/
 		}
 	}
 	$f=1;
@@ -313,138 +327,24 @@ function create_spiral($get,$arr)
 	$deltaStrands= intval($maxStrand* ($window_degrees/360)/ $number_spirals); // oldway
 	$deltaStrands= intval($maxStrand/ $number_spirals);
 	//
-	echo "<pre>deltaStrands= intval(maxStrand/ number_spirals);</pre>\n";
-	echo "<pre>$deltaStrands= intval($maxStrand/ $number_spirals);</pre>\n";
 	$ns1=array(1,2);
 	$ns2=array(9,10);
 	$color1=hexdec("#FF0000");
 	$color2=hexdec("#00FF00");
 	$color3=hexdec("#FFFF00");
-	for($s=1;$s<=$maxStrand;$s++)
+	$maxStrandLoops = ($maxStrand* (360/$window_degrees)*$number_rotations);
+	$maxLoop=$maxStrandLoops/$maxStrand;
+	if($maxLoop<1) $maxLoop=1;
+	$loop=0;
+	for($l=1;$l<=$maxLoop;$l++)
 	{
-		for($p=1;$p<=$maxPixel;$p++)
+		for($s=1;$s<=$maxStrand;$s++)
 		{
-			$s_offset_L = $s + ($maxStrand*($p-1)/$maxPixel);
-			$s_offset_R = $s - ($maxStrand*($p-1)/$maxPixel);
-			if($s_offset_L>$maxStrand) $s_offset_L-=$maxStrand;
-			if($s_offset_R>$maxStrand) $s_offset_R-=$maxStrand;
-			if($s_offset_L<1) $s_offset_L+=$maxStrand;
-			if($s_offset_R<1) $s_offset_R+=$maxStrand;
-			$color=0;
-			$match=0;
-			if(in_array($s,$ns1))
+			$loop++;
+			if($loop<=$maxStrandLoops)
+				for($p=1;$p<=$maxPixel;$p++)
 			{
-				$color=$color1;
-				$match=1;
-				$spiral[$s_offset_L][$p]=$color1;
-				$spiral[$s_offset_R][$p]=$color1;
-			}
-			if(in_array($s,$ns2))
-			{
-				$color=$color2;
-				$match=1;
-				$spiral[$s_offset_L][$p]=$color2;
-				$spiral[$s_offset_R][$p]=$color2;
-			}
-			//	echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
-		}
-	}
-	/*	for( $ns= $minStrand; $ns<= $number_spirals; $ns++)
-	{
-		$line++;
-		$p_to_add=0;
-		//	if($effect_type=='v' or $effect_type=='V') $p_to_add=0;
-		if(strtoupper($handiness)=="R")
-		{
-			$strand_base=intval( ($ns-1)*$deltaStrands-$p_to_add);
-		}
-		else
-		{
-			$strand_base=intval( ($ns-1)*$deltaStrands+$p_to_add);
-		}
-		for($thick=1;$thick<=$spiral_thickness;$thick++)
-		{
-			if(strtoupper($handiness)=="R")
-			{
-				$strand = ($strand_base%$maxStrand)-$thick;
-				$strand++;
-			}
-			else
-			{
-				$strand = ($strand_base%$maxStrand)+$thick;
-			}
-			$pre_strand=$strand;
-			if ($strand < $minStrand) $strand += $maxStrand;
-			if ($strand > $maxStrand) $strand -= $maxStrand;
-			if($strand<1) $strand=1;
-			//echo "<pre>,f=$f, ns=$ns, strand_base=$strand_base, thick=$thick, pre_strand=$pre_strand, strand=$strand</pre>\n";
-			//
-			//
-			//
-			//
-			for($p=1;$p<=$maxPixel;$p++)
-			{
-				if($rainbow_hue<>'N')
-				{
-					$color_HSV=color_picker($p,$maxPixel,$number_spirals,$color1,$color2);
-					$H=$color_HSV['H'];
-					$S=$color_HSV['S'];
-					$V=$color_HSV['V'];
-					//		echo "<pre>$strand,$p start,end=$start_color,$end_color  HSV=$H,$S,$V</pre>\n";
-				}
-				else
-				{
-					$mod = $ns%6;
-					// we want the last color to be next in line from color palete if we are dealing with
-					// number of spirals <= 6
-					//if($ns==$number_spirals and $mod==0 and $number_spirals<6) $mod=$number_spirals;
-					switch ($mod)
-					{
-						case 1:
-						$rgb_val=hexdec($color1);
-						break;
-						case 2:
-						$rgb_val=hexdec($color2);
-						break;
-						case 3:
-						$rgb_val=hexdec($color3);
-						break;
-						case 4:
-						$rgb_val=hexdec($color4);
-						break;
-						case 5:
-						$rgb_val=hexdec($color5);
-						break;
-						case 0:
-						$rgb_val=hexdec($color6);
-						break;
-					}
-					if($mod==0) $mod=6;
-					$HSL= RGBVAL_TO_HSV($rgb_val);
-					//RGBVAL_TO_HSV($rgb_val);
-					$H=$HSL['H']; 
-					$S=$HSL['S']; 
-					$V=$HSL['V'];
-					$hex=dechex($rgb_val);
-				}
-				*/
-				/*if($fade_3d=='Y')
-				{
-					if($direction=='ccw')
-					{
-						$mod_ratio=$thick/$spiral_thickness;
-					}
-					else
-					{
-						$mod_ratio=($spiral_thickness-($thick-1))/$spiral_thickness;
-					}
-					$V=$V*$mod_ratio;
-				}
-				$rgb_val=HSV_TO_RGB ($H, $S, $V);*/
-				/*
-				$f1_rgb_val=$rgb_val;
-				//		$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
-				$p_offset = intval(($p-0)*$number_rotations);
+				/*$p_offset = intval(($p-0)*$number_rotations);
 				if($direction=="ccw")
 				{
 					$new_s = $strand+intval(($f-1)*$speed)+$p_offset; // CCW
@@ -452,56 +352,138 @@ function create_spiral($get,$arr)
 				else
 				{
 					$new_s = $strand-intval(($f-1)*$speed)-$p_offset; // CW
-				}
-				//	echo "<pre> f,s,p=$f,$strand,$p  ns,thick=$ns,$thick.  new_s=$new_s</pre>\n";
-				if($new_s>$maxStrand) $new_s = $new_s%$maxStrand;
-				if($new_s<$minStrand) $new_s = $new_s%$maxStrand;
-				if($new_s==0) $new_s=$maxStrand;
-				if($new_s<0) $new_s+=$maxStrand;
-				//	$new_s = $strand;
-				//	$strand=$new_s;
-				$xyz=$tree_xyz[$strand][$p]; // get x,y,z location from the model.
-				$xyz=$tree_xyz[$new_s][$p];
-				$tree_rgb[$strand][$p]=$rgb_val;
-				/*if($rgb_val==0 and $use_background=='Y')
+					}*/
+				$s_offset_L = $s + ($maxStrand*($p-1)/$maxPixel)*$number_rotations;
+				$s_offset_R = $s - ($maxStrand*($p-1)/$maxPixel)*$number_rotations;
+				$check=0;
+				while ($s_offset_L>$maxStrand and $check<100)
 				{
-					$rgb_val=hexdec($background_color);
-					if($batch==0) echo "<pre>$rgb_val=hexdec($background_color);</pre>\n";
+					$check++;
+					if($s_offset_L>$maxStrand) $s_offset_L-=$maxStrand;
 				}
-				*/
-				/*
-				//	$xyz=$tree_xyz[$strand][$p];
-				$seq_number++;
-				//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
-				/*	if(isset($sparkles_array[$strand][$p])===false 
-				or $sparkles_array[$strand][$p]==null )
-					$x=0;
-				else if($sparkles_array[$strand][$p]>1)
+				//
+				$check=0;
+				while ($s_offset_R>$maxStrand and $check<100)
 				{
-					$sparkles_array[$strand][$p]++;
-					$rgb_val=calculate_sparkle($strand,$p,
-					$sparkles_array[$strand][$p],
-					$rgb_val,$sparkles_count);
+					$check++;
+					if($s_offset_R>$maxStrand) $s_offset_R-=$maxStrand;
 				}
-				*/
-				/*
-				$string=$user_pixel=0;
-				//	$sparkles_array[$strand][$p]=$sparkles_array[$strand][$p]+0;
-				if($strand<=$maxStrand)
+				//
+				$check=0;
+				while ($s_offset_L<1 and $check<100)
 				{
-					$spiral[$strand][$p]=$rgb_val;
-					$hex=dechex($rgb_val);
-					//	echo "<pre> f,s,new_s,p=$f,$strand,$new_s,$p  ns,thick=$ns,$thick #$hex</pre>\n";
-					//fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d %d %d\n",$strand,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$new_s][$p][0],$strand_pixel[$new_s][$p][1],$f,$seq_number));
+					$check++;
+					if($s_offset_L<1) $s_offset_L+=$maxStrand;
 				}
-				else
+				//
+				$check=0;
+				while ($s_offset_R<1 and $check<100)
 				{
-					echo "<error:	spiral[strand][p]=rgb_val=	spiral[$strand][$p]=$rgb_val</pre>\n ";
+					$check++;
+					if($s_offset_R<1) $s_offset_R+=$maxStrand;
 				}
+				//
+				$color = find_color($s,$p,$get);
+				$ns1 = make_array_segments($s,$p,$get);
+				/*	echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
+				print_r($ns1);
+				echo "</pre>\n";*/
+				if(in_array($s,$ns1))
+				{
+					if($handiness=="L" or $handiness=="B") $spiral[$s_offset_L][$p]=$color;
+					if($handiness=="R" or $handiness=="B") $spiral[$s_offset_R][$p]=$color;
+				}
+				//	echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
 			}
 		}
-		}*/
+	}
 	return $spiral;
+}
+
+function make_array_segments($s,$p,$get)
+{
+	extract ($get);
+	$segment_width =intval( $maxStrand/$number_spirals);
+	$ns1=array();
+	for($ns=1;$ns<=$number_spirals;$ns++)
+	{
+		$s1 = ($ns-1)*$segment_width + 1;
+		$s2 = $s1 + $spiral_thickness -1;
+		if($s>=$s1 and $s<=$s2)
+		{
+			for ($s=$s1;$s<=$s2;$s++)
+			{
+				$ns1[]=$s;
+			}
+		}
+	}
+	return $ns1;
+}
+
+function find_color($s,$p,$get)
+{
+	extract ($get);
+	$ns=intval(($s-1)/($maxStrand/$number_spirals))+1; // figure out which spiral segment we are
+	$thick = ($s-1)%($maxStrand/$number_spirals);
+	//echo "<pre>ns=intval((maxStrand/number_spirals)/s);=$ns=intval(($maxStrand/$number_spirals)/$s);</pre>\n";
+	if($ns==0) $ns=1;
+	if($rainbow_hue<>'N')
+	{
+		$color_HSV=color_picker($p,$maxPixel,$number_spirals,$color1,$color2);
+		$H=$color_HSV['H'];
+		$S=$color_HSV['S'];
+		$V=$color_HSV['V'];
+		//		echo "<pre>$strand,$p start,end=$start_color,$end_color  HSV=$H,$S,$V</pre>\n";
+	}
+	else
+	{
+		$mod = $ns%6;
+		// we want the last color to be next in line from color palete if we are dealing with
+		// number of spirals <= 6
+		//if($ns==$number_spirals and $mod==0 and $number_spirals<6) $mod=$number_spirals;
+		switch ($mod)
+		{
+			case 1:
+			$rgb_val=hexdec($color1);
+			break;
+			case 2:
+			$rgb_val=hexdec($color2);
+			break;
+			case 3:
+			$rgb_val=hexdec($color3);
+			break;
+			case 4:
+			$rgb_val=hexdec($color4);
+			break;
+			case 5:
+			$rgb_val=hexdec($color5);
+			break;
+			case 0:
+			$rgb_val=hexdec($color6);
+			break;
+		}
+		if($mod==0) $mod=6;
+		$HSL= RGBVAL_TO_HSV($rgb_val);
+		//RGBVAL_TO_HSV($rgb_val);
+		$H=$HSL['H']; 
+		$S=$HSL['S']; 
+		$V=$HSL['V'];
+		$hex=dechex($rgb_val);
+	}
+	if($fade_3d=='Y')
+	{
+		if($direction=='ccw')
+		{
+			$mod_ratio=$thick/$spiral_thickness;
+		}
+		else
+		{
+			$mod_ratio=($spiral_thickness-($thick-1))/$spiral_thickness;
+		}
+		$V=$V*$mod_ratio;
+	}
+	$rgb_val=HSV_TO_RGB ($H, $S, $V);
+	return $rgb_val;
 }
 
 function bgr2rgb($cr)
@@ -527,6 +509,7 @@ function 	display_spiral($spiral,$maxStrand,$maxPixel)
 	/*echo "<pre>";
 	print_r($spiral);
 	echo "</pre>\n";*/
+	echo "<h3>Image of spiral before it gets replicated and rotated</h3>";
 	echo "<table border=1>";
 	for($p=1;$p<=$maxPixel;$p++)
 	{
@@ -540,4 +523,21 @@ function 	display_spiral($spiral,$maxStrand,$maxPixel)
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
+}
+
+function SpiralgetFilesFromDir($dir,$base)
+{
+	//echo "<pre>getFilesFromDir($dir,$base)</pre>\n";
+	$files = glob("$dir/2/$base*"); // get all file names
+	foreach($files as $file)
+	{
+		// iterate files
+		if(is_file($file))
+		{
+		$tok=explode(".",$file);
+			//echo "<pre>file=$file $tok[1]</pre>\n";
+			if($tok[1]=="dat")
+			 unlink($file); // delete file if a dat file
+		}
+	}
 }

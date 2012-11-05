@@ -967,9 +967,10 @@ function show_array($array,$title)
 			$color="white";
 		else if(substr($value,0,1)=="#")
 			$color=$value;
-			else
-				$color="white";
-		if (!is_array($value)){
+		else
+		$color="white";
+		if (!is_array($value))
+		{
 			echo "<td>$key</td>";
 			echo "<td bgcolor=$color>$value</td>";
 			echo "</tr>\n";
@@ -1386,7 +1387,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 			//echo "<pre> $dat_file $dirname $basename $filename $out_file</pre>\n";
 			$imagick=0;
 			fwrite($fh_gp_file,sprintf ("set title 'Frame %4d'\n",$frame) );
-		//	echo "<pre> (set title 'Frame %4d',$frame)</pre>\n";
+			//	echo "<pre> (set title 'Frame %4d',$frame)</pre>\n";
 			if($show_frame== 'Y' or $show_frame=='y')
 			{
 				fwrite($fh_gp_file,sprintf ("splot '%s' using 4:5:6 with points ls 7 notitle \\\n",$target_dat) );
@@ -1802,7 +1803,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	{
 		if(isset($dat_file_array[$frame])) $filename=$dat_file_array[$frame];
 		else
-		
 		{
 			echo "<pre>";
 		}
@@ -1860,8 +1860,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		$full_path=realpath($full_path);
 		if (file_exists($full_path))
 		{
-			//	echo "<pre>Purging $full_path</pre>\n";
-			//	unlink($full_path);
+			//echo "<pre>Purging $full_path</pre>\n";
+			unlink($full_path);
 		}
 	}
 	//if (file_exists($gp_file)) unlink($gp_file);
@@ -1873,6 +1873,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//	sort it so we get the strings togeter. We will output this to TARGET+EFFECT.srt
 	//---------------------------------------------------------------------------------------
 	//
+	$seq_srt = $dirname . "/" . $base . ".srt";
 	if($_SERVER['HTTP_HOST']!='meighan.net') // If this is a windows server, 
 	{
 		$data = file($seq_file); // we will do a memory sort
@@ -1888,6 +1889,35 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		//echo "<pre>cmd= $shellCommand </pre>\n";
 		//echo "<pre>output= $output </pre>\n";
 	}
+	//
+	//
+	/*//	remove_blanks($seq_file);
+	//
+	$seq_srt = $dirname . "/" . $base . ".srt";
+	$seq_srt1 = $dirname . "/" . $base . ".srt1";
+	if (!copy($seq_srt, $seq_srt1))
+	{
+		echo "failed to copy $seq_srt...\n";
+	}
+	$fh1 = fopen($seq_srt1, 'r') or die("can't open file $seq_srt");
+	$fh_seq=fopen($seq_srt,"w") or die ("unable to open $seq_file");
+	while (!feof($fh1)) // read *.srt file
+	{
+		$line = fgets($fh1);
+		$tok=preg_split("/ +/", $line);
+		$l=strlen($line);
+		//echo "<pre>zz: $line</pre>\n";
+		$c=count($tok);
+		if($c>2)
+		{
+			//	printf("<pre>%s</pre>\n",$line);
+			fwrite($fh_seq,sprintf("%s",$line));
+		}
+	}
+	unlink ($seq_srt1);
+	fclose($fh_seq);*/
+	//
+	//
 	$channel=0;
 	/*		AA+SEAN.srt file format.
 	*		col 1: string
@@ -1966,7 +1996,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//echo "<pre>$MaxFrameLoops = intval(($TotalFrames/$maxFrame)+0.5);</pre>\n";
 	//echo "<pre>MaxFrameLoops = $MaxFrameLoops</pre>\n";
 	$Sec2=-1;
-	$old_string=$old_pixel=0;
 	$i=0;
 	$frame=0;
 	$filename_buff= $dirname . "/" . $base . ".nc";
@@ -1981,6 +2010,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	if($fade_out_secs>0) $fade_out=intval((1000*$fade_out_secs)/$frame_delay);
 	//	echo "<pre>fade_in_secs=$fade_in_secs,fade_in=$fade_in</pre>\n";
 	$echo=0; // echo=1, see the buff file on screen
+	$old_string=$old_pixel=0;
 	while (!feof($fh)) // read *.srt file
 	{
 		$line = fgets($fh);
@@ -2002,6 +2032,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$rgbhex=dechex($rgb);
 			if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
 			{
+			//	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel )) = if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";
 				fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
 				$frameCounter=0;
 				for($loop=1;$loop<=$MaxFrameLoops;$loop++)
@@ -2011,14 +2042,14 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 						$frameCounter++;
 						if($frameCounter<=$TotalFrames)
 						{
-							$rgb=$outBuffer[$f];
-							$rgb_val=$rgb;
+							$rgb2=$outBuffer[$f];
+							$rgb_val=$rgb2;
 							$fade_out_start = $TotalFrames-$fade_out+1;
 							if(($fade_in>0 and $frameCounter<=$fade_in) or ($fade_out>0 and $frameCounter>=$fade_out_start))
-								$rgb=fade($fade_in,$fade_out,$frameCounter,$TotalFrames,$rgb_val);
+								$rgb2=fade($fade_in,$fade_out,$frameCounter,$TotalFrames,$rgb_val);
 							//echo "<pre>loop,f = $loop,$f  rgb_val,rgb $rgb_val,$rgb</pre>\n";
-							fwrite ($fh_buff,sprintf(" %d",$rgb));
-							if($echo==1)printf(" %d",$rgb);
+							fwrite ($fh_buff,sprintf(" %d",$rgb2));
+							if($echo==1)printf(" %d",$rgb2);
 						}
 					}
 				}
@@ -2032,7 +2063,11 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$old_string=$string;
 			$old_pixel=$pixel;
 			$outBuffer[$frame]=$rgb;
-		}
+		/*	printf ("<pre>string pixel = $string,$pixel: ");
+			for ($i=1;$i<=$frame;$i++)
+				printf("%d ",$outBuffer[$i]);
+			printf ("$line </pre>\n");*/
+			}
 	}
 	fclose($fh);
 	fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
@@ -2217,7 +2252,7 @@ function get_window_degrees($username,$model_name,$in_window_degrees)
 	}
 	if($in_window_degrees!=$window_degrees)
 	{
-	//	this message confuses Jim Nealand, not really needed, more for information to us
+		//	this message confuses Jim Nealand, not really needed, more for information to us
 		//echo "<pre>Overriding your effect window_degrees of $in_window_degrees degrees\n";
 		//echo "Setting it to $window_degrees degrees to match your target model $model_name</pre>\n";
 		if(!isset($window_degrees)) $window_degrees=360;
