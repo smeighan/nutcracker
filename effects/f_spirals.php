@@ -118,7 +118,7 @@ function f_spirals($get)
 	$b = 120; 
 	//if($number_rotations<1) $number_rotations=1;
 	$maxLoop = ($maxStrand* (360/$window_degrees)*$number_rotations);
-	echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
+	if($batch==0)  echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
 	//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
 	if($maxLoop<1) $maxLoop=1;
 	$deltaPixel = $maxPixel/$maxLoop;
@@ -139,22 +139,22 @@ function f_spirals($get)
 	//
 	$maxFrames = $maxStrand;
 	$maxFrames = intval($maxStrand/$speed)*360/$window_degrees+1;
-	echo "<pre>maxPixel=$maxPixel,maxStrand=$maxStrand,maxFrames = $maxFrames </pre>\n";
+	if($batch==0) echo "<pre>maxPixel=$maxPixel,maxStrand=$maxStrand,maxFrames = $maxFrames </pre>\n";
 	//
 	//	create the SPIRAL array
 	//
 	$spiral=create_spiral($get,$arr);
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
-	/*echo "<pre>strand_pixel\n";
+	/*if($batch==0) echo "<pre>strand_pixel\n";
 	print_r($sparkles_array);
 	echo "</pre>\n";*/
 	foreach($sparkles_array as $s=>$sarray)
 		foreach($sarray as $p=>$value)
 	{
-		//echo "<pre>s,p=$s,$p= $value</pre>\n";
+		//if($batch==0) echo "<pre>s,p=$s,$p= $value</pre>\n";
 		if($spiral[$s][$p]>0) $spiral[$s][$p]= hexdec("#FEFEFE"); // for any non black cell, set it to flag as for sparkles
 	}
-	display_spiral($spiral,$maxStrand,$maxPixel);
+	if($batch==0) display_spiral($spiral,$maxStrand,$maxPixel);
 	for ($f=1;$f<=$maxFrames;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -162,7 +162,7 @@ function f_spirals($get)
 		$dat_file_array[]=$dat_file[$f];
 		$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
 		fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
-		//echo "<pre>f=$f; deltaStrands=$deltaStrands for( ns= minStrand; ns<= number_spirals; ns++) = for( $ns= $minStrand; $ns<= $number_spirals; $ns++)</pre>\n";
+		//if($batch==0) echo "<pre>f=$f; deltaStrands=$deltaStrands for( ns= minStrand; ns<= number_spirals; ns++) = for( $ns= $minStrand; $ns<= $number_spirals; $ns++)</pre>\n";
 		for($s=1;$s<=$maxStrand;$s++)
 		{
 			if($direction=="ccw")
@@ -175,7 +175,7 @@ function f_spirals($get)
 			}
 			for($p=1;$p<=$maxPixel;$p++)
 			{
-				//	echo "<pre> f,s,p=$f,$s,$p  ns,thick=$ns,$thick.  new_s=$new_s</pre>\n";
+				//	if($batch==0) echo "<pre> f,s,p=$f,$s,$p  ns,thick=$ns,$thick.  new_s=$new_s</pre>\n";
 				
 				
 			
@@ -201,7 +201,7 @@ function f_spirals($get)
 				//	$s=$new_s;
 				$rgb_val=$spiral[$new_s][$p]; // really rotate
 				//	$rgb_val=$spiral[$s][$p]; // this will make all images static, no rotation
-				//echo "<pre>rgb_val=spiral[s][p] $rgb_val=spiral[$s][$p];</pre>\n";
+				//if($batch==0) echo "<pre>rgb_val=spiral[s][p] $rgb_val=spiral[$s][$p];</pre>\n";
 				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
 				$tree_rgb[$s][$p]=$rgb_val;
 				//	$xyz=$tree_xyz[$s][$p];
@@ -257,12 +257,12 @@ function f_spirals($get)
 	if($batch==0)
 	{
 		printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-		echo "<pre>Location: bc.php?batch=$batch</pre>\n";
+		if($batch==0) echo "<pre>Location: bc.php?batch=$batch</pre>\n";
 	}
 	/*$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
-	echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
-	echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
+	if($batch==0) echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
+	if($batch==0) echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
 	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
 }
 
@@ -290,7 +290,7 @@ function delete_effects($username,$model_name)
 
 function insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val,$f,$seq_number)
 {
-	//echo "<pre> insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val)\n";
+	//if($batch==0) echo "<pre> insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val)\n";
 	//Include database connection details	
 	require_once('../conf/config.php');
 	//Connect to mysql server
@@ -311,7 +311,7 @@ function insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val,$
 	$z=$z+0.0;
 	$query="insert into effects (seq_number,username,object_name,strand,pixel,x,y,z,rgb_val,frame) values
 	($seq_number,'$username','$model_base_name',$strand,$pixel,$x,$y,$z,$rgb_val,$f)";
-	//echo "<pre>insert_effects: query=$query</pre>\n";
+	//if($batch==0) echo "<pre>insert_effects: query=$query</pre>\n";
 	mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query .
 	 "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	mysql_close();
@@ -414,7 +414,7 @@ function create_spiral($get,$arr)
 				//
 				$color = find_color($s,$p,$get);
 				$ns1 = make_array_segments($s,$p,$get);
-				/*	echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
+				/*	if($batch==0) echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
 				print_r($ns1);
 				echo "</pre>\n";*/
 				if(in_array($s,$ns1))
@@ -422,7 +422,7 @@ function create_spiral($get,$arr)
 					if($handiness=="L" or $handiness=="B") $spiral[$s_offset_L][$p]=$color;
 					if($handiness=="R" or $handiness=="B") $spiral[$s_offset_R][$p]=$color;
 				}
-				//	echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
+				//	if($batch==0) echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
 			}
 		}
 	}
@@ -454,7 +454,7 @@ function find_color($s,$p,$get)
 	extract ($get);
 	$ns=intval(($s-1)/($maxStrand/$number_spirals))+1; // figure out which spiral segment we are
 	$thick = ($s-1)%($maxStrand/$number_spirals);
-	//echo "<pre>ns=intval((maxStrand/number_spirals)/s);=$ns=intval(($maxStrand/$number_spirals)/$s);</pre>\n";
+	//if($batch==0) echo "<pre>ns=intval((maxStrand/number_spirals)/s);=$ns=intval(($maxStrand/$number_spirals)/$s);</pre>\n";
 	if($ns==0) $ns=1;
 	if($rainbow_hue<>'N')
 	{
@@ -462,7 +462,7 @@ function find_color($s,$p,$get)
 		$H=$color_HSV['H'];
 		$S=$color_HSV['S'];
 		$V=$color_HSV['V'];
-		//		echo "<pre>$strand,$p start,end=$start_color,$end_color  HSV=$H,$S,$V</pre>\n";
+		//		if($batch==0) echo "<pre>$strand,$p start,end=$start_color,$end_color  HSV=$H,$S,$V</pre>\n";
 	}
 	else
 	{
@@ -535,7 +535,7 @@ function cr2hex($cr)
 
 function 	display_spiral($spiral,$maxStrand,$maxPixel)
 {
-	/*echo "<pre>";
+	/*if($batch==0) echo "<pre>";
 	print_r($spiral);
 	echo "</pre>\n";*/
 	echo "<h3>Image of spiral before it gets replicated and rotated</h3>";
@@ -556,7 +556,7 @@ function 	display_spiral($spiral,$maxStrand,$maxPixel)
 
 function SpiralgetFilesFromDir($dir,$base)
 {
-	//echo "<pre>getFilesFromDir($dir,$base)</pre>\n";
+	//if($batch==0) echo "<pre>getFilesFromDir($dir,$base)</pre>\n";
 	$files = glob("$dir/2/$base*"); // get all file names
 	foreach($files as $file)
 	{
@@ -564,7 +564,7 @@ function SpiralgetFilesFromDir($dir,$base)
 		if(is_file($file))
 		{
 			$tok=explode(".",$file);
-			//echo "<pre>file=$file $tok[1]</pre>\n";
+			//if($batch==0) echo "<pre>file=$file $tok[1]</pre>\n";
 			if($tok[1]=="dat")
 				unlink($file); // delete file if a dat file
 		}

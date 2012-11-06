@@ -223,6 +223,7 @@ function f_text($get)
 	$library_id=create_library($link,$username,$base,$MaxFrames);*/
 	$maxFrame=intval(($seq_duration*1000)/$frame_delay);
 	if(!isset($speed)) $speed=1;
+	if(!isset($direction)) $direction="left";
 	if(strtolower($direction)=="up") $direction="up";
 	else if(strtolower($direction)=="down") $direction="down";
 	else if(strtolower($direction)=="left") $direction="left";
