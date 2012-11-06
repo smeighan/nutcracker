@@ -1027,8 +1027,25 @@ function save_user_effect($passed_array)
 	// 	effect_class	username	effect_name	effect_desc	created	last_upd
 	//
 	$effect_desc="desc";
-	$insert = "REPLACE into effects_user_hdr( effect_class,username,effect_name,effect_desc,last_upd)
-		values ('$effect_class','$username','$effect_name','$effect_desc',now())";
+	$effect_id = get_effect_id($username,$effect_name);
+	if(!isset($effect_id))
+	{
+		$insert = "INSERT into effects_user_hdr( effect_class,username,effect_name,effect_desc,last_upd)
+			values ('$effect_class','$username','$effect_name','$effect_desc',now())";
+	}
+	else
+	{
+		$insert = "INSERT into effects_user_hdr( effect_class,username,effect_name,effect_desc,last_upd)
+			values ('$effect_class','$username','$effect_name','$effect_desc',now())
+			ON DUPLICATE KEY update effect_id='$effect_id',
+		effect_class='$effect_class',
+		username='$username',
+		effect_name='$effect_name',
+		effect_desc='$effect_desc',
+		last_upd=now()
+			";
+	}
+	//echo "<pre>$insert</pre>\n";
 	$result=mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
 	$insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	//mysql_free_result($result);
@@ -1043,6 +1060,16 @@ function save_user_effect($passed_array)
 		$param_name_array[]=$param_name;
 	}
 	//show_array($param_name_array,"param_name_array");
+	/*
+	http://dev.mysql.com/doc/refman/5.0/en/insert-on-duplicate.html
+	INSERT INTO test (a,b) VALUES ('1','2') ON DUPLICATE KEY UPDATE ID=LAST_INSERT_ID(ID),Dummy = NOT dummy;
+	Now, SELECT LAST_INSERT_ID(); will return the correct ID.
+	old way
+	$insert2 = "REPLACE into effects_user_dtl(effect_id,username,effect_name,param_name,param_value,last_upd) 
+	values ($effect_id,'$username','$effect_name','$key','$value',now())";
+	INSERT INTO table (a,b,c) VALUES ($product_info[0],$product_info[1],$product_info[2])
+		ON DUPLICATE KEY UPDATE a='$product_info[0]', b='$product_info[1]', c='$product_info[2]'
+	*/
 	mysql_free_result($result);
 	$skip_these=array('submit','OBJECT_NAME');
 	foreach($passed_array AS $key => $value)
@@ -1052,9 +1079,23 @@ function save_user_effect($passed_array)
 		{
 			//	login	effect_name	param_name	param_value	created	last_upd
 			//
-			$effect_id = get_effect_id($username,$effect_name);
-			$insert2 = "REPLACE into effects_user_dtl(effect_id,username,effect_name,param_name,param_value,last_upd) 
-			values ($effect_id,'$username','$effect_name','$key','$value',now())";
+			if(!isset($effect_id))
+			{
+				$insert2 = "INSERT into effects_user_dtl(username,effect_name,param_name,param_value,last_upd) 
+				values ('$username','$effect_name','$key','$value',now())";
+			}
+			else
+			{
+				$insert2 = "INSERT into effects_user_dtl(effect_id,username,effect_name,param_name,param_value,last_upd) 
+				values ($effect_id,'$username','$effect_name','$key','$value',now())
+					ON DUPLICATE KEY update effect_id='$effect_id',
+				username='$username',
+				effect_name='$effect_name',
+				param_name='$key',
+				param_value='$value',
+				last_upd=now()
+					";
+			}
 			mysql_query($insert2) or die ("Error on $insert2");
 			//mysql_free_result($result);
 		}
@@ -2032,7 +2073,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$rgbhex=dechex($rgb);
 			if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
 			{
-			//	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel )) = if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";
+				//	echo "<pre>if(string>0 and old_pixel>0 and (string!=old_string or pixel!=old_pixel )) = if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))</pre>\n";
 				fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
 				$frameCounter=0;
 				for($loop=1;$loop<=$MaxFrameLoops;$loop++)
@@ -2063,11 +2104,11 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 			$old_string=$string;
 			$old_pixel=$pixel;
 			$outBuffer[$frame]=$rgb;
-		/*	printf ("<pre>string pixel = $string,$pixel: ");
+			/*	printf ("<pre>string pixel = $string,$pixel: ");
 			for ($i=1;$i<=$frame;$i++)
 				printf("%d ",$outBuffer[$i]);
 			printf ("$line </pre>\n");*/
-			}
+		}
 	}
 	fclose($fh);
 	fwrite ($fh_buff,sprintf("S %d P %d ",$old_string,$old_pixel),11);
@@ -2465,7 +2506,14 @@ function get_effect_id($username,$effect_name)
 	{
 		extract($row);
 	}
-	return $effect_id;
+	if(isset($effect_id))
+	{
+		return $effect_id;
+	}
+	else
+	{
+	return NULL;
+	}
 }
 
 function is_ani($filename)

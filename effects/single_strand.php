@@ -16,6 +16,7 @@ $effect_name=str_replace("%20"," ",$effect_name);
 $get['username']=$username;
 $get['batch']=$batch;
 
+if(!isset($get['fade_3d']))   $get['fade_3d']="N";
 if(!isset($get['fade_in']))   $get['fade_in']="0";
 if(!isset($get['fade_out']))  $get['fade_out']="0";
 if(!isset($get['speed']))     $get['speed']="1";

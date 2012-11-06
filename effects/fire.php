@@ -30,7 +30,6 @@ $username=str_replace("%20"," ",$username);
 $effect_name=str_replace("%20"," ",$effect_name);
 $get['username']=$username;
 $get['batch']=$batch;
-save_user_effect($get);
 //
 if(!isset($show_frame)) $show_frame='N';
 $get['show_frame']=$show_frame;

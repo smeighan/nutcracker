@@ -38,7 +38,6 @@ function f_bars($get)
 	$f_delay = $get['frame_delay'];
 	$f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 	extract ($get);
-	save_user_effect($get);
 	//
 	$path="../targets/". $member_id;
 	list($usec, $sec) = explode(' ', microtime());

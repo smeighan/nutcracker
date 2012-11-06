@@ -40,7 +40,6 @@ function f_spirals($get)
 	$f_delay = $get['frame_delay'];
 	$f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 	$get['frame_delay']=$f_delay;
-	save_user_effect($get);
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	list($usec, $sec) = explode(' ', microtime());
@@ -132,10 +131,6 @@ function f_spirals($get)
 	$highRange2=$maxStrand;
 	$seq_number=0;
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
-	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
-	echo "<pre>strand_pixel\n";
-	//print_r($strand_pixel);
-	echo "</pre>\n";
 	//flush();
 	//
 	$f=1;
@@ -149,6 +144,16 @@ function f_spirals($get)
 	//	create the SPIRAL array
 	//
 	$spiral=create_spiral($get,$arr);
+	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
+	/*echo "<pre>strand_pixel\n";
+	print_r($sparkles_array);
+	echo "</pre>\n";*/
+	foreach($sparkles_array as $s=>$sarray)
+		foreach($sarray as $p=>$value)
+	{
+		//echo "<pre>s,p=$s,$p= $value</pre>\n";
+		if($spiral[$s][$p]>0) $spiral[$s][$p]= hexdec("#FEFEFE"); // for any non black cell, set it to flag as for sparkles
+	}
 	display_spiral($spiral,$maxStrand,$maxPixel);
 	for ($f=1;$f<=$maxFrames;$f++)
 	{
@@ -171,10 +176,27 @@ function f_spirals($get)
 			for($p=1;$p<=$maxPixel;$p++)
 			{
 				//	echo "<pre> f,s,p=$f,$s,$p  ns,thick=$ns,$thick.  new_s=$new_s</pre>\n";
-				if($new_s>$maxStrand) $new_s = $new_s-$maxStrand;
-				if($new_s<$minStrand) $new_s = $new_s+$maxStrand;
-				if($new_s==0) $new_s=$maxStrand;
-				if($new_s<0) $new_s+=$maxStrand;
+				
+				
+			
+				$check=0;
+				while ($new_s>$maxStrand and $check<100)
+				{
+					$check++;
+					if($new_s>$maxStrand) $new_s-=$maxStrand;
+				}
+				//
+				$check=0;
+				while ($new_s<1 and $check<100)
+				{
+					$check++;
+					if($new_s<1) $new_s+=$maxStrand;
+				}
+				//
+					//
+					//
+								
+				
 				//	$new_s = $s;
 				//	$s=$new_s;
 				$rgb_val=$spiral[$new_s][$p]; // really rotate
@@ -186,17 +208,17 @@ function f_spirals($get)
 				$seq_number++;
 				//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 				$hex=dechex($rgb_val);
-				/*	if(isset($sparkles_array[$s][$p])===false 
-				or $sparkles_array[$s][$p]==null )
-					$x=0;
-				else if($sparkles_array[$s][$p]>1)
+				if($rgb_val == hexdec("#FEFEFE"))
 				{
-					$sparkles_array[$s][$p]++;
+					/*$sparkles_array[$s][$p]++;
 					$rgb_val=calculate_sparkle($s,$p,
 					$sparkles_array[$s][$p],
-					$rgb_val,$sparkles_count);
+					$rgb_val,$sparkles_count);*/
+					$rval=rand(01,255);
+					$r=$g=$b=$rval;
+					$rgb_val =hexdec(fromRGB($r,$g,$b));
+					
 				}
-				*/
 				$string=$user_pixel=0;
 				//	$sparkles_array[$s][$p]=$sparkles_array[$s][$p]+0;
 				if($s<=$maxStrand)
@@ -290,7 +312,8 @@ function insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val,$
 	$query="insert into effects (seq_number,username,object_name,strand,pixel,x,y,z,rgb_val,frame) values
 	($seq_number,'$username','$model_base_name',$strand,$pixel,$x,$y,$z,$rgb_val,$f)";
 	//echo "<pre>insert_effects: query=$query</pre>\n";
-	mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query .
+	 "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	mysql_close();
 }
 
@@ -540,10 +563,10 @@ function SpiralgetFilesFromDir($dir,$base)
 		// iterate files
 		if(is_file($file))
 		{
-		$tok=explode(".",$file);
+			$tok=explode(".",$file);
 			//echo "<pre>file=$file $tok[1]</pre>\n";
 			if($tok[1]=="dat")
-			 unlink($file); // delete file if a dat file
+				unlink($file); // delete file if a dat file
 		}
 	}
 }

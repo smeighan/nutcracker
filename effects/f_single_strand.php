@@ -36,7 +36,6 @@ function f_single_strand($get)
 	$f_delay = $get['frame_delay'];
 	$f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 	extract ($get);
-	save_user_effect($get);
 	//
 	//
 	$first_time=0;
@@ -183,6 +182,7 @@ function f_single_strand($get)
 					$S=$V=1;
 				}
 				//$fade_3d1='y';
+				if(!isset($fade_3d1[$segment])) $fade_3d1[$segment]='N';
 				if($fade_3d1[$segment]=='y' or $fade_3d1[$segment]=='Y')
 				{
 					$mod1=$new_p%$cnt1;
@@ -226,7 +226,8 @@ function f_single_strand($get)
 				$sparkles_array[$strand][$p]++;
 				$rgb_val=calculate_sparkle($strand,$p,
 				$sparkles_array[$strand][$p],$rgb_val,$sparkles_count);
-			}*/
+			}
+			*/
 			$seq_number++;
 			//	echo "<pre>f,s,p = $f,$s,$p (p_new=$p, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
 			$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
