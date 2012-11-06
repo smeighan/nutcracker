@@ -1322,8 +1322,8 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 		$numEntities=$myArray[1];
 		$song_tot_time=$numFrames*$frame_delay;
 	}
-	echo "STOPPING HERE (1325 project_filer.php) <br>";
-	die;
+	//echo "STOPPING HERE (1325 project_filer.php) <br>";
+	//die;
 	if (isset($outputType))
 	{
 		switch ($outputType)
