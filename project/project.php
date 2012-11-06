@@ -76,31 +76,37 @@ if (isset($type)) {
 			$msg_str= "***Error occurred *** Invalid value for function call<br />";
 	}
 } else {
-	//print_r($_POST);
+    $debug = false;
+	if ($debug) print_r($_POST);
 	extract($_POST);
 	if (isset($NewProjectCancel)) {
+		if ($debug) echo "In New Project Cancel<br>";
 		$msg_str="*** Song add was cancelled ***";
 	} 
 	if (isset($NewProjectSubmit)) {
+		if ($debug) echo "In New Project Submit<br>";
 		//echo "$song_id  , $username,   $frame_delay, $model_name <br />";
 		$msg_str=add_song($song_id,$username, $frame_delay, $model_name);
 	}
 	if (isset($SavePhraseEdit)) {
+		if ($debug)	echo "In Save Phrase Edit<br>";
 		save_phrases($_POST);
 		$msg_str=edit_song($project_id);
 		$msg_str="Edit Saved";
 	}
 	if (isset($CancelPhraseEdit)) {
+		if ($debug) echo "In Cancel Phrase Edit<br>";
 		$msg_str="Song detail hidden";
 	}
 	if (isset($LoadPhraseFile) && (!isset($SelectFile))) {
+		if ($debug) echo "In Preload phase<br>";
 		$directory="uploads/";
 		echo showFilesDir($directory, $project_id);
 		printFileLoadInstruction();
 		$msg_str="";
-		echo "GOT HERE<br />";
 	}
 	if (isset($SelectFile)) {
+		if ($debug) echo "In Post Load Phrase<br>";	
 		getPhrasesFromFile($project_id, $PhraseFile);
 		echo "<br />";
 		$tok=preg_split("/~+/", trim($PhraseFile));
@@ -114,6 +120,7 @@ if (isset($type)) {
 		$msg_str="loaded phrase file ".$prettyFilename." for project ".$song_name."/".$model_name;
 	}
 	if (isset($MasterNCSubmit)) {
+		if ($debug) echo "In Generate Phase<br>";
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
 		nc_query($sql);
 		if ($outputType!='xml') {
@@ -130,6 +137,7 @@ if (isset($type)) {
 		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
 	}
 	if (isset($EffectEdit)) {
+		if ($debug) echo "In Effect Edit<br>";
 		foreach($_POST as $key=>$value) {
 			if ($key=="project_id")
 				$project_id=$value;
@@ -143,6 +151,7 @@ if (isset($type)) {
 		$msg_str="Effect Edited<br />".edit_song($project_id);
 	}
 	if (isset($EffectEditCancel)) {
+		if ($debug) echo "In Cancel Effect Edit<br>";
 		$msg_str="Effect Edit Cancelled<br />".edit_song($project_id);
 	}	
 }

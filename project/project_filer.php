@@ -1173,63 +1173,63 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		switch ($effect_class)
 		{
 			case ('spirals') :
-			f_spirals($get);
-			$ranNC=true;
-			break;
+				f_spirals($get);
+				$ranNC=true;
+				break;
 			case ('fire') :
-			f_fire($get);
-			$ranNC=true;
-			break;
+				f_fire($get);
+				$ranNC=true;
+				break;
 			case ('butterfly') :
-			f_butterfly($get);
-			$ranNC=true;
-			break;
+				f_butterfly($get);
+				$ranNC=true;
+				break;
 			case ('bars') :
-			f_bars($get);
-			$ranNC=true;
-			break;
+				f_bars($get);
+				$ranNC=true;
+				break;
 			case ('garlands') :
-			f_garlands($get);
-			$ranNC=true;
-			break;
+				f_garlands($get);
+				$ranNC=true;
+				break;
 			case ('text') :
-			f_text($get);
-			$ranNC=true;
-			break;
+				f_text($get);
+				$ranNC=true;
+				break;
 			case ('gif') :
-			f_gif($get);
-			$ranNC=true;
-			break;
+				f_gif($get);
+				$ranNC=true;
+				break;
 			case ('meteors') :
-			f_meteors($get);
-			$ranNC=true;
-			break;
+				f_meteors($get);
+				$ranNC=true;
+				break;
 			case ('life') :
-			f_life($get);
-			$ranNC=true;
-			break;
+				f_life($get);
+				$ranNC=true;
+				break;
 			case ('color_wash') :
-			f_color_wash($get);
-			$ranNC=true;
-			break;
+				f_color_wash($get);
+				$ranNC=true;
+				break;
 			case ('user_defined') :
-			f_user_defined($get);
-			$ranNC=true;
-			break;
+				f_user_defined($get);
+				$ranNC=true;
+				break;
 			case ('snowstorm') :
-			f_snowstorm($get);
-			$ranNC=true;
-			break;
+				f_snowstorm($get);
+				$ranNC=true;
+				break;
 			case ('pictures') :
-			f_pictures($get);
-			$ranNC=true;
-			break;
+				f_pictures($get);
+				$ranNC=true;
+				break;
 			case ('single_strand') :
-			f_single_strand($get);
-			$ranNC=true;
-			break;
+				f_single_strand($get);
+				$ranNC=true;
+				break;
 			default :
-			echo "$effect_class not handled yet<br />";
+				echo "$effect_class not handled yet<br />";
 		}
 		if ($ranNC)
 		{
@@ -1322,71 +1322,73 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 		$numEntities=$myArray[1];
 		$song_tot_time=$numFrames*$frame_delay;
 	}
+	echo "STOPPING HERE (1325 project_filer.php) <br>";
+	die;
 	if (isset($outputType))
 	{
 		switch ($outputType)
 		{
 			case 'vixen' :
-			$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
-			$vixFile=$VixArr[0];
-			$virFile=$VixArr[1];
-			echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
-			echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
-			echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
-			echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
-			break;
+				$VixArr=genAllVixen($song_tot_time, $frame_delay, $username, $project_id);
+				$vixFile=$VixArr[0];
+				$virFile=$VixArr[1];
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following VIX file to your computer</td>\n";
+				echo "<td><a href=\"$vixFile\" class=\"SaveFile\">$vixFile</a></td></tr>\n";
+				echo "<tr class=\"SaveFile\"><td>Right click save the following VIR file to your computer</td>\n";
+				echo "<td><a href=\"$virFile\" class=\"SaveFile\">$virFile</a></td></tr></table>\n";
+				break;
 			case 'hls' :
-			$hlsFile=genHLS($username, $project_id);
-			echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
-			echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
-			break;
-			case 'lsp' :
-			$NCFile=$outfile;
-			$type = 1;
-			$XMLFile="workarea/".$username."~".$project_id."~UserPattern.xml";
-			$fh_xml=fopen($XMLFile, 'w');
-			make_HdrPattern_header($fh_xml);
-			make_xml($fh_xml,$NCFile,$type,$frame_delay);
-			fclose($fh_xml);
-			echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP file to your computer</td>\n";
-			echo "<td><a href=\"$XMLFile\" class=\"SaveFile\">$XMLFile</a></td></tr><table>\n";
-			break;
+				$hlsFile=genHLS($username, $project_id);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
+				echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
+				break;
+				case 'lsp' :
+				$NCFile=$outfile;
+				$type = 1;
+				$XMLFile="workarea/".$username."~".$project_id."~UserPattern.xml";
+				$fh_xml=fopen($XMLFile, 'w');
+				make_HdrPattern_header($fh_xml);
+				make_xml($fh_xml,$NCFile,$type,$frame_delay);
+				fclose($fh_xml);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP file to your computer</td>\n";
+				echo "<td><a href=\"$XMLFile\" class=\"SaveFile\">$XMLFile</a></td></tr><table>\n";
+				break;
 			case 'lor' :
-			$LORFile="workarea/".$username."~".$project_id.".lms";
-			$fh_lor=fopen($LORFile, 'w');
-			genLOR($fh_lor,$NCFile, $frame_delay, $song_tot_time);
-			fclose($fh_lor);
-			echo "<table class=\"TableProp\">";
-			//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lms file</h2></td>\n");
-			echo "<tr><th colspan=2>Instructions</th></tr>";
-			printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lms file</a></h2></td>\n",$LORFile);
-			echo "<td>Save lms file into your light-o-rama/sequences directory</td></tr>\n";
-			echo "</table>";
-			break;
+				$LORFile="workarea/".$username."~".$project_id.".lms";
+				$fh_lor=fopen($LORFile, 'w');
+				genLOR($fh_lor,$NCFile, $frame_delay, $song_tot_time);
+				fclose($fh_lor);
+				echo "<table class=\"TableProp\">";
+				//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lms file</h2></td>\n");
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lms file</a></h2></td>\n",$LORFile);
+				echo "<td>Save lms file into your light-o-rama/sequences directory</td></tr>\n";
+				echo "</table>";
+				break;
 			case 'lcb' :
-			$NCFile=$outfile;
-			$LCBFile="workarea/".$username."~".$project_id.".lcb";
-			$fh_lcb=fopen($LCBFile, 'w');
-			genLCB($fh_lcb,$NCFile, $frame_delay, $song_tot_time, $LCBFile);
-			//fclose($fh_lcb);
-			echo "<table class=\"TableProp\">";
-			//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lcb file</h2></td>\n");
-			echo "<tr><th colspan=2>Instructions</th></tr>";
-			printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lcb file</a></h2></td>\n",$LCBFile);
-			echo "<td>Save lcb file into your light-o-rama/sequences directory</td></tr>\n";
-			echo "</table>";
-			break;
+				$NCFile=$outfile;
+				$LCBFile="workarea/".$username."~".$project_id.".lcb";
+				$fh_lcb=fopen($LCBFile, 'w');
+				genLCB($fh_lcb,$NCFile, $frame_delay, $song_tot_time, $LCBFile);
+				//fclose($fh_lcb);
+				echo "<table class=\"TableProp\">";
+				//printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $Maxframe frames have been created for LOR lcb file</h2></td>\n");
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for  LOR lcb file</a></h2></td>\n",$LCBFile);
+				echo "<td>Save lcb file into your light-o-rama/sequences directory</td></tr>\n";
+				echo "</table>";
+				break;
 			case 'xml' :
-			$xmlFile=genXML($username, $project_id);
-			echo "<table class=\"TableProp\">";
-			echo "<tr><th colspan=2>Instructions</th></tr>";
-			printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for XML file</a></h2></td>\n",$xmlFile);
-			echo "</table>";				
-			break;
+				$xmlFile=genXML($username, $project_id);
+				echo "<table class=\"TableProp\">";
+				echo "<tr><th colspan=2>Instructions</th></tr>";
+				printf ("<tr class=\"alt\"><td><h2><a href=\"%s\">Right Click here for XML file</a></h2></td>\n",$xmlFile);
+				echo "</table>";				
+				break;
 			default :
-			echo "This sequencer is not support<br />";
+				echo "This sequencer is not support<br />";
 		}
-		} 
+	} 
 	return;
 }
 
