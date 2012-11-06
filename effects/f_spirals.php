@@ -93,8 +93,14 @@ function f_spirals($get)
 	if($speed == null or !isset($speed)) $speed=0.5;
 	//
 	$direction=strtolower($direction);
+	$handiness=strtoupper($handiness);
 	$fade_3d=strtoupper($fade_3d);
 	$rainbow_hue=strtoupper($rainbow_hue);
+	$get['rainbow_hue']=$rainbow_hue;
+	$get['handiness']=$handiness;
+	$get['direction']=$direction;
+	$get['fade_3d']=$fade_3d;
+	extract ($get);
 	//show_elapsed_time($script_start,"Creating  Effect, spirals class:");
 	if($maxStrand<1)$maxStrand=1;
 	$pixelPerStrand=$maxPixel/$maxStrand;
@@ -137,7 +143,7 @@ function f_spirals($get)
 	//
 	//
 	$maxFrames = $maxStrand;
-	//$maxFrames = intval($maxStrand/$speed)+1;
+	$maxFrames = intval($maxStrand/$speed)*360/$window_degrees+1;
 	echo "<pre>maxPixel=$maxPixel,maxStrand=$maxStrand,maxFrames = $maxFrames </pre>\n";
 	//
 	//	create the SPIRAL array
