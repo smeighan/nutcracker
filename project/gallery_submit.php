@@ -49,9 +49,20 @@ function getEffCopySQL($username, $effname, $myusername, $newname)
 	{
 		extract($row);
 		$effect_id = get_effect_id($myusername,$newname);
+		if ($param_name=="effect_name")
+			$param_value=$newname;
 		$sql="REPLACE INTO effects_user_dtl (effect_id,effect_name, username, param_name, param_value, segment, created, last_upd) VALUES ('".$effect_id."','" .$newname."'" ;
 		$sql.=",'".$myusername."','".$param_name."','".$param_value."',".$segment.", NOW(), NOW() );";
 		$result4=nc_query($sql);
+	}
+	$sql="SELECT * FROM effects_user_segment WHERE username='".$username."' AND effect_name='".$effname."'";
+	$result2=nc_query($sql);
+	while ($row=mysql_fetch_assoc($result2))
+	{
+		extract ($row);
+		$sql="REPLACE INTO effects_user_segment (effect_name, username, param_name, param_value, segment, created, last_upd) VALUES ('" .$newname."'" ;
+		$sql.=",'".$myusername."','".$param_name."','".$param_value."',".$segment.", NOW(), NOW() );";
+		$result5=nc_query($sql);
 	}
 }
 ?>
