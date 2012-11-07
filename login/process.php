@@ -20,13 +20,13 @@ $allowedFields = array(
 'username','object_name', 'object_desc', 'model_type', 'string_type', 
 'pixel_count', 'pixel_first',  'pixel_last', 'number_segments','gif_model',
 'unit_of_measure','pixel_length',   'pixel_spacing','window_degrees',
-'total_strings', 'direction', 'orientation', 'topography'
+'total_strings', 'direction',  'topography'
 );
 // Specify the field names that you want to require...
 $requiredFields = array(
 'username','model_type', 'string_type', 
 'pixel_count',  'pixel_length',   'pixel_spacing',
-'total_strings', 'direction', 'orientation', 'topography'
+'total_strings', 'direction',  'topography'
 );
 /*echo "<pre>";
 print_r($_GET);
