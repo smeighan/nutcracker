@@ -16,6 +16,8 @@ require_once ("../effects/f_snowstorm.php");
 require_once ("../effects/f_user_defined.php");
 require_once ("../effects/f_pictures.php");
 require_once ("../effects/f_single_strand.php");
+require_once ("../effects/f_snowflakes.php");
+require_once ("../effects/f_layer.php");
 require_once ("project_loader.php");
 require_once ("dbcontrol.php");
 require_once ("gen_vixen.php");

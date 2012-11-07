@@ -1228,6 +1228,14 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				f_single_strand($get);
 				$ranNC=true;
 				break;
+			case ('layer') :
+				f_layer($get);
+				$ranNC=true;
+				break;
+			case ('snowflakes') :
+				f_snowflakes($get);
+				$ranNC=true;
+				break;
 			default :
 				echo "$effect_class not handled yet<br />";
 		}
