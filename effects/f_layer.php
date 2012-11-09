@@ -69,8 +69,22 @@ function f_layer($get)
 	}
 	$file1 = $path . "/" . $get['file1'];
 	$file2 = $path . "/" . $get['file2'];
-	$fh1=fopen($file1,"r");
-	$fh2=fopen($file2,"r");
+	if(!file_exists($file1))
+	{
+		die("File $file1 not found");
+	}
+	else
+	{
+		$fh1=fopen($file1,"r");
+	}
+	if(!file_exists($file2))
+	{
+		die("File $file2 not found");
+	}
+	else
+	{
+		$fh2=fopen($file2,"r");
+	}
 	$nc_file=$path . "/" . $base . ".nc";
 	$fh_nc=fopen($nc_file,"w") or die("Failed opening $nc_file\n");
 	$targetpath="../targets/". $member_id;

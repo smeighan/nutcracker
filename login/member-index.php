@@ -139,6 +139,18 @@ half-megatree (180 degree), <br/>you would enter 24 since that is how many strin
 	tree
 </font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
 value="<?php echo $row['total_strings'] ?>" name="TOTAL_STRINGS"></td></tr>
+
+
+<tr>
+<td><b><font color="blue">
+What is starting channel for your Target Model?
+<br/>
+Typical value is 1. Another common value is 513
+</font>	<input type="text" STYLE="background-color: #ABE8EC;" size="5" maxlength="6" 
+value="<?php if(!isset($row['start_channel'])) $row['start_channel']=1;
+	 echo $row['start_channel'] ?>" name="START_CHANNEL"></td></tr>
+	 
+	 
 <tr>
 <td><table border=1>
 <tr>

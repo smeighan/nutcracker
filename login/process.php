@@ -103,10 +103,11 @@ else
 	$insert = "REPLACE into models( username,object_name, object_desc, model_type,
 	pixel_count, pixel_first,  pixel_last, 
 	unit_of_measure, pixel_length, total_strings,window_degrees,
-	number_segments,gif_model,folds,start_bottom)
+	number_segments,gif_model,folds,start_bottom,start_channel)
 		values ('$username','$OBJECT_NAME', '$OBJECT_DESC', '$MODEL_TYPE', 
 	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
-	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$WINDOW_DEGREES,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM')";
+	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$WINDOW_DEGREES,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM',
+	'$START_CHANNEL')";
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server

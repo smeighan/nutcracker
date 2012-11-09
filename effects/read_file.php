@@ -2536,3 +2536,30 @@ function is_ani($filename)
 	fclose($fh);
 	return $count > 1;
 }
+function get_start_channel($username,$model)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	//
+	//
+	$query = "select * from models where username='$username' and  object_name='$model'";
+	//echo "<pre>update_segments: query=$query</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+	$segment_array=array();
+	while ($row = mysql_fetch_assoc($result))
+	{
+		extract($row);
+	}
+	return $start_channel;
+}

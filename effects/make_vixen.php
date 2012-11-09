@@ -22,6 +22,7 @@ set_time_limit(60*60);
 
 //
 extract($_GET);
+$get=$_GET;
 /*echo "<pre>";
 print_r($_GET);
 echo "</pre>";*/
@@ -146,6 +147,18 @@ $fh_vixen_vir=fopen($vixen_vir,"w") or die("Unable to open $vixen_vir");
 //	TotalFrames = (9.5*1000)/50
 //	Totalframes = 190
 //
+/*Array
+(
+    [base] => AA_SMALL~BARBERPOLE
+    [full_path] => ../effects/workspaces/2/AA_SMALL~BARBERPOLE_d_1.dat
+    [frame_delay] => 100
+    [username] => f
+    [member_id] => 2
+    [seq_duration] => 4.871923
+    [sequencer] => vixen
+    [pixel_count] => 50
+)*/
+
 $old_pixel=$channels=0;
 echo "<h3>$seq_duration seconds of animation with a $frame_delay ms frame timing = $TotalFrames frames of animation</h3>\n";
 while (!feof($fh_buff))
@@ -199,7 +212,7 @@ fclose($fh_vixen_vir);
 fclose($fh_hlsnc);*/
 /*$TotalFrames= ($seq_duration*1000)/$frame_delay;*/
 $duration = $seq_duration*1000;
-make_vix($vixen_vir,$duration,$frame_delay);  // also make a *.vix file. Pass in the *.vir
+make_vix($get,$vixen_vir,$duration,$frame_delay);  // also make a *.vix file. Pass in the *.vir
 if($sequencer=="vixen")
 {
 	echo "<table border=1>";
@@ -242,8 +255,9 @@ $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 <a href="effect-form.php">Effects Generator</a> | <a href="../login/logout.php">Logout</a>
 <?php
 
-function make_vix($vixen_vir,$duration,$frame_delay)
+function make_vix($get,$vixen_vir,$duration,$frame_delay)
 {
+extract($get);
 	/*$vixen_file = $model_base_name . ".vir";
 	$full_path = $path . "/" . $vixen_file;*/
 	//
@@ -255,8 +269,15 @@ function make_vix($vixen_vir,$duration,$frame_delay)
 	$filename  = $path_parts['filename']; //  AA+CIRCLE1_d_1
 	$file_vix = $dirname . "/" . $filename . ".vix";
 	//$file_vire = $dirname . "/" . $filename . ".vire"; //  enhanced vir file()
-	
-	
+	$start_channel=1;
+echo "<pre>start_channel=get_start_channel(username,model)=$start_channel=get_start_channel($username,$basename);</pre>\n";
+	// start_channel=get_start_channel(username,model)=1=get_start_channel(f,AA_SMALL~BARBERPOLE.vir);
+	$tok=explode("~",$basename);
+	$model=$tok[0];
+	$start_channel=get_start_channel($username,$model);
+	echo "<pre>start_channel=$start_channel</pre>\n";
+	if(!isset($start_channel)) $start_channel=1;
+	//
 	$fh_vir=fopen($vixen_vir,"r") or die("Unable to open $vixen_vir");
 //	$fh_vire=fopen($vixen_vire,"w") or die("Unable to open $vixen_vir");
 	
@@ -325,8 +346,9 @@ function make_vix($vixen_vir,$duration,$frame_delay)
 			{
 				$color=-16776961; $rgb="B";
 			}
-			$channel_name = "Channel $channel $rgb";
-			$output=$channel-1;
+			$new_channel=$channel+$start_channel-1;
+			$channel_name = "Channel $new_channel $rgb";
+			$output=$new_channel-1;
 			fwrite($fh,sprintf("<Channel color=\"$color\" output=\"$output\" id=\"0\" enabled=\"True\">$channel_name</Channel>\n"));
 		}
 	}

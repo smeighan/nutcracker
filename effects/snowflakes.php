@@ -18,6 +18,10 @@ $effect_name=str_replace("%20"," ",$effect_name);
 $get['username']=$username;
 $get['batch']=$batch;
 
+if(!isset($get['speed']))   $get['speed']="1";
+if(!isset($get['snowflake_type']))   $get['snowflake_type']="1";
+if(!isset($get['color1']))   $get['color1']="#00FF00";
+if(!isset($get['color2']))   $get['color1']="#0000FF";
 if(!isset($get['fade_in']))   $get['fade_in']="0";
 if(!isset($get['fade_out']))  $get['fade_out']="0";
 save_user_effect($get);
