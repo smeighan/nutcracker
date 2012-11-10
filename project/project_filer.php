@@ -1364,6 +1364,7 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 			case 'lor' :
 				$LORFile="workarea/".$username."~".$project_id.".lms";
 				$fh_lor=fopen($LORFile, 'w');
+				$NCFile=$outfile;
 				genLOR($fh_lor,$NCFile, $frame_delay, $song_tot_time);
 				fclose($fh_lor);
 				echo "<table class=\"TableProp\">";

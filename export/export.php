@@ -37,8 +37,16 @@ function showEffectDetail($EffArr,$oldEffClass) {
 		echo "\n</tr>\n";
 	}
 	echo "<tr>\n<td>".$currClass."</td><td>".$currName."</td>";
-	foreach ($currArr as $effVal) {
-		echo "<td>".$effVal."</td>";
+	foreach ($currArr as $effName=>$effVal) {
+		$textcol = "#000000";
+		if ((substr($effName,0,5)=="color") || (substr($effName,-5)=="color")) {
+			$colcheck=substr($effVal,1,1);
+			if ($colcheck=="0" || $colcheck=="1" || $colcheck=="2")
+				$textcol = "#FFFFFFF";
+			echo "<td bgcolor='".$effVal."'>";
+		} else
+			echo "<td>";
+		echo "<font color='".$textcol."'>".$effVal."</font></td>";
 	}
 	echo "\n</tr>\n";
 	return($currClass);
@@ -76,7 +84,7 @@ if (isset($_POST['exportlist'])) {
 	$msgstr = "Exporting Effects<br />";
 	$line=$_POST['exportlist'];
 	$tok=preg_split("/\|+/", trim($line));
-	echo "<table>";
+	echo "<table border=1 cellspacing=1 bordercolordark=gray bordercolorlight=gray>";
 	foreach ($tok as $effectid) {
 		$sql = "SELECT ed.param_name, ed.param_value, eh.effect_class, eh.effect_name "
 			. "FROM effects_user_dtl AS ed "
