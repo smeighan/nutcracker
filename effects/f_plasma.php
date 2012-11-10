@@ -68,8 +68,27 @@ $get['show_frame']=$show_frame;
 $f_delay = $get['frame_delay'];
 $f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 extract($get);
-$size=32;
-
+//
+//
+$member_id=get_member_id($username);
+$path="../targets/". $member_id;
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	$t_dat = $user_target . ".dat";
+	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
+	$minStrand =$arr[0];  // lowest strand seen on target
+	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
+	$maxStrand =$arr[2];  // highest strand seen on target
+	$maxPixel  =$arr[3];  // maximum pixel number found when reading the skeleton target
+	$maxI      =$arr[4];  // maximum number of pixels in target
+	$tree_rgb  =$arr[5];
+	$tree_xyz  =$arr[6];
+	$file      =$arr[7];
+	$min_max   =$arr[8];
+	$s_pixel   =$arr[9];
+	
+	//
+$size=16;
 $color1=$color3="#00FF00";
 $color2=$color4="#0000FF";
 //RGBVAL_TO_HSV($color1);
@@ -98,6 +117,11 @@ echo "log_size=$log_size\n";
 echo "log2=$log2\n";
 $result = $log_size/$log2;
 echo "result=$result\n";
+$log_size2=log($maxStrand);
+$log2 = log(2);
+$result2 = $log_size2/$log2;
+echo "result2=$result2\n";
+
 //
 echo "<pre>";
 $maxFrame=intval(($seq_duration*1000/$frame_delay)/$speed)+1;
@@ -199,7 +223,7 @@ for($f=1;$f<=$maxFrame;$f++)
 			}// NEXT x
 		}// 	NEXT p
 	//echo "<pre>";
-	//	print_r($plasma);
+	//print_r($plasma);
 	$dat_file_array[]=plasma_write($f,$get,$plasma);
 	//echo "<pre>f=$f</pre>\n";
 }

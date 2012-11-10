@@ -57,7 +57,7 @@ function f_snowflakes($get)
 	$get['path']=$path;
 	$get['f_delay']=$f_delay;
 	$dir="workspaces";
-	SpiralgetFilesFromDir($dir,$base);
+	SnowflakesgetFilesFromDir($dir,$base);
 	/*//spiral($arr,$path,$t_dat,$number_snowflakes,$number_rotations,$snowflake_thickness,$base,
 	$color1,$color2,$color3,$color4,$color5,$color6,$rainbow_hue,$fade_3d,$speed,
 	$direction,$f_delay,$sparkles,$window_degrees,$use_background,$background_color,$handiness,$username,$seq_duration,$show_frame,$effect_type,$sparkles_count); */
@@ -591,7 +591,7 @@ function 	display_snowflakes($snowflake,$maxStrand,$maxPixel)
 	echo "</table>\n";
 }
 
-function SpiralgetFilesFromDir($dir,$base)
+function SnowflakesgetFilesFromDir($dir,$base)
 {
 	//if($batch==0) echo "<pre>getFilesFromDir($dir,$base)</pre>\n";
 	$files = glob("$dir/2/$base*"); // get all file names
