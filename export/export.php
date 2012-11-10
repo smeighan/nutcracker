@@ -25,6 +25,24 @@ function getEffectArrayFromDB($insql) {
 	return($retArray);
 }
 
+function showEffectDetail($EffArr,$oldEffClass) {
+	$currClass=$EffArr['class'];
+	$currName=$EffArr['name'];
+	$currArr=$EffArr['effects'];
+	if ($oldEffClass != $currClass) {
+		echo "<tr>\n<th>Class</th><th>Name</th>";
+		foreach($currArr as $key=>$val){
+			echo "<th>".$key."</th>";
+		}
+		echo "\n</tr>\n";
+	}
+	echo "<tr>\n<td>".$currClass."</td><td>".$currName."</td>";
+	foreach ($currArr as $effVal) {
+		echo "<td>".$effVal."</td>";
+	}
+	echo "\n</tr>\n";
+	return($currClass);
+}
 
 ?>
 
@@ -32,7 +50,7 @@ function getEffectArrayFromDB($insql) {
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title>JavaScript Toolbox - Option Transfer - Move Select Box Options Back And Forth</title>
 <script type="text/javascript" src="../js/barmenu.js"></script>
-<script language="JavaScript" src="./OptionTransfer.js"></script>
+<script language="JavaScript" src="../js/OptionTransfer.js"></script>
 <script language="JavaScript">
 var opt = new OptionTransfer("list1","list2");
 opt.setAutoSort(true);
@@ -48,24 +66,28 @@ opt.saveNewRightOptions ("newRight");
 <link rel="stylesheet" type="text/css" href="../css/barmenu.css">
 <link href="../css/ncFormDefault.css" rel="stylesheet" type="text/css" />
 </head>
-<body onload="opt.init(document.forms[0])" alink="#00615F" bgcolor="#FFFFFF" link="#00615F" vlink="#00615F">
+<body onload="opt.init(document.forms[1])" alink="#00615F" bgcolor="#FFFFFF" link="#00615F" vlink="#00615F">
 
-<?php
+<?php show_barmenu();
 $msgstr="";
-//print_r($_POST);
+
 if (isset($_POST['exportlist'])) {
+	$oldEffClass="XXX";
 	$msgstr = "Exporting Effects<br />";
 	$line=$_POST['exportlist'];
 	$tok=preg_split("/\|+/", trim($line));
+	echo "<table>";
 	foreach ($tok as $effectid) {
 		$sql = "SELECT ed.param_name, ed.param_value, eh.effect_class, eh.effect_name "
 			. "FROM effects_user_dtl AS ed "
 			. "LEFT JOIN effects_user_hdr AS eh ON ed.effect_id=eh.effect_id "
 			. "WHERE ed.effect_id = ".$effectid." ORDER BY ed.param_name";
 		$myArray = getEffectArrayFromDB($sql);
-		print_r($myArray);
-		echo "<br />";
+		$oldEffClass = showEffectDetail($myArray,$oldEffClass);
+		//print_r($myArray);
+		//echo "<br />";
 	}
+	echo "</table>";
 }
 if (isset($_POST['cmdCancelExport'])) {
 	$msgstr = "Export Cancelled<br />";
@@ -88,7 +110,7 @@ if (isset($_POST['cmdCancelExport'])) {
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$val=$row['effect_id'];
-		$valname=$row['effect_name']." (".$row['effect_class'].")";
+		$valname="(".$row['effect_class'].") ". $row['effect_name'];
 		echo '		<option value="'.$val.'">'.$valname.'</option>'."\n";
 	}
 ?>
