@@ -118,9 +118,10 @@ function f_spirals($get)
 	$b = 120; 
 	//if($number_rotations<1) $number_rotations=1;
 	$maxLoop = ($maxStrand* (360/$window_degrees)*$number_rotations);
+	if($maxLoop<1) $maxLoop=1;
 	if($batch==0)  echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
 	//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
-	if($maxLoop<1) $maxLoop=1;
+	
 	$deltaPixel = $maxPixel/$maxLoop;
 	$S=$V=1;
 	$deltaH = (RED - ORANGE)/$maxLoop;
@@ -176,9 +177,6 @@ function f_spirals($get)
 			for($p=1;$p<=$maxPixel;$p++)
 			{
 				//	if($batch==0) echo "<pre> f,s,p=$f,$s,$p  ns,thick=$ns,$thick.  new_s=$new_s</pre>\n";
-				
-				
-			
 				$check=0;
 				while ($new_s>$maxStrand and $check<100)
 				{
@@ -193,10 +191,8 @@ function f_spirals($get)
 					if($new_s<1) $new_s+=$maxStrand;
 				}
 				//
-					//
-					//
-								
-				
+				//
+				//
 				//	$new_s = $s;
 				//	$s=$new_s;
 				$rgb_val=$spiral[$new_s][$p]; // really rotate
@@ -217,7 +213,6 @@ function f_spirals($get)
 					$rval=rand(01,255);
 					$r=$g=$b=$rval;
 					$rgb_val =hexdec(fromRGB($r,$g,$b));
-					
 				}
 				$string=$user_pixel=0;
 				//	$sparkles_array[$s][$p]=$sparkles_array[$s][$p]+0;
@@ -266,57 +261,6 @@ function f_spirals($get)
 	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
 }
 
-function delete_effects($username,$model_name)
-{
-	//Include database connection details
-	require_once('../conf/config.php');
-	//Connect to mysql server
-	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
-		die('Failed to connect to server: ' . mysql_error());
-	}
-	//Select database
-	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
-		die("Unable to select database");
-	}
-	$model_base_name = basename($model_name,".dat");
-	$query = "delete from effects where username='$username' and object_name='$model_base_name'";
-	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
-	mysql_close();
-}
-
-function insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val,$f,$seq_number)
-{
-	//if($batch==0) echo "<pre> insert_effects($username,$model_name,$strand,$pixel,$x,$y,$z,$rgb_val)\n";
-	//Include database connection details	
-	require_once('../conf/config.php');
-	//Connect to mysql server
-	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
-		die('Failed to connect to server: ' . mysql_error());
-	}
-	//Select database
-	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
-		die("Unable to select database");
-	}
-	$model_base_name = basename($model_name,".dat");
-	$x=$x+0.0;
-	$y=$y+0.0;
-	$z=$z+0.0;
-	$query="insert into effects (seq_number,username,object_name,strand,pixel,x,y,z,rgb_val,frame) values
-	($seq_number,'$username','$model_base_name',$strand,$pixel,$x,$y,$z,$rgb_val,$f)";
-	//if($batch==0) echo "<pre>insert_effects: query=$query</pre>\n";
-	mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query .
-	 "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
-	mysql_close();
-}
-
 function create_spiral($get,$arr)
 {
 	extract ($get);
@@ -362,6 +306,7 @@ function create_spiral($get,$arr)
 	$color2=hexdec("#00FF00");
 	$color3=hexdec("#FFFF00");
 	$maxStrandLoops = ($maxStrand* (360/$window_degrees)*$number_rotations);
+	if($maxStrandLoops<0) $maxStrandLoops=1;
 	$maxLoop=$maxStrandLoops/$maxStrand;
 	if($maxLoop<1) $maxLoop=1;
 	$loop=0;
@@ -371,58 +316,60 @@ function create_spiral($get,$arr)
 		{
 			$loop++;
 			if($loop<=$maxStrandLoops)
-				for($p=1;$p<=$maxPixel;$p++)
 			{
-				/*$p_offset = intval(($p-0)*$number_rotations);
-				if($direction=="ccw")
+				for($p=1;$p<=$maxPixel;$p++)
 				{
-					$new_s = $strand+intval(($f-1)*$speed)+$p_offset; // CCW
+					/*$p_offset = intval(($p-0)*$number_rotations);
+					if($direction=="ccw")
+					{
+						$new_s = $strand+intval(($f-1)*$speed)+$p_offset; // CCW
+					}
+					else
+					{
+						$new_s = $strand-intval(($f-1)*$speed)-$p_offset; // CW
+						}*/
+					$s_offset_L = $s + ($maxStrand*($p-1)/$maxPixel)*$number_rotations;
+					$s_offset_R = $s - ($maxStrand*($p-1)/$maxPixel)*$number_rotations;
+					$check=0;
+					while ($s_offset_L>$maxStrand and $check<100)
+					{
+						$check++;
+						if($s_offset_L>$maxStrand) $s_offset_L-=$maxStrand;
+					}
+					//
+					$check=0;
+					while ($s_offset_R>$maxStrand and $check<100)
+					{
+						$check++;
+						if($s_offset_R>$maxStrand) $s_offset_R-=$maxStrand;
+					}
+					//
+					$check=0;
+					while ($s_offset_L<1 and $check<100)
+					{
+						$check++;
+						if($s_offset_L<1) $s_offset_L+=$maxStrand;
+					}
+					//
+					$check=0;
+					while ($s_offset_R<1 and $check<100)
+					{
+						$check++;
+						if($s_offset_R<1) $s_offset_R+=$maxStrand;
+					}
+					//
+					$color = find_color($s,$p,$get);
+					$ns1 = make_array_segments($s,$p,$get);
+					/*if($batch==0) echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
+					print_r($ns1);
+					echo "</pre>\n";*/
+					if(in_array($s,$ns1))
+					{
+						if($handiness=="L" or $handiness=="B") $spiral[$s_offset_L][$p]=$color;
+						if($handiness=="R" or $handiness=="B") $spiral[$s_offset_R][$p]=$color;
+					}
+					//	if($batch==0) echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
 				}
-				else
-				{
-					$new_s = $strand-intval(($f-1)*$speed)-$p_offset; // CW
-					}*/
-				$s_offset_L = $s + ($maxStrand*($p-1)/$maxPixel)*$number_rotations;
-				$s_offset_R = $s - ($maxStrand*($p-1)/$maxPixel)*$number_rotations;
-				$check=0;
-				while ($s_offset_L>$maxStrand and $check<100)
-				{
-					$check++;
-					if($s_offset_L>$maxStrand) $s_offset_L-=$maxStrand;
-				}
-				//
-				$check=0;
-				while ($s_offset_R>$maxStrand and $check<100)
-				{
-					$check++;
-					if($s_offset_R>$maxStrand) $s_offset_R-=$maxStrand;
-				}
-				//
-				$check=0;
-				while ($s_offset_L<1 and $check<100)
-				{
-					$check++;
-					if($s_offset_L<1) $s_offset_L+=$maxStrand;
-				}
-				//
-				$check=0;
-				while ($s_offset_R<1 and $check<100)
-				{
-					$check++;
-					if($s_offset_R<1) $s_offset_R+=$maxStrand;
-				}
-				//
-				$color = find_color($s,$p,$get);
-				$ns1 = make_array_segments($s,$p,$get);
-				/*	if($batch==0) echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
-				print_r($ns1);
-				echo "</pre>\n";*/
-				if(in_array($s,$ns1))
-				{
-					if($handiness=="L" or $handiness=="B") $spiral[$s_offset_L][$p]=$color;
-					if($handiness=="R" or $handiness=="B") $spiral[$s_offset_R][$p]=$color;
-				}
-				//	if($batch==0) echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
 			}
 		}
 	}
