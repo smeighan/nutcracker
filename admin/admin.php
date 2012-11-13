@@ -30,17 +30,17 @@ require_once('../conf/barmenu.php');
 Home
 <?php if($menu=="index") echo "</b></font>";?>
 </a></td>
-<td><a href="../effects/cleanup.php">
+<td><a href="../admin/cleanup.php">
 <?php if($menu=="cleanup") echo "<font color=blue><b>"; ?>
 Cleanup old targets and effects
 <?php if($menu=="cleanup") echo "</b></font>";?>
 </a></td>
-<td><a href="../effects/bug.php">
+<td><a href="../admin/bug.php">
 <?php if($menu=="bug") echo "<font color=blue><b>"; ?>
 Open a Bug or Enhancement Ticket
 <?php if($menu=="bug") echo "</b></font>";?>
 </a></td>
-<td><a href="../effects/tutorials.html">
+<td><a href="../admin/tutorials.html">
 <?php if($menu=="tutorials") echo "<font color=blue><b>"; ?>
 Nutcracker Tutorials
 <?php if($menu=="tutorials") echo "</b></font>";?>
