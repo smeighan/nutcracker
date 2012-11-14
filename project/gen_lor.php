@@ -2,12 +2,24 @@
 
 function genLCB($fh_lcb,$NCFile, $frame_delay, $seq_duration, $name_clip) {
 	$maxFrame=$seq_duration/$frame_delay;
+	//$TotalFrames= ($seq_duration*1000)/$frame_delay;
 	$centiseconds=intval(($maxFrame*$frame_delay)/10);
 	$savedIndex=0;
 	$channel_savedIndex=array();
 	$file_type="lcb";
 	lor_lcb_header($fh_lcb,$name_clip);
 	fwrite($fh_lcb,sprintf("<cellDemarcations>\n"));
+	//echo "max Frame = ". $maxFrame. " | " . $seq_duration . " | " .$frame_delay;
+	$outstr="";
+	for($f=1;$f<=$maxFrame;$f++)
+	{
+		$centisecond=intval(($f-1)*$frame_delay/10);
+		$outstr.="<cellDemarcation centisecond=\"".$centisecond."\" />\n";
+	}
+	fwrite($fh_lcb,$outstr);
+	fwrite($fh_lcb,sprintf("</cellDemarcations>\n"));
+	//die;
+	fwrite($fh_lcb,sprintf("<channels>\n"));	
 	$fh_NC=fopen($NCFile,"r") or die("Unable to open $NCFile");
 	$loop=$channels=$savedIndex=0;
 	$myArray=getNCInfo($NCFile);
@@ -91,11 +103,11 @@ function genLOR($fh_lor,$NCFile, $frame_delay, $seq_duration) {
 				$savedIndex++;
 				fwrite($fh_lor,sprintf("   <channels>\n"));
 				if(isset($channel_savedIndex[$string][$pixel]['1']) && $channel_savedIndex[$string][$pixel]['1']!=null)
-					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['1']));
+					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\" />\n",$channel_savedIndex[$string][$pixel]['1']));
 				if(isset($channel_savedIndex[$string][$pixel]['2']) && $channel_savedIndex[$string][$pixel]['2']!=null)
-					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['2']));
+					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\" />\n",$channel_savedIndex[$string][$pixel]['2']));
 				if(isset($channel_savedIndex[$string][$pixel]['3']) && $channel_savedIndex[$string][$pixel]['3']!=null)
-					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['3']));
+					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\" />\n",$channel_savedIndex[$string][$pixel]['3']));
 				fwrite($fh_lor,sprintf("   </channels>\n"));
 				fwrite($fh_lor,sprintf("</rgbChannel>\n"));
 			}
