@@ -1,0 +1,26 @@
+update project_dtl set effect_name='WEB_RAINBOW' where project_id='96' and phrase_name='PHRASE1';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE2';
+update project_dtl set effect_name='WEB_BLUE' where project_id='96' and phrase_name='PHRASE3';
+update project_dtl set effect_name='WEB_ORANGE_METEOR' where project_id='96' and phrase_name='PHRASE4';
+update project_dtl set effect_name='WEB_YELLOW' where project_id='96' and phrase_name='PHRASE5';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE6';
+update project_dtl set effect_name='WEB_PURPLE' where project_id='96' and phrase_name='PHRASE8';
+update project_dtl set effect_name='WEB_RAINBOW' where project_id='96' and phrase_name='PHRASE9';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE10';
+update project_dtl set effect_name='WEB_BLUE' where project_id='96' and phrase_name='PHRASE11';
+update project_dtl set effect_name='WEB_ORANGE_METEOR' where project_id='96' and phrase_name='PHRASE12';
+update project_dtl set effect_name='WEB_YELLOW' where project_id='96' and phrase_name='PHRASE13';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE14';
+update project_dtl set effect_name='WEB_PURPLE' where project_id='96' and phrase_name='PHRASE15';
+update project_dtl set effect_name='WEB_RAINBOW' where project_id='96' and phrase_name='PHRASE16';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE17';
+update project_dtl set effect_name='WEB_BLUE' where project_id='96' and phrase_name='PHRASE18';
+update project_dtl set effect_name='WEB_ORANGE_METEOR' where project_id='96' and phrase_name='PHRASE19';
+update project_dtl set effect_name='WEB_YELLOW' where project_id='96' and phrase_name='PHRASE20';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE21';
+update project_dtl set effect_name='WEB_PURPLE' where project_id='96' and phrase_name='PHRASE22';
+update project_dtl set effect_name='WEB_RAINBOW' where project_id='96' and phrase_name='PHRASE23';
+update project_dtl set effect_name='WEB_RED' where project_id='96' and phrase_name='PHRASE24';
+update project_dtl set effect_name='WEB_BLUE' where project_id='96' and phrase_name='PHRASE25';
+update project_dtl set effect_name='WEB_ORANGE_METEOR' where project_id='96' and phrase_name='PHRASE26';
+
