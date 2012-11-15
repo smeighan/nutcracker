@@ -7,6 +7,9 @@ function f_bars($get)
 	if(!isset($get['color5']))    $get['color5']="#FFFFFF";
 	if(!isset($get['color6']))    $get['color6']="#FFFFFF";
 	if(!isset($get['direction'])) $get['direction']="down";
+	if(!isset($get['sparkle_type'])) $get['sparkle_type']="S";
+	if(!isset($get['sparkles'])) $get['sparkles']="0";
+	if(!isset($get['bar_type'])) $get['bar_type']="H";
 	if(!isset($get['fade_3d']))   $get['fade_3d']="N";
 	if(!isset($get['fade_in']))   $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
@@ -14,7 +17,10 @@ function f_bars($get)
 	if(!isset($get['speed']))     $get['speed']="1";
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
-	
+	$bar_type = strtoupper($bar_type);
+	$get['bar_type']=$bar_type;
+	$sparkle_type = strtoupper($sparkle_type);
+	$get['sparkle_type']=$sparkle_type;
 	set_time_limit(0);
 	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
@@ -73,9 +79,21 @@ function f_bars($get)
 	// $tree_rgb[$s][$p]=$rgb_val;
 	//$number_bars=10;
 	$bar_width = intval($maxPixel/$number_bars)+1;
+	$bar_width_p = intval($maxPixel/$number_bars)+1;
+	$bar_width_s = intval($maxStrand/$number_bars)+1;
 	if($bar_width==0) $bar_width=1;
+	if($bar_width_p==0) $bar_width=1;
+	if($bar_width_s==0) $bar_width=1;
 	if($batch==0) echo "<pre>bar_width=$bar_width,  number_bars=$number_bars</pre>\n";
 	$direction=strtolower($direction);	// make sure commands are lower case
+	if($bar_type=='V')
+	{
+		if($direction<>'right') $direction='left';
+	}
+	else
+	{
+	}
+	echo "<pre>FFFFFF=" . hexdec("#FFFFFF") . "</pre>\n";
 	for($f=1;$f<=$maxFrame;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
@@ -87,78 +105,136 @@ function f_bars($get)
 		{
 			for($p=1;$p<=$maxPixel;$p++)
 			{
-				//if(in_array($s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
+				$p_new=$p;
+				$s_new=$s;
+				//$amperage[$f][$s] += $V*0.060; // assume 29ma for pixels tobe full on
+				$string=$user_pixel=0;
+				if ($bar_type=='V')
 				{
-					//$amperage[$f][$s] += $V*0.060; // assume 29ma for pixels tobe full on
-					$string=$user_pixel=0;
-					$rgb_val=hexdec("FFFFFF");
-					$bar_n =intval( $p/$bar_width);
-					$bar_n=$bar_n%6;
-					if($bar_n==0) $rgb_val=hexdec($color1);
-					if($bar_n==1) $rgb_val=hexdec($color2);
-					if($bar_n==2) $rgb_val=hexdec($color3);
-					if($bar_n==3) $rgb_val=hexdec($color4);
-					if($bar_n==4) $rgb_val=hexdec($color5);
-					if($bar_n==5) $rgb_val=hexdec($color6);
-					/*	if($bar_n==6) $rgb_val=hexdec("FF00FF");
-					if($bar_n==7) $rgb_val=hexdec("FFF0FF");
-					if($bar_n==8) $rgb_val=hexdec("FF0FFF");
-					if($bar_n==9) $rgb_val=hexdec("FF00FF");
-					if($bar_n==10) $rgb_val=hexdec("F0000F");*/
-					//$rgb_val=hexdec("FFFFFF");
-					$HSV=RGBVAL_TO_HSV($rgb_val);
-					$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
-					//$direction='expand';
-					$f_offset = intval($f*$speed);
-					if($direction=='up')
+					$bar_n =intval( $s/$bar_width_s);
+				}
+				else
+				{
+					$bar_n =intval( $p/$bar_width_p);
+				}
+				$rgb_val=hexdec("FFFFFF");
+				$bar_n=$bar_n%6;
+				if($bar_n==0) $rgb_val=hexdec($color1);
+				if($bar_n==1) $rgb_val=hexdec($color2);
+				if($bar_n==2) $rgb_val=hexdec($color3);
+				if($bar_n==3) $rgb_val=hexdec($color4);
+				if($bar_n==4) $rgb_val=hexdec($color5);
+				if($bar_n==5) $rgb_val=hexdec($color6);
+				/*	if($bar_n==6) $rgb_val=hexdec("FF00FF");
+				if($bar_n==7) $rgb_val=hexdec("FFF0FF");
+				if($bar_n==8) $rgb_val=hexdec("FF0FFF");
+				if($bar_n==9) $rgb_val=hexdec("FF00FF");
+				if($bar_n==10) $rgb_val=hexdec("F0000F");*/
+				//$rgb_val=hexdec("FFFFFF");
+				$HSV=RGBVAL_TO_HSV($rgb_val);
+				$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
+				//$direction='expand';
+				$f_offset = intval($f*$speed);
+				if($direction=='up')
+				{
+					$n=$p-$f_offset;
+					$pixel_ratio = ($bar_width-($p%$bar_width_p))/$bar_width; // down
+				}
+				else if($direction=='down')
+				{
+					$n=$p+$f_offset;
+					$pixel_ratio = (($p%$bar_width))/$bar_width_p; // up
+				}
+				else if($direction=='left')
+				{
+					$n=$s-$f_offset;
+					$pixel_ratio = ($bar_width_s-($s%$bar_width_s))/$bar_width_s; // down
+				}
+				else if($direction=='right')
+				{
+					$n=$s+$f_offset;
+					$pixel_ratio = (($s%$bar_width_s))/$bar_width_s; // up
+				}
+				else if($direction=='compress')
+				{
+					$p2 = intval($maxPixel/2);
+					if($p<=$p2)
 					{
 						$n=$p-$f_offset;
-						$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down
+						$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
 					}
-					if($direction=='down')
-					{
+					else{
 						$n=$p+$f_offset;
 						$pixel_ratio = (($p%$bar_width))/$bar_width; // up
 					}
-					if($direction=='compress')
+				}
+				else if($direction=='expand')
+				{
+					$p2 = intval($maxPixel/2);
+					if($p>$p2)
 					{
-						$p2 = intval($maxPixel/2);
-						if($p<=$p2)
-						{
-							$n=$p-$f_offset;
-							$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
-						}
-						else{
-							$n=$p+$f_offset;
-							$pixel_ratio = (($p%$bar_width))/$bar_width; // up
-						}
+						$n=$p-$f_offset;
+						$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
 					}
-					if($direction=='expand')
-					{
-						$p2 = intval($maxPixel/2);
-						if($p>$p2)
-						{
-							$n=$p-$f_offset;
-							$pixel_ratio = ($bar_width-($p%$bar_width))/$bar_width; // down	
-						}
-						else{
-							$n=$p+$f_offset;
-							$pixel_ratio = (($p%$bar_width))/$bar_width; // up
-						}
-					}
-					if($direction=='down')
-					{
+					else{
 						$n=$p+$f_offset;
 						$pixel_ratio = (($p%$bar_width))/$bar_width; // up
 					}
-					$highlight='n';
-					if(strtoupper($highlight)=='Y' and $p%$bar_width==0) $S=0.0;
-					$pixel_ratio += 0.1;
-					if($pixel_ratio>1.0) $pixel_ratio=1.0;
-					if($fade_3d=='Y' or $fade_3d=='y') $V=$V*$pixel_ratio;
-					//echo "<pre>           H,S,V = $H,$S,$V</pre>\n";
-					$rgb_val = HSV_TO_RGB ($H, $S, $V);
-					$seq_number++;
+				}
+				$highlight='n';
+				if(strtoupper($highlight)=='Y' and $p%$bar_width==0) $S=0.0;
+				$pixel_ratio += 0.1;
+				if($pixel_ratio>1.0) $pixel_ratio=1.0;
+				srand();
+				$random_100 = intval(mt_rand(1,100));
+				if($sparkle_type=='R') // Rainbow sparkles?
+				{ // yes
+					$rgb_val = mt_rand(1,16777215); // randomly select any of 16 million colors
+					if($sparkles>=$random_100)
+						$HSV=RGBVAL_TO_HSV($rgb_val); // replace our previous color wirh rainbow color
+				}
+				$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
+				if($fade_3d=='Y' or $fade_3d=='y') $V=$V*$pixel_ratio;
+				//echo "<pre>           H,S,V = $H,$S,$V</pre>\n";
+				if($sparkle_type=='S')
+				{
+					//echo "<pre>sparkles,random_100=$sparkles,$random_100</pre>\n";
+					if($sparkles>=$random_100)
+					{
+						$V=mt_rand($V,1.0); // random sprakles using same hue
+						//echo "<pre>New V =$V</pre>\n";
+					}
+				}
+				//
+				if($sparkle_type=='W')
+				{
+					if($sparkles>=$random_100)
+						if(mt_rand(1,100)>50) $S=0.0; // add white sparkles
+				}
+				$rgb_val = HSV_TO_RGB ($H, $S, $V);
+				//$rgb_val = mt_rand(1,16777215);
+				$seq_number++;
+				if ($bar_type=='V')
+				{
+					if($n<1) $n+=$maxStrand;
+					if($n<1) $n+=$maxStrand;
+					if($n<1) $n+=$maxStrand;
+					if($n<1) $n+=$maxStrand;
+					$m=$n%$maxStrand;
+					if($m==0)
+					{
+						$s_new=$maxStrand;
+					}
+					else
+					{
+						$s_new = $m;
+					}
+					if($s_new<0) $s_new+=$maxStrand;
+					$xyz=$tree_xyz[$s_new][$p]; // get x,y,z location from the model.
+					$p_new=$p;
+				}
+				else
+				{
 					if($n<1) $n+=$maxPixel;
 					if($n<1) $n+=$maxPixel;
 					if($n<1) $n+=$maxPixel;
@@ -173,17 +249,18 @@ function f_bars($get)
 						$p_new = $m;
 					}
 					if($p_new<0) $p_new+=$maxPixel;
-					$hex=dechex($rgb_val);
-					//echo "<pre>f,s,p = $f,$s,$p (p_new=$p_new, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
+					$s_new=$s;
 					$xyz=$tree_xyz[$s][$p_new]; // get x,y,z location from the model.
-					fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
-					$s,$p_new,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
-					,$s_pixel[$s][$p_new][0],$s_pixel[$s][$p_new][1],
-					$f,$seq_number));
 				}
+				$hex=dechex($rgb_val);
+				//echo "<pre>f,s,p = $f,$s,$p (p_new=$p_new, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
+				fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
+				$s_new,$p_new,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
+				,$s_pixel[$s][$p_new][0],$s_pixel[$s][$p_new][1],
+				$f,$seq_number));
 			}
 		}
-			fclose($fh_dat [$f]);
+		fclose($fh_dat [$f]);
 	}
 	$x_dat_base=$base . ".dat";
 	$show_frame='n';
@@ -200,4 +277,25 @@ function f_bars($get)
 		echo "<pre>Location: bc.php?batch=$batch</pre>\n";
 	}
 	return;
+}
+
+function get_color($bar_n,$s,$p)
+{
+	$rgb_val=hexdec("FFFFFF");
+	$bar_n=$bar_n%6;
+	if($bar_n==0) $rgb_val=hexdec($color1);
+	if($bar_n==1) $rgb_val=hexdec($color2);
+	if($bar_n==2) $rgb_val=hexdec($color3);
+	if($bar_n==3) $rgb_val=hexdec($color4);
+	if($bar_n==4) $rgb_val=hexdec($color5);
+	if($bar_n==5) $rgb_val=hexdec($color6);
+	/*	if($bar_n==6) $rgb_val=hexdec("FF00FF");
+	if($bar_n==7) $rgb_val=hexdec("FFF0FF");
+	if($bar_n==8) $rgb_val=hexdec("FF0FFF");
+	if($bar_n==9) $rgb_val=hexdec("FF00FF");
+	if($bar_n==10) $rgb_val=hexdec("F0000F");*/
+	//$rgb_val=hexdec("FFFFFF");
+	$HSV=RGBVAL_TO_HSV($rgb_val);
+	$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
+	$rgb_val = HSV_TO_RGB ($H, $S, $V);
 }
