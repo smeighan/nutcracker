@@ -26,28 +26,8 @@ if( isset($_REQUEST['effect_class']) && $_REQUEST['effect_class'] !='')
 	$effect_class=$_REQUEST['effect_class'];
 }
 extract ($_GET);
-/* Array
-(
-[submit] => Submit Form to create your target model
-[number_gifs] => 100
-[sort] => member_id
-[effect_class_selected] => Array
-(
-[0] => all
-[1] => bars
-[2] => butterfly
-)
-	[number_segments] => 
-)*/
-/*echo "<pre>";
-print_r($_GET);
-echo "</pre>\n";*/
-// http://meighan.net/nutcracker/effects/gallery.php?start=101?end=151?number_gifs=50?sort=member_id?effect_class_selected=dummy|garlands|meteors
-// QUERY_STRING] => start=101?end=151?number_gifs=50?sort=member_id?effect_class_selected=dummy|garlands|meteors
-//
-//
-//$tokens=explode("?model=",$REQUEST_URI);
-$number_gifs=0;
+
+
 $effect_class_selected=array();
 $sort="member_id";
 if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-index.php
@@ -59,6 +39,7 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 	$tok2=explode("=",$tokens[3]); $sort = $tok2[1];
 	$tok2=explode("=",$tokens[4]); $effect_class_selected_array = $tok2[1];*/
 	extract ($_GET);
+	echo "<h2>Select an audcaity label file for cleanup</h2>\n";
 	$self=$_SERVER['PHP_SELF'];
 	echo "<form action=\"$self\" method=\"POST\" enctype=\"multipart/form-data\">\n";
 	?>
@@ -72,13 +53,7 @@ if(isset($_POST)===false or $_POST==null ) // First time here? Called by member-
 else
 {
 	extract ($_GET);
-	echo "<pre>GET:";
-	print_r($_GET);
-	echo "POST\n";
-	print_r($_POST);
-	echo "FILES\n";
-	print_r($_FILES);
-	echo "</pre>\n";
+	
 	if (($_FILES["file"]["type"] == "text/plain")
 		&& ($_FILES["file"]["size"] < 20000))
 	{
@@ -98,11 +73,19 @@ else
 			}
 			else
 			{
-			$src=$_FILES["file"]["tmp_name"];
-			$tgt=$_FILES["file"]["tmp_name"] . ".tmp";
-			
+				$src=$_FILES["file"]["tmp_name"];
+				$tgt=$_FILES["file"]["tmp_name"] . ".tmp";
 				move_uploaded_file($src,$tgt);
 				echo "Stored in: " . $tgt;
+				$fh=fopen($tgt,"r");
+				while (!feof($fh))
+				{
+					$line = fgets($fh);
+					$tok=preg_split("/ +/", $line);
+					$l=strlen($line);
+					$c= substr($line,0,1);
+					echo "<pre>$line</pre>\n";
+				}
 			}
 		}
 	}
