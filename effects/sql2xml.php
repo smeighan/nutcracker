@@ -5,52 +5,84 @@
 * @param string  $sql       - SQL statement
 * @param string  $structure - XML hierarchy
 */
+require_once('../conf/header.php');
+require_once('../effects/read_file.php');
+/*SESSION
+Array
+(
+[SESS_MEMBER_ID] => 2
+[SESS_FIRST_NAME] => sean
+[SESS_LAST_NAME] => MEIGHAN
+[SESS_LOGIN] => f
+)*/
+print_r($_GET);
+$mode='export';
+if(isset($_GET['mode'])) $mode=$_GET['mode'];
+$username=$_SESSION['SESS_LOGIN'];
+//echo "<pre>$username mode=$mode</pre>\n";
 $sql = "select * from members";
-/*create_csv($filename,"effects_user_hdr","where username='f'");
-create_csv($filename,"effects_user_dtl","where username='f'");
-create_csv($filename,"effects_user_segment","where username ='f'");
-create_csv($filename,"project_dtl","where project_id in (select project_id from project where username='f')");
-create_csv($filename,"project","where username='f'"); // NOTE! This must be after the above statement
-create_csv($filename,"models_strands","where username ='f'");
-create_csv($filename,"models_strand_segments","where username ='f'");*/
-$filename="test.xml";
-$username='f';
-$fp=fopen($filename,"w");
-fwrite($fp,"<?xml version='1.0' standalone='yes'?>\n<nutcracker>\n");
-sql2xml($fp,$username,"effects_user_hdr","select * from effects_user_hdr where username='f'");
-sql2xml($fp,$username,"effects_user_dtl","select * from effects_user_dtl where username='f'");
-sql2xml($fp,$username,"project_id","select * from project_dtl where project_id in (select project_id from project where username='f')");
-sql2xml($fp,$username,"project","select * from project where username='f'");
-sql2xml($fp,$username,"models_strands","select * from models_strands where username='f'");
-sql2xml($fp,$username,"models_strand_segments","select * from models_strand_segments where username='f'");
-sql2xml($fp,$username,"models","select * from models where username='f'");
-//$fp=fopen($filename,"a");
-fwrite($fp,"</nutcracker>\n");
-fclose($fp);
+require_once("../effects/read_file.php");
+$path ="../export";
+$directory=$path;
+if (file_exists($directory))
+{
+	} else {
+	if($batch==0) echo "The directory $directory does not exist, creating it";
+	mkdir($directory, 0777);
+}
+//
+$member_id=get_member_id($username);
+$path ="../export/" . $member_id;
+$directory=$path;
+if (file_exists($directory))
+{
+	} else {
+	if($batch==0) echo "The directory $directory does not exist, creating it";
+	mkdir($directory, 0777);
+}
+$filename=$path . "/" . $username . "_" . date('Y-m-d_Hi') . ".xml";
+$tables = array (
+"effects_user_hdr" => "where username='$username'",
+"effects_user_dtl" => "where username='$username'",
+"project_dtl" => "where project_id in (select project_id from project where username='$username')",
+"project" => "where username='$username'",
+"models_strands" => "where username='$username'",
+"models_strand_segments" => "where username='$username'",
+"models" => "where username='$username'"
+);
+if($mode=="export")
+{
+	$fp=fopen($filename,"w");
+	if(!$fp)
+	{
+		die ("Fopen failed to open $filename");
+	}
+	fwrite($fp,"<?xml version='1.0' standalone='yes'?>\n<nutcracker>\n");
+	$fullpath=realpath($filename);
+	echo "<h2>Exported data for user $username will be stored in $fullpath</h2>\n";
+	foreach  ($tables as $db_table => $where)
+	{
+		sql2xml($fp,$username,$db_table,$where);
+	}
+	//$fp=fopen($filename,"a");
+	fwrite($fp,"</nutcracker>\n");
+	fclose($fp);
+}
 //
 //
-display_xml("test.xml");
-echo "</pre>\n";
+if($mode=='import')
+{
+	$file=show_files($path);
+	$filename=$path . "/" .$file;
+	$fullpath=realpath($filename);
+	echo "<h2>Importing data from $fullpath</h2>";
+	display_xml($filename,$tables);
+}
 
-function display_xml($filename)
+function display_xml($filename,$tables)
 {
 	//$resXml = simplexml_load_file($filename); //$requestUrl is where the xml file is located
 	echo "<pre>";
-	/*print_r($resXml);
-	echo "Loop thourgh xml\n";
-	foreach ($resXml  as $item=>$value)
-	{
-		echo "item=$item,$value\n";
-		print_r($item);
-	}
-	*/
-	/*foreach ($resXml->readCalls->classify->classification->class as $d)
-	{
-		$currClassificationName = $d['className'];
-		$currClassificationRating = (float) $d['p'];
-		echo "$currClassificationName: $currClassificationRating" . "</br>";
-	}
-	*/
 	//	print "<pre><textarea style=\"width:200%;height:100%;\">"; 
 	$Array = simplexml_load_string(file_get_contents($filename)); 
 	$xml_array = xml2phpArray($Array,array());
@@ -60,8 +92,9 @@ function display_xml($filename)
 	{
 		$db_table = $data_array['db_table'];
 		$username = $data_array['login_username'] ;
-		echo "DELETE from $db_table where username ='$username'\n";
-		//	echo "i=$i  " . $data_array['db_table'] . ",'" . $data_array['login_username'] . "'\n";
+		$where = $tables[$db_table];
+		$delete="DELETE from $db_table $where";
+		echo "<pre>$delete</pre>\n";
 		$row_array=$data_array['ROW0'] ;
 		$loop=0;
 		$insert = "INSERT into $db_table (";
@@ -71,7 +104,9 @@ function display_xml($filename)
 			$c=count($row_data);
 			//echo "r=$r   c=$c \n";
 			$comma="";
+			$field_list='';
 			$loop++;
+			$values ='(';
 			foreach ($row_data as $name=>$value)
 			{
 				//echo "   $name => $value\n";
@@ -79,17 +114,16 @@ function display_xml($filename)
 				{
 					$field_list .= $comma . $name;
 				}
-				$values .= $comma . $value;
+				$values .= "$comma'" . mysql_real_escape_string ($value) . "'";
 				$comma=",";
 			}
 			if($loop==1)
 			{
-				$field_list .=")";
+				$field_list .=") values\n";
 				$insert .= $field_list;
-				echo "$field_list\n";
 			}
 			$values .= ")";
-			echo "$values\n";
+			//	echo "<pre>$insert $values</pre>\n";
 		}
 		//print "</textarea></pre>"; 
 		echo "</pre>";
@@ -115,19 +149,34 @@ function xml2phpArray($xml,$arr)
 	return $arr;
 }
 
-function sql2xml($fp,$username,$table,$sql, $structure = 0)
+function sql2xml($fp,$username,$table,$where, $structure = 0)
 {
 	// init variables for row processing
-	require_once('../conf/config.php');
+	$sql = "SELECT * from $table $where";
 	$row_current = $row_previous = null;
 	// set MySQL username/password and connect to the database
-	$db_cn = mysql_pconnect(DB_HOST, DB_USER, DB_PASSWORD);
-	mysql_select_db(DB_DATABASE, $db_cn);
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
 	//$fp=fopen("text.xml","a");
 	fwrite($fp,"<xml_export>\n");
 	fwrite($fp,"<db_table>$table</db_table>\n");
 	fwrite($fp,"<login_username>$username</login_username>\n");
-	$result = mysql_query($sql, $db_cn);
+	//
+	$query=$sql;
+	$records=0;
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	//echo "<pre>$sql</pre>\n";
 	// get number of columns in result
 	$ncols = mysql_num_fields($result);
 	// is there a hierarchical structure
@@ -208,6 +257,7 @@ function sql2xml($fp,$username,$table,$sql, $structure = 0)
 			fwrite($fp, "</$name>\n");
 		}
 		fwrite($fp, "</ROW$level>\n");
+		$records++;
 		// remember previous row
 		$rowPrev = $row;
 	}
@@ -221,5 +271,51 @@ function sql2xml($fp,$username,$table,$sql, $structure = 0)
 	}
 	fwrite($fp,"</xml_export>\n");
 	//	fclose($fp);
+	echo "<pre>&nbsp;&nbsp;&nbsp;&nbsp;Table: $table has $records records</pre>\n";
 }
-?>
+
+function sql_execute($query)
+{
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	$result=mysql_query($query);
+	if(mysql_errno()<>0)
+	{
+		echo "<pre><b>A fatal MySQL error occured</b>.\n<br />Query: $query<br />\nError: (" .
+		mysql_errno() . ") " . mysql_error();
+	}
+}
+
+function show_files($path)
+{
+	$path .= "/";
+	$thelist="";
+	if ($handle = opendir($path))
+	{
+		while (false !== ($file = readdir($handle)))
+		{
+			if ($file != "." && $file != ".." && 
+			strtolower(substr($file, strrpos($file, '.') + 1)) == 'xml')
+			{
+				$thelist .= '<li><a href="'.$file.'">'.$file.'</a></li>';
+				$lastfile=$file;
+			}
+		}
+		closedir($handle);
+	}
+	echo "<ol>";
+	echo $thelist;
+	echo "</ol>\n";
+	return $lastfile;
+}
