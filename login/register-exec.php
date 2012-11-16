@@ -147,7 +147,6 @@ else if($method==2)
 	VALUES('$fname','$lname','$username','".md5($_GET['password'])."',
 	'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
 }
-echo "<pre>query=$qry</pre>\n";
 $result = @mysql_query($qry);
 //Check whether the query was successful or not
 if($result)
