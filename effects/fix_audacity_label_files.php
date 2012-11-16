@@ -99,7 +99,7 @@ else
 			else
 			{
 			$src=$_FILES["file"]["tmp_name"];
-			$tgt=$_FILES["file"]["tmp_name"] / ".tmp";
+			$tgt=$_FILES["file"]["tmp_name"] . ".tmp";
 			
 				move_uploaded_file($src,$tgt);
 				echo "Stored in: " . $tgt;
