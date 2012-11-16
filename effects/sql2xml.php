@@ -15,9 +15,14 @@ Array
 [SESS_LAST_NAME] => MEIGHAN
 [SESS_LOGIN] => f
 )*/
-print_r($_GET);
+if($_SERVER ['HTTP_HOST'] == 'meighan.net')
+	die("<h2>Export and Import are meant to be used only on localhost installs of Nutcracker</h2>\n");
+//
+//
 $mode='export';
+$file='';
 if(isset($_GET['mode'])) $mode=$_GET['mode'];
+if(isset($_GET['file'])) $file=$_GET['file'];
 $username=$_SESSION['SESS_LOGIN'];
 //echo "<pre>$username mode=$mode</pre>\n";
 $sql = "select * from members";
@@ -40,7 +45,6 @@ if (file_exists($directory))
 	if($batch==0) echo "The directory $directory does not exist, creating it";
 	mkdir($directory, 0777);
 }
-$filename=$path . "/" . $username . "_" . date('Y-m-d_Hi') . ".xml";
 $tables = array (
 "effects_user_hdr" => "where username='$username'",
 "effects_user_dtl" => "where username='$username'",
@@ -52,6 +56,8 @@ $tables = array (
 );
 if($mode=="export")
 {
+$filename=$path . "/" . $username . "_" . date('Y-m-d_Hi');
+	$fullpath=realpath($filename);
 	$fp=fopen($filename,"w");
 	if(!$fp)
 	{
@@ -67,16 +73,26 @@ if($mode=="export")
 	//$fp=fopen($filename,"a");
 	fwrite($fp,"</nutcracker>\n");
 	fclose($fp);
+	echo "<h2>Export complete</h2>\n";
 }
 //
 //
 if($mode=='import')
 {
-	$file=show_files($path);
+	echo "file='$file',  Length = " . strlen($file);
+	if(strlen($file)<=0)
+	{
+		$file=show_files($path);
+	}
+	else
+	{
+		$file2=show_files($path);
+	}
 	$filename=$path . "/" .$file;
 	$fullpath=realpath($filename);
 	echo "<h2>Importing data from $fullpath</h2>";
 	display_xml($filename,$tables);
+	echo "<h2>Import complete</h2>\n";
 }
 
 function display_xml($filename,$tables)
@@ -94,8 +110,7 @@ function display_xml($filename,$tables)
 		$username = $data_array['login_username'] ;
 		$where = $tables[$db_table];
 		$delete="DELETE from $db_table $where";
-		echo "<pre>$delete</pre>\n";
-
+		echo "<font color=red><h3>$delete</h3></pre>\n";
 		sql_execute($delete);
 		$row_array=$data_array['ROW0'] ;
 		$loop=0;
@@ -126,14 +141,14 @@ function display_xml($filename,$tables)
 				$insert .= $field_list;
 			}
 			$values .= ")";
-
 			$sql = "$insert $values";
 			sql_execute($sql);
 			$records++;
-			//echo "<pre>$sql</pre>\n";
+			// echo "<pre>$sql</pre>\n";
 		}
 		//print "</textarea></pre>"; 
-		echo "$records inserted into $db_table</pre>";
+		
+		echo "<h3><font color=green>&nbsp;&nbsp;&nbsp;INSERT $records records into $db_table</h3><br/>";
 	}
 }
 
@@ -315,7 +330,7 @@ function show_files($path)
 			if ($file != "." && $file != ".." && 
 			strtolower(substr($file, strrpos($file, '.') + 1)) == 'xml')
 			{
-				$thelist .= '<li><a href="'.$file.'">'.$file.'</a></li>';
+				$thelist .= '<li><a href="sql2xml.php?mode=import&file='.$file.'">'.$file.'</a></li>';
 				$lastfile=$file;
 			}
 		}
