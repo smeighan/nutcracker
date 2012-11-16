@@ -95,10 +95,13 @@ function display_xml($filename,$tables)
 		$where = $tables[$db_table];
 		$delete="DELETE from $db_table $where";
 		echo "<pre>$delete</pre>\n";
+
+		sql_execute($delete);
 		$row_array=$data_array['ROW0'] ;
 		$loop=0;
 		$insert = "INSERT into $db_table (";
 		$field_list='';
+		$records=0;
 		foreach ($row_array as $r => $row_data)
 		{
 			$c=count($row_data);
@@ -123,10 +126,14 @@ function display_xml($filename,$tables)
 				$insert .= $field_list;
 			}
 			$values .= ")";
-			//	echo "<pre>$insert $values</pre>\n";
+
+			$sql = "$insert $values";
+			sql_execute($sql);
+			$records++;
+			//echo "<pre>$sql</pre>\n";
 		}
 		//print "</textarea></pre>"; 
-		echo "</pre>";
+		echo "$records inserted into $db_table</pre>";
 	}
 }
 
