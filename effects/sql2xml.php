@@ -5,9 +5,23 @@
 * @param string  $sql       - SQL statement
 * @param string  $structure - XML hierarchy
 */
+require_once('../conf/header.php');
+require_once('../effects/read_file.php');
+/*SESSION
+Array
+(
+[SESS_MEMBER_ID] => 2
+[SESS_FIRST_NAME] => sean
+[SESS_LAST_NAME] => MEIGHAN
+[SESS_LOGIN] => f
+)*/
+print_r($_GET);
+$mode='export';
+if(isset($_GET['mode'])) $mode=$_GET['mode'];
+$username=$_SESSION['SESS_LOGIN'];
+//echo "<pre>$username mode=$mode</pre>\n";
 $sql = "select * from members";
 require_once("../effects/read_file.php");
-$username='f';
 $path ="../export";
 $directory=$path;
 if (file_exists($directory))
@@ -36,26 +50,34 @@ $tables = array (
 "models_strand_segments" => "where username='$username'",
 "models" => "where username='$username'"
 );
-echo "<pre> ";
-print_r($tables);
-echo "</pre>filename=$filename\n";
-$fp=fopen($filename,"w");
-if(!$fp)
+if($mode=="export")
 {
-	die ("Fopen failed to open $filename");
+	$fp=fopen($filename,"w");
+	if(!$fp)
+	{
+		die ("Fopen failed to open $filename");
+	}
+	fwrite($fp,"<?xml version='1.0' standalone='yes'?>\n<nutcracker>\n");
+	$fullpath=realpath($filename);
+	echo "<h2>Exported data for user $username will be stored in $fullpath</h2>\n";
+	foreach  ($tables as $db_table => $where)
+	{
+		sql2xml($fp,$username,$db_table,$where);
+	}
+	//$fp=fopen($filename,"a");
+	fwrite($fp,"</nutcracker>\n");
+	fclose($fp);
 }
-fwrite($fp,"<?xml version='1.0' standalone='yes'?>\n<nutcracker>\n");
-foreach  ($tables as $db_table => $where)
-{
-	sql2xml($fp,$username,$db_table,$where);
-}
-//$fp=fopen($filename,"a");
-fwrite($fp,"</nutcracker>\n");
-fclose($fp);
 //
 //
-display_xml($filename,$tables);
-echo "</pre>\n";
+if($mode=='import')
+{
+	$file=show_files($path);
+	$filename=$path . "/" .$file;
+	$fullpath=realpath($filename);
+	echo "<h2>Importing data from $fullpath</h2>";
+	display_xml($filename,$tables);
+}
 
 function display_xml($filename,$tables)
 {
@@ -72,7 +94,7 @@ function display_xml($filename,$tables)
 		$username = $data_array['login_username'] ;
 		$where = $tables[$db_table];
 		$delete="DELETE from $db_table $where";
-		echo "<pre>i=$i $db_table: $delete </pre>\n";
+		echo "<pre>$delete</pre>\n";
 		$row_array=$data_array['ROW0'] ;
 		$loop=0;
 		$insert = "INSERT into $db_table (";
@@ -152,8 +174,9 @@ function sql2xml($fp,$username,$table,$where, $structure = 0)
 	fwrite($fp,"<login_username>$username</login_username>\n");
 	//
 	$query=$sql;
+	$records=0;
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
-	echo "<pre>$sql</pre>\n";
+	//echo "<pre>$sql</pre>\n";
 	// get number of columns in result
 	$ncols = mysql_num_fields($result);
 	// is there a hierarchical structure
@@ -234,6 +257,7 @@ function sql2xml($fp,$username,$table,$where, $structure = 0)
 			fwrite($fp, "</$name>\n");
 		}
 		fwrite($fp, "</ROW$level>\n");
+		$records++;
 		// remember previous row
 		$rowPrev = $row;
 	}
@@ -247,6 +271,7 @@ function sql2xml($fp,$username,$table,$where, $structure = 0)
 	}
 	fwrite($fp,"</xml_export>\n");
 	//	fclose($fp);
+	echo "<pre>&nbsp;&nbsp;&nbsp;&nbsp;Table: $table has $records records</pre>\n";
 }
 
 function sql_execute($query)
@@ -270,4 +295,27 @@ function sql_execute($query)
 		echo "<pre><b>A fatal MySQL error occured</b>.\n<br />Query: $query<br />\nError: (" .
 		mysql_errno() . ") " . mysql_error();
 	}
+}
+
+function show_files($path)
+{
+	$path .= "/";
+	$thelist="";
+	if ($handle = opendir($path))
+	{
+		while (false !== ($file = readdir($handle)))
+		{
+			if ($file != "." && $file != ".." && 
+			strtolower(substr($file, strrpos($file, '.') + 1)) == 'xml')
+			{
+				$thelist .= '<li><a href="'.$file.'">'.$file.'</a></li>';
+				$lastfile=$file;
+			}
+		}
+		closedir($handle);
+	}
+	echo "<ol>";
+	echo $thelist;
+	echo "</ol>\n";
+	return $lastfile;
 }
