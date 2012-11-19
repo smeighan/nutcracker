@@ -26,11 +26,23 @@ else
 
 //$myfilter="bars";
 
-if ($myfilter=="all")
+if ($myfilter=="all")	
 		$wherestr= " 1=1 ";
 else
 		$wherestr= " effect_class='".$myfilter."' ";
-		
+
+if (isset($_GET['filterusername'])) {
+	$fuser=$_GET['filterusername'];
+	if (strlen($fuser) >0)
+		$wherestr=$wherestr." AND username like '".$fuser."%' ";
+}
+
+if (isset($_GET['filtereffect'])) {
+	$feffect=$_GET['filtereffect'];
+	if (strlen($feffect) > 0)
+		$wherestr=$wherestr." AND effect_name like '".$feffect."%' ";
+}
+	
 $count=$dbo->prepare("select username from gallery where ".$wherestr);
 $count->execute();
 $nume=$count->rowCount(); // Total number of records

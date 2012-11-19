@@ -117,11 +117,15 @@ function ajaxFunction(val)
 		var mylimit=myForm.mylimit.value;
 		var mysort=myForm.mysort.value;
 		var myfilter=myForm.myfilter.value;
+		var filterusername=myForm.filterusername.value;
+		var filtereffect=myForm.filtereffect.value;
 		url=url+"?endrecord="+myendrecord;
 		url=url+"&direction="+val;
 		url=url+"&mylimit="+mylimit;
 		url=url+"&mysort="+mysort;
 		url=url+"&myfilter="+myfilter;
+		url=url+"&filterusername="+filterusername;
+		url=url+"&filtereffect="+filtereffect;
 		url=url+"&sid="+Math.random();
 		httpxml.onreadystatechange=stateChanged;
 		httpxml.open("GET",url,true);
@@ -151,8 +155,7 @@ function ajaxFunction(val)
 	<input type=hidden name=st value=0>
 	<input type="hidden" name="CopyEffect" value="XXXX">
 	<table>
-	<tr>
-	<td class="normalText"># Recs to Show : <select id="mylimit" onChange="ajaxFunction('bk')">
+	<tr><td># Recs to Show : <select id="mylimit" onChange="ajaxFunction('bk')">
 	<option value="10">10</option>
 	<option value="50">50</option>
 	<option value="100">100</option>
@@ -160,16 +163,18 @@ function ajaxFunction(val)
 	<option value="500">500</option>
 	<option value="1000">1000</option>
 	</select></td>
-	<td class="normalText">Sort by : <select id="mysort" onChange="ajaxFunction('bk')">
+	<td>Sort by : <select id="mysort" onChange="ajaxFunction('bk')">
 	<option value="1">user,effect</option>
 	<option value="2">type, user, effect</option>
 	<option value="3">effect</option>
-	</select></td>
-	<td class="normalText">Filter by : <select id="myfilter" onChange="ajaxFunction('bk')">
+	</select></td></tr>
+	<tr><td>Filter by : <select id="myfilter" onChange="ajaxFunction('bk')">
 	<option value="all">all</option>
 	<?php show_current_effects(); ?>
 	</select></td>
 	</tr>
+	<tr><td>Username <input type="text" id="filterusername" onChange="ajaxFunction('bk')"></td></tr>
+	<tr><td>Effect <input type="text" id="filtereffect" onChange="ajaxFunction('bk')"></td></tr>
 	<tr>
 	<td><input type=button id="back" class="SubmitButton" value=Prev onClick="ajaxFunction('bk'); return false"></td>
 	<td align=right><input type=button class="SubmitButton" value=Next id="fwd" onClick="ajaxFunction('fw');  return false"></td></tr>
@@ -179,7 +184,7 @@ function ajaxFunction(val)
 	</table>
 	<input type="button" class="SubmitButton" value="Copy Checked Effect(s)" onClick="copyEffects();">
 	</form>
-	</body>
+	</body>"
 	</html>
 	<?php
 	
@@ -213,18 +218,3 @@ function ajaxFunction(val)
 		return ;
 	}
 
-/*<option value="bars">bars - Horizontal Bars</option>
-<option value="butterfly">butterfly - Butterfly Wing</option>
-<option value="color_wash">color_wash - Color wash between start and end color</option>
-<option value="fire">fire - Burning Fire</option>
-<option value="garlands">garlands - Falling circles on your rgb device</option>
-<option value="gif">gif - Display animated gif's on your RGB device</option>
-<option value="layer">layer - Allows to effect files to be merged</option>
-<option value="life">life - Game of Life</option>
-<option value="meteors">meteors - Falling meteors on your RGB device</option>
-<option value="pictures">pictures - JPG, PNG or GIF image projected on your RGB device</option>
-<option value="snowflakes">snowflakes - Snowflakes on your RGB device</option>
-<option value="snowstorm">snowstorm - Snow blowing in a storm</option>
-<option value="spirals">spirals - Create spirals around your RGB device</option>
-<option value="text">text - Scrolling text around your RGB device</option>
-<option value="user_defined">user_defined - This effect class is for user defined functions</option>*/
