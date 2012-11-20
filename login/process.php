@@ -96,19 +96,6 @@ else
 	//$PIXEL_LENGTH=$PIXEL_SPACING*$PIXEL_COUNT;
 	if($MODEL_TYPE!="MTREE") $WINDOW_DEGREES=360; // make sure every model type other than Mega-trees are defaulted to 360. This saves the user from screwing up.
 	
-	
-	if(!isset($UNIT_OF_MEASURE)) $UNIT_OF_MEASURE='in';
-	if($UNIT_OF_MEASURE=='in') $PIXEL_LENGTH=3;
-	else $PIXEL_LENGTH=8;
-	$insert = "REPLACE into models( username,object_name, object_desc, model_type,
-	pixel_count, pixel_first,  pixel_last, 
-	unit_of_measure, pixel_length, total_strings,window_degrees,
-	number_segments,gif_model,folds,start_bottom,start_channel)
-		values ('$username','" .  mysql_real_escape_string($OBJECT_NAME) . "', '" . mysql_real_escape_string($OBJECT_DESC) ."', '$MODEL_TYPE', 
-	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
-	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$WINDOW_DEGREES,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM',
-	'$START_CHANNEL')";
-	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
@@ -122,6 +109,20 @@ else
 	{
 		die("Unable to select database");
 	}
+	
+	$clean_OBJECT_NAME=mysql_real_escape_string($OBJECT_NAME);
+	$clean_OBJECT_DESC=mysql_real_escape_string($OBJECT_DESC);
+	if(!isset($UNIT_OF_MEASURE)) $UNIT_OF_MEASURE='in';
+	if($UNIT_OF_MEASURE=='in') $PIXEL_LENGTH=3;
+	else $PIXEL_LENGTH=8;
+	$insert = "REPLACE into models( username,object_name, object_desc, model_type,
+	pixel_count, pixel_first,  pixel_last, 
+	unit_of_measure, pixel_length, total_strings,window_degrees,	number_segments,gif_model,folds,start_bottom,start_channel)
+		values ('$username','$clean_OBJECT_NAME', '$clean_OBJECT_DESC', '$MODEL_TYPE', 	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
+	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$WINDOW_DEGREES,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM',
+	'$START_CHANNEL')";
+	//Include database connection details
+	
 	mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	//echo "<pre>Target model saved</pre>";
 	$date_field= date('Y-m-d');
