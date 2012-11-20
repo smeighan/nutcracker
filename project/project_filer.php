@@ -736,7 +736,7 @@ function joinPhraseArray($inArray)
 
 function getPhraseArray($project_id, $join_phrase=true)
 {
-	$sql = "SELECT pd.phrase_name, pd.start_secs, pd.end_secs, pd.effect_id, ue.effect_name, p.frame_delay, p.username, p.model_name, m.member_id \n"
+	$sql = "SELECT DISTINCT pd.phrase_name, pd.start_secs, pd.end_secs, pd.effect_id, ue.effect_name, p.frame_delay, p.username, p.model_name, m.member_id \n"
 	. "FROM `project_dtl` as pd \n"
 	. "LEFT JOIN project as p ON p.project_id=pd.project_id \n"
 	. "LEFT JOIN members as m ON m.username=p.username \n"
