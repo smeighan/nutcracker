@@ -29,7 +29,7 @@ $sql = "select * from members";
 require_once("../effects/read_file.php");
 $path ="../export";
 $directory=$path;
-if (file_exists($directory))
+if (file_exists($directory)) // make sure export directory exists
 {
 	} else {
 	if($batch==0) echo "The directory $directory does not exist, creating it";
@@ -39,7 +39,7 @@ if (file_exists($directory))
 $member_id=get_member_id($username);
 $path ="../export/" . $member_id;
 $directory=$path;
-if (file_exists($directory))
+if (file_exists($directory)) // make sure member_id directory exists under export
 {
 	} else {
 	if($batch==0) echo "The directory $directory does not exist, creating it";
@@ -56,7 +56,7 @@ $tables = array (
 );
 if($mode=="export")
 {
-$filename=$path . "/" . $username . "_" . date('Y-m-d_Hi');
+	$filename=$path . "/" . $username . "_" . date('Y-m-d_Hi') . ".xml";
 	$fullpath=realpath($filename);
 	$fp=fopen($filename,"w");
 	if(!$fp)
@@ -86,7 +86,7 @@ if($mode=='import')
 	}
 	else
 	{
-		$file2=show_files($path);
+		$file2=show_files($path); // dont override $file, since it was passed in from the url.
 	}
 	$filename=$path . "/" .$file;
 	$fullpath=realpath($filename);
@@ -147,7 +147,6 @@ function display_xml($filename,$tables)
 			// echo "<pre>$sql</pre>\n";
 		}
 		//print "</textarea></pre>"; 
-		
 		echo "<h3><font color=green>&nbsp;&nbsp;&nbsp;INSERT $records records into $db_table</h3><br/>";
 	}
 }
