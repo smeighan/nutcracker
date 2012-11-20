@@ -104,7 +104,7 @@ else
 	pixel_count, pixel_first,  pixel_last, 
 	unit_of_measure, pixel_length, total_strings,window_degrees,
 	number_segments,gif_model,folds,start_bottom,start_channel)
-		values ('$username','$OBJECT_NAME', '$OBJECT_DESC', '$MODEL_TYPE', 
+		values ('$username','" .  mysql_real_escape_string($OBJECT_NAME) . "', '" . mysql_real_escape_string($OBJECT_DESC) ."', '$MODEL_TYPE', 
 	$PIXEL_COUNT, $PIXEL_FIRST,  $PIXEL_LAST, 
 	'$UNIT_OF_MEASURE', $PIXEL_LENGTH,$TOTAL_STRINGS,$WINDOW_DEGREES,$number_segments,'$gif_model',$FOLDS,'$START_BOTTOM',
 	'$START_CHANNEL')";
@@ -127,6 +127,7 @@ else
 	$date_field= date('Y-m-d');
 	$time_field= date("H:i:s");
 	$query="INSERT into audit_log values ('$username','$date_field','$time_field','insert','$OBJECT_NAME')";
+//	$query= mysql_real_escape_string($query);
 	$result=mysql_query($query) or die("Failed to execute $query");
 	mysql_close();
 	$_SESSION['SESS_LOGIN'] = $username;

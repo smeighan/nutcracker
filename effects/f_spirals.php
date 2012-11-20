@@ -121,7 +121,6 @@ function f_spirals($get)
 	if($maxLoop<1) $maxLoop=1;
 	if($batch==0)  echo "<pre>deltaStrands=$deltaStrands,maxLoop=$maxLoop</pre>\n";
 	//$maxLoop = ($maxStrand*$number_rotations) * ($window_degrees/360);
-	
 	$deltaPixel = $maxPixel/$maxLoop;
 	$S=$V=1;
 	$deltaH = (RED - ORANGE)/$maxLoop;
@@ -306,10 +305,17 @@ function create_spiral($get,$arr)
 	$color2=hexdec("#00FF00");
 	$color3=hexdec("#FFFF00");
 	$maxStrandLoops = ($maxStrand* (360/$window_degrees)*$number_rotations);
+	$maxStrandLoops = ($maxStrand* (360/$window_degrees));
 	if($maxStrandLoops<0) $maxStrandLoops=1;
 	$maxLoop=$maxStrandLoops/$maxStrand;
 	if($maxLoop<1) $maxLoop=1;
+	/*echo "<pre>";
+	print_r($get);
+	echo "</pre>";*/
 	$loop=0;
+	$ns=intval(($s-1)/($maxStrand/$number_spirals))+1;
+	//echo "<pre>ns=intval((s-1)/(maxStrand/number_spirals))+1</pre<\n";
+	//echo "<pre>$ns=intval(($s-1)/($maxStrand/$number_spirals))+1</pre>\n"; // figure out which spiral segment we are
 	for($l=1;$l<=$maxLoop;$l++)
 	{
 		for($s=1;$s<=$maxStrand;$s++)
@@ -358,15 +364,26 @@ function create_spiral($get,$arr)
 						if($s_offset_R<1) $s_offset_R+=$maxStrand;
 					}
 					//
-					$color = find_color($s,$p,$get);
+					$color = find_color($loop,$s,$p,$get);
 					$ns1 = make_array_segments($s,$p,$get);
-					/*if($batch==0) echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
-					print_r($ns1);
-					echo "</pre>\n";*/
+					/*if($batch==0)
+					{
+						echo "<pre>l=$l loop=$loop, s=$s p=$p color=$color\n";
+						print_r($ns1);
+						echo "</pre>\n";
+					}
+					*/
 					if(in_array($s,$ns1))
 					{
-						if($handiness=="L" or $handiness=="B") $spiral[$s_offset_L][$p]=$color;
-						if($handiness=="R" or $handiness=="B") $spiral[$s_offset_R][$p]=$color;
+						if($number_rotations<0.001)
+						{
+							$spiral[$s][$p]=$color;
+						}
+						else
+						{
+							if($handiness=="L" or $handiness=="B") $spiral[$s_offset_L][$p]=$color;
+							if($handiness=="R" or $handiness=="B") $spiral[$s_offset_R][$p]=$color;
+						}
 					}
 					//	if($batch==0) echo "<pre>spiral[s][p]=rgb_val; = spiral[$s][$p]=$rgb_val;</pre>\n";
 				}
@@ -396,12 +413,13 @@ function make_array_segments($s,$p,$get)
 	return $ns1;
 }
 
-function find_color($s,$p,$get)
+function find_color($loop,$s,$p,$get)
 {
 	extract ($get);
-	$ns=intval(($s-1)/($maxStrand/$number_spirals))+1; // figure out which spiral segment we are
-	$thick = ($s-1)%($maxStrand/$number_spirals);
-	//if($batch==0) echo "<pre>ns=intval((maxStrand/number_spirals)/s);=$ns=intval(($maxStrand/$number_spirals)/$s);</pre>\n";
+	$ns=intval(($s-1)/($maxStrand/$number_spirals))+0; // figure out which spiral segment we are
+	$y=intval($maxStrand/$number_spirals);
+	$ns=1 + intval(($s-1) / $y);
+	$thick = intval(($s-1)%($maxStrand/$number_spirals));
 	if($ns==0) $ns=1;
 	if($rainbow_hue<>'N')
 	{
@@ -459,6 +477,8 @@ function find_color($s,$p,$get)
 		$V=$V*$mod_ratio;
 	}
 	$rgb_val=HSV_TO_RGB ($H, $S, $V);
+	$hex=dechex($rgb_val);
+	//if($batch==0) echo "<pre>loop=$loop,s=$s,p=$p,color=$hex,ns=$ns,thick=$thick,maxStrand=$maxStrand,/$number_spirals)/$s);</pre>\n";
 	return $rgb_val;
 }
 
