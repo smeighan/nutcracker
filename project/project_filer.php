@@ -88,6 +88,7 @@ function appendZeros($str_array1, $numZeros, $prepend=false, $sepStr=" ")
 	$zStr=rtrim(str_repeat("0 ",$numZeros));
 	for ($x=0;$x<$lenarr;$x++)
 		$arr2[$x]=$zStr;
+	echo "Calling Append String from appendZeros<br />";
 	$retArray=appendStr($str_array1,$arr2, $prepend, $sepStr);
 	return($retArray);
 }
@@ -1314,11 +1315,15 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 				echo "<td>Adding $numFrames zeros from frame $frame_st to frame $frame_end</td>";
 			}
 			else {
-				$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc<";
-				$effectData=getFileData($infile, $numFrames);
-				$NCArray=appendStr($NCArray,$effectData);
-				echo "<td bgcolor=\"#9EFF7A\">Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end</td>";
-			}
+				$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc";
+				if (is_file($infile)) {
+					$effectData=getFileData($infile, $numFrames);
+					echo "Calling append str from processNCMaster <br />";
+					$NCArray=appendStr($NCArray,$effectData);
+					echo "<td bgcolor=\"#9EFF7A\">Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end</td>";
+				} else {
+					echo "*** Error $infile NC File DID NOT GET CREATED!!! ***<td>";
+				}
 			$NCArraySize=count(myTokenizer($NCArray[0]))-4;
 			echo "</tr>";
 		}
