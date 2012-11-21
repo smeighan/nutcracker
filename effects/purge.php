@@ -52,12 +52,13 @@ function getFilesFromDir($dir)
 						}
 						else // this is any other file that is file.gif form, we will delete
 						{
-							if($dir=="../effects/workspaces/2")
+						//echo "<pre>dir=$dir</pre>\n";
+							if($dir=="workspaces/2")
 								echo "DONT DELETE SEAN: $totn: rm $fullname. dir=$dir\n";
 							else
 							{
 								echo "DELETE GIF: $totn: rm $fullname. dir=$dir\n";
-								unlink($fullname);
+							//	unlink($fullname);
 							}
 							$totn++;
 							$tot+=$filesize;

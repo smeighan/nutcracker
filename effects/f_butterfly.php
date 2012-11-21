@@ -1,5 +1,18 @@
 <?php
 
+
+*/
+
+(01) x*y^3-y*x^3
+(02) (x^2+3*y^2)*e^(-x^2-y^2)
+(03) -x*y*e^(-x^2-y^2)
+(04) -1/(x^2+y^2)
+(05) cos(abs(x)+abs(y))
+(06) cos(abs(x)+abs(y))*(abs(x)+abs(y))
+
+*/
+
+
 function f_butterfly($get)
 {
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
@@ -53,7 +66,8 @@ function f_butterfly($get)
 		$dat_file_array[]=$dat_file[$frame];
 		$fh_dat [$frame]= fopen($dat_file[$frame], 'w') or die("can't open file");
 		fwrite($fh_dat[$frame],"#    " . $dat_file[$frame] . "\n");
-		for($s=1;$s<=$maxStrand;$s++)
+		$FullMaxStrand = $maxStrand * (360/$window_degrees);
+		for($s=1;$s<=$FullMaxStrand;$s++)
 			for($p=1;$p<=$maxPixel;$p++)
 		{
 			//if(in_array($s,$window_array)) // Is this strand in our window?, 
@@ -112,11 +126,14 @@ function f_butterfly($get)
 					$V=$color_HSV['V'];
 				}
 				$string=$user_pixel=0;
-				$xyz=$tree_xyz[$s][$p];
-				$seq_number++;
-				$rgb_val=HSV_TO_RGB ($H, $S, $V);
-				//	if($rgb_val <> 0)
-					fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
+				if($s<=$maxStrand)
+				{
+					$xyz=$tree_xyz[$s][$p];
+					$seq_number++;
+					$rgb_val=HSV_TO_RGB ($H, $S, $V);
+					//	if($rgb_val <> 0)
+						fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
+				}
 			}
 		}
 		fclose($fh_dat[$frame]);
@@ -198,6 +215,17 @@ function butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)
 		$v=$y_new/$maxY;
 		/*echo "<pre> butterfly($x,$y,$maxX,$maxY,$offset,$frame,$maxFrame,$formula)";
 		echo "x_new,y_new = $x_new,$y_new v=$v</pre>\n";*/
+	}
+	else if($formula==5)
+	{
+		$a = $pi2 / ($maxX+$maxY);
+		$rad=$offset + (($x+$y)*$a);
+		$n = ($x*$x - $y*$y) * sin ($rad);
+		$d = ($x*$x+$y*$y);
+		if($d>0)
+			$v=$n/$d;
+		else
+		$v=0;
 	}
 	if(empty($v))
 		$v=1;

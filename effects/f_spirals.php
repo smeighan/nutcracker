@@ -145,9 +145,13 @@ function f_spirals($get)
 	//
 	$spiral=create_spiral($get,$arr);
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
-	/*if($batch==0) echo "<pre>strand_pixel\n";
-	print_r($sparkles_array);
-	echo "</pre>\n";*/
+	/*if($batch==0)
+	{
+		echo "<pre>create_sparkles($sparkles,$maxStrand,$maxPixel);\n";
+		print_r($sparkles_array);
+		echo "</pre>\n";
+	}
+	*/
 	foreach($sparkles_array as $s=>$sarray)
 		foreach($sarray as $p=>$value)
 	{
@@ -203,6 +207,9 @@ function f_spirals($get)
 				$seq_number++;
 				//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
 				$hex=dechex($rgb_val);
+				srand();
+				$random_100 = intval(mt_rand(1,100));
+				$sparkle_type='W';
 				if($rgb_val == hexdec("#FEFEFE"))
 				{
 					/*$sparkles_array[$s][$p]++;
@@ -212,6 +219,32 @@ function f_spirals($get)
 					$rval=rand(01,255);
 					$r=$g=$b=$rval;
 					$rgb_val =hexdec(fromRGB($r,$g,$b));
+					if($sparkle_type=='R') // Rainbow sparkles?
+					{ // yes
+						if($sparkles>=$random_100)
+							$rgb_val = mt_rand(1,16777215); // randomly select any of 16 million colors
+					}
+					else if($sparkle_type=='S')
+					{
+						//echo "<pre>sparkles,random_100=$sparkles,$random_100</pre>\n";
+						if($sparkles>=$random_100)
+						{
+							$V=mt_rand($V,1.0); // random sprakles using same hue
+							//echo "<pre>New V =$V</pre>\n";
+						}
+					}
+					else if($sparkle_type=='W')
+					{
+						/*$ms200 = 500/$frame_delay;
+						$ms200_segment = ($f-1)/$ms200;
+						$s_p=($ms200_segment)%2;*/
+						if($sparkles>=$random_100 )
+						{
+							$rval=rand(01,255);
+							$r=$g=$b=$rval;
+							$rgb_val =hexdec(fromRGB($r,$g,$b));
+						}
+					}
 				}
 				$string=$user_pixel=0;
 				//	$sparkles_array[$s][$p]=$sparkles_array[$s][$p]+0;
