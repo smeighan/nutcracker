@@ -536,7 +536,7 @@ function get_effects_user_segment($username,$effect_name)
 		extract($row);
 		$effects_user_segment[]=$row;
 		$matrix[$param_name][$segment]=$param_value;
-		if($param_name=='dir')
+		if($param_name=='direction')
 			$dir[$segment]=$param_value;
 	}
 	if(isset($matrix)) $eus_array[0]=$matrix;
