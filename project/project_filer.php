@@ -1309,19 +1309,18 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 			$numFrames = ($frame_end-$frame_st)+1;
 			$NCArraySize=count(myTokenizer($NCArray[0]))-4;
 			echo "<tr><td>$phrase_name</td><td>$effect_name</td>";
-			if ($effect_name=="None")
-			{
+			if ($effect_name=="None") {
 				$NCArray=appendZeros($NCArray,$numFrames);
 				echo "<td>Adding $numFrames zeros from frame $frame_st to frame $frame_end</td>";
-				$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc";
 			} else {
+				$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc";
 				if (is_file($infile)) {
 					$effectData=getFileData($infile, $numFrames);
 					echo "Calling append str from processNCMaster <br />";
 					$NCArray=appendStr($NCArray,$effectData);
 					echo "<td bgcolor=\"#9EFF7A\">Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end</td>";
 				} else {
-					echo "*** Error $infile NC File DID NOT GET CREATED!!! ***<td>";
+					echo "<td>*** Error $infile NC File DID NOT GET CREATED!!! ***</td>";
 				}
 			}
 			$NCArraySize=count(myTokenizer($NCArray[0]))-4;
