@@ -490,7 +490,7 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 			$mod=($p%$maxStrands)+1;
 			$mod2 = $maxPixels-$mod+1;
 			$mod2 = $maxPixels-$p;
-			if($model_type=="MATRIX")
+			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")
 				$h= ($mod2*$x_spacing);
 			else 	if($model_type=="RAY")
 				$h= ($mod2*$x_spacing) - $x_spacing;

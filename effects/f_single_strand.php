@@ -118,6 +118,7 @@ function f_single_strand($get)
 	//
 	//$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
 	//
+	//	for every virtual pixel number assign the segment it belongs to
 	if($number_segments>0)
 	{
 		for($segment=1;$segment<=$number_segments;$segment++)
@@ -132,7 +133,8 @@ function f_single_strand($get)
 		}
 	}
 	if($batch==0) effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array);
-	$rainbow=$fade_3d1=$fade_3d2='N';
+	$rainbow=$fade_3d1=$fade_3d2=$group='N';
+	$group_number=0;
 	extract($matrix);
 	$x=$y=$z=0;
 	for($f=1;$f<=$maxFrame;$f++)
@@ -305,10 +307,16 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 		if (($item !="submit") && (!is_array($value))) 
 		echo "<input type=\"hidden\" name=\"".$item ."\" value=\"".$value."\" />\n";
 	}
-	$columns=array('color1'=>'Color #1', 'count1'=>'Number of Color1 Pixels','fade_3d1'=>'3D Fade for Color#1',
-	'color2'=>'Color #2', 'count2'=>'Number of Color2 Pixels',	'fade_3d2'=>'3D Fade for Color#2',
+	$columns=array('color1'=>'Color #1', 
+	'count1'=>'Number of Color1 Pixels',
+	'fade_3d1'=>'3D Fade for Color#1',
+	'color2'=>'Color #2', 
+	'count2'=>'Number of Color2 Pixels',	
+	'fade_3d2'=>'3D Fade for Color#2',
 	'rainbow'=>'Use rainbow colors instead of color#1 and color#2',
-	'direction'=>'Direction (left/right)');
+	'direction'=>'Direction (left/right)',
+	'group'=>'Group Segment (Y/N)', 
+	'group_number'=>'Group Number');
 	echo "<table border=1>\n";
 	echo "<tr>";
 	echo "<th>Column</th>";
@@ -391,6 +399,8 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 				if(isset($fade_3d1[$segment]) and $col=="fade_3d1") $val=$fade_3d1[$segment];
 				if(isset($fade_3d2[$segment]) and $col=="fade_3d2") $val=$fade_3d2[$segment];
 				if(isset($rainbow[$segment]) and $col=="rainbow") $val=$rainbow[$segment];
+				if(isset($group[$segment]) and $col=="group") $val=$group[$segment];
+				if(isset($group_number[$segment]) and $col=="group_number") $val=$group_number[$segment];
 				if(isset($direction_array[$segment]) and $col=="direction") $val=$direction_array[$segment];
 				if ($pos === false)
 				{
@@ -476,10 +486,12 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 	{
 		foreach($array_values as $segment =>$param_value)
 		{
+			$YesNoPrompts = array('rainbow','fade3d1','fade3d2','group');
+			if (in_array($param_name, $YesNoPrompts)) $param_value=strtoupper($param_value);
 			$replace = "replace into effects_user_segment
 			(username,effect_name,segment,param_name,param_value) values
 			('$username','$effect_name','$segment','$param_name','$param_value')";
-			//	echo "<pre>save_effects_user_segment: query=$replace</pre>\n";
+			echo "<pre>save_effects_user_segment: query=$replace</pre>\n";
 			$result=mysql_query($replace) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $replace . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 		}
 	}

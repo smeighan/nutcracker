@@ -1721,8 +1721,9 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	)*/
 	//
 	$model_array=get_target_model($username,$target_name);
-	$maxStrand=$model_array[0];
-	$maxPixels=$model_array[1];
+	$maxStrand =$model_array[0];
+	$maxPixels =$model_array[1];
+	$model_type=$model_array[2];
 	/*	$model_array=
 	(
 	[username] => f
@@ -2129,6 +2130,60 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	unlink($seq_file);
 	unlink ($seq_srt);
 	fclose($fh_buff);
+	//
+	//
+	/*# window_degrees 180
+	# target_name 0
+	# effect_name BARBERPOLE
+	S 1 P 1  16777215 16777215 16777215 16777215 
+	S 1 P 1  16777215 16777215 16777215 16777215 
+	S 1 P 1  16777215 16777215 16777215 16777215 */
+	if ($model_type=="HORIZ_MATRIX")
+	{
+		$fh=fopen($filename_buff,"r") ;
+		while (!feof($fh)) // read *.srt file
+		{
+			$line = fgets($fh);
+			$tok=preg_split("/ +/", $line);
+			$l=strlen($line);
+			//echo "<pre>zz: $line</pre>\n";
+			$c= substr($line,0,1);
+			if($l>20 and $c !="#")
+			{
+				$i++;
+				/*tok:Array
+				[0] => S
+				[1] => 1
+				[2] => P
+				[3] => 6
+				[4] => 16777215
+				[5] => 16711680
+				[6] => 16711680
+				[7] => 16711680*/
+				if($tok[0]=="S" and $tok[2]=="P")
+				{
+					$string=$tok[1];	// string#
+					$pixel=$tok[3];	// pixel#
+					$cnt=count($tok);
+					
+					echo "<pre>";
+					print_r($tok);
+					printf("S %d P %d",$pixel,$string);
+					for($i=4;$i<$cnt;$i++)
+					{
+						printf(" %s",$tok[$i]);
+					}
+					//printf("\n");
+					echo "</pre>";
+					if($string>0 and $old_pixel>0 and ($string!=$old_string or $pixel!=$old_pixel ))
+					{
+						//	fwrite ($fh_new,sprintf("S %d P %d ",$old_string,$old_pixel),11);
+					}
+				}
+			}
+		}
+		fclose($fh);
+	}
 	return ($filename_buff);
 }
 
@@ -2247,6 +2302,7 @@ function get_target_model($username,$model_name)
 	//	echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
 	$return_array[0]=$maxStrands;
 	$return_array[1]=$maxPixels;
+	$return_array[2]=$model_type;
 	return $return_array;
 }
 
@@ -2512,7 +2568,7 @@ function get_effect_id($username,$effect_name)
 	}
 	else
 	{
-	return NULL;
+		return NULL;
 	}
 }
 
@@ -2536,6 +2592,7 @@ function is_ani($filename)
 	fclose($fh);
 	return $count > 1;
 }
+
 function get_start_channel($username,$model)
 {
 	require_once('../conf/config.php');
