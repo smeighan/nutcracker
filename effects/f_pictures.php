@@ -99,8 +99,13 @@ function f_pictures($get)
 		$resized = "../effects/pictures/$member_id/resized_$file1";
 		//	aspect ratio = width/height
 		if($width>0)
+		{
 			$aspect = $width/$height;
-		else$aspect=1.0;
+		}
+		else
+		{
+			$aspect=1.0;
+		}
 		$our_aspect = $maxStrand/$maxPixel;
 		echo "<pre>width, height, type, attr=$width, $height, $image_type, $attr</pre>\n";
 		echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
@@ -114,6 +119,9 @@ function f_pictures($get)
 			$new_height=$maxPixel;
 			$new_width=$maxPixel*$aspect;
 		}
+		$new_width=$maxStrand;
+		$new_height=$maxPixel;
+		
 		//	echo "<pre>new_width,new_height=$new_width,$new_height";
 		//
 		/*require_once "gifresizer.php";	//Including our class

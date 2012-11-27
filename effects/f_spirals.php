@@ -451,6 +451,7 @@ function find_color($loop,$s,$p,$get)
 	extract ($get);
 	$ns=intval(($s-1)/($maxStrand/$number_spirals))+0; // figure out which spiral segment we are
 	$y=intval($maxStrand/$number_spirals);
+	if($y<1) $y=0;
 	$ns=1 + intval(($s-1) / $y);
 	$thick = intval(($s-1)%($maxStrand/$number_spirals));
 	if($ns==0) $ns=1;

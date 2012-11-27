@@ -1237,6 +1237,10 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 				f_snowflakes($get);
 				$ranNC=true;
 				break;
+			case ('twinkle') :
+				f_twinkle($get);
+				$ranNC=true;
+				break;
 			default :
 				echo "$effect_class not handled yet<br />";
 		}

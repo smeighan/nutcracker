@@ -434,7 +434,13 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 	`last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 	UNIQUE KEY `idx_uesp` (`username`,`effect_name`,segment,`param_name`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;*/
-	/*	[matrix] => Array
+	/*	
+	
+VIXEN	How much time should be in between timings
+LOR	Event Period. The event period is how long a single on/off event lasts
+LSP	Intervals. How far apart should default intervals be created?
+	
+	[matrix] => Array
 	(
 	[color1] => Array
 	(
