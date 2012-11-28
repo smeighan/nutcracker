@@ -119,8 +119,8 @@ function f_pictures($get)
 			$new_height=$maxPixel;
 			$new_width=$maxPixel*$aspect;
 		}
-		$new_width=$maxStrand;
-		$new_height=$maxPixel;
+		//$new_width=$maxStrand; // temp to test out scaling issue
+	//	$new_height=$maxPixel;
 		
 		//	echo "<pre>new_width,new_height=$new_width,$new_height";
 		//

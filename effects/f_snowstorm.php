@@ -178,7 +178,7 @@ $get['window_degrees'] = get_window_degrees($get['username'],$get['user_target']
 		ob_flush();
 		sleep (1);
 		echo "<pre>Done Sleeping ..</pre>\n";*/
-		ob_flush();
+		//ob_flush();
 	}
 	$amperage=array();
 	$x_dat_base = $base . ".dat";
