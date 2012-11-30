@@ -144,10 +144,10 @@ if (isset($type)) {
 		foreach($_POST as $key=>$value) {
 			if ($key=="project_id")
 				$project_id=$value;
-			if ($key=="effect_id")
-				$effect_id=$value;
-			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_id")) {
-				$sql='UPDATE effects_user_dtl SET param_value="'.$value.'" WHERE effect_id='.$effect_id.' AND param_name="'.$key.'"';
+			if ($key=="effect_name")
+				$effect_name=$value;
+			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name")) {
+				$sql='UPDATE effects_user_dtl SET param_value="'.$value.'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
 				nc_query($sql);
 			}
 		}

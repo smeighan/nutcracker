@@ -221,9 +221,9 @@ function getMemberID($username)
 
 function showThumbs($project_id)
 {
-	$sql = "SELECT p.username, pd.phrase_name, ue.effect_name, pd.effect_id, model_name FROM `project_dtl` AS pd \n"
+	$sql = "SELECT p.username, pd.phrase_name, ue.effect_name, model_name FROM `project_dtl` AS pd \n"
 	. "LEFT JOIN project AS p ON p.project_id=pd.project_id\n"
-	. "LEFT JOIN effects_user_hdr as ue ON ue.effect_id=pd.effect_id\n"
+	. "LEFT JOIN effects_user_hdr as ue ON ue.effect_name=pd.effect_name AND ue.username=p.username \n"
 	. "WHERE pd.project_id=$project_id ORDER BY pd.start_secs;";
 	echo "<table><tr>";
 	$result=nc_query($sql);
@@ -238,7 +238,7 @@ function showThumbs($project_id)
 			$editEffectClose="";
 		}
 		else {
-			$editEffect='<a href="effect_popup.php?project_id='.$project_id.'&effect_id='.$effect_id.'">';
+			$editEffect="<a href=\"effect_popup.php?project_id=$project_id&effect_name=$effect_name&username=$username\">";
 			$editEffectClose='</a>';
 			$sql="SELECT member_id FROM members WHERE username=\"$username\";";
 			$result2=nc_query($sql);
