@@ -88,7 +88,7 @@ function appendZeros($str_array1, $numZeros, $prepend=false, $sepStr=" ")
 	$zStr=rtrim(str_repeat("0 ",$numZeros));
 	for ($x=0;$x<$lenarr;$x++)
 		$arr2[$x]=$zStr;
-	echo "Calling Append String from appendZeros<br />";
+	//echo "Calling Append String from appendZeros<br />";
 	$retArray=appendStr($str_array1,$arr2, $prepend, $sepStr);
 	return($retArray);
 }
@@ -1152,7 +1152,7 @@ function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end,
 		echo "<td>Found file</td><td bgcolor=#B5C6FF>$outfile already exist </td>";
 	}
 	else {
-		echo "<td bgcolor=#8CA7FF>Generating $outfile</td>";
+		echo "<td>No file found</td><td bgcolor=#8CA7FF>Generating $outfile</td>";
 		$batch_type=3;
 		$get=getUserEffect($model_name,$eff,$username);
 		$get['batch']=$batch_type;
@@ -1320,7 +1320,7 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 				$infile="workarea/".$username."~".$model_name."~".$effect_name."~".$frame_cnt.".nc";
 				if (is_file($infile)) {
 					$effectData=getFileData($infile, $numFrames);
-					echo "Calling append str from processNCMaster <br />";
+					//echo "Calling append str from processNCMaster <br />";
 					$NCArray=appendStr($NCArray,$effectData);
 					echo "<td bgcolor=\"#9EFF7A\">Adding $numFrames of effect $effect_name from frame $frame_st to frame $frame_end</td>";
 				} else {
@@ -1358,16 +1358,32 @@ function processMasterNCfile($project_id, $projectArray, $workArray, $outputType
 				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following HLSNC file to your computer</td>\n";
 				echo "<td><a href=\"$hlsFile\" class=\"SaveFile\">$hlsFile</a></td></tr></table>\n";
 				break;
-				case 'lsp' :
+			case 'lsp' :
 				$NCFile=$outfile;
 				$type = 1;
-				$XMLFile="workarea/".$username."~".$project_id."~UserPattern.xml";
-				$fh_xml=fopen($XMLFile, 'w');
-				make_HdrPattern_header($fh_xml);
-				make_xml($fh_xml,$NCFile,$type,$frame_delay);
-				fclose($fh_xml);
-				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP file to your computer</td>\n";
-				echo "<td><a href=\"$XMLFile\" class=\"SaveFile\">$XMLFile</a></td></tr><table>\n";
+				$fh_buff=fopen($NCFile,"r") or die("Unable to open $NCFile");
+				$line = fgets($fh_buff);
+				$tok=preg_split("/ +/", $line);
+				$totframes= count($tok);
+				fclose($fh_buff);
+				$numFrames=$totframes-4;
+				$numFramesPerMin=sec2frame(60,$frame_delay);
+				$filecnt=round(ceil($numFrames/$numFramesPerMin));
+				$filenames=array();
+				$filehandles=array();
+				for ($x=0;$x<$filecnt;$x++)
+				{
+					$XMLFile="workarea/".$username."~".$project_id."~UserPattern".($x+1).".xml";
+					$filenames[]=$XMLFile;
+					$filehandles[]=fopen($XMLFile, 'w');
+				}
+				make_HdrPattern_header($filehandles);
+				$songDetails=array($frame_delay,$numFrames, $numFramesPerMin);
+				make_xml($filehandles,$NCFile,$type,$songDetails, $workArray, $filenames);
+				echo "<table cellpadding=\"1\" cellspacing=\"1\"><tr class=\"SaveFile\"><td>Right click save the following LSP files to your computer</td></tr>\n";
+				foreach($filenames as $fileout) 
+					echo "<tr><td><a href=\"$fileout\" class=\"SaveFile\">$fileout</a></td></tr>\n";
+				echo "</table>\n";
 				break;
 			case 'lor' :
 				$LORFile="workarea/".$username."~".$project_id.".lms";

@@ -1,29 +1,45 @@
 <?php
 
-function make_xml($fh_xml,$NCFile,$type,$frame_delay)
+function make_xml($filehandles,$NCFile,$type,$songdetails, $workArray, $filenames)
 {
-	$tok=explode("/",$NCFile);
-	$dir = $tok[0];
-	$tok2=explode(".nc",$tok[1]);
-	$base=$tok2[0];
+	$frame_delay=$songdetails[0];
+	$numFrames=$songdetails[1];
+	$numFramesPerMin=$songdetails[2];
+	$totframes=$numFrames+4;
+	$filecnt=0;
 	$fh_buff=fopen($NCFile,"r") or die("Unable to open $NCFile");
-	make_UserPattern_header($fh_xml,$base,$NCFile,$type);
+	$floorFrames=array();
+	foreach($filehandles as $fh_xml) {
+		$tok=explode("/",$filenames[$filecnt]);
+		$tok2=explode(".xml",$tok[1]);
+		$currfile=$tok2[0];
+		$tok3=explode("~",$tok2[0]);
+		$base=$tok3[2];
+		make_UserPattern_header($fh_xml,$base,$NCFile,$type);
+		$floorFrames[] = 4+(($numFramesPerMin)*$filecnt);
+		$filecnt++;
+	}
 	$firstPrint=true;
 	while (!feof($fh_buff))
 	{
+		$currfilenum=-1;
 		$line = fgets($fh_buff);
 		$tok=preg_split("/ +/", $line);
-		$cnt= count($tok);
-		if($cnt>4)
+		$totframes= count($tok);
+		if($totframes>4)
 		{
 			if ($firstPrint) {
-				echo "Number of frames = ".($cnt-4)."\n";	
+				echo "Number of frames = ".($totframes-4)."\n";	
 				$firstPrint=false;
 			}
-			track_header($fh_xml,$type);
 			$last_rgb=-20;
-			for($f=4;$f<$cnt;$f++)
+			for($f=4;$f<$totframes;$f++)
 			{
+				if (in_array($f,$floorFrames)) {
+					$currfilenum++;
+					$fh_xml=$filehandles[$currfilenum];
+					track_header($fh_xml,$type);
+				}
 				$time=(($f-3)*$frame_delay)/1000;
 				$time = $time * 88200;	// just imperical measurement that one second timing = 88200
 				$maxTime=$time+100000;
@@ -57,19 +73,24 @@ function make_xml($fh_xml,$NCFile,$type,$frame_delay)
 				//
 				$last_rgb=$rgb;
 			}
-			fwrite($fh_xml,sprintf("        </Intervals>\n"));
-			fwrite($fh_xml,sprintf("  </Track>\n"));
+			foreach($filehandles as $fh_xml) {
+				fwrite($fh_xml,sprintf("        </Intervals>\n"));
+				fwrite($fh_xml,sprintf("  </Track>\n"));
+			}
 		}
 	}
-	fwrite($fh_xml,sprintf("     </Tracks>\n"));
-	fwrite($fh_xml,sprintf("   </Pattern>\n"));
-	fwrite($fh_xml,sprintf("</ArrayOfPattern>\n"));
+	foreach($filehandles as $fh_xml) {	
+		fwrite($fh_xml,sprintf("     </Tracks>\n"));
+		fwrite($fh_xml,sprintf("   </Pattern>\n"));
+		fwrite($fh_xml,sprintf("</ArrayOfPattern>\n"));
+	}
 }
 
-function make_HdrPattern_header($fh_xml)
-{
-	fwrite($fh_xml,sprintf("<?xml version=\"1.0\"?>\n"));
-	fwrite($fh_xml,sprintf("<ArrayOfPattern xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n"));
+function make_HdrPattern_header($filehandles) {
+	foreach($filehandles as $fh_xml) {
+		fwrite($fh_xml,sprintf("<?xml version=\"1.0\"?>\n"));
+		fwrite($fh_xml,sprintf("<ArrayOfPattern xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n"));
+	}
 }
 
 function make_UserPattern_header($fh_xml,$base,$NCFile,$type)
