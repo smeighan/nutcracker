@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 require_once('../conf/header.php');
 //
-require("../effects/read_file.php");
+require_once("../effects/read_file.php");
 //echo "<pre>";
 //echo "max_execution_time =" . ini_get('max_execution_time') . "\n"; 
 set_time_limit(60*60);
@@ -175,9 +175,9 @@ while (!feof($fh_buff))
 		$pixel=$tok[3];
 	//	echo "<pre>s,p=$string,$pixel: $line</pre>\n";
 		for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++)
+		{		
+		for($f=1;$f<$MaxFrame;$f++)
 		{
-			for($f=1;$f<$MaxFrame;$f++)
-			{
 				$rgb=$tok[$f+3];
 				$r = ($rgb >> 16) & 0xFF;
 				$g = ($rgb >> 8) & 0xFF;
