@@ -55,6 +55,12 @@ set_time_limit(60*60);
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
 extract($_GET);
+//
+//	start timer
+	list($usec, $sec) = explode(' ', microtime()); // <scm>
+		$script_start = (float) $sec + (float) $usec; // ,scm>
+		
+		
 $msg_str="";
 if (isset($type)) {
 	switch ($type) {
@@ -159,7 +165,10 @@ if (isset($type)) {
 	}	
 }
 echo $msg_str;
-
+list($usec, $sec) = explode(' ', microtime()); // <scm>
+		$script_end = (float) $sec + (float) $usec;    // <scm>
+		$elapsed_time = round($script_end - $script_start, 3);  // <scm>
+		echo " ($elapsed_time secs)";  // <scm>
 ?>
 <h2>Current Nutcracker projects</h2>
 <form action="<?php echo "project-exec.php"; ?>" method="post">

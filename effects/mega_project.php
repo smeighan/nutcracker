@@ -13,7 +13,12 @@
 	//if($batch==0) show_array($get,"$effect_class Effect Settings");
 	//
 	$first_time=0;
+	//
 	$mtree_project = '../project/workarea/f~181~master.nc';
+	$tok=explode(".nc",$mtree_project);
+	$vixen_vir = $tok[0] . ".vir"; // change the .nc to .vir
+	unlink($vixen_vir);
+	//
 	$max_frames=get_max_frames($mtree_project);
 	echo "<pre>max frames = $max_frames</pre>\n";
 	$tok=explode("~",$mtree_project);
@@ -71,11 +76,6 @@
 	$dirname   = $path_parts['dirname'];
 	$basename  = $path_parts['basename'];
 	$vixen_vir= $dirname . "/" . $base . ".vir";*/
-	$vixen_vir="test.vir";
-	$mtree_project = '../project/workarea/f~181~master.nc';
-	$tok=explode(".nc",$mtree_project);
-	$vixen_vir = $tok[0] . ".vir"; // change the .nc to .vir
-	unlink($vixen_vir);
 	$ichannel=0;
 	$current_channel=0;
 	$channel_array=array();
@@ -687,14 +687,16 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 		$channel++;
 		$tok=preg_split("/ +/", $line);
 		$c=count($tok);
-		//	echo "<pre>make_vix c=$c, $line</pre>\n";
+			
+		if($channel >400 and $channel<550) echo "<pre>make_vix chhanel=$channel c=$c, $line</pre>\n";
 		if($c>1)
 		{
 			foreach($tok as $i=>$val)
 			{
 				if($i<=$c-1)
 				{
-					//echo "<pre>c=$c, i=$i,val=$val</pre>\n";
+				if($channel >490 and $channel<510) 
+					echo "<pre>c=$c, i=$i,val=$val</pre>\n";
 					if($val>=0 and $val<=255)
 					{
 						$eventdata .= chr($val);
