@@ -21,8 +21,7 @@ function f_bars($get)
 	$get['bar_type']=$bar_type;
 	$sparkle_type = strtoupper($sparkle_type);
 	$get['sparkle_type']=$sparkle_type;
-	set_time_limit(0);
-	ini_set("memory_limit","1024M");
+	require_once("../conf/setup.php"); // override some apache caching.
 	require_once("../effects/read_file.php");
 	//
 	//

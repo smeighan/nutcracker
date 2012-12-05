@@ -20,12 +20,8 @@ function f_spirals($get)
 	if(!isset($get['speed']))     $get['speed']="1";
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
-	set_time_limit(0);
-	ini_set("memory_limit","1024M");
+	require_once("../conf/setup.php"); // override some apache caching.
 	
-    @apache_setenv('no-gzip', 1);
-    @ini_set('zlib.output_compression', 0);
-    @ini_set('implicit_flush', 1);
  //   for ($i = 0; $i < ob_get_level(); $i++) { ob_end_flush(); }
  //   ob_implicit_flush(1);
 
