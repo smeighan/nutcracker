@@ -175,6 +175,7 @@ list($usec, $sec) = explode(' ', microtime()); // <scm>
 <input type="hidden" name="username"     value="<?php printf ("$username");    ?> "/>
 <table class="Gallery">
 <tr>
+<th>ID#</th>
 <th>Song Name</th>
 <th>Artist</th>
 <th>Purchase song from here</th>
@@ -205,6 +206,7 @@ list($usec, $sec) = explode(' ', microtime()); // <scm>
 		else
 			$trStr='<tr class="alt">';
 	echo $trStr;?>
+		<td><?php echo $project_id?></a></td>
 	<td><?php echo $song_name?></a></td>
 	<td><?php echo $artist?></td>
 	<td><a href="<?php echo $song_url?>"><?php echo $song_url?></a></td>

@@ -14,10 +14,14 @@
 	//
 	$first_time=0;
 	//
-	$mtree_project = '../project/workarea/f~181~master.nc';
+	$mtree_project = '../project/workarea/f~182~master.nc';
 	$tok=explode(".nc",$mtree_project);
 	$vixen_vir = $tok[0] . ".vir"; // change the .nc to .vir
-	unlink($vixen_vir);
+	$vixen_vix = $tok[0] . ".vix"; // change the .nc to .vir
+	if (file_exists($vixen_vir))
+	{
+		unlink($vixen_vir);
+	}
 	//
 	$max_frames=get_max_frames($mtree_project);
 	echo "<pre>max frames = $max_frames</pre>\n";
@@ -107,10 +111,10 @@
 echo "Channel ARRAY\n";
 print_r($channel_array);
 $seq_duration = 30;
-$duration = $seq_duration*1000;
+$duration = $frame_delay * $max_frames;
 $frame_delay=100;
+//check_vir($vixen_vir);
 make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array);  // also make a *.vix file. Pass in the *.vir
-$vixen_vix="?";
 echo "<table border=1>";
 printf ("<tr><td bgcolor=lightgreen><h2>$channels channels have been created for Vixen</h2></td>\n");
 echo "<td>Instructions</td></tr>";
@@ -301,9 +305,9 @@ function get_max_frames($filename)
 		$cnt= count($tok);
 		if($cnt>$max_frames) $max_frames=$cnt;
 		$line_counter++;
-		if($line_counter>10) return $max_frames;
+		if($line_counter>10) return $max_frames-4;
 	}
-	return $max_frames;
+	return $max_frames-4; // Lines are format S xx P xx rgb rgb rgb 
 }
 
 function make_vir($vixen_vir,$filename_buff,$current_channel)
@@ -324,7 +328,7 @@ function make_vir($vixen_vir,$filename_buff,$current_channel)
 		{
 			$string=$tok[1];
 			$pixel=$tok[3];
-			echo "<pre>s,p=$string,$pixel: current_channel=$current_channel $line</pre>\n";
+			//echo "<pre>s,p=$string,$pixel: current_channel=$current_channel $line</pre>\n";
 			for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++)
 			{
 				$current_channel++;
@@ -565,6 +569,44 @@ function get_effects_user_segment($username,$effect_name)
 	return $eus_array;
 }
 
+function check_vir($vixen_vir)
+{
+	$fh_vir=fopen($vixen_vir,"r") or die("Unable to open $vixen_vir");
+	$channel=0;
+	while (!feof($fh_vir))
+	{
+		$line = fgets($fh_vir);
+		$channel++;
+		$tok=preg_split("/ +/", $line);
+		$c=count($tok);
+		$zero=$non_zero=$invalid=0;
+		if($c>1)
+		{
+			foreach($tok as $i=>$val)
+			{
+				if($i<=$c-1)
+				{
+					if($val>=0 and $val<=255)
+					{
+						if($val<1)
+						{
+							$zero++;
+						}
+						else
+						{
+							$non_zero++;
+						}
+					}
+					else
+					$invalid++;
+				}
+			}
+		}
+		echo "<pre>channel=$channel. c=$c. zero $zero, non zero $non_zero, invalid $invalid</pre>\n";
+	}
+	fclose($fh_vir);
+}
+
 function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 {
 	extract($get);
@@ -649,14 +691,17 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 				if($channel_mod==1)
 				{
 					$color=-65536;    $rgb="R";
+					$color=hexdec("#FF7777");
 				}
 				if($channel_mod==2)
 				{
 					$color=-16744448; $rgb="G";
+					$color=hexdec("#77FF77");
 				}
 				if($channel_mod==0)
 				{
 					$color=-16776961; $rgb="B";
+					$color = hexdec("#7777FF");
 				}
 			}
 			else
@@ -665,8 +710,16 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 				$rgb="DMX";
 			}
 			$new_channel=$channel+$start_channel-1;
-			$channel_name = "Channel $new_channel $rgb";
 			$output=$new_channel-1;
+			$base_channel = $new_channel-497+1;
+			$pixel = intval((($base_channel%360)-1)/3)+1;
+			$string = intval(($base_channel-1)/360)+1;
+			if($start_channel_rgb>0)
+				$channel_name = "Ch $new_channel $rgb (S$string P$pixel)";
+			else
+			{
+				$channel_name = "Ch $new_channel $rgb";
+			}
 			fwrite($fh,sprintf("<Channel color=\"$color\" output=\"$output\" id=\"0\" enabled=\"True\">$channel_name</Channel>\n"));
 		}
 	}
@@ -687,16 +740,16 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 		$channel++;
 		$tok=preg_split("/ +/", $line);
 		$c=count($tok);
-			
-		if($channel >400 and $channel<550) echo "<pre>make_vix chhanel=$channel c=$c, $line</pre>\n";
+	//	if($channel >496 and $channel<505) echo "<pre>make_vix chhanel=$channel c=$c, $line</pre>\n";
 		if($c>1)
 		{
 			foreach($tok as $i=>$val)
 			{
 				if($i<=$c-1)
 				{
-				if($channel >490 and $channel<510) 
-					echo "<pre>c=$c, i=$i,val=$val</pre>\n";
+					if(!isset($val)) $val=0;
+					if($channel >490 and $channel<510) 
+					echo "<pre>c=$c, i=$i,val=$val</pre>";
 					if($val>=0 and $val<=255)
 					{
 						$eventdata .= chr($val);
