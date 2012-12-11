@@ -6,6 +6,7 @@ function f_gif($get)
 	if(!isset($get['brightness']))   $get['brightness']="0";
 	if(!isset($get['fade_in']))  $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
+	if(!isset($get['autoscale']))  $get['autoscale']=1;
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	/*	Array
@@ -117,19 +118,23 @@ function f_gif($get)
 			$aspect = $width/$height;
 		else$aspect=1.0;
 		$our_aspect = $maxStrand/$maxPixel;
-		/*	echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
-		echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
-		echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";*/
+		$debug=1;
+		if($debug==1) echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
+		if($debug==1)echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
+		if($debug==1)echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";
 		$new_width=$maxStrand;
 		$new_height=$maxPixel/$aspect;
 		if($new_height>$maxPixel) // it wont fit, go the other way
 		{
-			//	echo "<pre>xx: new_width,new_height=$new_width,$new_height";
-			//	echo "<pre>new_height>maxPixel</pre>\n";
+			if($debug==1)	echo "<pre>xx: new_width,new_height=$new_width,$new_height";
+			if($debug==1)	echo "<pre>new_height>maxPixel</pre>\n";
 			$new_height=$maxPixel;
 			$new_width=$maxPixel*$aspect;
 		}
-		//	echo "<pre>new_width,new_height=$new_width,$new_height";
+		$autoscale_y= $new_height/$maxPixel;
+		$autoscale_x=$new_width/$maxStrand;
+		if($debug==1)echo "<pre>autoscale_x,autoscale_y = $autoscale_x,$autoscale_y</pre>\n";
+		if($debug==1)echo "<pre>new_width,new_height=$new_width,$new_height";
 		//
 		require_once "gifresizer.php";	//Including our class
 		if (!is_dir("../effects/frames"))
@@ -210,21 +215,37 @@ function process_gif_frame($file,$frame,$get,$offset_left,$offset_top)
 	$size = getimagesize($image_path);
 	$img_width = $size[0];
 	$img_height = $size[1];
+	$autoscale_y= $img_height/$maxPixel;
+	$autoscale_x= $img_width/$maxStrand;
+	//echo "<pre>frame=$frame   img_width,autoscale_x=$img_width,$autoscale_x   img_height,autoscale_y=$img_height,$autoscale_y</pre>\n";
 	//
 	//	Get image into an array of rgb values
 	$s=0;
-	$precision=1;
-	for ($x = 0; $x < $img_width; $x += $precision)
+	if(!isset($autoscale)) $autoscale=2;  // default to fit to target
+	$precision_x=$precision_y=1;
+	for ($rx = 0; $rx < $img_width; $rx += $precision_x)
 	{
+		$x=intval($rx);
 		$s++;
 		$p_raw = 0;
 		$p=0;
-		for ($y = 0; $y < $img_height; $y += $precision)
+		for ($ry = 0; $ry < $img_height; $ry += $precision_y)
 		{
+			$y=intval($ry);
 			$p++;
-			$x1=$x; $y1=$y;
-			if($x1<1) $x1=1; if($x1>$img_width) $x1=$img_width;
-			if($y1<1) $y1=1; if($y1>$img_height) $y1=$img_height;
+			if($autoscale==2) // fit to target
+			{
+				$x1=intval($x*$autoscale_x);
+				$y1=intval($y*$autoscale_y);
+			}
+			else // otherwise maintain aspect ratio
+			{
+				$x1=$x; $y1=$y;
+			}
+			if($x1<0) $x1=0; 
+			if($x1>$img_width-1) $x1=$img_width-1;
+			if($y1<0) $y1=0; 
+			if($y1>$img_height-1) $y1=$img_height-1;
 			$rgb_index = imagecolorat($image, $x1, $y1);
 			// echo "<pre>$rgb_index=imagecolorat( $x1, $y1) left,top=$offset_left,$offset_top</pre>\n";
 			$cols = ImageColorsForIndex($image, $rgb_index);
@@ -235,11 +256,13 @@ function process_gif_frame($file,$frame,$get,$offset_left,$offset_top)
 			$rgb_val = hexdec($rgbhex);
 			$s=$x1+$offset_left;
 			$p=$y1+$offset_top;
+			$s=$x+1;
+			$p=$y+1;
 			//$s=$x1;
 			//if($s>$img_width) $s=$img_width;
 			//if($p>$img_height) $p=$img_height;
 			$image_array[$s][$p] = $rgb_val;
-			//			if($batch==0) echo "<pre>x,y,rgb= $x,$y,($r,$g,$b), rgbval=$rgb_val</pre>";
+			//	if($batch==0) echo "<pre>x,y,rgb= $x,$y,($r,$g,$b), rgbval=$rgb_val</pre>";
 		}
 	}
 	//print_r($image_array);
@@ -270,7 +293,8 @@ function process_gif_frame($file,$frame,$get,$offset_left,$offset_top)
 		case 'left':
 		$s0-=$shift;
 		break;
-	}*/
+	}
+	*/
 	for ($s = 0; $s <= $maxStrand; $s++)
 	{
 		for ($p = 1; $p <= $maxPixel; $p++)
@@ -314,7 +338,6 @@ function process_gif_frame($file,$frame,$get,$offset_left,$offset_top)
 	}
 	fclose($fh_dat[$frame]);
 }
-
 /*
 
 function fromRGB($R, $G, $B)
@@ -326,4 +349,3 @@ function fromRGB($R, $G, $B)
 	return $hex;
 }
 */
-
