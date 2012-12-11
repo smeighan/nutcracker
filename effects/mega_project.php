@@ -1,5 +1,17 @@
 <?php
 {
+	// used to join multiple projects together
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=49&ss=214&pole=235     Wizards in Winter
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=181&ss=215&pole=227    Amazing Grace
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=182&ss=216&pole=228    Carol of the Bells
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=183&ss=222&pole=232    Do you Hear
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=161&ss=217&pole=231    Christmas Canon
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=31&ss=218&pole=230     Christmas Sarajevo
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=184&ss=223&pole=234    Music Box Dancer
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=187&ss=224&pole=233    Linus & Lucy
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=186&ss=225&pole=229    All I want
+
+
 	//	extract ($get);
 	require_once("../conf/setup.php"); // override some apache caching.
 	require_once("../effects/read_file.php");
@@ -14,7 +26,23 @@
 	//
 	$first_time=0;
 	//
-	$mtree_project = '../project/workarea/f~182~master.nc';
+	echo "<pre>";
+	echo "POST:\n";
+	print_r($_POST);
+	echo "GET:\n";
+	print_r($_GET);
+	echo "</pre>\n";
+	$get=$_GET;
+	extract($_GET);
+	//mega_project_form($get);
+	$mtree_project = '../project/workarea/f~' . $project_id . '~master.nc';  // !!!!!!!!!!!!!!!!!!!!!!
+	if(!isset($ss)) $ss=209;
+	$eave_wind_star_project= '../project/workarea/f~' . $ss . '~master.nc';  
+	if(!isset($pole)) $pole=227;
+	$pole_star_project= '../project/workarea/f~' . $pole . '~master.nc';  
+	echo "<pre><h2> Processing Megatree $mtree_project</h2></pre>\n";
+	echo "<pre><h2> Processing Eaves, Windows $eave_wind_star_project</h2></pre>\n";
+	echo "<pre><h2> Processing Pole, Tree Star $pole_star_project</h2></pre>\n";
 	$tok=explode(".nc",$mtree_project);
 	$vixen_vir = $tok[0] . ".vir"; // change the .nc to .vir
 	$vixen_vix = $tok[0] . ".vix"; // change the .nc to .vir
@@ -34,6 +62,11 @@
 	extract ($song_data);
 	echo "<pre>song=$song_id\n name=$song_name\n";
 	echo "frame delay = $frame_delay\n\n\n";
+	$mega_project[] = array('ncfile'=>$pole_star_project,'channels'=>564,'rgb'=>'N','desc'=>'Megatree');
+	$mega_project[] = array('ncfile'=>'channels','channels'=>292,'rgb'=>'N','desc'=>'Dummy 1');
+	$mega_project[] = array('ncfile'=>$mtree_project,'channels'=>7200,'rgb'=>'N','desc'=>'Megatree');
+	$mega_project[] = array('ncfile'=>'channels','channels'=>196,'rgb'=>'N','desc'=>'dummy 2');
+	$mega_project[] = array('ncfile'=>$eave_wind_star_project,'channels'=>7200,'rgb'=>'N','desc'=>'Megatree');
 	//print_r($tok);
 	//print_r($project_data);
 	//	print_r($song_data);
@@ -70,9 +103,6 @@
 	//	if($batch==0) mega_project_form($get);
 	//	$mega_project[] = array('ncfile'=>'channels','channels'=>128,'rgb'=>'N','desc'=>'DMX Channels 1-128');
 	//	$mega_project[] = array('ncfile'=>'star.nc','channels'=>180,'rgb'=>'Y','desc'=>'60 RGB node coro star');
-	$mega_project[] = array('ncfile'=>'channels','channels'=>496,'rgb'=>'N','desc'=>'Dummy 1');
-	$mega_project[] = array('ncfile'=>$mtree_project,'channels'=>7200,'rgb'=>'N','desc'=>'Megatree');
-	$mega_project[] = array('ncfile'=>'channels','channels'=>496,'rgb'=>'N','desc'=>'dummy 2');
 	echo "<pre>";
 	//	$fh_vixen_vir=fopen($vixen_vir,"w") or die("Unable to open $vixen_vir");
 	/*$full_path= "../project/workarea";
@@ -691,17 +721,17 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 				if($channel_mod==1)
 				{
 					$color=-65536;    $rgb="R";
-					$color=hexdec("#FF7777");
+					//	$color=-hexdec("#FF7777");
 				}
 				if($channel_mod==2)
 				{
 					$color=-16744448; $rgb="G";
-					$color=hexdec("#77FF77");
+					//	$color=-hexdec("#77FF77");
 				}
 				if($channel_mod==0)
 				{
 					$color=-16776961; $rgb="B";
-					$color = hexdec("#7777FF");
+					//	$color = -hexdec("#7777FF");
 				}
 			}
 			else
@@ -740,7 +770,7 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 		$channel++;
 		$tok=preg_split("/ +/", $line);
 		$c=count($tok);
-	//	if($channel >496 and $channel<505) echo "<pre>make_vix chhanel=$channel c=$c, $line</pre>\n";
+		//	if($channel >496 and $channel<505) echo "<pre>make_vix chhanel=$channel c=$c, $line</pre>\n";
 		if($c>1)
 		{
 			foreach($tok as $i=>$val)
@@ -748,8 +778,7 @@ function make_vix($get,$vixen_vir,$duration,$frame_delay,$channel_array)
 				if($i<=$c-1)
 				{
 					if(!isset($val)) $val=0;
-					if($channel >490 and $channel<510) 
-					echo "<pre>c=$c, i=$i,val=$val</pre>";
+					//if($channel >490 and $channel<510) echo "<pre>c=$c, i=$i,val=$val</pre>";
 					if($val>=0 and $val<=255)
 					{
 						$eventdata .= chr($val);
