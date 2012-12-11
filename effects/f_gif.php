@@ -1,6 +1,5 @@
 <?php
 //
-require_once "gifresizer.php";	//Including our class
 
 function f_gif($get)
 {
@@ -137,6 +136,7 @@ function f_gif($get)
 		if($debug==1)echo "<pre>autoscale_x,autoscale_y = $autoscale_x,$autoscale_y</pre>\n";
 		if($debug==1)echo "<pre>new_width,new_height=$new_width,$new_height";
 		//
+		
 		if (!is_dir("../effects/frames"))
 			mkdir("frames");
 		$gr = new gifresizer;	//New Instance Of GIFResizer
