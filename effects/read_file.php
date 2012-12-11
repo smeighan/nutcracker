@@ -1850,7 +1850,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		}
 		$full_path = $dirname . "/" . $filename;
 		$fh = fopen($full_path, 'r') or die("can't open file $full_path");
-		//echo "<pre>processing $filename</pre>\n";
+		//if($batch==0) echo "<pre>processing $filename</pre>\n";
 		/*
 		#    workspaces/f/AA+SEAN3_d_8.dat
 		t1    6    1    -0.589     0.428   113.090 16712526 0 0 9 41
@@ -1898,12 +1898,13 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		}
 		fclose($fh);
 		flush();
+		$unlink_true=0; // if =1 then we unlink temp files, *.dat, *.srt
 		//echo "<pre>unlink($full_path) has $line_counter lines</pre>\n";
 		$full_path=realpath($full_path);
 		if (file_exists($full_path))
 		{
 			//echo "<pre>Purging $full_path</pre>\n";
-			unlink($full_path);
+		if($unlink_true==1)	unlink($full_path);
 		}
 	}
 	//if (file_exists($gp_file)) unlink($gp_file);
@@ -2127,8 +2128,8 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//printf("</pre>\n");
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
-	unlink($seq_file);
-	unlink ($seq_srt);
+	if($unlink_true==1) unlink($seq_file);
+		if($unlink_true==1)unlink ($seq_srt);
 	fclose($fh_buff);
 	//
 	//
