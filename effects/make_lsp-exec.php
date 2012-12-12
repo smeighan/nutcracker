@@ -170,7 +170,7 @@ function make_xml($fh_xml,$filename_buff,$type,$frame_delay)
 			}
 			$channels++;
 			//	fwrite($fh_xml,sprintf("\n"));
-			fwrite($fh_xml,sprintf("        <TimeInterval eff=\"7\" dat=\"\" gui=\"\" in=\"1\" out=\"1\" pos=\"%d\" sin=\"-1\" att=\"0\" />\n",$maxTime));
+			//fwrite($fh_xml,sprintf("        <TimeInterval eff=\"7\" dat=\"\" gui=\"\" in=\"1\" out=\"1\" pos=\"%d\" sin=\"-1\" att=\"0\" />\n",$maxTime));
 			fwrite($fh_xml,sprintf("        </Intervals>\n"));
 			fwrite($fh_xml,sprintf("  </Track>\n"));
 		}
