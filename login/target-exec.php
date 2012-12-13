@@ -94,6 +94,7 @@ function get_models($username,$model_name)
 	{
 		extract($row);
 	}
+	echo "Start Bottom = " . $start_bottom . "<br />";
 	$pixel_count_even=$folds * intval($pixel_count/$folds); // this is the total pixels that are evenly divisible.
 	if($folds==1)
 	{
@@ -143,57 +144,57 @@ function get_models($username,$model_name)
 		if(strtoupper($start_bottom)=='Y')
 		{
 			$pixel_countN=$pixel_count_even;
-		}
-		for($user_pixel=1;$user_pixel<=$pixel_countN;$user_pixel++)
-		{
-			$n++;
-			$mod=($n%$maxPixels);
-			$s=intval(($n-1)/$maxPixels)+1;
-			if($mod==1)
+		
+			for($user_pixel=1;$user_pixel<=$pixel_countN;$user_pixel++)
 			{
-				if($folds==1)
+				$n++;
+				$mod=($n%$maxPixels);
+				$s=intval(($n-1)/$maxPixels)+1;
+				if($mod==1)
 				{
-					$inc=-1;
-					$p=$maxPixels+1;
-				}
-				else if ($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
-				{
-					if($folds==1 or $s%2==1) // Odd strands
+					if($folds==1)
 					{
 						$inc=-1;
 						$p=$maxPixels+1;
 					}
-					else    // these are the even strands
+					else if ($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
 					{
-						$inc=1;
-						$p=0;
-					}
-				}
-				else if($mod==1)  // we have an odd number of folds
-				{
-					if($folds==1 or $s%2==1) // Odd strands
-					{
-						$inc=1;
-						$p=0;
-						if(strtoupper($start_bottom)=='Y' and $s%$folds==1 and $string%2==0 and $mod==1)
+						if($folds==1 or $s%2==1) // Odd strands
 						{
 							$inc=-1;
 							$p=$maxPixels+1;
 						}
+						else    // these are the even strands
+						{
+							$inc=1;
+							$p=0;
+						}
 					}
-					else    // these are the odd strands
+					else if($mod==1)  // we have an odd number of folds
 					{
-						$inc=-1;
-						$p=$maxPixels+1;
-						if(strtoupper($start_bottom)=='Y' and $s%$folds==1 and $string%2==0 )
+						if($folds==1 or $s%2==1) // Odd strands
+						{
+							$inc=1;
+							$p=0;
+							if($s%$folds==1 and $string%2==0 and $mod==1)
+							{
+								$inc=-1;
+								$p=$maxPixels+1;
+							}
+						}
+						else    // these are the odd strands
 						{
 							$inc=-1;
 							$p=$maxPixels+1;
+							if($s%$folds==1 and $string%2==0 )
+							{
+								$inc=-1;
+								$p=$maxPixels+1;
+							}
 						}
 					}
 				}
-			}
-			$p+=$inc;
+				$p+=$inc;
 			/*	if($s%2==1) $color="lightgreen";
 			else $color="lightblue";
 			echo "<tr><td >str=$string</td><td>userp=$user_pixel</td><td bgcolor=\"$color\">s=$s</td><td><b>p=$p</b></td>";
@@ -201,6 +202,69 @@ function get_models($username,$model_name)
 			echo "</tr>";*/
 			$target_array[$s][$p]['string'] =$string;
 			$target_array[$s][$p]['user_pixel'] =$user_pixel;
+			}
+		} else {
+			$pixel_countN=$pixel_count_even;
+		
+			for($user_pixel=$pixel_countN;$user_pixel>0;$user_pixel--)
+			{
+				$n++;
+				$mod=($n%$maxPixels);
+				$s=intval(($n-1)/$maxPixels)+1;
+				if($mod==1)
+				{
+					if($folds==1)
+					{
+						$inc=-1;
+						$p=$maxPixels+1;
+					}
+					else if ($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
+					{
+						if($folds==1 or $s%2==1) // Odd strands
+						{
+							$inc=-1;
+							$p=$maxPixels+1;
+						}
+						else    // these are the even strands
+						{
+							$inc=1;
+							$p=0;
+						}
+					}
+					else if($mod==1)  // we have an odd number of folds
+					{
+						if($folds==1 or $s%2==1) // Odd strands
+						{
+							$inc=1;
+							$p=0;
+							if($s%$folds==1 and $string%2==0 and $mod==1)
+							{
+								$inc=-1;
+								$p=$maxPixels+1;
+							}
+						}
+						else    // these are the odd strands
+						{
+							$inc=-1;
+							$p=$maxPixels+1;
+							if($s%$folds==1 and $string%2==0 )
+							{
+								$inc=-1;
+								$p=$maxPixels+1;
+							}
+						}
+					}
+				}
+				$p+=$inc;
+			/*	if($s%2==1) $color="lightgreen";
+			else $color="lightblue";
+			echo "<tr><td >str=$string</td><td>userp=$user_pixel</td><td bgcolor=\"$color\">s=$s</td><td><b>p=$p</b></td>";
+			echo "<td>inc=$inc</td><td>mod=$mod</td><td>n=$n</td>";
+			echo "</tr>";*/
+			$target_array[$s][$p]['string'] =$string;
+			$target_array[$s][$p]['user_pixel'] =$user_pixel;
+			}
+
 		}
 	}
 	echo "</table>";
