@@ -82,24 +82,24 @@ function newPhrase(songid) {
 		$phraseEditStr.="<td><input type=\"checkbox\" name=\"ck".$fieldSuffix."\" value=\"X\"></td></tr>\n";
 	}
  ?>
-<h2>Song Edit - <?=$song_name?></h2>
+<h2>Song Edit - <?php echo $song_name;?></h2>
 <p>Edit the song in the form below.  Press Submit to make the changes to the song.  Press cancel to cancel all changes and return to the Song Manager.
 The default song phrase section will pre-populate any project with this phrasing when this song is chosen for a given project.  You will still be able to manipulate
 these values in the project after assignment and the values below are used to provide the default values for phrases.</p>
 <form action="songs.php" id="myform" method="POST"> 
-<input type="hidden" name="song_id" value="<?=$song_id?>">
+<input type="hidden" name="song_id" value="<?php echo $song_id;?>">
 <input type="hidden" name="addPhrase" value="">
 <table class="Gallery">
-<tr><th colspan="2"><div align="center">Edit <?=$song_name?></div></th></tr>
-<tr><td>Song Name</td><td><input type="text" class="FormFieldName" value="<?=$song_name?>" size="75" name="song_name"></td></tr>
-<tr class="alt"><td>Song Artist</td><td><input type="text" class="FormFieldName" value="<?=$artist?>" size="75" name="artist"></td></tr>
-<tr><td>Song URL</td><td><input type="text" class="FormFieldName" value="<?=$song_url?>" size="75" name="song_url"></td></tr>
+<tr><th colspan="2"><div align="center">Edit <?php echo $song_name?></div></th></tr>
+<tr><td>Song Name</td><td><input type="text" class="FormFieldName" value="<?php echo $song_name;?>" size="75" name="song_name"></td></tr>
+<tr class="alt"><td>Song Artist</td><td><input type="text" class="FormFieldName" value="<?php echo $artist;?>" size="75" name="artist"></td></tr>
+<tr><td>Song URL</td><td><input type="text" class="FormFieldName" value="<?php echo $song_url;?>" size="75" name="song_url"></td></tr>
 </table>
 <table class="Gallery">
 <tr><th colspan="4"><div align="center">Default Phrases</div></th></tr>
 <tr><th>Phrase Name</th><th>Phrase Start</th><th>Phrase End</th><th>Delete?</th></tr>
-<?=$phraseEditStr?>
-<tr><td colspan="4"><div align="center"><input type="button" value="Add Phrase" class="SubmitButton" onClick="newPhrase('<?=$song_id?>')"></div></td></tr>
+<?php echo $phraseEditStr;?>
+<tr><td colspan="4"><div align="center"><input type="button" value="Add Phrase" class="SubmitButton" onClick="newPhrase('<?php echo $song_id;?>')"></div></td></tr>
 </table>
 <table>
 <tr><td align="right"><input type="submit" name="editSong" value="Make Changes" class="SubmitButton"></td><td align="left"><input type="submit" name="cancelSongEdit" value="Cancel Edit" class="SubmitButton"></td></tr>
