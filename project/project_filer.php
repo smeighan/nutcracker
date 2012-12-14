@@ -1231,6 +1231,10 @@ function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $s
 				f_twinkle($get);
 				$ranNC=true;
 				break;
+			case ('tree') :
+				f_tree($get);
+				$ranNC=true;
+				break;
 			default :
 				echo "$effect_class not handled yet<br />";
 		}
