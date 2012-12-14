@@ -81,7 +81,7 @@ if($eu < 0){$eu=0;}
 $endrecord =$eu+$limit;
 
 //$sql="select id,name,class as myclass,mark from student limit $eu,$limit"; 
-$sql="SELECT effect_class AS effclass, username, effect_name AS effname, created, fullpath FROM gallery WHERE ".$wherestr." AND effect_name <> '' ORDER BY ".$sortstr." LIMIT $eu, $limit";
+$sql="SELECT effect_class AS effclass, username, effect_name AS effname, created, fullpath, member_id FROM gallery WHERE ".$wherestr." AND effect_name <> '' ORDER BY ".$sortstr." LIMIT $eu, $limit";
 //echo "alert($sql);";
 //$fh=fopen("sqlOut.txt",'w');
 //fwrite($fh,$sql);
