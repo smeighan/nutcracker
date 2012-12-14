@@ -1,0 +1,5 @@
+update project_dtl a, `effects_user_hdr` b
+set a.effect_name = b.effect_name
+ WHERE b.effect_id = a.effect_id
+and length(a.effect_name) < 1
+

@@ -202,6 +202,8 @@ function f_single_strand($get)
 				$V=$HSV['V'];
 				$rainbow2=0;
 				//$fade_3d2='n';
+				if(!isset($fade_3d2[$segment])) $fade_3d2[$segment]='N'; // in case they were not set
+				if(!isset($rainbow[$segment])) $rainbow[$segment]='N';
 				if($fade_3d2[$segment]=='y' or $fade_3d2[$segment]=='Y')
 				{
 					$mod2=$new_p%$cnt2;
@@ -435,11 +437,9 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 	UNIQUE KEY `idx_uesp` (`username`,`effect_name`,segment,`param_name`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1;*/
 	/*	
-	
-VIXEN	How much time should be in between timings
-LOR	Event Period. The event period is how long a single on/off event lasts
-LSP	Intervals. How far apart should default intervals be created?
-	
+	VIXEN	How much time should be in between timings
+	LOR	Event Period. The event period is how long a single on/off event lasts
+	LSP	Intervals. How far apart should default intervals be created?
 	[matrix] => Array
 	(
 	[color1] => Array
