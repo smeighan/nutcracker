@@ -2621,3 +2621,64 @@ function get_start_channel($username,$model)
 	}
 	return $start_channel;
 }
+
+function create_twinkle($get,$arr,$number_frames_per_blink)
+{
+	extract ($get);
+	$minStrand =$arr[0];  // lowest strand seen on target
+	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
+	$maxStrand =$arr[2];  // highest strand seen on target
+	$maxPixel  =$arr[3];  // maximum pixel number found when reading the skeleton target
+	$maxI      =$arr[4];  // maximum number of pixels in target
+	$tree_rgb  =$arr[5];
+	$tree_xyz  =$arr[6];
+	$file      =$arr[7];
+	$min_max   =$arr[8];
+	$strand_pixel=$arr[9];
+	if($color3 == null or !isset($color3)) $color3="#FFFFFF";
+	if($color4 == null or !isset($color4)) $color4="#FFFFFF";
+	if($color5 == null or !isset($color5)) $color5="#FFFFFF";
+	
+	if($speed == null or !isset($speed)) $speed=0.5;
+	//
+	$get['maxStrand']=$maxStrand;
+	$get['maxPixel']=$maxPixel;
+	
+	//
+	//
+	srand();
+	$two_blinks = 2*$number_frames_per_blink;
+	for($s=1;$s<=$maxStrand;$s++)
+	{
+		for($p=1;$p<=$maxPixel;$p++)
+		{
+			$twinkle[$s][$p]=0;
+			$twinkle_counter[$s][$p]=mt_rand(1,$two_blinks);
+		}
+	}
+	$f=1;
+	$line=$seq_number=0;
+	$color_array = array(hexdec("#FF0000"), // RED
+	hexdec("#00FF00"), // GREEN
+	hexdec("#FFFF00"), // YELLOW
+	hexdec("#FF00FF"), // PURPLE
+	hexdec("#0000FF")); // GREEN
+	$color_array = array(hexdec($color1),
+	hexdec($color2),
+	hexdec($color3),
+	hexdec($color4),
+	hexdec($color5));
+	for($s=1;$s<=$maxStrand;$s++)
+	{
+		for($p=1;$p<=$maxPixel;$p++)
+		{
+			$icolor=mt_rand(0,4);
+			$r = mt_rand(1,100);
+			if($r<=$sparkles)
+				$twinkle[$s][$p]=$color_array[$icolor];
+		}
+		//	if($batch==0) echo "<pre>twinkle[s][p]=rgb_val; = twinkle[$s][$p]=$rgb_val;</pre>\n";
+	}
+	$twinkle_array=array($twinkle,$twinkle_counter);
+	return $twinkle_array;
+}

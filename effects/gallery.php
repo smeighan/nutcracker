@@ -12,23 +12,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 Tun update gallery database
-
 gallery.php?INSERT_NEW_GIFS=1
-
-
 */
+set_time_limit(0);
+ini_set("memory_limit","2024M");
 require_once('../conf/header.php');
 require("../effects/read_file.php");
-if( isset($_REQUEST['group']) && $_REQUEST['group'] !='')
-{
-	$group=$_REQUEST['group'];
-}
-if( isset($_REQUEST['effect_class']) && $_REQUEST['effect_class'] !='')
-{
-	$effect_class=$_REQUEST['effect_class'];
-}
+
 extract ($_GET);
 /* Array
 (
@@ -54,46 +45,8 @@ echo "</pre>\n";*/
 $number_gifs=0;
 $effect_class_selected=array();
 $sort="member_id";
-if(isset($_GET)===false or $_GET==null ) // First time here? Called by member-index.php
-{ // yes
-	/*$tokens=explode("?",$_SERVER['QUERY_STRING']);
-	$tok2=explode("=",$tokens[0]); $start_pic = $tok2[1];
-	$tok2=explode("=",$tokens[1]); $end_pic = $tok2[1];
-	$tok2=explode("=",$tokens[2]); $number_gifs = $tok2[1];
-	$tok2=explode("=",$tokens[3]); $sort = $tok2[1];
-	$tok2=explode("=",$tokens[4]); $effect_class_selected_array = $tok2[1];*/
-	extract ($_GET);
-	$tok3=explode("|",$effect_class_selected_array);
-	$effect_class_selected=array();
-	foreach($tok3 as $class)
-	{
-		$effect_class_selected[]=$class;
-	}
-	/*echo "<pre>";
-	echo "start,end=$start_pic,$end_pic</pre>\n";
-	print_r($effect_class_selected);
-	echo "</pre>";*/
-}
-else
-{
-	extract ($_GET);
-	/*echo "<pre>";
-	print_r($_GET);
-	echo "</pre>";*/
-	$start_pic=1;
-	if(isset($number_gifs)) $end_pic=$number_gifs;
-	else $end_pic=1;
-}
-//
-//
-echo "<pre>";
-print_r($_GET);
-print_r($effect_class_selected);
-echo "</pre>\n";
-if(isset($effect_class_selected)) $total_gifs=count_gallery($effect_class_selected);
-else $total_gifs=0;
-echo "<h1>$total_gifs gif's in Library, Start,end=$start_pic,$end_pic</h1>";
-echo "<h2>Click on these links to display the next group of effects</h2>";
+
+group of effects</h2>";
 $number_gifs+=0;
 if($number_gifs<=0)
 	$number_gifs=1;
@@ -114,7 +67,7 @@ echo "<ol>";
 $ecb="";
 foreach($effect_class_selected as $effect_class)
 {
-$ecb .= "&effect_class_selected%5B%5D="	 . $effect_class;
+	$ecb .= "&effect_class_selected%5B%5D="	 . $effect_class;
 }
 for ($l=1;$l<=$loops;$l++)
 {
@@ -169,9 +122,38 @@ function getFilesFromDir($dir)
 					$th =strpos($file,"_th.gif");
 					if($extension=="gif" and $pos === false and $th>1)
 					{
-						$files[] = $dir.'/'.$file; 
+						//$files[] = $dir.'/'.$file; 
+						$fullpath = $dir.'/'.$file; 
 						$n++;
-						//echo "<pre>$cnt $n $file</pre>\n";
+					if($n%100 == 1)echo "<pre> $n $fullpath</pre>\n";
+						//
+						//
+						// workspaces/2/AA+LAYER2_th.gif
+						$tok=explode("/",$fullpath);
+						$member_id=$tok[1];
+						$username=get_username($member_id);
+						$effect_class="spiral";
+						$tok2=explode("~",$tok[2]);
+						$tok3=explode("_th.",$tok2[1]);
+						$effect_name=$tok3[0];
+						$ar=get_effect_user_hdr($username,$effect_name);
+						if(isset($ar[0]['effect_class'])) $effect_class = $ar[0]['effect_class'];
+						$query = "replace into gallery (fullpath,effect_class,username,effect_name,linenumber,member_id) values 
+						('$fullpath','$effect_class','$username','$effect_name',$line,$member_id)";
+						echo "<pre>$line $fullpath.";
+						/*print_r($ar);
+						foreach($ar as $arr)
+						{
+							print_r($arr);
+						}
+						*/
+						echo "</pre>\n";
+						$result=mysql_query($query);
+						if (mysql_errno() == 1062)
+						{
+							echo "<pre>Got duplicate error on $query</pre>\n";
+						}
+						//
 					}
 					} 
 				} 
@@ -221,6 +203,7 @@ $effect_class_selected,$start_pic,$end_pic)
 	{
 		$array_of_gifs=get_from_gallery($number_gifs,$sort,$effect_class_selected);
 	}
+	return;
 	/*echo "<pre>";
 	print_r($array_of_gifs);
 	echo "<pre>";*/
