@@ -346,9 +346,12 @@ echo "<pre>start_channel=get_start_channel(username,model)=$start_channel=get_st
 			{
 				$color=-16776961; $rgb="B";
 			}
-			$new_channel=$channel+$start_channel-1;
+			//$new_channel=$channel+$start_channel-1;
+			$new_channel=$channel+$start_channel;
 			$channel_name = "Channel $new_channel $rgb";
 			$output=$new_channel-1;
+			if ($output < 0)
+				$output = 0;
 			fwrite($fh,sprintf("<Channel color=\"$color\" output=\"$output\" id=\"0\" enabled=\"True\">$channel_name</Channel>\n"));
 		}
 	}
