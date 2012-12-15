@@ -11,6 +11,10 @@ function f_tree($get)
 	require_once("../effects/read_file.php");
 	//
 	//
+	echo "<pre>";
+	print_r($_SERVER);
+	echo "</pre>\n";
+	
 	$member_id=get_member_id($username);
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;
@@ -75,8 +79,10 @@ function f_tree($get)
 	$twinkle_counter=$twinkle_array[1];
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
 	$two_blinks = 2*$number_frames_per_blink;
-	
-	
+	//
+	$color1_tree_rgb = hexdec($color1_tree);
+	$color2_tree_rgb = hexdec($color2_tree);
+	//
 	echo "<pre>number_branches,pixels_per_branch = $number_branches,$pixels_per_branch</pre>\n";
 	for($f=1;$f<=$maxFrame;$f++)
 	{
@@ -89,17 +95,58 @@ function f_tree($get)
 		{
 			for($p=1;$p<=$maxPixel;$p++)
 			{
-				$H=0.33;
+				$HSV=RGBVAL_TO_HSV($color1_tree_rgb);
+				$H=$HSV['H'];
 				$S=1.0;
 				$mod=$p%$pixels_per_branch;
 				if($mod==0) $mod=$pixels_per_branch;
 				$V=($mod/$pixels_per_branch)*.7;
-				$rgb_val = HSV_TO_RGB ($H, $S, $V);
+				$rgb_val = HSV_TO_RGB ($H, $S, $V); // set tree
 				//$rgb_val = mt_rand(1,16777215);
 				$seq_number++;
 				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
-				$rgb_val = get_garland($rgb_val,$get,$s,$p,$f,$mod,
-				$number_branches,$pixels_per_branch,$number_garlands);
+				if($create_garlands=='Y' or $create_garlands=='y')
+				{
+					$rgb_val = get_garland($rgb_val,$get,$s,$p,$f,$mod,
+					$number_branches,$pixels_per_branch,$number_garlands);
+				}
+				if(($create_wash=='Y' or $create_wash=='y') and $p<=$f)
+				{
+					$HSV=RGBVAL_TO_HSV($color2_tree_rgb);
+					$H=$HSV['H'];
+					$S=1.0;
+					$mod=$p%$pixels_per_branch;
+					if($mod==0) $mod=$pixels_per_branch;
+					$V=($mod/$pixels_per_branch)*.7;
+					$rgb_val = HSV_TO_RGB ($H, $S, $V); // set tree
+				}
+				$twinkle_rgb_val=$twinkle[$s][$p]; // really rotate
+				//	$rgb_val=sparkles($sparkles,$f1_rgb_val); // if sparkles>0, then rgb_val will be changed.
+				$twinkle_counter[$s][$p]++;
+				$n=$twinkle_counter[$s][$p]%$two_blinks;
+				if($n>$number_frames_per_blink) $twinkle_rgb_val=0;
+				srand();
+				$random_100 = intval(mt_rand(1,100));
+				$sparkle_type='W';
+				if($twinkle_rgb_val>0)
+				{
+					if($sparkle_type=='W')
+					{
+						/*$ms200 = 500/$frame_delay;
+						$ms200_segment = ($f-1)/$ms200;
+						$s_p=($ms200_segment)%2;*/
+						if($sparkles>=$random_100 )
+						{
+							$rval=rand(64,255);
+							$r=$g=$b=$rval;
+							$rgb_val =hexdec(fromRGB($r,$g,$b));
+						}
+					}
+					else
+					{
+						$rgb_val=$twinkle_rgb_val;
+					}
+				}
 				fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
 				$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
 				,$s_pixel[$s][$p][0],$s_pixel[$s][$p][1],
@@ -128,14 +175,11 @@ function get_garland($rgb_val,$get,$s,$p,$f,$mod,$number_branches,$pixels_per_br
 	hexdec("#FFFF00"), // YELLOW
 	hexdec("#FF00FF"), // PURPLE
 	hexdec("#00FFFF")); // GREEN
-	
-		$color_array = array(hexdec($color1), // RED
+	$color_array = array(hexdec($color1), // RED
 	hexdec($color2), // BLUE
 	hexdec($color3), // YELLOW
 	hexdec($color4), // PURPLE
 	hexdec($color5)); // GREEN
-	
-	
 	$orig_rgbval=$rgb_val;
 	$branch = intval(($p-1)/$pixels_per_branch);
 	$row = $pixels_per_branch-$mod; // now row=0 is bottom of branch, row=1 is one above bottom

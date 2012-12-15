@@ -575,13 +575,19 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 		// pcntl_exec($programexe,$programvars); 		
 		//   $shellCommmand = "/usr/local/bin/gnuplot '" . $pathToCommandFile .+"'";
 		//         $output = system($shellCommmand . " 2>&1");
+		// [SERVER_NAME] => nutcracker123.com
 		//
-		/*if($_SERVER['HTTP_HOST'] == 'localhost')
+		ini_set('include_path', '/home5/nutcrcom/gnuplot/bin');
+		if($_SERVER['HTTP_HOST'] == 'nutcracker123.com')
 		{
-			$shellCommand = $_SERVER['DOCUMENT_ROOT']."nutcracker/gnuplot/bin/gnuplot.exe " . $gp_file .  " 2>&1";
+			// $shellCommand = $_SERVER['DOCUMENT_ROOT']."/gnuplot/bin/gnuplot " . 
+			$shellCommand = "../gnuplot/bin/gnuplot " . 
+			$gp_file .  " 2>&1";
 		}
-		else*/
-		$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1"; 
+		else
+		{
+			$shellCommand = "gnuplot " . realpath($gp_file) .  " 2>&1";
+		}
 		$return=system($shellCommand,$output); 
 		//echo "<pre>cwd=$cwd, shellcommand = $shellCommand, output=$output, return=$return</pre>\n";
 	}
@@ -1904,7 +1910,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 		if (file_exists($full_path))
 		{
 			//echo "<pre>Purging $full_path</pre>\n";
-		if($unlink_true==1)	unlink($full_path);
+			if($unlink_true==1)	unlink($full_path);
 		}
 	}
 	//if (file_exists($gp_file)) unlink($gp_file);
@@ -2129,7 +2135,7 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 	//  $seq_file = $dirname . "/" . $base . ".dat";
 	//	$seq_srt = $dirname . "/" . $base . ".srt";
 	if($unlink_true==1) unlink($seq_file);
-		if($unlink_true==1)unlink ($seq_srt);
+	if($unlink_true==1)unlink ($seq_srt);
 	fclose($fh_buff);
 	//
 	//
@@ -2166,7 +2172,6 @@ function make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_i
 					$string=$tok[1];	// string#
 					$pixel=$tok[3];	// pixel#
 					$cnt=count($tok);
-					
 					echo "<pre>";
 					print_r($tok);
 					printf("S %d P %d",$pixel,$string);
@@ -2638,12 +2643,10 @@ function create_twinkle($get,$arr,$number_frames_per_blink)
 	if($color3 == null or !isset($color3)) $color3="#FFFFFF";
 	if($color4 == null or !isset($color4)) $color4="#FFFFFF";
 	if($color5 == null or !isset($color5)) $color5="#FFFFFF";
-	
 	if($speed == null or !isset($speed)) $speed=0.5;
 	//
 	$get['maxStrand']=$maxStrand;
 	$get['maxPixel']=$maxPixel;
-	
 	//
 	//
 	srand();
