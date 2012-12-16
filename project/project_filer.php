@@ -731,16 +731,18 @@ function joinPhraseArray($inArray)
 
 function getPhraseArray($project_id, $join_phrase=true)
 {
+	$sql = "SET SQL_BIG_SELECTS=1";
+	$result=nc_query($sql);
 	$sql = "SELECT DISTINCT pd.phrase_name, pd.start_secs, pd.end_secs, ue.effect_name, p.frame_delay, p.username, p.model_name, m.member_id \n"
 	. "FROM `project_dtl` as pd \n"
 	. "LEFT JOIN project as p ON p.project_id=pd.project_id \n"
 	. "LEFT JOIN members as m ON m.username=p.username \n"
 	. "LEFT JOIN effects_user_dtl as ue ON ue.effect_name=pd.effect_name and p.username=ue.username \n"
-	. "WHERE pd.project_id = ".$project_id." \n"
-	. "ORDER BY pd.start_secs";
+	. "WHERE pd.project_id=".$project_id." \n"
+	. "ORDER BY pd.start_secs; ";
 	//echo "SQL in getPhraseArray : ".$sql."<br />";
 	$result=nc_query($sql);
-	//echo "GOT to getPhraseArray<br />";
+	// echo "GOT to getPhraseArray<br />";
 	$retArray=array();
 	while ($row=mysql_fetch_array($result,MYSQL_ASSOC))
 	{
