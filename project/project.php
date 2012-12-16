@@ -87,7 +87,7 @@ if (isset($type)) {
 			$msg_str= "***Error occurred *** Invalid value for function call<br />";
 	}
 } else {
-    $debug = true;
+    $debug = false;
 	if ($debug) print_r($_POST);
 	extract($_POST);
 	if (isset($NewProjectCancel)) {
