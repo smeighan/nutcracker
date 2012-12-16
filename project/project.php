@@ -87,7 +87,7 @@ if (isset($type)) {
 			$msg_str= "***Error occurred *** Invalid value for function call<br />";
 	}
 } else {
-    $debug = false;
+    $debug = true;
 	if ($debug) print_r($_POST);
 	extract($_POST);
 	if (isset($NewProjectCancel)) {
@@ -135,20 +135,21 @@ if (isset($type)) {
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
 		nc_query($sql);
 		if ($outputType!='xml') {
-			//echo "getPhraseArray<br />";
+			if ($debug) echo "getPhraseArray<br />";
 			$myarray=getPhraseArray($project_id);
-			//echo "setupNCfiles<br />";
+			if ($debug) echo "setupNCfiles<br />";
 			$projectArray=setupNCfiles($project_id,$myarray);
-			//echo "prepMasterNCFile<br />";
+			if ($debug) echo "prepMasterNCFile<br />";
 			$myNCarray=prepMasterNCfile($project_id);
 			$numEntries=count($myNCarray);
-			//echo "checkValidNCFiles<br />";
+			if ($debug) echo "checkValidNCFiles<br />";
 			$myarray=checkValidNCFiles($myarray, $numEntries, $project_id);
 		} else {
 			$myarray=array();
 			$projectArray=array();
 			$myNCarray=array();
 		}
+		if ($debug) echo "processMsatNCfile<br />";
 		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
 	}
 	if (isset($EffectEdit)) {
