@@ -398,7 +398,9 @@ function create_snowflakes($get,$arr)
 			break;
 			//
 		}
-		while ($rgb==0 and $check<20)
+		$rgb=1;
+		$check=0;
+		while ($rgb!=0 and $check<20)
 		{
 			$s=intval(mt_rand(1,$maxStrand));
 			$p=intval(mt_rand($p1,$p2));

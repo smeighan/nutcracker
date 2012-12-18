@@ -1230,7 +1230,7 @@ function get_username($member_id)
 	}
 	$query = "select username from members where member_id='$member_id'";
 	$username='';
-	echo "$query";
+	//echo "$query";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
 	while ($row = mysql_fetch_assoc($result))
 	{

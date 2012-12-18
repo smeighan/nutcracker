@@ -11,6 +11,7 @@
 //
 //
 //*************************************************************************************************
+
 ?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -26,6 +27,7 @@
 </head>
 <body>
 <p>&nbsp;</p>
+
 <table>
 <tr><td>
 <form id="loginForm" name="loginForm" method="get" action="login-exec.php">

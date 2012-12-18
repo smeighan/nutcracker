@@ -1,5 +1,7 @@
 <?php
-if($_SERVER['HTTP_HOST'] == 'nutcracker123.com')
+$n=strpos($_SERVER['HTTP_HOST'],"cracker");
+//if($_SERVER['HTTP_HOST'] == 'nutcracker123.com')
+if($n>0)
 {
 	define('DB_HOST',     'localhost');
 	define('DB_USER',     'nutcrcom_ncuser');
