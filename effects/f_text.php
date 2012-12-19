@@ -228,6 +228,7 @@ function f_text($get)
 	else if(strtolower($direction)=="down") $direction="down";
 	else if(strtolower($direction)=="left") $direction="left";
 	else $direction="left";
+	$scaley=3;
 	for($f=1;$f<=$maxFrame;$f++)
 	{
 		for($j=1;$j<=9;$j++)	//	 display text1. Vertical
@@ -237,17 +238,22 @@ function f_text($get)
 				if($direction=="left")
 				{
 					$p= $j + $topPixel;
-					$p2= $j + $topPixel +10;
+					$p2= $j + $topPixel +10*$scaley;
 					if($speed<1) $k1=intval($k*$speed);
 					else $k1=$k;
 					//if($k1<1) $k1=1;
 					$s = $maxStrand-intval(($f-$k)*$speed);
 					if(isset($scroll[$j][$k1]) and  $scroll[$j][$k1] ==1) $rgb_val=$text1_color;
 					else $rgb_val=0;
-					$tree_rgb[$s][$p]=$rgb_val;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					$tree_rgb[$s][$p2]=$rgb_val2;
+					for($stmp=1;$stmp<=$scaley;$stmp++)
+					{
+						$pnew = $p + ($stmp-1);
+						$pnew2 = $p2 + ($stmp-1);
+						$tree_rgb[$s][$pnew]=$rgb_val;
+						$tree_rgb[$s][$pnew2]=$rgb_val2;
+					}
 					//	echo "<pre>f,s,p,p2,j,k,rgb_val1,rgb_val2=$f,$s,$p,$p2,[$j,$k],$rgb_val,$rgb_val2</pre>\n";
 				}
 				else if($direction=="up")
@@ -259,10 +265,17 @@ function f_text($get)
 					else $k1=$k;
 					if(isset($scroll[$j][$k1]) and  $scroll[$j][$k1] ==1) $rgb_val=$text1_color;
 					else $rgb_val=0;
-					$tree_rgb[$s][$p]=$rgb_val;
-					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val=$text2_color;
-					else $rgb_val=0;
-					$tree_rgb[$s2][$p]=$rgb_val;
+					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
+					else $rgb_val2=0;
+					for($stmp=1;$stmp<=$scaley;$stmp++)
+					{
+							$pnew = $p + ($stmp-1);
+						
+						$tree_rgb[$s][$pnew]=$rgb_val;
+						$tree_rgb[$s2][$pnew]=$rgb_val2;
+					}
+				//	$tree_rgb[$s][$p]=$rgb_val;
+				//	$tree_rgb[$s2][$p]=$rgb_val;
 				}
 				else if($direction=="down")
 				{
@@ -273,10 +286,17 @@ function f_text($get)
 					else $k1=$k;
 					if(isset($scroll[$j][$k1]) and  $scroll[$j][$k1] ==1) $rgb_val=$text1_color;
 					else $rgb_val=0;
-					$tree_rgb[$s][$p]=$rgb_val;
-					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val=$text2_color;
-					else $rgb_val=0;
-					$tree_rgb[$s2][$p]=$rgb_val;
+					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
+					else $rgb_val2=0;
+					for($stmp=1;$stmp<=$scaley;$stmp++)
+					{
+							$pnew = $p + ($stmp-1);
+						$pnew2 = $p2 + ($stmp-1);
+						$tree_rgb[$s][$pnew]=$rgb_val;
+						$tree_rgb[$s2][$pnew]=$rgb_val2;
+					}
+					// $tree_rgb[$s][$p]=$rgb_val;
+					// $tree_rgb[$s2][$p]=$rgb_val;
 				}
 			}
 		}

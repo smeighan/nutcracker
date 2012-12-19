@@ -578,7 +578,9 @@ function display_gif($batch,$dir,$model,$gp_file,$out_file_array,$frame_delay)
 		// [SERVER_NAME] => nutcracker123.com
 		//
 		ini_set('include_path', '/home5/nutcrcom/gnuplot/bin');
-		if($_SERVER['HTTP_HOST'] == 'nutcracker123.com')
+		$n=strpos($_SERVER['HTTP_HOST'],"cracker123");
+		//		if($_SERVER['HTTP_HOST'] == 'nutcracker123.com')
+			if($n>0)
 		{
 			// $shellCommand = $_SERVER['DOCUMENT_ROOT']."/gnuplot/bin/gnuplot " . 
 			$shellCommand = "../gnuplot/bin/gnuplot " . 
