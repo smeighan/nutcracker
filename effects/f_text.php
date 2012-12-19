@@ -228,7 +228,7 @@ function f_text($get)
 	else if(strtolower($direction)=="down") $direction="down";
 	else if(strtolower($direction)=="left") $direction="left";
 	else $direction="left";
-	$scaley=3;
+	$scaley=1;
 	for($f=1;$f<=$maxFrame;$f++)
 	{
 		for($j=1;$j<=9;$j++)	//	 display text1. Vertical
