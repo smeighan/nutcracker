@@ -237,8 +237,8 @@ function f_text($get)
 			{
 				if($direction=="left")
 				{
-					$p= $j + $topPixel;
-					$p2= $j + $topPixel +10*$scaley;
+					$p= ($j-1)*$scaley + $topPixel +1;
+					$p2= ($j-1)*$scaley + $topPixel +10*$scaley + 1;
 					if($speed<1) $k1=intval($k*$speed);
 					else $k1=$k;
 					//if($k1<1) $k1=1;
@@ -247,14 +247,16 @@ function f_text($get)
 					else $rgb_val=0;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					for($stmp=1;$stmp<=$scaley;$stmp++)
+					for($ptmp=1;$ptmp<=$scaley;$ptmp++)
 					{
-						$pnew = $p + ($stmp-1);
-						$pnew2 = $p2 + ($stmp-1);
+						$pnew = $p + ($ptmp-1);
+						$pnew2 = $p2 + ($ptmp-1);
 						$tree_rgb[$s][$pnew]=$rgb_val;
 						$tree_rgb[$s][$pnew2]=$rgb_val2;
+						//echo "<pre>f,s,p,p2,j,k,rgb_val1,rgb_val2=$f,$s,$p($pnew),$p2($pnew2),
+						//[$j,$k],$rgb_val,$rgb_val2, ptmp=$ptmp</pre>\n";
 					}
-					//	echo "<pre>f,s,p,p2,j,k,rgb_val1,rgb_val2=$f,$s,$p,$p2,[$j,$k],$rgb_val,$rgb_val2</pre>\n";
+						
 				}
 				else if($direction=="up")
 				{
@@ -267,15 +269,14 @@ function f_text($get)
 					else $rgb_val=0;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					for($stmp=1;$stmp<=$scaley;$stmp++)
+					for($ptmp=1;$ptmp<=$scaley;$ptmp++)
 					{
-							$pnew = $p + ($stmp-1);
-						
+						$pnew = $p + ($ptmp-1);
 						$tree_rgb[$s][$pnew]=$rgb_val;
 						$tree_rgb[$s2][$pnew]=$rgb_val2;
 					}
-				//	$tree_rgb[$s][$p]=$rgb_val;
-				//	$tree_rgb[$s2][$p]=$rgb_val;
+					//	$tree_rgb[$s][$p]=$rgb_val;
+					//	$tree_rgb[$s2][$p]=$rgb_val;
 				}
 				else if($direction=="down")
 				{
@@ -288,10 +289,10 @@ function f_text($get)
 					else $rgb_val=0;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					for($stmp=1;$stmp<=$scaley;$stmp++)
+					for($ptmp=1;$ptmp<=$scaley;$ptmp++)
 					{
-							$pnew = $p + ($stmp-1);
-						$pnew2 = $p2 + ($stmp-1);
+						$pnew = $p + ($ptmp-1);
+						$pnew2 = $p2 + ($ptmp-1);
 						$tree_rgb[$s][$pnew]=$rgb_val;
 						$tree_rgb[$s2][$pnew]=$rgb_val2;
 					}
