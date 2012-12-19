@@ -66,7 +66,7 @@ function getFilesFromDir($dir)
 					}
 					else if($tok[1]=="nc") // is this a nutcracker file, file.nc?
 					{
-						$NC_PURGE=1;  // nov 23, we need the space back
+						$NC_PURGE=0;  // nov 23, we need the space back. dc 19, now on nutcracker123, dont need to be so aggressive
 						if($NC_PURGE==1)
 						{
 							echo " DELETE NC: $totn: rm $fullname. dir=$dir\n";
