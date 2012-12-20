@@ -16,7 +16,8 @@
 <body>
 <h1>Nutcracker Install Script</h1>
 <?php
-if($_SERVER['HTTP_HOST'] != 'localhost')
+$n=strpos($_SERVER['HTTP_HOST'],'calhost');
+if($n>0)
 {
 	echo"<pre><h1>ERROR! You cannot run this script on any place except for your local computer<br/>";
 	echo "Please RIGHT-CLICK the filename, not left click it. select save as and put<br/>";
