@@ -103,7 +103,7 @@ function ajaxFunction(val)
 						//	<scm> end
 						if (myObject.data[i].gifname) 
 						{
-							str = str + "<td><a href=\""+gifloc+"\"><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></a></td>";
+							str = str + "<td><a href=\""+gifloc+"\" target=\"_new\"><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"height=\150\" width=\"75\"></a></td>";
 						} else {
 							str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></td>";
 						}
