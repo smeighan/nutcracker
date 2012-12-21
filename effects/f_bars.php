@@ -134,6 +134,7 @@ function f_bars($get)
 				$H=$HSV['H']; $S=$HSV['S'];  $V=$HSV['V'];
 				//$direction='expand';
 				$f_offset = intval($f*$speed);
+				if(!isset($direction)) $direction='down';
 				if($direction=='up')
 				{
 					$n=$p-$f_offset;
