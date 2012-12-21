@@ -89,17 +89,24 @@ function ajaxFunction(val)
 						//alert(varstring);
 						str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
 						str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
-						str = str + "<br />Member ID: " + myObject.data[i].member_id;
+						//str = str + "<br />Member ID: " + myObject.data[i].member_id;
+						//str = str + "<br />Gif Image : " + myObject.data[i].gifname;
 						str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
 						str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
 						str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
 						str = str + "<br />Effect Name";
 						str = str + "</td>";
+						var gifloc = "/nutcracker/effects/gifs/"+myObject.data[i].member_id+"/"+myObject.data[i].gifname;
 						//	<scm> start
 						/*$fpath2 =  "/nutcracker/effects/"  . myObject.data[i].fullpath;
 						if(!file_exists($fpath)) $fpath2 = "/nutcracker/images/noThumb.gif";*/
 						//	<scm> end
-						str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></td>";
+						if (myObject.data[i].gifname) 
+						{
+							str = str + "<td><a href=\""+gifloc+"\"><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></a></td>";
+						} else {
+							str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></td>";
+						}
 						//str = str + "<td><img src=\"" . $fpath ."\"  height=\"100\" width=\"50\"></td>";
 					cnt++;
 				}

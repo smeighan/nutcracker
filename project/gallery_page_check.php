@@ -29,21 +29,21 @@ else
 if ($myfilter=="all")	
 		$wherestr= " 1=1 ";
 else
-		$wherestr= " effect_class='".$myfilter."' ";
+		$wherestr= " g.effect_class='".$myfilter."' ";
 
 if (isset($_GET['filterusername'])) {
 	$fuser=$_GET['filterusername'];
 	if (strlen($fuser) >0)
-		$wherestr=$wherestr." AND username like '".$fuser."%' ";
+		$wherestr=$wherestr." AND g.username like '".$fuser."%' ";
 }
 
 if (isset($_GET['filtereffect'])) {
 	$feffect=$_GET['filtereffect'];
 	if (strlen($feffect) > 0)
-		$wherestr=$wherestr." AND effect_name like '".$feffect."%' ";
+		$wherestr=$wherestr." AND g.effect_name like '".$feffect."%' ";
 }
 	
-$count=$dbo->prepare("select username from gallery where ".$wherestr);
+$count=$dbo->prepare("select g.username from gallery as g where ".$wherestr);
 $count->execute();
 $nume=$count->rowCount(); // Total number of records
 
@@ -68,20 +68,20 @@ break;
 switch($mysort) 
 {
 	case 1 :
-		$sortstr= " username, effect_name ";
+		$sortstr= " g.username, g.effect_name ";
 		break;
 	case 2 : 
-		$sortstr= " effect_class, username, effect_name ";
+		$sortstr= " g.effect_class, g.username, g.effect_name ";
 		break;
 	default :
-		$sortstr = " effect_name ";
+		$sortstr = " g.effect_name ";
 }
 
 if($eu < 0){$eu=0;}
 $endrecord =$eu+$limit;
 
 //$sql="select id,name,class as myclass,mark from student limit $eu,$limit"; 
-$sql="SELECT effect_class AS effclass, username, effect_name AS effname, created, fullpath, member_id FROM gallery WHERE ".$wherestr." AND effect_name <> '' ORDER BY ".$sortstr." LIMIT $eu, $limit";
+$sql="SELECT g.effect_class AS effclass, g.username, g.effect_name AS effname, g.created, g.fullpath, g.member_id, ed.param_value as gifname FROM gallery as g LEFT JOIN effects_user_dtl as ed ON g.username=ed.username AND g.effect_name=ed.effect_name AND ed.param_name='file1' WHERE ".$wherestr." AND g.effect_name <> '' ORDER BY ".$sortstr." LIMIT $eu, $limit";
 //echo "alert($sql);";
 //$fh=fopen("sqlOut.txt",'w');
 //fwrite($fh,$sql);
