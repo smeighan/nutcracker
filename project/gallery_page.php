@@ -89,7 +89,7 @@ function ajaxFunction(val)
 						//alert(varstring);
 						str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
 						str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
-						//str = str + "<br />Member ID: " + myObject.data[i].member_id;
+						str = str + "<br /> Member ID: <a href=\"/nutcracker/effects/image_library.php?member_id="+ myObject.data[i].member_id+"\" target=\"_new\">" + myObject.data[i].member_id + "</a>";
 						//str = str + "<br />Gif Image : " + myObject.data[i].gifname;
 						str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
 						str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
