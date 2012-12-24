@@ -654,11 +654,12 @@ function parseSongs($result)
 		$song_name=$row['song_name'];
 		$song_id=$row['song_id'];
 		$song_url=$row['song_url'];
+		$artist=$row['artist'];
 		$MinTime=$row['MinTime'];
 		$MaxTime=$row['MaxTime'];
 		$song_length = round(($MaxTime-$MinTime),2);
 		$song_length_min = round(($song_length/60),2);
-		$retStr1.='<option value='.$song_id.'>'.$song_name.'</option>';
+		$retStr1.='<option value='.$song_id.'>'.$song_name.' ('.$artist.')</option>';
 		if ($cnt%2==0) 
 		$trStr='<tr>';
 		else
