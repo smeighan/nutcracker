@@ -119,7 +119,7 @@ function getFilesFromDir($dir,$n)
 							{
 								$line++;
 								$n++;
-								$query = "insert into gallery (fullpath,effect_class,
+								$query = "insert ignore into gallery (fullpath,effect_class,
 								username,effect_name,linenumber,member_id) values 
 								('$fullpath','$effect_class','$username','$effect_name',$line,$member_id)";
 								if($n%200 == 1)
@@ -129,7 +129,7 @@ function getFilesFromDir($dir,$n)
 								}
 								$result = mysql_query($query,$link);
 								if(mysql_errno() <> 0)
-									echo "<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
+									echo "<pre><br/>A fatal MySQL error occured.\n<br />Query: " . 
 								$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error();
 								echo "+";
 							}
