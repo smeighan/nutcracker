@@ -33,6 +33,7 @@ ini_set("memory_limit","512M");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <script type="text/javascript" src="../js/barmenu.js"></script>
+<script type="text/javascript" src="../effects/jscolor.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Nutcracker: RGB Effects Builder</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -129,6 +130,20 @@ if (isset($type)) {
 		$artist=$row['artist'];
 		$model_name=$row['model_name'];
 		$msg_str="loaded phrase file ".$prettyFilename." for project ".$song_name."/".$model_name;
+	}
+	if (isset($EffectSave)) {
+		$project_id=$_POST["project_id"];
+		$effect_name=$_POST["effect_name"];
+		//Save Edit here
+		foreach ($_POST as $key=>$val)
+			if (($key!="EffectSave") && ($key!="project_id") && ($key!="type") && ($key!="effect_name")) {
+				$sql='UPDATE effects_user_dtl SET param_value="'.$val.'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
+				nc_query($sql); 
+			}
+		// Regen effect needs to be added here
+		$type=2;
+		$msg_str="Saving effect parameters for ".$effect_name. edit_song($project_id);
+
 	}
 	if (isset($MasterNCSubmit)) {
 		if ($debug) echo "In Generate Phase<br>";

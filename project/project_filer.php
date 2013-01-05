@@ -227,6 +227,7 @@ function showThumbs($project_id)
 	. "WHERE pd.project_id=$project_id ORDER BY pd.start_secs;";
 	//echo "SQL : " . $sql . "<br />";
 	echo "<table><tr>";
+	$EffectParams="";
 	$result=nc_query($sql);
 	while ($row=mysql_fetch_assoc($result))
 	{
@@ -256,10 +257,58 @@ function showThumbs($project_id)
 			else
 			$gifLoc="../images/noThumb.gif";
 		}
+		//
+		// Display effect values here
+		//
 		echo "<td class=\"smallText\">".$editEffect."<img  height=\"100\" width=\"50\" title=\"".$phrase_name."\n".$effect_name."\" alt=\"".$phrase_name.":".$effect_name."\" src=\"".$gifLoc."\"><br />".$phrase_name."</td>".$editEffectClose."\n";
+		$EffectParams.="<td  valign=\"top\">".DisplayEffectVars($effect_name, $username, $project_id)."</td>";
 	}
-	echo "</tr></table>";
+	echo "</tr>";
+	echo $EffectParams;
+	echo "</table>";
 }
+function DisplayEffectVars($effect_name, $username, $project_id) {
+	$sql = "SELECT ed.param_name, ed.param_value, param_prompt, param_desc, param_range FROM `effects_user_hdr` AS e\n"
+	. " LEFT JOIN effects_user_dtl AS ed ON e.username=ed.username AND e.effect_name=ed.effect_name\n"
+	. " LEFT JOIN effects_dtl as ed2 ON e.effect_class=ed2.effect_class AND ed.param_name=ed2.param_name\n"
+	. " WHERE e.effect_name='".$effect_name."' AND e.username='".$username."'\n"
+	. " ORDER BY ed2.sequence";
+	$result=nc_query($sql);
+	$cnt=0;
+	$retVal="<table><form action=\"project.php\" method=\"post\">";
+	$retVal.="<input type=\"hidden\" name=\"effect_name\" value=\"".$effect_name."\">\n";
+	$retVal.="<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\">\n";
+	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	{
+		extract($row);
+		if (($param_name!='frame_delay') && ($param_name!='effect_name') && ($param_name!='seq_duration') && ($param_name!='window_degrees')) {
+		//	if ($cnt%2==0) 
+		//		$trStr='<tr>';
+		//	else
+		//		$trStr='<tr class="alt">';
+		$findme="color";
+		$trStr="<tr>";
+			$pos = strpos($param_name, $findme);
+			if ($pos === false)
+			{
+				$classStr=" class=\"input2\" ";
+				//$classStr="";
+			}
+			else {
+			//	$classStr="bgcolor=\"".$param_value."\";";
+				$classStr=" class=\"color {hash:true} {pickerMode:'HSV'};\" ";
+			}
+			$fieldstr=$trStr.'<td><input type="text" name="'.$param_name.'" '.$classStr.' value="'.$param_value.'"><div class=input2label>'.$param_name.': </div></td></tr>'."\n";
+			$retVal.=$fieldstr;
+			$cnt++;
+		} 
+	}	
+	if ($effect_name != "None")
+		$retVal.="<tr><td><input type=\"submit\" value=\"Save Params\" name=\"EffectSave\" class=\"submit\"></td></tr>";
+	$retVal.="</form></table>\n";
+	return($retVal);
+}	
+
 
 function createThumb($model_name, $effect_name, $member_id)
 {
@@ -419,8 +468,10 @@ function edit_song($project_id)
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
 	<p /><input type="submit"  class="SubmitButton" name="LoadPhraseFile" value="Load Phrases from Audacity save file">
 	<p />
+	</form>
 	<h2>Time Line of Effects</h2>
 	<?php showThumbs($project_id); ?>
+	<form name="project_edit2" id="project_edit2" action="project.php" method="post">
 	<table border="0" cellpadding="1" cellspacing="1">
 	<tr><td>
 	<select class="FormFieldName" name="outputType" id="outputType">

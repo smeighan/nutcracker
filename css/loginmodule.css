@@ -40,6 +40,19 @@ th {
     border: 1px solid #f00;
     background: #ff6;
 }
+.input2 {
+    border: 1px solid #006;
+    background: #ffc;
+	font: bold 8px Verdana, Arial, Helvetica, sans-serif;
+}
+.input2:hover {
+    border: 1px solid #f00;
+    background: #c0c0c0;
+}
+.input2label {
+	font: bold 8px Verdana, Arial, Helvetica, sans-serif;
+	color: #909090;
+}
 .button {
     border: 1px solid #006;
     background: #ccf;
