@@ -2,15 +2,16 @@
 {
 	// used to join multiple projects together
 	//
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=186&ss=225&pole=229    All I want
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=181&ss=215&pole=227    Amazing Grace
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=182&ss=216&pole=228    Carol of the Bells
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=161&ss=217&pole=231    Christmas Canon
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=31&ss=218&pole=230     Christmas Sarajevo
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=183&ss=222&pole=232    Do you Hear
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=187&ss=224&pole=233    Linus & Lucy
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=184&ss=223&pole=234    Music Box Dancer
-	//	http://localhost/nutcracker/effects/mega_project.php?project_id=49&ss=214&pole=235     Wizards in Winter
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=186&ss=225&pole=229&name=All_I_want
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=181&ss=215&pole=227&name=Amazing_Grace
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=182&ss=216&pole=228&name=Carol_of_the_Bells
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=161&ss=217&pole=231&name=Christmas_Canon
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=31&ss=218&pole=230&name=Christmas_Sarajevo
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=183&ss=222&pole=232&name=Do_you_Hear
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=310&ss=311&pole=312&name=Gangam_Style
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=187&ss=224&pole=233&name=Linus_Lucy
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=184&ss=223&pole=234&name=Music_Box_Dancer
+	//	http://localhost/nutcracker/effects/mega_project.php?project_id=49&ss=214&pole=235&name=Wizards_in_Winter
 	//	extract ($get);
 	require_once("../conf/setup.php"); // override some apache caching.
 	require_once("../effects/read_file.php");
@@ -383,6 +384,26 @@ function make_vir($vixen_vir,$filename_buff,$current_channel)
 						$c='B';$color=255;
 						$val=$b;
 					}
+					//	if we are on teh 4th channel of our 3 aethers, blank out teh white channel
+					if($current_channel >=13 and $current_channel<=28) // candy canes
+					{
+						$val=0;
+						$i=($f-1+$current_channel)/4;
+						if($i%2 == 0) $val=255;
+					}
+					if($current_channel>29 and $current_channel<=44) // bears, and others incands
+					{
+						$val=0;
+						$i=($f-1+$current_channel*5)/20;
+						if($i%3==0 or $i%3==1) $val=255;
+					}
+					if($current_channel<=12)
+					{
+						$val=get_aether_color($f,$current_channel);
+						/*$i=($f-1+$current_channel*5)/40;
+						if($i%3==0 or $i%3==1) $val=255;*/
+						if($current_channel==4 or $current_channel==8 or $current_channel==12) $val=0;
+					}
 					fwrite($fh_vixen_vir,sprintf("%d ",$val));
 					//printf("%d ",$val);
 				}
@@ -395,6 +416,22 @@ function make_vir($vixen_vir,$filename_buff,$current_channel)
 	fclose($fh_vixen_vir);
 	fclose($fh_buff);
 	return ($current_channel);
+}
+
+function get_aether_color($f,$channel)
+{
+	$r=array(255,000,000,255,000,255,255);
+	$g=array(000,255,000,000,255,255,255);
+	$b=array(000,000,255,255,255,000,255);
+	$ch_mod=$channel%4;
+	$f50 = intval(($f-1)/20);
+	$i = ($f50/5)%5;
+	$val=0;
+	if($ch_mod==1) $val=$r[$i];
+	if($ch_mod==2) $val=$g[$i];
+	if($ch_mod==3) $val=$b[$i];
+//	echo "<pre>get_aether_color($f,$channel), f50=$f50,i=$i,ch_mod=$ch_mod,$val=$val</pre>\n";
+	return $val;
 }
 
 function mega_project_form($get)
