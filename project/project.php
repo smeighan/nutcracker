@@ -133,16 +133,17 @@ if (isset($type)) {
 	}
 	if (isset($EffectSave)) {
 		$project_id=$_POST["project_id"];
-		$effect_name=$_POST["effect_name"];
-		//Save Edit here
-		foreach ($_POST as $key=>$val)
-			if (($key!="EffectSave") && ($key!="project_id") && ($key!="type") && ($key!="effect_name")) {
-				$sql='UPDATE effects_user_dtl SET param_value="'.$val.'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
-				nc_query($sql); 
-			}
+		$fieldArray=PostVarToArray($_POST);
+		$changedEffectArray=saveEffectVars($fieldArray, $username);
+		$effectList="";
+		$sepStr="";
+		foreach($changedEffectArray as $key=>$val) {
+			$effectList.=$sepStr.$key;
+			$sepStr=",";
+		}
 		// Regen effect needs to be added here
 		$type=2;
-		$msg_str="Saving effect parameters for ".$effect_name. edit_song($project_id);
+		$msg_str="Saving effect parameters for ".$effectList. edit_song($project_id);
 
 	}
 	if (isset($MasterNCSubmit)) {

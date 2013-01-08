@@ -226,7 +226,7 @@ function showThumbs($project_id)
 	. "LEFT JOIN effects_user_hdr as ue ON ue.effect_name=pd.effect_name AND ue.username=p.username \n"
 	. "WHERE pd.project_id=$project_id ORDER BY pd.start_secs;";
 	//echo "SQL : " . $sql . "<br />";
-	echo "<table><tr>";
+	echo "<tr>";
 	$EffectParams="";
 	$result=nc_query($sql);
 	while ($row=mysql_fetch_assoc($result))
@@ -263,9 +263,15 @@ function showThumbs($project_id)
 		echo "<td class=\"smallText\">".$editEffect."<img  height=\"100\" width=\"50\" title=\"".$phrase_name."\n".$effect_name."\" alt=\"".$phrase_name.":".$effect_name."\" src=\"".$gifLoc."\"><br />".$phrase_name."</td>".$editEffectClose."\n";
 		$EffectParams.="<td  valign=\"top\">".DisplayEffectVars($effect_name, $username, $project_id)."</td>";
 	}
-	echo "</tr>";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<form action=\"project.php\" method=\"post\">\n";
+	echo "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\">\n";
 	echo $EffectParams;
-	echo "</table>";
+	echo "</tr>\n";
+	echo "<tr><td><input type=\"submit\" value=\"Save Parameters in Grid\" name=\"EffectSave\" class=\"submit\"></td></tr>";
+	echo "</form>\n";
+	echo "</table>\n";
 }
 function DisplayEffectVars($effect_name, $username, $project_id) {
 	$sql = "SELECT ed.param_name, ed.param_value, param_prompt, param_desc, param_range FROM `effects_user_hdr` AS e\n"
@@ -275,40 +281,98 @@ function DisplayEffectVars($effect_name, $username, $project_id) {
 	. " ORDER BY ed2.sequence";
 	$result=nc_query($sql);
 	$cnt=0;
-	$retVal="<table><form action=\"project.php\" method=\"post\">";
-	$retVal.="<input type=\"hidden\" name=\"effect_name\" value=\"".$effect_name."\">\n";
-	$retVal.="<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\">\n";
+	$retVal="<table>";
 	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	{
 		extract($row);
 		if (($param_name!='frame_delay') && ($param_name!='effect_name') && ($param_name!='seq_duration') && ($param_name!='window_degrees')) {
-		//	if ($cnt%2==0) 
-		//		$trStr='<tr>';
-		//	else
-		//		$trStr='<tr class="alt">';
-		$findme="color";
-		$trStr="<tr>";
+			$findme="color";
+			$trStr="<tr>";
 			$pos = strpos($param_name, $findme);
 			if ($pos === false)
 			{
 				$classStr=" class=\"input2\" ";
-				//$classStr="";
 			}
 			else {
-			//	$classStr="bgcolor=\"".$param_value."\";";
 				$classStr=" class=\"color {hash:true} {pickerMode:'HSV'};\" ";
 			}
-			$fieldstr=$trStr.'<td><input type="text" name="'.$param_name.'" '.$classStr.' value="'.$param_value.'"><div class=input2label>'.$param_name.': </div></td></tr>'."\n";
+			$field_name=$effect_name."~".$param_name;
+			$fieldstr=$trStr.'<td><input type="text" name="'.$field_name.'" '.$classStr.' value="'.$param_value.'"><div class=input2label>'.$param_name.'</div></td></tr>'."\n";
 			$retVal.=$fieldstr;
 			$cnt++;
 		} 
 	}	
-	if ($effect_name != "None")
-		$retVal.="<tr><td><input type=\"submit\" value=\"Save Params\" name=\"EffectSave\" class=\"submit\"></td></tr>";
-	$retVal.="</form></table>\n";
+	$retVal.="</table>\n";
 	return($retVal);
 }	
 
+function getEffectVarsFromDB($effect_name, $username) {
+/*
+	Function pulls the parameter values from the database based on username and effect name given.  Returns an array of these parameters.
+*/
+	$retVal=array();  
+	$sql = "SELECT ed.param_name, ed.param_value, param_prompt, param_desc, param_range FROM `effects_user_hdr` AS e\n"
+	. " LEFT JOIN effects_user_dtl AS ed ON e.username=ed.username AND e.effect_name=ed.effect_name\n"
+	. " LEFT JOIN effects_dtl as ed2 ON e.effect_class=ed2.effect_class AND ed.param_name=ed2.param_name\n"
+	. " WHERE e.effect_name='".$effect_name."' AND e.username='".$username."'\n"
+	. " ORDER BY ed2.sequence";
+	$result=nc_query($sql);
+	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+	{
+		extract($row);
+		if (($param_name!='frame_delay') && ($param_name!='effect_name') && ($param_name!='seq_duration') && ($param_name!='window_degrees')) {
+			$retVal[$param_name]=$param_value;
+		} 
+	}	
+	return($retVal);
+}
+
+function saveEffectVars($fieldArray, $username) {
+	$retVal=array();
+	foreach($fieldArray as $key=>$val) {
+		$currEffName=$key;
+		$testArray=getEffectVarsFromDB($currEffName,$username);
+		foreach($val as $key2=>$val2) {
+			$currParamName=$key2;
+			$currParamVal=$val2;
+			if ($testArray[$currParamName]!=$currParamVal) {
+				$retVal[$currEffName]="YES"; // build the array of effects that have changed to return
+				$sql="UPDATE effects_user_dtl SET param_value = '".$currParamVal."' WHERE username='".$username."' AND effect_name='".$currEffName."' AND param_name='".$currParamName."';";
+				//echo $sql."</br>";
+				nc_query($sql); // run the update
+			}
+		}
+	}
+	return($retVal);
+}
+
+function PostVarToArray($postin) {
+/*
+	Function reads the post variable from a form submit in project details and returns an array of arrays of the form:
+	     array[effectname]=array[param_name]=[param value]
+*/
+		$currEffect="XYZXYRSDEFH";
+		$effectVals=array();
+		$currVals=array();
+		foreach ($postin as $key=>$val)
+		{
+			$tok = preg_split("/~+/", trim($key));
+			$effect_name=$tok[0];
+			if (($effect_name != "project_id") && ($effect_name != "EffectSave")) 	{
+				$fieldname=$tok[1];
+				if ($effect_name<>$currEffect) {
+					if ($currEffect!="XYZXYRSDEFH") {
+						$effectVals[$currEffect]=$currVals;
+						$currVals=array();
+					}
+				}
+				$currVals[$fieldname]=$val;
+				$currEffect=$effect_name;
+			}
+		}
+		$effectVals[$currEffect]=$currVals;
+		return($effectVals);
+}
 
 function createThumb($model_name, $effect_name, $member_id)
 {
@@ -470,7 +534,10 @@ function edit_song($project_id)
 	<p />
 	</form>
 	<h2>Time Line of Effects</h2>
+	<table>
 	<?php showThumbs($project_id); ?>
+	<p />
+	<h2>Select Output</h2>
 	<form name="project_edit2" id="project_edit2" action="project.php" method="post">
 	<table border="0" cellpadding="1" cellspacing="1">
 	<tr><td>
