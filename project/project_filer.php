@@ -267,9 +267,10 @@ function showThumbs($project_id)
 	echo "<tr>\n";
 	echo "<form action=\"project.php\" method=\"post\">\n";
 	echo "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\">\n";
+	echo "<input type=\"hidden\" name=\"model_name\" value=\"".$model_name."\">\n";
 	echo $EffectParams;
 	echo "</tr>\n";
-	echo "<tr><td><input type=\"submit\" value=\"Save Parameters in Grid\" name=\"EffectSave\" class=\"submit\"></td></tr>";
+	echo "<tr><td><input type=\"submit\" value=\"Save Parameters in Grid\" name=\"EffectSave\" class=\"submit\"> (note: each changed effect will be regenerated after save.  This may take some time, dependent on the number and type of effect you have changed)</td></tr>";
 	echo "</form>\n";
 	echo "</table>\n";
 }
@@ -358,7 +359,7 @@ function PostVarToArray($postin) {
 		{
 			$tok = preg_split("/~+/", trim($key));
 			$effect_name=$tok[0];
-			if (($effect_name != "project_id") && ($effect_name != "EffectSave")) 	{
+			if (($effect_name != "project_id") && ($effect_name != "EffectSave") && ($effect_name != "model_name")) 	{
 				$fieldname=$tok[1];
 				if ($effect_name<>$currEffect) {
 					if ($currEffect!="XYZXYRSDEFH") {
@@ -1374,6 +1375,83 @@ function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $s
 	updateHash($project_id,$effect_name, $username);
 	return($outfile); // this will be the file created 
 }
+
+function regenEffect($model_name, $effect_name, $username, $project_id) {
+	$batch_type=3;
+	$get=getUserEffect($model_name,$effect_name,$username);
+	$get['batch']=$batch_type;
+	$get['username']=$username;
+	$get['user_target']=$model_name;
+	$get['seq_duration']=5;
+	$frame_delay=$get['frame_delay'];
+	//$get['frame_delay']=$frame_delay;
+	$effect_class=$get['effect_class'];
+	$sql='UPDATE effects_user_dtl SET param_value=5 WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="seq_duration"';
+	nc_query($sql);
+	$sql='UPDATE effects_user_dtl SET param_value='.$frame_delay.' WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="frame_delay"';
+	nc_query($sql);
+	switch ($effect_class)
+	{
+		case ('spirals') :
+			f_spirals($get);
+			break;
+		case ('fire') :
+			f_fire($get);;
+			break;
+		case ('butterfly') :
+			f_butterfly($get);
+			break;
+		case ('bars') :
+			f_bars($get);
+			break;
+		case ('garlands') :
+			f_garlands($get);
+			break;
+		case ('text') :
+			f_text($get);
+			break;
+		case ('gif') :
+			f_gif($get);
+			break;
+		case ('meteors') :
+			f_meteors($get);
+			break;
+		case ('life') :
+			f_life($get);
+			break;
+		case ('color_wash') :
+			f_color_wash($get);
+			break;
+		case ('user_defined') :
+			f_user_defined($get);
+			break;
+		case ('snowstorm') :
+			f_snowstorm($get);
+			break;
+		case ('pictures') :
+			f_pictures($get);
+			break;
+		case ('single_strand') :
+			f_single_strand($get);
+			break;
+		case ('layer') :
+			f_layer($get);
+			break;
+		case ('snowflakes') :
+			f_snowflakes($get);
+			break;
+		case ('twinkle') :
+			f_twinkle($get);
+			break;
+		case ('tree') :
+			f_tree($get);
+			break;
+		default :
+			echo "$effect_class not handled yet<br />";
+	}
+	updateHash($project_id,$effect_name, $username);
+}
+
 
 function prepMasterNCfile($project_id)
 {

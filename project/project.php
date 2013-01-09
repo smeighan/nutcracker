@@ -133,15 +133,21 @@ if (isset($type)) {
 	}
 	if (isset($EffectSave)) {
 		$project_id=$_POST["project_id"];
+		$model_name=$_POST["model_name"];
 		$fieldArray=PostVarToArray($_POST);
+		// save the effect changes and return a listing of effects that have changed
 		$changedEffectArray=saveEffectVars($fieldArray, $username);
 		$effectList="";
 		$sepStr="";
+		// from this list of changed effects, regen each effect -- mainly to regen the thumbnail.
 		foreach($changedEffectArray as $key=>$val) {
-			$effectList.=$sepStr.$key;
+			$effect_name=$key;
+			$effectList.=$sepStr.$effect_name;
+			// regen effect after save
+			echo "Regening effect ". $effect_name. " for model ". $model_name;
+			regenEffect($model_name, $effect_name, $username, $project_id);
 			$sepStr=",";
 		}
-		// Regen effect needs to be added here
 		$type=2;
 		$msg_str="Saving effect parameters for ".$effectList. edit_song($project_id);
 
@@ -175,7 +181,7 @@ if (isset($type)) {
 				$project_id=$value;
 			if ($key=="effect_name")
 				$effect_name=$value;
-			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name")) {
+			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name") && ($key!="model_name")) {
 				$sql='UPDATE effects_user_dtl SET param_value="'.$value.'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
 				nc_query($sql);
 			}
