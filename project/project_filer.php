@@ -1385,7 +1385,21 @@ function regenEffect($model_name, $effect_name, $username, $project_id) {
 	$get['user_target']=$model_name;
 	$get['seq_duration']=5;
 	$frame_delay=$get['frame_delay'];
+	$member_id=getMemberID($username);
 	//$get['frame_delay']=$frame_delay;
+	// Remove old gif files
+	$workdir = "../effects/workspaces/".$member_id."/";
+	$projfiler=$model_name."~".$effect_name;
+	$projfiles= $workdir.$projfiler."*.*";
+	//$datfiles= $workdir.$projfiler."*.dat";
+	//$gpfiles = $workdir.$projfiler."*.gp";
+	array_map('unlink', glob($projfiles));
+	//array_map('unlink', glob($datfiles));	
+	//array_map('unlink', glob($gpfiles));
+	//echo $giffiles . "<br />";
+	//echo $datfiles . "<br />";
+	//echo $gpfiles . "<br />";
+	// Regen effect
 	$effect_class=$get['effect_class'];
 	$sql='UPDATE effects_user_dtl SET param_value=5 WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="seq_duration"';
 	nc_query($sql);

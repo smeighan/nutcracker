@@ -186,7 +186,7 @@ if (isset($type)) {
 			if ($key=="effect_name")
 				$effect_name=$value;
 			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name") && ($key!="model_name")) {
-				$sql='UPDATE effects_user_dtl SET param_value="'.$value.'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
+				$sql='UPDATE effects_user_dtl SET param_value="'.clean($value).'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
 				nc_query($sql);
 			}
 		}
