@@ -540,6 +540,7 @@ function edit_song($project_id)
 	<p />
 	<h2>Select Output</h2>
 	<form name="project_edit2" id="project_edit2" action="project.php" method="post">
+	<input type="hidden" name="project_id" value=<?php echo $project_id?>>
 	<table border="0" cellpadding="1" cellspacing="1">
 	<tr><td>
 	<select class="FormFieldName" name="outputType" id="outputType">

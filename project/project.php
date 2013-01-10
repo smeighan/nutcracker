@@ -154,6 +154,10 @@ if (isset($type)) {
 	}
 	if (isset($MasterNCSubmit)) {
 		if ($debug) echo "In Generate Phase<br>";
+		if (!isset($project_id)) {
+			if (isset($_GET['project_id'])) $project_id=$_GET['project_id'];
+			if (isset($_POST['project_id'])) $project_id=$_POST['project_id'];
+		}
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
 		nc_query($sql);
 		if ($outputType!='xml') {
