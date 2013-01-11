@@ -124,7 +124,7 @@ if (isset($type)) {
 		$tok=preg_split("/~+/", trim($PhraseFile));
 		$prettyFilename=$tok[1];
 		$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, project.username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
-		$result=nc_query($sql);
+		$result=nc_query($sql,"project.php","127");
 		$row=mysql_fetch_array($result,MYSQL_ASSOC);
 		$song_name=$row['song_name'];
 		$artist=$row['artist'];
@@ -159,7 +159,7 @@ if (isset($type)) {
 			if (isset($_POST['project_id'])) $project_id=$_POST['project_id'];
 		}
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
-		nc_query($sql);
+		nc_query($sql,"project.php","162");
 		if ($outputType!='xml') {
 			if ($debug) echo "getPhraseArray<br />";
 			$myarray=getPhraseArray($project_id);
@@ -187,7 +187,7 @@ if (isset($type)) {
 				$effect_name=$value;
 			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name") && ($key!="model_name")) {
 				$sql='UPDATE effects_user_dtl SET param_value="'.clean($value).'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
-				nc_query($sql);
+				nc_query($sql,"project.php","190");
 			}
 		}
 		$msg_str="Effect Edited<br />".edit_song($project_id);
@@ -218,7 +218,7 @@ list($usec, $sec) = explode(' ', microtime()); // <scm>
 <?php
 	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE project.username='$username' ORDER BY song_name, model_name";
 	//echo "$sql <br />";
-	$result = nc_query($sql);
+	$result = nc_query($sql,"project.php","221");
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		if ($cnt%2==0)

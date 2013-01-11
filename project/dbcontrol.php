@@ -1,6 +1,6 @@
 <?php
 
-function nc_query($query) {
+function nc_query($query, $callingfile="Unknown", $lineno="Unknown") {
 	require_once('../conf/config.php');
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
 	$db = mysql_select_db(DB_DATABASE);
@@ -8,7 +8,7 @@ function nc_query($query) {
 	{
 		die("Unable to select database");
 	}
-	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error() . "<br />Calling filename : ".$callingfile. "<br />Line Number : ".$lineno); 
 	if (!$result)
 	{
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
