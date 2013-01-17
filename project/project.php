@@ -1,3 +1,25 @@
+<script language="JavaScript" type="text/JavaScript">
+function Toggle() {
+    if (document.getElementById('fields').style.display=='none') {
+		document.getElementById('fields').style.display='';
+		document.getElementById('buttons').style.display='';
+		document.getElementById('show').style.display='none';
+		document.getElementById('hideem').style.display='';
+    } else {
+		document.getElementById('fields').style.display='none';
+		document.getElementById('buttons').style.display='none';
+		document.getElementById('show').style.display='';
+		document.getElementById('hideem').style.display='none';
+    }
+}
+
+function AllOff() {
+    document.getElementById('fields').style.display='none';
+	document.getElementById('buttons').style.display='none';
+	document.getElementById('hideem').style.display='none';
+	document.getElementById('show').style.display='';
+}
+</script>
 <?php
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
@@ -48,7 +70,7 @@ ini_set("memory_limit","512M");
 <link rel="stylesheet" type="text/css" href="../css/barmenu.css">
 <link href="../css/ncFormDefault.css" rel="stylesheet" type="text/css" />
 </head>
-<body>
+<body onload="AllOff();">
 	
 <?php show_barmenu();
 //

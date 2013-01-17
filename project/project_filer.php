@@ -226,6 +226,7 @@ function showThumbs($project_id)
 	. "LEFT JOIN effects_user_hdr as ue ON ue.effect_name=pd.effect_name AND ue.username=p.username \n"
 	. "WHERE pd.project_id=$project_id ORDER BY pd.start_secs;";
 	//echo "SQL : " . $sql . "<br />";
+	echo "<table>\n";
 	echo "<tr>";
 	$EffectParams="";
 	$result=nc_query($sql,"project_filer.php","231");
@@ -264,13 +265,15 @@ function showThumbs($project_id)
 		$EffectParams.="<td  valign=\"top\">".DisplayEffectVars($effect_name, $username, $project_id)."</td>";
 	}
 	echo "</tr>\n";
-	echo "<tr>\n";
+	echo "<tr id=\"hideem\" onClick=\"Toggle();\"><td>- hide fields</td></tr>\n";
+	echo "<tr id=\"show\" onClick=\"Toggle();\"><td>+ show fields</td></tr>\n";
 	echo "<form action=\"project.php\" method=\"post\">\n";
+	echo "<tr id=\"fields\">\n";
 	echo "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\">\n";
 	echo "<input type=\"hidden\" name=\"model_name\" value=\"".$model_name."\">\n";
 	echo $EffectParams;
 	echo "</tr>\n";
-	echo "<tr><td><input type=\"submit\" value=\"Save Parameters in Grid\" name=\"EffectSave\" class=\"submit\"> (note: each changed effect will be regenerated after save.  This may take some time, dependent on the number and type of effect you have changed)</td></tr>";
+	echo "<tr id=\"buttons\"><td><input type=\"submit\" value=\"Save Parameters in Grid\" name=\"EffectSave\" class=\"submit\"> (note: each changed effect will be regenerated after save.  This may take some time, dependent on the number and type of effect you have changed)</td></tr>";
 	echo "</form>\n";
 	echo "</table>\n";
 }
@@ -535,7 +538,6 @@ function edit_song($project_id)
 	<p />
 	</form>
 	<h2>Time Line of Effects</h2>
-	<table>
 	<?php showThumbs($project_id); ?>
 	<p />
 	<h2>Select Output</h2>
