@@ -2,6 +2,9 @@
 
 function f_garlands($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	require_once("../conf/setup.php"); // override some apache caching.
@@ -11,6 +14,9 @@ function f_garlands($get)
 	$path="../targets/". $username;
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
+	//	
+	audit($username,"f_garlands","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path ="../effects/workspaces/$member_id";
 	$directory=$path;
@@ -33,7 +39,7 @@ function f_garlands($get)
 	}
 	//
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
-	//if($batch==0) echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); </pre>\n";
+	if($batch==0) elapsed_time($script_start);
 }
 
 function garland($get)

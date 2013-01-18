@@ -3,6 +3,9 @@
 
 function f_text($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['fade_in']))  $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
@@ -11,6 +14,9 @@ function f_text($get)
 	ini_set("memory_limit","1024M");
 	require_once("../effects/read_file.php");
 	extract ($get);
+	//	
+	audit($username,"f_text","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"array_to_save");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
@@ -256,7 +262,6 @@ function f_text($get)
 						//echo "<pre>f,s,p,p2,j,k,rgb_val1,rgb_val2=$f,$s,$p($pnew),$p2($pnew2),
 						//[$j,$k],$rgb_val,$rgb_val2, ptmp=$ptmp</pre>\n";
 					}
-						
 				}
 				else if($direction=="up")
 				{
@@ -330,6 +335,7 @@ function f_text($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
+	if($batch==0) elapsed_time($script_start);
 }
 
 function write_frame($get,$tree_rgb,$f,$maxFrame)

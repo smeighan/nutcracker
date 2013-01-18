@@ -1,28 +1,24 @@
 <?php
-
-
 /*
-
 (01) x*y^3-y*x^3
 (02) (x^2+3*y^2)*e^(-x^2-y^2)
-(03) -x*y*e^(-x^2-y^2)
-(04) -1/(x^2+y^2)
-(05) cos(abs(x)+abs(y))
-(06) cos(abs(x)+abs(y))*(abs(x)+abs(y))
-
-*/
-
+	(03) -x*y*e^(-x^2-y^2)
+	(04) -1/(x^2+y^2)
+	(05) cos(abs(x)+abs(y))
+	(06) cos(abs(x)+abs(y))*(abs(x)+abs(y))
+	*/
 
 function f_butterfly($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	require_once("../conf/setup.php"); // override some apache caching.
 	require_once("../effects/read_file.php");
 	//
 	$member_id=get_member_id($username);
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$member_id=get_member_id($username);
 	$base = $user_target . "~" . $effect_name;
 	$t_dat = $user_target . ".dat";
@@ -34,6 +30,9 @@ function f_butterfly($get)
 	if(empty($background_color)) $background_color='#FFFFFF';
 	//
 	if(!isset($batch)) $batch=0;
+	//
+	audit($username,"f_butterfly","$effect_name,$batch,$seq_duration");
+	//
 	$get['batch']=$batch;
 	//
 	/*echo "<pre>";
@@ -150,6 +149,7 @@ function f_butterfly($get)
 	if(!isset($fade_in)) $fade_in=0;
 	if(!isset($fade_out)) $fade_out=0;
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
+	if($batch==0) elapsed_time($script_start);
 	echo "</body>";
 	echo "</html>";
 }

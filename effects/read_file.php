@@ -930,7 +930,7 @@ function show_srt_file($file,$maxFrame,$frame_delay,$maxPixel,$pixel_count)
 					}
 					echo "</tr>";
 					$buff[$frame]=$rgb;
-					ob_flush();
+				//	ob_flush();
 				}
 			}
 			/*if($string != $old_string)
@@ -1353,18 +1353,22 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 		$h=800;
 	}
 	$AMPERAGE=0;  // should we create an amperage graph also? 0=no, 1=yes
+	$pointsize="0.6";  // was 0.6
 	for($loop=1;$loop<=2;$loop++)  // loop1=1 300x66 file.gif, loop=2 100x200 file_th.gif
 	{
 		if($loop==1)
 		{
-			$pointsize="0.6";  // was 0.6
-			fwrite($fh_gp_file,sprintf("\n\nset terminal gif  notransparent noenhanced optimize animate  delay %d size %d,%d\n",$gif_delay,$w,$h));
-			fwrite($fh_gp_file,sprintf("set output '%s'\n",$gif_file));
-			if($AMPERAGE==1)
+			if($batch<=2) // only build big gif if batch mode is 0,1, or 2
 			{
-				fwrite($fh_gp_file_amperage,sprintf("set terminal gif animate transparent opt delay %d size 300,600\n",$gif_delay));
-				$gif_file_amperage = "amperage_" . $gif_file;
-				fwrite($fh_gp_file_amperage,sprintf("set output '%s'\n",$gif_file_amperage));
+				$pointsize="0.6";  // was 0.6
+				fwrite($fh_gp_file,sprintf("\n\nset terminal gif  notransparent noenhanced optimize animate  delay %d size %d,%d\n",$gif_delay,$w,$h));
+				fwrite($fh_gp_file,sprintf("set output '%s'\n",$gif_file));
+				if($AMPERAGE==1)
+				{
+					fwrite($fh_gp_file_amperage,sprintf("set terminal gif animate transparent opt delay %d size 300,600\n",$gif_delay));
+					$gif_file_amperage = "amperage_" . $gif_file;
+					fwrite($fh_gp_file_amperage,sprintf("set output '%s'\n",$gif_file_amperage));
+				}
 			}
 		}
 		else
@@ -1421,6 +1425,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 		//print_r($dat_file_array);
 		$target_dat = "../targets/$member_id/" . $t_dat;
 		//  [0] => workspaces/2/AA+SEAN3_d_1.dat
+	fwrite($fh_gp_file,sprintf ("set notitle\n") ); // only on big gif
 		for ($frame=1;$frame<=$maxFrame;$frame++)
 		{
 			$dat_file=$dat_file_array[$frame-1];
@@ -1435,7 +1440,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 			$out_file_array[] = $out_file;
 			//echo "<pre> $dat_file $dirname $basename $filename $out_file</pre>\n";
 			$imagick=0;
-			fwrite($fh_gp_file,sprintf ("set title 'Frame %4d'\n",$frame) );
+		//if($loop==1) fwrite($fh_gp_file,sprintf ("set title 'Frame %4d'\n",$frame) ); // only on big gif
 			//	echo "<pre> (set title 'Frame %4d',$frame)</pre>\n";
 			if($show_frame== 'Y' or $show_frame=='y')
 			{
@@ -1443,7 +1448,12 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 				fwrite($fh_gp_file,sprintf ("   , '%s' using 4:5:6:7 with points lc rgb variable pointtype 7 pointsize $pointsize notitle\n",$dat_file));
 			}
 			else
-			fwrite($fh_gp_file,sprintf ("   splot '%s' using 4:5:6:7 with points lc rgb variable pointtype 7 pointsize $pointsize notitle\n",$dat_file));
+			{
+				if(($loop==1 and $batch<=2 ) or ($loop==2))
+				{
+					fwrite($fh_gp_file,sprintf ("   splot '%s' using 4:5:6:7 with points lc rgb variable pointtype 7 pointsize $pointsize notitle\n",$dat_file));
+				}
+			}
 			if($AMPERAGE==1)
 			{
 				$total_amperage=0;
@@ -1465,7 +1475,7 @@ function make_gp($batch,$arr,$path,$x_dat,$t_dat,$dat_file_array,$min_max,$usern
 	fclose($fh_gp_file);
 	fclose($fh_gp_file_amperage);
 	$model="_d_";
-	if($batch<=2) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay);
+	if($batch<=3) display_gif($batch,$path,$model,$gp_file,$out_file_array,$frame_delay);
 	//display_gif($batch,$path,$model,$gp_file_amperage,$out_file_array_amperage,$frame_delay,$script_start);
 	//
 	$full_path=$dat_file_array0;
@@ -2686,4 +2696,36 @@ function create_twinkle($get,$arr,$number_frames_per_blink)
 	}
 	$twinkle_array=array($twinkle,$twinkle_counter);
 	return $twinkle_array;
+}
+
+function audit($username,$action,$object_name)
+{
+	//Include database connection details
+	require_once('../conf/config.php');
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link)
+	{
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db)
+	{
+		die("Unable to select database");
+	}
+	$query = "INSERT into audit_log( username,date_field,time_field,action,object_name)
+		values ('$username',curdate(),curtime(),'$action','$object_name')";
+	//echo "<pre>$insert</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . 
+	"<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+}
+
+function elapsed_time($script_start)
+{
+	$description ="Total Elapsed time for this effect:";
+	list($usec, $sec) = explode(' ', microtime());
+	$script_end = (float) $sec + (float) $usec;
+	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
+	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
 }

@@ -3,6 +3,9 @@
 
 function f_gif($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['brightness']))   $get['brightness']="0";
 	if(!isset($get['fade_in']))  $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
@@ -38,6 +41,9 @@ function f_gif($get)
 	//
 	//
 	//show_array($_GET,"_GET");
+	//	
+	audit($username,"f_gif","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
@@ -136,7 +142,6 @@ function f_gif($get)
 		if($debug==1)echo "<pre>autoscale_x,autoscale_y = $autoscale_x,$autoscale_y</pre>\n";
 		if($debug==1)echo "<pre>new_width,new_height=$new_width,$new_height";
 		//
-		
 		if (!is_dir("../effects/frames"))
 			mkdir("frames");
 		$gr = new gifresizer;	//New Instance Of GIFResizer
@@ -170,33 +175,15 @@ function f_gif($get)
 		$x_dat_base = $base . ".dat";
 		make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, 
 		$frame_delay,$amperage, $seq_duration, $show_frame);
-		list($usec, $sec) = explode(' ', microtime());
-		$script_start = (float)$sec + (float)$usec;
-		//	echo "<pre>make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
 		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 		//
 		//
-		/*$GIF_frame = fread (fopen ($FIC2,'rb'), filesize($FIC2));
-		$decoder = new GIFDecoder ($GIF_frame);
-		$frames = $decoder->GIFGetFrames();
-		for ( $i = 0; $i < count ( $frames ); $i++ )
-		{
-			$tokens=explode (".",$FIC2);
-			$FIC_new = $tokens[0];
-			$fname = ( $i < 10 ) ? $FIC_new."_0$i.giftmp" : $FIC_new."_$i.giftmp";
-			$hfic=fopen ( $fname, "wb" );
-			$file_array[$i]=$fname;
-			fwrite ($hfic , $frames [ $i ] );
-			fclose($hfic);
-		}
-		$maxFrame=count ( $frames );*/
-		//$file="ball-icon.png";
-		//$image_array=get_image($batch,$file);
 	}
 	else
 	{
 		if($batch==0) echo "<pre><h2>Your gif file $FIC2 does not exist. please upload it</pre><h2>\n";
 	}
+	if($batch==0) elapsed_time($script_start);
 }
 
 function process_gif_frame($file,$frame,$get,$offset_left,$offset_top)

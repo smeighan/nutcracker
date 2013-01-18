@@ -2,6 +2,9 @@
 
 function f_color_wash($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
@@ -11,6 +14,9 @@ function f_color_wash($get)
 	//
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
+	//	
+	audit($username,"f_color_wash","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
@@ -24,6 +30,7 @@ function f_color_wash($get)
 	$base = $user_target . "~" . $effect_name;
 	color_wash($get);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out,$sparkles);
+	if($batch==0) elapsed_time($script_start);
 }
 
 function color_wash($get)
@@ -97,7 +104,7 @@ function color_wash($get)
 				$seq_number++;
 				fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
 				$rgb_val=$rgb_val_orig;
-					//printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
+				//printf ("<pre>t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number);
 			}
 		}
 		fclose($fh_dat[$frame]);

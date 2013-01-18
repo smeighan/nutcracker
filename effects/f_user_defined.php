@@ -2,6 +2,9 @@
 
 function f_user_defined($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
@@ -9,8 +12,6 @@ function f_user_defined($get)
 	require_once("../effects/read_file.php");
 	//
 	$member_id=get_member_id($username);
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$member_id=get_member_id($username);
 	$base = $user_target . "~" . $effect_name;
 	$t_dat = $user_target . ".dat";
@@ -22,6 +23,9 @@ function f_user_defined($get)
 	if(empty($background_color)) $background_color='#FFFFFF';
 	//
 	if(!isset($batch)) $batch=0;
+	//
+	audit($username,"f_user_defined","$effect_name,$batch,$seq_duration");
+	//
 	$get['batch']=$batch;
 	//
 	/*echo "<pre>";
@@ -51,11 +55,12 @@ function f_user_defined($get)
 	if(!defined('LF')) define('LF', "\n");          // line feed; Unix
 	if(!defined('CRLF')) define('CRLF', "\r\n");      // carriage return and line feed; Windows
 	if(!defined('BR')) define('BR', '<br />' . LF); // HTML Break
-	//echo "<pre>before: $php_program</pre>\n";
+	echo "<pre>before: $php_program</pre>\n";
 	$php_program = str_replace(CRLF, LF, $php_program);
 	$php_program = str_replace(CR, LF, $php_program);
 	$php_program = str_replace("\\\"", "\"", $php_program);
-	//echo "<pre>after: $php_program</pre>\n";
+	echo "<pre>after: $php_program</pre>\n";
+	echo "<pre>after: " . clean($php_program) . "</pre>\n";
 	$path="../effects/workspaces/". $member_id;
 	srand(time());
 	$maxFrame=$maxPixel;
@@ -101,6 +106,7 @@ function f_user_defined($get)
 	$show_frame='N';
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out); 
+	if($batch==0) elapsed_time($script_start);
 	echo "</body>";
 	echo "</html>";
 }

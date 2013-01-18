@@ -16,6 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function f_layer($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(isset($get['window_degrees'])) $wind=$get['window_degrees'];
 	else $wind=360;
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$wind); // Set window_degrees to match the target
@@ -25,8 +28,6 @@ function f_layer($get)
 	require_once("../effects/read_file.php");
 	//
 	$member_id=get_member_id($username);
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$member_id=get_member_id($username);
 	$base = $user_target . "~" . $effect_name;
 	$t_dat = $user_target . ".dat";
@@ -189,6 +190,7 @@ function f_layer($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
+	if($batch==0) elapsed_time($script_start);
 }
 
 function read_file2($file,$path)

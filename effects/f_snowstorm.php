@@ -23,6 +23,9 @@ $get['window_degrees'] = get_window_degrees($get['username'],$get['user_target']
 	if(empty($background_color)) $background_color='#FFFFFF';
 	//
 	if(!isset($batch)) $batch=0;
+	//	
+	audit($username,"f_snowstorm","$effect_name,$batch,$seq_duration");
+	//
 	$get['batch']=$batch;
 	//
 	/*echo "<pre>";

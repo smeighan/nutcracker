@@ -4,6 +4,8 @@
 
 function f_spirals($get)
 {
+list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
 	if(!isset($get['color3']))    $get['color3']="#FFFFFF";
 	if(!isset($get['color4']))    $get['color4']="#FFFFFF";
 	if(!isset($get['color5']))    $get['color5']="#FFFFFF";
@@ -42,8 +44,7 @@ function f_spirals($get)
 	$get['frame_delay']=$f_delay;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
+	
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$member_id=get_member_id($username);
@@ -81,7 +82,6 @@ function f_spirals($get)
 	$rainbow_hue=strtoupper($rainbow_hue);
 	$get['rainbow_hue']=$rainbow_hue;
 	extract ($get);
-	//show_elapsed_time($script_start,"Creating  Effect, spirals class:");
 	if($maxStrand<1)$maxStrand=1;
 	$pixelPerStrand=$maxPixel/$maxStrand;
 	//
@@ -184,9 +184,7 @@ function f_spirals($get)
 		if (isset($fh_dat[$f]))
 			fclose($fh_dat[$f]);
 	}
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
-	//if($batch==0) show_elapsed_time($script_start,"Finished  Effect, spirals class:");
+	
 	//
 	//
 	//
@@ -203,20 +201,7 @@ function f_spirals($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
-	$description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-	if($batch==0)
-	{
-		printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-		if($batch==0) echo "<pre>Location: bc.php?batch=$batch</pre>\n";
-	}
-	/*$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
-	if($batch==0) echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
-	if($batch==0) echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
-	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
+	if($batch==0) elapsed_time($script_start);
 }
 
 function create_spiral($get,$arr)

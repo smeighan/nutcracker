@@ -2,6 +2,9 @@
 
 function f_single_strand($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['direction'])) $get['direction']="right";
 	if(!isset($get['fade_in']))   $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
@@ -21,6 +24,9 @@ function f_single_strand($get)
 	$member_id=get_member_id($username);
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;
+	//	
+	audit($username,"f_single_strand","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$get['OBJECT_NAME']='single_strand';
 	if(!isset($batch)) $batch=0;
@@ -56,8 +62,6 @@ function f_single_strand($get)
 	}
 	if(isset($matrix)) extract ($matrix);
 	$path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$minStrand =$arr[0];  // lowest strand seen on target
@@ -256,6 +260,7 @@ function f_single_strand($get)
 	echo "</pre>";*/
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
+	if($batch==0) elapsed_time($script_start);
 }
 
 function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array)

@@ -4,6 +4,8 @@
 
 function f_spirals($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
 	if(!isset($get['color3']))    $get['color3']="#FFFFFF";
 	if(!isset($get['color4']))    $get['color4']="#FFFFFF";
 	if(!isset($get['color5']))    $get['color5']="#FFFFFF";
@@ -21,11 +23,8 @@ function f_spirals($get)
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	require_once("../conf/setup.php"); // override some apache caching.
+	//   for ($i = 0; $i < ob_get_level(); $i++)
 	
- //   for ($i = 0; $i < ob_get_level(); $i++) { ob_end_flush(); }
- //   ob_implicit_flush(1);
-
-
 	require_once("../effects/read_file.php");
 	//
 	//
@@ -44,10 +43,11 @@ function f_spirals($get)
 	$f_delay = $get['frame_delay'];
 	$f_delay = intval((5+$f_delay)/10)*10; // frame frame delay to nearest 10ms number_format
 	$get['frame_delay']=$f_delay;
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
+	audit($username,"f_spirals","$effect_name,$batch,$seq_duration");
+	//
 	$path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$member_id=get_member_id($username);
@@ -104,7 +104,6 @@ function f_spirals($get)
 	$get['direction']=$direction;
 	$get['fade_3d']=$fade_3d;
 	extract ($get);
-	//show_elapsed_time($script_start,"Creating  Effect, spirals class:");
 	if($maxStrand<1)$maxStrand=1;
 	$pixelPerStrand=$maxPixel/$maxStrand;
 	//
@@ -262,39 +261,14 @@ function f_spirals($get)
 		if (isset($fh_dat[$f]))
 			fclose($fh_dat[$f]);
 	}
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
-	//if($batch==0) show_elapsed_time($script_start,"Finished  Effect, spirals class:");
-	//
-	//
-	//
-	//
 	$target_info=get_info_target($username,$t_dat);
 	//show_array($target_info,'MODEL: ' . $t_dat);
-	if($batch==0) $description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-	//if($description = 'Total Elapsed time for this effect:')
-		$x_dat_base=$base . ".dat";
+	$x_dat_base=$base . ".dat";
 	$show_frame='n';
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
-	$description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-	if($batch==0)
-	{
-		printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-		if($batch==0) echo "<pre>Location: bc.php?batch=$batch</pre>\n";
-	}
-	/*$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
-	if($batch==0) echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
-	if($batch==0) echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
-	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
+	if($batch==0) elapsed_time($script_start);
 }
 
 function create_spiral($get,$arr)

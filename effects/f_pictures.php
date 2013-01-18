@@ -3,6 +3,9 @@
 
 function f_pictures($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
@@ -11,6 +14,9 @@ function f_pictures($get)
 	//
 	//
 	if(!isset($batch)) $batch=0;
+	//
+	audit($username,"f_pictures","$effect_name,$batch,$seq_duration");
+	//
 	$get['batch']=$batch;
 	//
 	//show_array($_GET,"_GET");
@@ -120,8 +126,7 @@ function f_pictures($get)
 			$new_width=$maxPixel*$aspect;
 		}
 		//$new_width=$maxStrand; // temp to test out scaling issue
-	//	$new_height=$maxPixel;
-		
+		//	$new_height=$maxPixel;
 		//	echo "<pre>new_width,new_height=$new_width,$new_height";
 		//
 		/*require_once "gifresizer.php";	//Including our class
@@ -160,28 +165,11 @@ function f_pictures($get)
 		$x_dat_base = $base . ".dat";
 		make_gp($batch,$arr,$path, $x_dat_base, $t_dat, $dat_file_array, $min_max, $username, 
 		$frame_delay,$amperage, $seq_duration, $show_frame);
-		list($usec, $sec) = explode(' ', microtime());
-		$script_start = (float)$sec + (float)$usec;
 		//	echo "<pre>make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
 		$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
 		//
 		//
-		/*$GIF_frame = fread (fopen ($FIC2,'rb'), filesize($FIC2));
-		$decoder = new GIFDecoder ($GIF_frame);
-		$frames = $decoder->GIFGetFrames();
-		for ( $i = 0; $i < count ( $frames ); $i++ )
-		{
-			$tokens=explode (".",$FIC2);
-			$FIC_new = $tokens[0];
-			$fname = ( $i < 10 ) ? $FIC_new."_0$i.giftmp" : $FIC_new."_$i.giftmp";
-			$hfic=fopen ( $fname, "wb" );
-			$file_array[$i]=$fname;
-			fwrite ($hfic , $frames [ $i ] );
-			fclose($hfic);
-		}
-		$maxFrame=count ( $frames );*/
-		//$file="ball-icon.png";
-		//$image_array=get_image($batch,$file);
+		if($batch==0) elapsed_time($script_start);
 	}
 	else
 	{

@@ -4,6 +4,9 @@
 
 function f_snowflakes($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['background_color'])) $get['background_color']="#000000";
 	if(!isset($get['snowflake_type']))   $get['snowflake_type']="1";
 	if(!isset($get['window_degrees']))   $get['window_degrees']=360;
@@ -19,6 +22,9 @@ function f_snowflakes($get)
 	//
 	//
 	if(!isset($batch)) $batch=0;
+	//
+	audit($username,"f_snowflakes","$effect_name,$batch,$seq_duration");
+	//
 	$get['batch']=$batch;
 	$member_id=get_member_id($username);
 	$get['OBJECT_NAME']='snowflakes';
@@ -35,8 +41,6 @@ function f_snowflakes($get)
 	$get['frame_delay']=$f_delay;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$member_id=get_member_id($username);
@@ -259,20 +263,7 @@ function f_snowflakes($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
-	$description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-	if($batch==0)
-	{
-		printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-		if($batch==0) echo "<pre>Location: bc.php?batch=$batch</pre>\n";
-	}
-	/*$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
-	if($batch==0) echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
-	if($batch==0) echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
-	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
+	if($batch==0) elapsed_time($script_start);
 }
 /*snowflakes Effect Settings
 username	f

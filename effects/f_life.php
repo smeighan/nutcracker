@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function f_life($get)
 {
-	
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
 	extract ($get);
 	set_time_limit(0);
@@ -29,6 +31,9 @@ function f_life($get)
 	$get['member_id']=$member_id;
 	if(!isset($show_frame)) $show_frame='N';
 	$get['show_frame']=$show_frame;
+	//	
+	audit($username,"f_life","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
 	$t_dat = $user_target . ".dat";
@@ -133,6 +138,7 @@ function f_life($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
+	if($batch==0) elapsed_time($script_start);
 }
 
 function count_neighbors($tree_rgb,$s,$p,$maxStrand,$maxPixel)

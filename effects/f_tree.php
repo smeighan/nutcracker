@@ -2,6 +2,9 @@
 
 function f_tree($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['fade_in']))   $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	if(!isset($get['speed']))     $get['speed']="1";
@@ -14,10 +17,12 @@ function f_tree($get)
 	echo "<pre>";
 	print_r($_SERVER);
 	echo "</pre>\n";
-	
 	$member_id=get_member_id($username);
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;
+	//
+	audit($username,"f_tree","$effect_name,$batch,$seq_duration");
+	//
 	if(!isset($number_garlands)) $number_garlands=2;
 	$get['number_garlands']=$number_garlands;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
@@ -36,8 +41,6 @@ function f_tree($get)
 	extract ($get);
 	//
 	$path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$minStrand =$arr[0];  // lowest strand seen on target
@@ -105,11 +108,13 @@ function f_tree($get)
 				//$rgb_val = mt_rand(1,16777215);
 				$seq_number++;
 				$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
+				if(!isset($create_garlands)) $create_garlands='N';
 				if($create_garlands=='Y' or $create_garlands=='y')
 				{
 					$rgb_val = get_garland($rgb_val,$get,$s,$p,$f,$mod,
 					$number_branches,$pixels_per_branch,$number_garlands);
 				}
+					if(!isset($create_wash)) $create_wash='N';
 				if(($create_wash=='Y' or $create_wash=='y') and $p<=$f)
 				{
 					$HSV=RGBVAL_TO_HSV($color2_tree_rgb);
@@ -160,10 +165,7 @@ function f_tree($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
-	$description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
+	if($batch==0) elapsed_time($script_start);
 	return;
 }
 

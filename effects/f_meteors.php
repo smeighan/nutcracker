@@ -3,6 +3,9 @@
 
 function f_meteors($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['fade_in']))  $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
@@ -12,6 +15,9 @@ function f_meteors($get)
 	//
 	//
 	//show_array($_GET,"_GET");
+	//	
+	audit($username,"f_meteors","$effect_name,$batch,$seq_duration");
+	//
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$member_id=get_member_id($username);
 	$get['member_id']=$member_id;
@@ -196,7 +202,7 @@ function f_meteors($get)
 			$string=$user_pixel=0;
 			$xyz=$tree_xyz[$s][$p];
 			$seq_number++;
-		//	if(in_array($s,$window_array)) // Is this strand in our window?, 
+			//	if(in_array($s,$window_array)) // Is this strand in our window?, 
 			{
 				if($rgb_val <> 0)
 					fwrite($fh_dat[$frame],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$frame,$seq_number));
@@ -209,6 +215,7 @@ function f_meteors($get)
 	if(!isset($show_frame)) $show_frame='N';
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$frame_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration,$fade_in,$fade_out);
+	if($batch==0) elapsed_time($script_start);
 	if($batch==0) echo "</body>";
 	if($batch==0) echo "</html>";
 }

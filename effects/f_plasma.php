@@ -49,6 +49,9 @@ PSET (x, y), array(x, y)
 NEXT x
 */
 require_once("../effects/read_file.php");
+list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 $get=$_GET;
 extract($get);
 set_time_limit(0);
@@ -72,8 +75,7 @@ extract($get);
 //
 $member_id=get_member_id($username);
 $path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
+	
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$minStrand =$arr[0];  // lowest strand seen on target
@@ -253,15 +255,7 @@ $show_frame='n';
 $amperage=array();
 make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 $filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
-$description ="Total Elapsed time for this effect:";
-list($usec, $sec) = explode(' ', microtime());
-$script_end = (float) $sec + (float) $usec;
-$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-if($batch==0)
-{
-	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-	echo "<pre>Location: bc.php?batch=$batch</pre>\n";
-}
+if($batch==0) elapsed_time($script_start);
 
 function plasma_write($f,$get,$plasma)
 {

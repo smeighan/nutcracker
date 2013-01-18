@@ -3,6 +3,9 @@
 
 function f_pinwheel($get)
 {
+	list($usec, $sec) = explode(' ', microtime());
+	$script_start = (float) $sec + (float) $usec;
+	//
 	if(!isset($get['fade_in']))   $get['fade_in']="0";
 	if(!isset($get['fade_out']))  $get['fade_out']="0";
 	$get['window_degrees'] = get_window_degrees($get['username'],$get['user_target'],$get['window_degrees']); // Set window_degrees to match the target
@@ -17,6 +20,9 @@ function f_pinwheel($get)
 	//
 	//
 	if(!isset($batch)) $batch=0;
+	//	
+	audit($username,"f_pinwheel","$effect_name,$batch,$seq_duration");
+	//
 	$get['batch']=$batch;
 	$member_id=get_member_id($username);
 	$get['OBJECT_NAME']='pinwheel';
@@ -33,8 +39,6 @@ function f_pinwheel($get)
 	$get['frame_delay']=$f_delay;
 	if($batch==0) show_array($get,"$effect_class Effect Settings");
 	$path="../targets/". $member_id;
-	list($usec, $sec) = explode(' ', microtime());
-	$script_start = (float) $sec + (float) $usec;
 	$t_dat = $user_target . ".dat";
 	$arr=read_file($t_dat,$path); //  target megatree 32 strands, all 32 being used. read data into an array
 	$member_id=get_member_id($username);
@@ -160,20 +164,7 @@ function f_pinwheel($get)
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
 	$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out); 
-	$description ="Total Elapsed time for this effect:";
-	list($usec, $sec) = explode(' ', microtime());
-	$script_end = (float) $sec + (float) $usec;
-	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
-	if($batch==0)
-	{
-		printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
-		if($batch==0) echo "<pre>Location: bc.php?batch=$batch</pre>\n";
-	}
-	/*$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);
-	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
-	if($batch==0) echo "<pre>make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame)</pre>\n";
-	if($batch==0) echo "<pre>$filename_buff=make_buff($username,$member_id,$base,$f_delay,$seq_duration,$fade_in,$fade_out);</pre>\n";
-	if($batch==0) printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);*/
+	if($batch==0) elapsed_time($script_start);
 }
 
 function create_pinwheel($f,$k,$degrees,$get,$arr)
@@ -328,10 +319,10 @@ function create_pinwheel($f,$k,$degrees,$get,$arr)
 	if ($mode=='polar')
 	{
 		$k=1;
-			$xc= intval($maxStrand/2);
+		$xc= intval($maxStrand/2);
 		$yc= intval($maxPixel/2);
 		if($xc>$yc)
-		$MAX_RADIUS=$xc; // use whatever dimension is longer to make sure we fill whole RGB target
+			$MAX_RADIUS=$xc; // use whatever dimension is longer to make sure we fill whole RGB target
 		else
 		$MAX_RADIUS=$yc;
 		$theta_offset=($f-1)*10;
@@ -340,7 +331,6 @@ function create_pinwheel($f,$k,$degrees,$get,$arr)
 		$radius_delta =2.5*$MAX_RADIUS/$steps;
 		$theta_delta = 360/$steps;
 		$theta_offset=($f-1)*18;
-	
 		$arms=$number_arms;
 		$sign_direction =1;
 		if($direction=='ccw') $sign_direction =-1;
