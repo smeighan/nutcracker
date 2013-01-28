@@ -123,7 +123,6 @@ function f_twinkle($get)
 	$twinkle_counter=$twinkle_array[1];
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
 	$two_blinks = 2*$number_frames_per_blink;
-	echo "<pre>number_frames_per_blink=$number_frames_per_blink</pre>\n";
 	for ($f=1;$f<=$maxFrames;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for twinkle we will use a dat filename starting "S_" and the tree model

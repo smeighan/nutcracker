@@ -75,6 +75,9 @@ list($usec, $sec) = explode(' ', microtime());
 	}
 	$x_dat = $user_target . "~" . $effect_name . ".dat";
 	$maxFrame=20;
+	if($speed<0.001) $speed=1;
+	if($frame_delay<1) $frame_delay=100;
+	if($number_bars<1) $number_bars=3;
 	$maxFrame=intval(($seq_duration*1000/$frame_delay)/$speed)+1;
 	$seq_number=0;
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
@@ -95,7 +98,6 @@ list($usec, $sec) = explode(' ', microtime());
 	else
 	{
 	}
-	echo "<pre>FFFFFF=" . hexdec("#FFFFFF") . "</pre>\n";
 	for($f=1;$f<=$maxFrame;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model

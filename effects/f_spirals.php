@@ -315,6 +315,7 @@ function create_spiral($get,$arr)
 	$color1=hexdec("#FF0000");
 	$color2=hexdec("#00FF00");
 	$color3=hexdec("#FFFF00");
+	if(!isset($window_degrees) or $window_degrees<1 ) $window_degrees=360;
 	$maxStrandLoops = ($maxStrand* (360/$window_degrees)*$number_rotations);
 	$maxStrandLoops = ($maxStrand* (360/$window_degrees));
 	if($maxStrandLoops<0) $maxStrandLoops=1;

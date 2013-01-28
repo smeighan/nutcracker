@@ -18,7 +18,7 @@ function f_butterfly($get)
 	require_once("../conf/setup.php"); // override some apache caching.
 	require_once("../effects/read_file.php");
 	//
-	$member_id=get_member_id($username);
+	//echo "<td>f_butterfly($get)</td>";
 	$member_id=get_member_id($username);
 	$base = $user_target . "~" . $effect_name;
 	$t_dat = $user_target . ".dat";
@@ -62,8 +62,10 @@ function f_butterfly($get)
 		$x_dat = $base . "_d_". $frame . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
 		$dat_file[$frame] = $path . "/" .  $x_dat;
 		$dat_file_array[]=$dat_file[$frame];
-		$fh_dat [$frame]= fopen($dat_file[$frame], 'w') or die("can't open file");
+		$fil_err = "can't open file" . $dat_file[$frame];
+		$fh_dat [$frame]= fopen($dat_file[$frame], 'w') or exit($fil_err);
 		fwrite($fh_dat[$frame],"#    " . $dat_file[$frame] . "\n");
+		if(!isset($window_degrees) or $window_degrees<1 ) $window_degrees=360;
 		$FullMaxStrand = $maxStrand * (360/$window_degrees);
 		for($s=1;$s<=$FullMaxStrand;$s++)
 			for($p=1;$p<=$maxPixel;$p++)

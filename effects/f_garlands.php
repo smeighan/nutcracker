@@ -74,7 +74,7 @@ function garland($get)
 	$max=$maxPixel;
 	$p=1;
 	$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
-	echo "<pre>maxFrames=$maxFrames,garland_gap=$garland_gap</pre>\n";
+	IF($batch==0) echo "<pre>maxFrames=$maxFrames,garland_gap=$garland_gap</pre>\n";
 	for( $f= 1; $f<= $maxFrames and $max>1; $f++)
 	{
 		if($f>5000) exit ("Too many frames in sequence");

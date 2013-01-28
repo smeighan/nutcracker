@@ -55,12 +55,12 @@ function f_user_defined($get)
 	if(!defined('LF')) define('LF', "\n");          // line feed; Unix
 	if(!defined('CRLF')) define('CRLF', "\r\n");      // carriage return and line feed; Windows
 	if(!defined('BR')) define('BR', '<br />' . LF); // HTML Break
-	echo "<pre>before: $php_program</pre>\n";
+	//if($batch==0) echo "<pre>before: $php_program</pre>\n";
 	$php_program = str_replace(CRLF, LF, $php_program);
 	$php_program = str_replace(CR, LF, $php_program);
 	$php_program = str_replace("\\\"", "\"", $php_program);
-	echo "<pre>after: $php_program</pre>\n";
-	echo "<pre>after: " . clean($php_program) . "</pre>\n";
+	//if($batch==0) echo "<pre>after: $php_program</pre>\n";
+	//if($batch==0) echo "<pre>after: " . clean($php_program) . "</pre>\n";
 	$path="../effects/workspaces/". $member_id;
 	srand(time());
 	$maxFrame=$maxPixel;

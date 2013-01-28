@@ -74,7 +74,7 @@ ini_set("memory_limit","512M");
 	
 <?php show_barmenu();
 //
-require("../effects/read_file.php");
+require_once("../effects/read_file.php");
 set_time_limit(0);
 	ini_set("memory_limit","1024M"); //  raise the default memory for this program to 1 gig, from 256mrg
 $member_id=$_SESSION['SESS_MEMBER_ID'];

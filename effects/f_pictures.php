@@ -113,15 +113,17 @@ function f_pictures($get)
 			$aspect=1.0;
 		}
 		$our_aspect = $maxStrand/$maxPixel;
-		echo "<pre>width, height, type, attr=$width, $height, $image_type, $attr</pre>\n";
-		echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
-		echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";
+		$debug=1;
+		if($batch>0) $debug=0;	// if we are runnign this effect in batch mode, disable debug flag.
+		if($debug==1) echo "<pre>width, height, type, attr=$width, $height, $type, $attr</pre>\n";
+		if($debug==1)echo "<pre>maxStrand,maxPixel=$maxStrand,$maxPixel</pre>\n";
+		if($debug==1)echo "<pre>aspect=$aspect,our_aspect=$our_aspect </pre>\n";
 		$new_width=$maxStrand;
 		$new_height=$maxPixel/$aspect;
 		if($new_height>$maxPixel) // it wont fit, go the other way
 		{
-			//	echo "<pre>xx: new_width,new_height=$new_width,$new_height";
-			//	echo "<pre>new_height>maxPixel</pre>\n";
+			if($debug==1)	echo "<pre>xx: new_width,new_height=$new_width,$new_height";
+			if($debug==1)	echo "<pre>new_height>maxPixel</pre>\n";
 			$new_height=$maxPixel;
 			$new_width=$maxPixel*$aspect;
 		}

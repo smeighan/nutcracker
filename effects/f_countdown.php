@@ -2,8 +2,7 @@
 //
 // (23:11:11) oldmanfathertime1000: http://www.youtube.com/watch?v=j​N2fhFSmSP4
 
-function f_countdown($get)
-{
+function f_countdown($get){
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	//
@@ -46,9 +45,8 @@ function f_countdown($get)
 	$member_id=get_member_id($username);
 	$path ="../effects/workspaces/" . $member_id;
 	$directory=$path;
-	if (file_exists($directory))
-	{
-		} else {
+	if(file_exists($directory)){
+	}else{
 		if($batch==0) echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
@@ -112,39 +110,32 @@ function f_countdown($get)
 	//
 	/*if($batch==0)
 	{
-		echo "<pre>create_sparkles($sparkles,$maxStrand,$maxPixel);\n";
-		print_r($sparkles_array);
-		echo "</pre>\n";
+	echo "<pre>create_sparkles($sparkles,$maxStrand,$maxPixel);\n";
+	print_r($sparkles_array);
+	echo "</pre>\n";
 	}
 	*/
 	$full_path = "../effects/dotmatrix";
 	$fh = fopen($full_path, 'r') or die("can't open file $full_path");
-	while (!feof($fh))
-	{
+	while(!feof($fh)){
 		// load up the dotmatrix file into the $letter array
 		$line = fgets($fh);
 		//	echo "<pre>$line</pre>\n";
-		if(substr($line,0,1) == "=")
-		{
+		if(substr($line,0,1) == "="){
 			$char = substr($line,1,1);
 			$row=0;
-			for($i=1;$i<=5;$i++)
-			{
-				for($j=1;$j<=9;$j++)
-				{
+			for($i=1;$i<=5;$i++){
+				for($j=1;$j<=9;$j++){
 					$letter[$j][$i]=0;
 				}
 			}
 		}
-		else
-		{
+		else{
 			$row++;
 			$strLength = strlen($line);
-			for($i=0;$i<=$strLength;$i++)
-			{
+			for($i=0;$i<=$strLength;$i++){
 				$val=0;
-				if(substr($line,$i,1)=="x")
-					$val=1;
+				if(substr($line,$i,1)=="x")					$val=1;
 				$letter[$row][$i+1]=$val;
 				$c[$char]=$letter;
 			}
@@ -160,11 +151,9 @@ function f_countdown($get)
 	$frames_per_second = intval(1000/$frame_delay);
 	//$frames_per_second=2;
 	if($frames_per_second<1) $frames_per_second=1;
-	for($seconds=$start_seconds;$seconds>$end_seconds;$seconds--)
-	{
+	for($seconds=$start_seconds;$seconds>$end_seconds;$seconds--){
 		if($batch==0 and $seconds<-1) display_Countdown($Countdown,$maxStrand,$maxPixel);
-		for ($fps=1;$fps<=$frames_per_second;$fps++)
-		{
+		for($fps=1;$fps<=$frames_per_second;$fps++){
 			$f++;
 			$f_ratio = $fps/$frames_per_second;
 			$Countdown=create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr);
@@ -174,10 +163,8 @@ function f_countdown($get)
 			$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
 			fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
 			//if($batch==0) echo "<pre>f=$f; deltaStrands=$deltaStrands for( ns= minStrand; ns<= number_countdown; ns++) = for( $ns= $minStrand; $ns<= $number_countdown; $ns++)</pre>\n";
-			for($s=1;$s<=$maxStrand;$s++)
-			{
-				for($p=1;$p<=$maxPixel;$p++)
-				{
+			for($s=1;$s<=$maxStrand;$s++){
+				for($p=1;$p<=$maxPixel;$p++){
 					$rgb_val=$Countdown[$s][$p]; // really rotate
 					//	$rgb_val=$Countdown[$s][$p]; // this will make all images static, no rotation
 					//if($batch==0) echo "<pre>rgb_val=Countdown[s][p] $rgb_val=Countdown[$s][$p];</pre>\n";
@@ -189,15 +176,13 @@ function f_countdown($get)
 					$hex=dechex($rgb_val);
 					$string=$user_pixel=0;
 					//	$sparkles_array[$s][$p]=$sparkles_array[$s][$p]+0;
-					if($s<=$maxStrand)
-					{
+					if($s<=$maxStrand){
 						fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$s][$p][0],$strand_pixel[$s][$p][1],$f,$seq_number));
 						//	printf ("<pre>f=%d t1 %4d(%4d) %4d %9.3f %9.3f %9.3f %d %d %d %d %d %d %d</pre>\n",$f,$s,$new_s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel,$strand_pixel[$new_s][$p][0],$strand_pixel[$new_s][$p][1],$f,$seq_number);
 					}
 				}
 			}
-			if (isset($fh_dat[$f]))
-				fclose($fh_dat[$f]);
+			if(isset($fh_dat[$f]))				fclose($fh_dat[$f]);
 		}
 	}
 	list($usec, $sec) = explode(' ', microtime());
@@ -210,7 +195,7 @@ function f_countdown($get)
 	$script_end = (float) $sec + (float) $usec;
 	$elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 	//if($description = 'Total Elapsed time for this effect:')
-		$x_dat_base=$base . ".dat";
+	$x_dat_base=$base . ".dat";
 	$show_frame='n';
 	$amperage=array();
 	make_gp($batch,$arr,$path,$x_dat_base,$t_dat,$dat_file_array,$min_max,$username,$f_delay,$amperage,$seq_duration,$show_frame);
@@ -218,8 +203,7 @@ function f_countdown($get)
 	if($batch==0) elapsed_time($script_start);
 }
 
-function create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr)
-{
+function create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr){
 	extract ($get);
 	$minStrand =$arr[0];  // lowest strand seen on target
 	$minPixel  =$arr[1];  // lowest pixel seen on skeleton
@@ -241,10 +225,8 @@ function create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr)
 	/*$color1=hexdec("#FF0000");
 	$color2=hexdec("#00FF00");
 	$color3=hexdec("#FFFF00");*/
-	for($s=1;$s<=$maxStrand;$s++)
-	{
-		for($p=1;$p<=$maxPixel;$p++)
-		{
+	for($s=1;$s<=$maxStrand;$s++){
+		for($p=1;$p<=$maxPixel;$p++){
 			$Countdown[$s][$p]=hexdec($color2);
 		}
 	}
@@ -256,17 +238,14 @@ function create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr)
 	$start_strand=intval(($maxStrand-12)/2);
 	if($start_strand<1) $start_strand=1;
 	$end_strand=$start_strand+12;
-	for($digits=1;$digits<=2;$digits++)
-	{
-		if($digits==1)
-		{
+	for($digits=1;$digits<=2;$digits++){
+		if($digits==1){
 			$letter = $c[$d1];
 			$s1 = $start_strand+6;
 			$s2= $start_strand+12;
 			$dig=$d1;
 		}
-		else if ($digits==2)
-		{
+		elseif($digits==2){
 			$letter = $c[$d10];
 			$s1 = $start_strand+0;
 			$s2= $start_strand+6;
@@ -275,10 +254,8 @@ function create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr)
 		/*echo "<pre>seconds=$seconds, digits=$digits, dig=$dig\n";
 		if($seconds<4) print_r($letter);
 		echo "</pre>\n";*/
-		for($s=$s1;$s<=$s2;$s++)
-		{
-			for($p=$start_pixel;$p<=$end_pixel;$p++)
-			{
+		for($s=$s1;$s<=$s2;$s++){
+			for($p=$start_pixel;$p<=$end_pixel;$p++){
 				$i=$s-$s1+1;
 				$j=$p-$start_pixel+1;
 				$V=1.0 - $f_ratio;
@@ -296,24 +273,21 @@ function create_Countdown($seconds,$f_ratio,$c,$letter,$get,$arr)
 	return $Countdown;
 }
 
-function cr2hex($cr)
-{
-	// the usual HTML format, #rrggbb
-	return '#'.str_pad(strtoupper(dechex(bgr2rgb($cr))), 6, '0', STR_PAD_LEFT);
+if(!function_exists('cr2hex')){
+	function cr2hex($cr){
+		// the usual HTML format, #rrggbb
+		return '#'.str_pad(strtoupper(dechex(bgr2rgb($cr))), 6, '0', STR_PAD_LEFT);
+	}
 }
-
-function 	display_Countdown($Countdown,$maxStrand,$maxPixel)
-{
+function 	display_Countdown($Countdown,$maxStrand,$maxPixel){
 	/*if($batch==0) echo "<pre>";
 	print_r($Countdown);
 	echo "</pre>\n";*/
 	echo "<h3>Image of Countdown before it gets replicated and rotated</h3>";
 	echo "<table border=1>";
-	for($p=1;$p<=$maxPixel;$p++)
-	{
+	for($p=1;$p<=$maxPixel;$p++){
 		echo "<tr><td>P$p</td>";
-		for($s=1;$s<=$maxStrand;$s++)
-		{
+		for($s=1;$s<=$maxStrand;$s++){
 			$rgb_val=$Countdown[$s][$p];
 			$hex= '#'.str_pad(strtoupper(dechex($rgb_val)), 6, '0', STR_PAD_LEFT);
 			echo "<td bgcolor=\"$hex\">&nbsp;</td>";
