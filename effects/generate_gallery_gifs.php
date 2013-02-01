@@ -105,18 +105,20 @@
 </head>
 <body>
 <h1>Rebuild Gallery</h1>
-<h2>This program will is now doing the following.
+<h2>This program is now doing the following steps.
 	<ol>
 		<li>Queries the local database for all effects from all users. It sorts this list by the number of effects.</li>
 		<li>For each user it finds it will create a target model called M16_50. This is a 16x50 , half megatree. This will be used as the target for the gallery to be generated against.</li>
 	
-		<li>It looks to see if the thumbnail animated gif exists on your local drive. If it does it will mark the cell with a GREN "ok"</li>
-		<li>If the animated gif is missing, it will mark the cell with a purple "rebuilding"</li>
+		<li>For each effect It looks to see if the thumbnail animated gif exists on your local drive. 
+		If it does it will mark the cell with a GREEN "ok"</li>
+		<li>If the animated gif is missing, it will mark the cell with a purple "rebuilding" and launch the rebuild of that effect</li>
 		<li>If the effect belongs to these classess: gif,single_strand,snowstorm,layer,user_defined the cell is marked "skipping" 
 		and the effect wont be generated. This is because either the performance is so bad (snowstorm can take 15 minutes per effect, 
 		or the quality of the data causes the effect to hang. I will come back and revisit these effects at a later time.</li>
-		<li>If you seem stuck on an effect, stop the browser. Then do a reload to start it again. The software will remember the effect 
-		you were trying to run and skip it the next time it runs </li>
+		<li>If you seem stuck on an effect (say it sits there for 5 minutes), stop the browser. Then do a reload to start it again. The software will remember the effect 
+		you were trying to run and skip it the next time it runs. there are over 6000 effects to go and build, 
+		a few skipped wont make any difference</li>
 	</ol>
 	<br/>
 	The very last thing you need to do when you finish is to run the  program that will load your local database with these newly generated gifs.
