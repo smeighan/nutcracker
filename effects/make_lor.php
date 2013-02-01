@@ -152,7 +152,7 @@ $name_clip=$base;
 $filename_buff= $dirname . "/" . $base . ".nc";
 $old_pixel=$old_string=0;
 if($frame_delay>0)	$maxFrame= ($seq_duration*1000)/$frame_delay;
-elsedie ("frame_delay is zero, we cannot export any data");
+else die ("frame_delay is zero, we cannot export any data");
 echo "<h3>$seq_duration seconds of animation with a $frame_delay ms frame timing = $maxFrame frames of animation</h3>\n";
 $centiseconds=intval($maxFrame*$frame_delay);
 $savedIndex=0;
@@ -180,7 +180,7 @@ if($file_type=="lcb"){
 }
 if($frame_delay<1) $frame_delay=100;
 if($frame_delay>0)	$TotalFrames= ($seq_duration*1000)/$frame_delay;
-elsedie ("frame_delay = 0, unable to create any output");
+else die ("frame_delay = 0, unable to create any output");
 if($file_type=="lcb"){
 	fwrite($fh_lor,sprintf("<cellDemarcations>\n"));
 	printf("<cellDemarcations>\n");
