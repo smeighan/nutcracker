@@ -2,7 +2,7 @@
 //*************************************************************************************************
 //
 //	file: .php
-//	Summary: Validate data from a new user create process, if valid 
+//	Summary: Validate data from a new user create process, if valid
 //           create a new row in the MEMBERS database
 //
 //
@@ -106,8 +106,8 @@ if($errflag)
 }
 //Create INSERT query
 $cnt=count($sequencers);
-$LSP1_8=$LSP2_0=$LSP_3=$LOR_S2=$LOR_S3=$VIXEN211=$VIXEN25=$VIXEN3=$HLS=$OTHER="N";
-for($i=0;$i<=$cnt;$i++)
+$LSP1_8=$LSP2_0=$LSP3_0=$LOR_S2=$LOR_S3=$VIXEN211=$VIXEN25=$VIXEN3=$HLS=$OTHER="N";
+for($i=0;$i<$cnt;$i++)
 {
 	if($sequencers[$i]=="LSP1_8") $LSP1_8="Y";
 	if($sequencers[$i]=="LSP2_0") $LSP2_0="Y";
@@ -136,14 +136,14 @@ $method=1;
 if($method==1)
 {
 	$qry = "INSERT INTO members(firstname, lastname, username, passwd,
-	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER) 
+	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER)
 	VALUES('$fname','$lname','$username','$passwd',
 	'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
 }
 else if($method==2)
 {
 	$qry = "INSERT INTO members(firstname, lastname, username, passwd,
-	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER) 
+	LSP1_8,LSP2_0,LSP3_0,LOR_S2,LOR_S3,VIXEN211,VIXEN25,VIXEN3,HLS,OTHER)
 	VALUES('$fname','$lname','$username','".md5($_GET['password'])."',
 	'$LSP1_8','$LSP2_0','$LSP3_0','$LOR_S2','$LOR_S3','$VIXEN211','$VIXEN25','$VIXEN3','$HLS','$OTHER')";
 }
