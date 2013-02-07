@@ -1,7 +1,6 @@
 <?php
 
-function f_single_strand($get)
-{
+function f_single_strand($get){
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	//
@@ -45,12 +44,10 @@ function f_single_strand($get)
 	//
 	//
 	$first_time=0;
-	if(isset($matrix))
-	{
+	if(isset($matrix)){
 		save_effects_user_segment($username,$effect_name,$matrix,$direction_array);
 	}
-	else
-	{
+	else{
 		$first_time==1;
 		$eus_array=get_effects_user_segment($username,$effect_name);
 		$matrix=$eus_array[0];
@@ -79,9 +76,8 @@ function f_single_strand($get)
 	$x_dat = $user_target . "+" . $effect_name . ".dat";
 	$base = $user_target . "~" . $effect_name;
 	$directory=$path;
-	if (file_exists($directory))
-	{
-		} else {
+	if(file_exists($directory)){
+	}else{
 		if($batch==0) echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
@@ -101,15 +97,17 @@ function f_single_strand($get)
 	print_r($segment_array);
 	echo "</pre>";*/
 	$number_segments=count($segment_array);
-	for($segment=1;$segment<=$number_segments;$segment++)
-	{
+	for($segment=1;$segment<=$number_segments;$segment++){
 		// set defaults if data is missing
 		if(!isset($matrix['color1'][$segment])) $matrix['color1'][$segment]="#FF0000";
-		if(!isset($matrix['color2'][$segment])) $matrix['color2'][$segment]="#00FF00";
-		if(!isset($matrix['count1'][$segment])) $matrix['count1'][$segment]=2;
-		if(!isset($matrix['count2'][$segment])) $matrix['count2'][$segment]=2;
-		if(!isset($matrix['fade_3d1'][$segment])) $matrix['fade_3d1'][$segment]='N';
-		if(!isset($matrix['fade_3d2'][$segment])) $matrix['fade_3d2'][$segment]='N';
+		if(!isset($matrix['color2'][$segment])) $matrix['color2'][$segment]="#ffffff";
+		if(!isset($matrix['color3'][$segment])) $matrix['color3'][$segment]="#000dff";
+		if(!isset($matrix['count1'][$segment])) $matrix['count1'][$segment]=7;
+		if(!isset($matrix['count2'][$segment])) $matrix['count2'][$segment]=7;
+		if(!isset($matrix['count3'][$segment])) $matrix['count3'][$segment]=7;
+		if(!isset($matrix['fade_3d1'][$segment])) $matrix['fade_3d1'][$segment]='Y';
+		if(!isset($matrix['fade_3d2'][$segment])) $matrix['fade_3d2'][$segment]='Y';
+		if(!isset($matrix['fade_3d3'][$segment])) $matrix['fade_3d3'][$segment]='Y';
 		if(!isset($direction_array[$segment]))    $direction_array[$segment]='right';
 		if(!isset($matrix['rainbow'][$segment]))  $matrix['rainbow'][$segment]='N';
 	}
@@ -123,15 +121,12 @@ function f_single_strand($get)
 	//$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);
 	//
 	//	for every virtual pixel number assign the segment it belongs to
-	if($number_segments>0)
-	{
-		for($segment=1;$segment<=$number_segments;$segment++)
-		{
+	if($number_segments>0){
+		for($segment=1;$segment<=$number_segments;$segment++){
 			$segment1=$segment+1;
 			$start_p=$segment_array[$segment];
 			$end_p=$segment_array[$segment1];
-			for($p=$start_p;$p<=$end_p;$p++)
-			{
+			for($p=$start_p;$p<=$end_p;$p++){
 				$pixel_to_segment[$p]=$segment;
 			}
 		}
@@ -141,63 +136,70 @@ function f_single_strand($get)
 	$group_number=0;
 	extract($matrix);
 	$x=$y=$z=0;
-	for($f=1;$f<=$maxFrame;$f++)
-	{
+	for($f=1;$f<=$maxFrame;$f++){
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model
 		$dat_file[$f] = $path . "/" .  $x_dat;
 		$dat_file_array[]=$dat_file[$f];
 		$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
 		fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
 		$s=1;
-		for($p=1;$p<=$maxPixel;$p++)
-		{
+		$direction='right';
+		for($p=1;$p<=$maxPixel;$p++){
 			if(isset($pixel_to_segment[$p])) $segment=$pixel_to_segment[$p];
 			else $segment=1;
 			$cycle=1;
-			if(isset($count1[$segment])) $cycle = $count1[$segment] + $count2[$segment];
+			if(isset($count1[$segment])) $cycle = $count1[$segment] + $count2[$segment] + $count3[$segment];
 			$string=$user_pixel=0;
 			$delta=($f*$speed);
-			if(isset($direction_array[$segment]) and $direction_array[$segment]=='left') $delta=-$delta;
-			//if($segment%2==0) $delta=-$delta;
+			if(isset($direction_array[$segment]) and $direction_array[$segment]=='left'){
+				$delta=-$delta;
+				$direction='left';
+			}//if($segment%2==0) $delta=-$delta;
 			$new_p=$p-1- $delta;
 			if($new_p<1) $new_p+=$maxPixel;
 			$on=0;
-			$cnt1=$cnt2=1;
+			$cnt1=$cnt2=$cnt3=1;
 			if(isset($count1[$segment])) $cnt1 = $count1[$segment];
 			if(isset($count2[$segment])) $cnt2 = $count2[$segment];
+			if(isset($count3[$segment])) $cnt3 = $count3[$segment];
 			$mod=$new_p%$cycle;
 			if($mod==0) $mod=$cycle;
-			if($mod<=$cnt1)
-			{
+			if($mod<=$cnt1){
 				$on=1;
 			}
+			elseif($mod>$cnt1 and $mod <= ($cnt1+$cnt2)){
+				$on=2;
+			}
 			$rgb_val=hexdec("#FFFFFF");
-			if($on==1)
+			if($on==1) // 1st chase
 			{
 				if(isset($color1[$segment])) $rgb_val=hexdec($color1[$segment]);
+				if($direction=='right') $rgb_val=hexdec($color3[$segment]); // when re reverse direction, we swap colors 1 and 3
 				$HSV=RGBVAL_TO_HSV($rgb_val);
 				$H=$HSV['H'];
 				$S=$HSV['S'];
 				$V=$HSV['V'];
 				$rainbow1=0;
 				//$fade_3d1='y';
-				if($rainbow1==1)
-				{
+				if($rainbow1==1){
 					$segment=$pixel_to_segment[$p];
 					$H=$p/$maxPixel;
 					$S=$V=1;
 				}
 				//$fade_3d1='y';
 				if(!isset($fade_3d1[$segment])) $fade_3d1[$segment]='N';
-				if($fade_3d1[$segment]=='y' or $fade_3d1[$segment]=='Y')
-				{
+				if($fade_3d1[$segment]=='y' or $fade_3d1[$segment]=='Y'){
 					$mod1=$new_p%$cnt1;
 					if($mod1==0) $mod1=$cnt1;
-					$V=$V * $mod1/$cnt1;
+					if($direction=='right'){
+						$V=$V * $mod1/$cnt1;
+					}else{
+						$V=$V * (1-$mod1/$cnt1);
+					}
 				}
 				$rgb_val=HSV_TO_RGB ($H, $S, $V);
 			}
-			else
+			elseif($on==2) // 2nd chase
 			{
 				if(isset($color2[$segment])) $rgb_val=hexdec($color2[$segment]);
 				$HSV=RGBVAL_TO_HSV($rgb_val);
@@ -208,16 +210,41 @@ function f_single_strand($get)
 				//$fade_3d2='n';
 				if(!isset($fade_3d2[$segment])) $fade_3d2[$segment]='N'; // in case they were not set
 				if(!isset($rainbow[$segment])) $rainbow[$segment]='N';
-				if($fade_3d2[$segment]=='y' or $fade_3d2[$segment]=='Y')
-				{
+				if($fade_3d2[$segment]=='y' or $fade_3d2[$segment]=='Y'){
 					$mod2=$new_p%$cnt2;
 					if($mod2==0) $mod2=$cnt2;
-					$V=$V * $mod2/$cnt2;
+					if($direction=='right'){
+						$V=$V * $mod2/$cnt2;
+					}else{
+						$V=$V * (1-$mod2/$cnt2);
+					}
 				}
 				$rgb_val=HSV_TO_RGB ($H, $S, $V);
 			}
-			if($rainbow[$segment]=='y' or $rainbow[$segment]=='Y')
+			else // we are in 3rd chase
 			{
+				if(isset($color3[$segment])) $rgb_val=hexdec($color3[$segment]);
+				if($direction=='right') $rgb_val=hexdec($color1[$segment]); // when re reverse direction, we swap colors 1 and 3
+				$HSV=RGBVAL_TO_HSV($rgb_val);
+				$H=$HSV['H'];
+				$S=$HSV['S'];
+				$V=$HSV['V'];
+				$rainbow2=0;
+				//$fade_3d2='n';
+				if(!isset($fade_3d3[$segment])) $fade_3d3[$segment]='N'; // in case they were not set
+				if(!isset($rainbow[$segment])) $rainbow[$segment]='N';
+				if($fade_3d3[$segment]=='y' or $fade_3d3[$segment]=='Y'){
+					$mod3=$new_p%$cnt3;
+					if($mod3==0) $mod3=$cnt3;
+					if($direction=='right'){
+						$V=$V * $mod3/$cnt3;
+					}else{
+						$V=$V * (1-$mod3/$cnt3);
+					}
+				}
+				$rgb_val=HSV_TO_RGB ($H, $S, $V);
+			}
+			if($rainbow[$segment]=='y' or $rainbow[$segment]=='Y'){
 				$segment1=$segment+1;
 				$start_p=$segment_array[$segment];
 				$maxPixelsSegment=$segment_array[$segment1]-$segment_array[$segment];
@@ -228,21 +255,21 @@ function f_single_strand($get)
 			}
 			/*if(isset($sparkles_array[$strand][$p])===false 
 			or $sparkles_array[$strand][$p]==null )
-				$x=0;
+			$x=0;
 			else if($sparkles_array[$strand][$p]>1)
 			{
-				$sparkles_array[$strand][$p]++;
-				$rgb_val=calculate_sparkle($strand,$p,
-				$sparkles_array[$strand][$p],$rgb_val,$sparkles_count);
+			$sparkles_array[$strand][$p]++;
+			$rgb_val=calculate_sparkle($strand,$p,
+			$sparkles_array[$strand][$p],$rgb_val,$sparkles_count);
 			}
 			*/
 			$seq_number++;
 			//	echo "<pre>f,s,p = $f,$s,$p (p_new=$p, n=$n mod=$m, $maxPixel). H,S,V = $H,$S,$V $hex</pre>\n";
 			$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
 			fwrite($fh_dat[$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",
-			$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
-			,$s_pixel[$s][$p][0],$s_pixel[$s][$p][1],
-			$f,$seq_number));
+					$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
+					,$s_pixel[$s][$p][0],$s_pixel[$s][$p][1],
+					$f,$seq_number));
 			/*printf ("<pre>seg=%3d t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d</pre>\n",$segment,
 			$s,$p,$xyz[0],$xyz[1],$xyz[2],$rgb_val,$string, $user_pixel
 			,$s_pixel[$s][$p][0],$s_pixel[$s][$p][1],
@@ -263,8 +290,7 @@ function f_single_strand($get)
 	if($batch==0) elapsed_time($script_start);
 }
 
-function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array)
-{
+function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$matrix,$direction_array){
 	extract($get);
 	if(isset($matrix)) extract ($matrix);
 	/*echo "<pre>";
@@ -292,8 +318,8 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 	echo "<h1>Single Strand</h1>";
 	/*foreach ($matrix as $param_name=>$array)
 	{
-		if($param_name=='color1') $color1=$array;
-		if($param_name=='color1') $color1=$array;
+	if($param_name=='color1') $color1=$array;
+	if($param_name=='color1') $color1=$array;
 	}
 	*/
 	/*echo "<pre>";
@@ -309,90 +335,80 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 	?>
 	<input type="submit" name="submit" value="Submit Form to create your effects" />
 	<?php
-	foreach ($get as $item=>$value)
-	{
-		if (($item !="submit") && (!is_array($value))) 
-		echo "<input type=\"hidden\" name=\"".$item ."\" value=\"".$value."\" />\n";
+	foreach($get as $item=>$value){
+		if(($item !="submit") && (!is_array($value)))		echo "<input type=\"hidden\" name=\"".$item ."\" value=\"".$value."\" />\n";
 	}
 	$columns=array('color1'=>'Color #1', 
-	'count1'=>'Number of Color1 Pixels',
-	'fade_3d1'=>'3D Fade for Color#1',
-	'color2'=>'Color #2', 
-	'count2'=>'Number of Color2 Pixels',	
-	'fade_3d2'=>'3D Fade for Color#2',
-	'rainbow'=>'Use rainbow colors instead of color#1 and color#2',
-	'direction'=>'Direction (left/right)',
-	'group'=>'Group Segment (Y/N)', 
-	'group_number'=>'Group Number');
+		'count1'=>'Number of Color1 Pixels',
+		'fade_3d1'=>'3D Fade for Color#1',
+		'color2'=>'Color #2', 
+		'count2'=>'Number of Color2 Pixels',	
+		'fade_3d2'=>'3D Fade for Color#2',
+		'color3'=>'Color #3', 
+		'count3'=>'Number of Color3 Pixels',	
+		'fade_3d3'=>'3D Fade for Color#3',
+		'rainbow'=>'Use rainbow colors instead of colors 1,2,3',
+		'direction'=>'Direction (left/right)',
+		'group'=>'Group Segment (Y/N)', 
+		'group_number'=>'Group Number');
 	echo "<table border=1>\n";
 	echo "<tr>";
 	echo "<th>Column</th>";
-	for($segment=1;$segment<=$number_segments;$segment++)
-	{
+	for($segment=1;$segment<=$number_segments;$segment++){
 		echo "<th>Segment $segment</th>";
 		// Now set defaults if data is not set
 	}
 	echo "</tr>\n";
-	foreach($columns as $col=>$col_desc)
-	{
+	foreach($columns as $col=>$col_desc){
 		echo "<tr>";
 		$color="#FFFFFF";
-		if($col=="color1" or $col=="count1" or $col=="fade_3d1") $color="#9BFF94";
-		if($col=="color2" or $col=="count2" or $col=="fade_3d2") $color="#96B6FF";
+		if($col=="color1" or $col=="count1" or $col=="fade_3d1") $color="#cacaca";
+		if($col=="color2" or $col=="count2" or $col=="fade_3d2") $color="#eddbff";
+		if($col=="color3" or $col=="count3" or $col=="fade_3d3") $color="#cacaca";
 		echo "<td bgcolor=\"$color\">";
 		echo "$col_desc</td>";
-		for($segment=1;$segment<=$number_segments;$segment++)
-		{
+		for($segment=1;$segment<=$number_segments;$segment++){
 			$val = $segment;
-			if($col=="direction")
-			{
+			if($col=="direction"){
 				echo "<td>";
 				$left_checked=$right_checked='';
-				if(isset($direction_array[$segment]))
-				{
+				if(isset($direction_array[$segment])){
 					if($direction_array[$segment]=="left") $left_checked="checked";
 					if($direction_array[$segment]=="right") $right_checked="checked";
 				}
-				if($gif_model=='window')
-				{
-					if($segment==1)
-					{
+				if($gif_model=='window'){
+					if($segment==1){
 						echo "<input type=\"radio\" class=\"input\"  name=\"direction_array[$segment]\" 
 						value=\"left\" $left_checked />Left</br/>\n";
 						echo "<input type=\"radio\" class=\"input\" name=\"direction_array[$segment]\" 
 						value=\"right\"  $right_checked />Right<p>\n";
 					}
-					if($segment==2)
-					{
+					if($segment==2){
 						echo "<input type=\"radio\" class=\"input\" name=\"direction_array[$segment]\" 
 						value=\"right\"  $right_checked />Up<br/>\n";
 						echo "<input type=\"radio\" class=\"input\"  name=\"direction_array[$segment]\" 
 						value=\"left\" $left_checked />Down<p>\n";
 					}
-					if($segment==3)
-					{
+					if($segment==3){
 						echo "<input type=\"radio\" class=\"input\" name=\"direction_array[$segment]\" 
 						value=\"right\"  $right_checked />Left<br/>\n";
 						echo "<input type=\"radio\" class=\"input\"  name=\"direction_array[$segment]\" 
 						value=\"left\" $left_checked />Right<p>\n";
 					}
-					if($segment==4)
-					{
+					if($segment==4){
 						echo "<input type=\"radio\" class=\"input\"  name=\"direction_array[$segment]\" 
 						value=\"left\" $left_checked />Up</br/>\n";
 						echo "<input type=\"radio\" class=\"input\" name=\"direction_array[$segment]\" 
 						value=\"right\"  $right_checked />Down<P>\n";
 					}
 				}
-				else
-				{
+				else{
 					echo "<input type=\"radio\" class=\"input\"  name=\"direction_array[$segment]\" value=\"left\" $left_checked />Left</br/>\n";
 					echo "<input type=\"radio\" class=\"input\" name=\"direction_array[$segment]\" value=\"right\"  $right_checked />Right<P>\n";
 				}
 				echo "</td>";
 			}
-			else 
-			{
+			else{
 				echo "<td >";
 				echo "<input type=\"text\"   ";
 				$mystring = $col;
@@ -403,18 +419,19 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 				if(isset($count1[$segment]) and $col=="count1") $val=$count1[$segment];
 				if(isset($color2[$segment]) and $col=="color2") $val=$color2[$segment];
 				if(isset($count2[$segment]) and $col=="count2") $val=$count2[$segment];
+				if(isset($color3[$segment]) and $col=="color3") $val=$color3[$segment];
+				if(isset($count3[$segment]) and $col=="count3") $val=$count3[$segment];
 				if(isset($fade_3d1[$segment]) and $col=="fade_3d1") $val=$fade_3d1[$segment];
 				if(isset($fade_3d2[$segment]) and $col=="fade_3d2") $val=$fade_3d2[$segment];
+				if(isset($fade_3d3[$segment]) and $col=="fade_3d3") $val=$fade_3d3[$segment];
 				if(isset($rainbow[$segment]) and $col=="rainbow") $val=$rainbow[$segment];
 				if(isset($group[$segment]) and $col=="group") $val=$group[$segment];
 				if(isset($group_number[$segment]) and $col=="group_number") $val=$group_number[$segment];
 				if(isset($direction_array[$segment]) and $col=="direction") $val=$direction_array[$segment];
-				if ($pos === false)
-				{
+				if($pos === false){
 					echo " class=\"input\" ";
 				}
-				else 
-				{
+				else{
 					echo " class=\"color {hash:true} {pickerMode:'HSV'}\" ";
 				}
 				echo " name=\"matrix[$col][$segment]\" value=\"$val\" /></td>\n";
@@ -429,8 +446,7 @@ function effect_form($get,$pixel_to_segment,$segment_array,$number_segments,$mat
 	<?php
 }
 
-function save_effects_user_segment($username,$effect_name,$matrix,$direction_array)
-{
+function save_effects_user_segment($username,$effect_name,$matrix,$direction_array){
 	/*CREATE TABLE IF NOT EXISTS `effects_user_segment` (
 	`username` varchar(25) NOT NULL,
 	`effect_name` varchar(25) NOT NULL,
@@ -440,7 +456,7 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 	`created` datetime DEFAULT NULL,
 	`last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 	UNIQUE KEY `idx_uesp` (`username`,`effect_name`,segment,`param_name`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;*/
+	) ENGINE=MyISAM DEFAULT CHARSET=latin1;*/
 	/*	
 	VIXEN	How much time should be in between timings
 	LOR	Event Period. The event period is how long a single on/off event lasts
@@ -452,53 +468,49 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 	[1] => #FF0000
 	[2] => #FFEE00
 	)
-		[count1] => Array
+	[count1] => Array
 	(
 	[1] => 2
 	[2] => 4
 	)
-		[color2] => Array
+	[color2] => Array
 	(
 	[1] => #00FF08
 	[2] => #0808FF
 	)
-		[count2] => Array
+	[count2] => Array
 	(
 	[1] => 5
 	[2] => 11
 	)
-		)
-		[direction_array] => Array
+	)
+	[direction_array] => Array
 	(
 	[1] => right
 	[2] => right
 	)
-		*/
+	*/
 	require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
+	if(!$link){
 		die('Failed to connect to server: ' . mysql_error());
 	}
 	//Select database
 	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
+	if(!$db){
 		die("Unable to select database");
 	}
 	$delete = "delete from effects_user_segment where username='$username' and  
 	effect_name='$effect_name' ";
 	$result=mysql_query($delete) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
-	$delete . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+		$delete . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	//echo "<pre>delete=$delete</pre>\n";
 	//
-	foreach($matrix as $param_name=>$array_values)
-	{
-		foreach($array_values as $segment =>$param_value)
-		{
+	foreach($matrix as $param_name=>$array_values){
+		foreach($array_values as $segment =>$param_value){
 			$YesNoPrompts = array('rainbow','fade3d1','fade3d2','group');
-			if (in_array($param_name, $YesNoPrompts)) $param_value=strtoupper($param_value);
+			if(in_array($param_name, $YesNoPrompts)) $param_value=strtoupper($param_value);
 			$replace = "replace into effects_user_segment
 			(username,effect_name,segment,param_name,param_value) values
 			('$username','$effect_name','$segment','$param_name','$param_value')";
@@ -507,8 +519,7 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 		}
 	}
 	$param_name='direction';
-	foreach($direction_array as $segment =>$param_value)
-	{
+	foreach($direction_array as $segment =>$param_value){
 		$replace = "replace into effects_user_segment
 		(username,effect_name,segment,param_name,param_value) values
 		('$username','$effect_name','$segment','$param_name','$param_value')";
@@ -519,8 +530,7 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 	return;
 }
 
-function get_effects_user_segment($username,$effect_name)
-{
+function get_effects_user_segment($username,$effect_name){
 	/*CREATE TABLE IF NOT EXISTS `effects_user_segment` (
 	`username` varchar(25) NOT NULL,
 	`effect_name` varchar(25) NOT NULL,
@@ -530,18 +540,16 @@ function get_effects_user_segment($username,$effect_name)
 	`created` datetime DEFAULT NULL,
 	`last_upd` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 	UNIQUE KEY `idx_uesp` (`username`,`effect_name`,segment,`param_name`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;*/
+	) ENGINE=MyISAM DEFAULT CHARSET=latin1;*/
 	require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
+	if(!$link){
 		die('Failed to connect to server: ' . mysql_error());
 	}
 	//Select database
 	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
+	if(!$db){
 		die("Unable to select database");
 	}
 	//
@@ -549,18 +557,16 @@ function get_effects_user_segment($username,$effect_name)
 	effect_name='$effect_name' ";
 	//echo "<pre>get_number_segments: query=$query</pre>\n";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . 
-	$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
+		$query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	//
 	$number_segments=-1;
 	$eus_array[0]=array();
 	$eus_array[1]=array();
-	while ($row = mysql_fetch_assoc($result))
-	{
+	while($row = mysql_fetch_assoc($result)){
 		extract($row);
 		$effects_user_segment[]=$row;
 		$matrix[$param_name][$segment]=$param_value;
-		if($param_name=='direction')
-			$dir[$segment]=$param_value;
+		if($param_name=='direction')			$dir[$segment]=$param_value;
 	}
 	if(isset($matrix)) $eus_array[0]=$matrix;
 	if(isset($dir)) $eus_array[1]=$dir;

@@ -303,9 +303,10 @@ function get_models($username,$model_name){
 		echo "<pre>ERROR! Model type $model_type is unknown</pre>\n";
 	}
 	
-	configure("Pixelnet",$maxStrands,$maxPixels);
-	configure("E682",$maxStrands,$maxPixels);
-	configure("ECG-P12R",$maxStrands,$maxPixels);
+	
+	configure($username,"E682",$maxStrands,$maxPixels,$model_name);
+	configure($username,"Pixelnet",$maxStrands,$maxPixels,$model_name);
+	configure($username,"ECG-P12R",$maxStrands,$maxPixels,$model_name);
 	?>
 	<a href="../index.html">Home</a> | <a href="../login/member-index.php">Target Generator</a> | 
 	<a href="../effects/effect-form.php">Effects Generator</a> | <a href="../login/logout.php">Logout</a>
@@ -313,16 +314,44 @@ function get_models($username,$model_name){
 	return ($query_rows);
 }
 
-function configure($controller,$maxStrands,$maxPixels){
+function configure($username,$controller,$maxStrands,$maxPixels,$model){
 	echo "<table border=1>";
+	
+	$computer = "../images/computer.jpg";
+	$switch = "../images/Ethernet_switch.jpg";
+	$cable = "../images/Ethernet_Cable.jpg";
+	$etherdongle = "../images/Etherdongle.jpg";
+	$interface_title="Ethernet Switch";
+	
+	$color="#EEEEEE"; // light gray
+	$interface = $switch; // this is for e682 and p12r
 	$image="?";
-	if($controller=="Pixelnet") $image="Hub-Finished2.jpg";
+	if($controller=="Pixelnet"){
+		$interface = $etherdongle;
+		$interface_title="Etherdongle";
+		$color="#AAAAFF"; // light blue
+	}
+	$image="Hub-Finished2.jpg";
 	if($controller=="E682") $image="IMG_334.jpg";
 	if($controller=="ECG-P12R") $image="DSC-0400.jpg";
-	
 	$image = "../images/" .  $image;
-	echo "<tr><td>$controller</td><td><img src=\"$image\" alt=\"image of $controller\" height=\"142\" width=\"142\"><M/td></tr>\n";
+
+	echo "<tr><th>Controller</th><th>Computer</th><th>Cat5 Cable</th><th>$interface_title</th><th>Cat5 Cable</th><th>$controller</th></tr>";
+	echo "<tr><td bgcolor=\"$color\">$controller</td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$computer\" alt=\"image of $computer\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\">><img src=\"$cable\" alt=\"image of $cable\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$interface\" alt=\"image of $interface\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$cable\" alt=\"image of $cable\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$image\" alt=\"image of $controller\" height=\"142\" width=\"142\"></td>";
+	echo "</tr>\n";
 	echo "</table>";
+	$model_array= get_models_array($username,$model);
+	extract($model_array[0]);
+	/*echo "<pre>";
+	echo "$total_strings x $pixel_count\n";
+	echo "maxStrands,maxPixels,model=$maxStrands,$maxPixels,$model\n";
+	print_r($model_array);
+	echo "</pre>\n";*/
 }
 function insert_target_array($target_array,$username,$model_name,$maxStrand,$maxPixel){
 	echo "<pre> insert_target_array($target_array,$username,$model_name,$maxStrand,$maxPixel)</pre>\n";
@@ -456,8 +485,7 @@ function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory
 }
 
 function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2){
-	echo "<pre>function matrix($folds,$maxStrands,$maxPixels,
-	$pixel_count,$directory,$object_name,$model_type,$target_array2)</pre\n";
+
 	#
 	#	output files are created for each segment
 	#	8 segment = t1_8.dat output file
@@ -673,4 +701,41 @@ function insert_target_model($db,$file){
 			$myrow[0], $myrow[1], $myrow[2], $myrow[3], $myrow[4]);
 	}
 	echo "</table>";
+}
+function get_models_array($username,$model){
+	//Include database connection details
+	require_once('../conf/config.php');
+	// str_replace ( mixed $search , mixed $replace , mixed $subject [, int &$count ] )
+	
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link){
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db){
+		die("Unable to select database");
+	}
+	$query ="select * from models where object_name='$model' and username = '$username'";
+	//echo "<pre>get_effect_user_dtl: query=$query</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	if(!$result){
+		$message  = 'Invalid query: ' . mysql_error() . "\n";
+		$message .= 'Whole query: ' . $query;
+		die($message);
+	}
+	$NO_DATA_FOUND=0;
+	if(mysql_num_rows($result) == 0){
+		$NO_DATA_FOUND=1;
+	}
+	$model_array=array();
+	if(!$NO_DATA_FOUND){
+		// LSP1_8	LSP2_0	LOR_S2	LOR_S3	VIXEN211	VIXEN25	VIXEN3	OTHER	
+		while($row = mysql_fetch_assoc($result)){
+			extract($row);
+			$model_array[]=$row;
+		}
+	}
+	return $model_array;
 }
