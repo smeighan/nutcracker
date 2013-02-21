@@ -428,6 +428,7 @@ function make_array_segments($s,$p,$get)
 function find_color($loop,$s,$p,$get)
 {
 	extract ($get);
+	if($number_spirals<1) $number_spirals=1;
 	$ns=intval(($s-1)/($maxStrand/$number_spirals))+0; // figure out which spiral segment we are
 	$y=intval($maxStrand/$number_spirals);
 	if($y<1) $y=0;
