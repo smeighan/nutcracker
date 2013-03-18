@@ -39,6 +39,7 @@ echo "<table border=1>";
 echo "<tr><th>Version</th><th>File to download</th><th>File Size</th></tr>\n";
 $n=getFilesFromDir($dir,$n);
 echo "</table>";
+echo "<a href=README.txt>README of release notes</a>";
 echo "<br/><h2>Tutorials to describe Nutcracker Version 3.0</h2>\n";
 ?>
 
@@ -53,6 +54,8 @@ Vimeo Movie tutorials:
 	<li><a href=https://vimeo.com/57960775>Creating a text effect</a></li>
 	<li><a href=https://vimeo.com/57961300>Creating two Nuctracker effects and layering between them</a></li>
 	<li><a href=https://vimeo.com/57960884>Exporting a xLights/Nutcracker sequence into LOR lms</a></li>
+	<li><a href=https://vimeo.com/60850925>Feb 28th Tutorial. Intro to xLights and Nutcracker 3.0</a></li>
+
 </ul>
 <br/>
 <?php
@@ -104,8 +107,9 @@ echo "<tr><td> PINWHEEL</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF888
 echo "<tr><td> SNOWFLAKES</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> SNOWSTORM</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> SPIRALS</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
-echo "<tr><td> TREE</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF8888\">No</td></tr>";
-echo "<tr><td> TWINKLE</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF8888\">No</td></tr>";
+echo "<tr><td> TREE</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
+echo "<tr><td> TWINKLE</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
+echo "<tr><td> SPIROGRAPH</td><td bgcolor=\"#FF8888\">No</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "</table>";
 echo "</td></tr>";
 echo "<tr><td>SEQUENER OUTPUTS</td><td><table border=1>";
@@ -126,6 +130,7 @@ echo "</td></tr>";
 echo "<tr><td>OTHER DIFFERENCES</td><td><table border=1>";
 echo "<tr><th>Description</th><th>Version 2.x</th><th>Version 3.x</th></tr>";
 echo "<tr><td>Effect Gallery</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF88\">Not Yet</td></tr>";
+echo "<tr><td>Fade in/Out on effects</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF88\">Not Yet</td></tr>";
 echo "<tr><td>Projects</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF88\">Not Yet</td></tr>";
 echo "<tr><td>Data saved and retrieved from database</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF88\">Not Yet</td></tr>";
 echo "<tr><td>Ability to play mp3 and watch Nutcracker animations</td><td bgcolor=\"#FF8888\">No</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
@@ -137,6 +142,7 @@ echo "</table>";
 function getFilesFromDir($dir,$n){
 	require_once('../conf/config.php');
 	//Connect to mysql server
+	$files=array();
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
 	if(!$link){
 		die('Failed to connect to server: ' . mysql_error());
@@ -175,7 +181,7 @@ function getFilesFromDir($dir,$n){
 						
 					$sizebytes=filesize($basename);
 					$sizestring=human_filesize($sizebytes);
-					echo "<tr><td>$version</td><td><a href=$basename>$basename</a></td><td>$sizestring</td></tr>\n";
+					$files[]=$basename;
 					}
 					}
 					//	0 = workspaces
@@ -187,6 +193,19 @@ function getFilesFromDir($dir,$n){
 		} // while (false !== ($file = readdir($handle)))
 	}
 	closedir($handle);
+	rsort($files);
+	foreach ($files as $basename)
+	{
+	$tok_file=explode(".exe",$basename);
+	$filename=$tok_file[0];
+	$tokens=explode("_",$filename);
+					$c=count($tokens);
+					
+					$version = $tokens[2] . "." . $tokens[3] . "." . $tokens[4];
+		$sizebytes=filesize($basename);
+		$sizestring=human_filesize($sizebytes);
+		echo "<tr><td>$version</td><td><a href=$basename>$basename</a></td><td>$sizestring</td></tr>\n";
+	}
 	return $n;
 }
 function human_filesize($bytes, $decimals = 2) {
