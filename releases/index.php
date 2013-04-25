@@ -48,17 +48,49 @@ I have written an beginners tutorial on setting up xLights/Nutcracker. This proc
 <br/>PDF Document
 <a href=http://nutcracker123.com/nutcracker/tutorials/intro.pdf>Nutcracker 3.0 Introduction</a>
 <br/>
-Vimeo Movie tutorials:
+<h2>Vimeo Movie tutorials:</h2>
 <ul>
 	<li><a href=https://vimeo.com/57960516>xLights and Nutcracker introduction</a></li>
 	<li><a href=https://vimeo.com/57960775>Creating a text effect</a></li>
 	<li><a href=https://vimeo.com/57961300>Creating two Nuctracker effects and layering between them</a></li>
 	<li><a href=https://vimeo.com/57960884>Exporting a xLights/Nutcracker sequence into LOR lms</a></li>
-	<li><a href=https://vimeo.com/60850925>Feb 28th Tutorial. Intro to xLights and Nutcracker 3.0</a></li>
-
+	<li><a href=https://vimeo.com/61862629>My megatree suspended from the ceiling in my basement.</a></li>
+		<li><a href=https://vimeo.com/60850925>Feb 28th Tutorial. Intro to xLights and Nutcracker 3.0</a></li>
+<li><a href=https://vimeo.com/61917292>Mar 14th Tutorial. Nutcracker 3, Spirograph effect</a></li>
+<li><a href=https://vimeo.com/62432097>Mar 21st Tutorial. Configurator Spreadsheet. Nutcracker and Vixen</a></li>
+<li><a href=https://vimeo.com/61690739>3.0.6 Release of Nutcracker with Spirograph effect</a></li>
+<li><a href=https://vimeo.com/63256211>Mar 28th Tutorial. Using Pictures in Nutcracker</a></li>
+<li><a href=https://vimeo.com/64391490>Apr 18th Tutorial. Intro, Vixen, LOR</a></li>
 </ul>
+ 
+ 
+<h2>For Developers only (C++)</h2>
+<ul>
+	<li><a href=https://vimeo.com/61068045>DEVELOPERS: Tutorial1 setting up windows development</a></li>
+	<li><a href=https://vimeo.com/61068046>DEVELOPERS: Tutorial2 how to add effect to Nutcracker 3.</a></li>
+	<li><a href=https://vimeo.com/61153242>DEVELOPERS Tutorial3 Create An Effect</a></li>
+	</ul>
 <br/>
 <?php
+echo "<h1>RGB Configurator Spreadsheet</h1>\n";
+echo "This spread sheet will allow the comparison of the different controllers. Enter how many strings you ";
+echo "plan on using, it will calculate the total cost for 6 different RGB controller systems. ";
+echo "These are the five systems compared:<ol>\n";
+echo "<li>Pixelnet using active hub</li>\n";
+echo "<li>Pixelnet using Zeus hub (does not need smart string controllers)</li>\n";
+echo "<li>J1sys ecg-p12r</li>\n";
+echo "<li>SanDevices E682</li>\n";
+echo "<li>Pixelnet board by dpitts/mykroft</li>\n";
+echo "<li>LOR Cosmic Color Ribbon</li>\n";
+echo "<li>Seasonal Equipment Rainbow Pixel Controller</li>\n";
+
+echo "</ol>";
+
+echo "<ul>";
+echo "<li><a href=rgb_configurator.ods>rgb_configurator.ods for OpenOffice spreadsheet</a></li>\n";
+echo "<li><a href=rgb_configurator.xls>rgb_configurator.xls for Excel</a></li>\n";
+echo "</ul>\n";
+echo "<br/><br/>";
 echo "<br/><h2>What are differences between old Nutcracker and the new Version 3.0?</h2>\n";
 echo "<table border=1>";
 /*BARS
