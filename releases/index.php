@@ -55,7 +55,7 @@ I have written an beginners tutorial on setting up xLights/Nutcracker. This proc
 	<li><a href=https://vimeo.com/57961300>Creating two Nuctracker effects and layering between them</a></li>
 	<li><a href=https://vimeo.com/57960884>Exporting a xLights/Nutcracker sequence into LOR lms</a></li>
 	<li><a href=https://vimeo.com/61862629>My megatree suspended from the ceiling in my basement.</a></li>
-		<li><a href=https://vimeo.com/60850925>Feb 28th Tutorial. Intro to xLights and Nutcracker 3.0</a></li>
+	<li><a href=https://vimeo.com/60850925>Feb 28th Tutorial. Intro to xLights and Nutcracker 3.0</a></li>
 <li><a href=https://vimeo.com/61917292>Mar 14th Tutorial. Nutcracker 3, Spirograph effect</a></li>
 <li><a href=https://vimeo.com/62432097>Mar 21st Tutorial. Configurator Spreadsheet. Nutcracker and Vixen</a></li>
 <li><a href=https://vimeo.com/61690739>3.0.6 Release of Nutcracker with Spirograph effect</a></li>
@@ -125,13 +125,13 @@ echo "</table>";
 echo "</td></tr>";
 echo "<tr><td>EFFECTS</td><td><table border=1>";
 echo "<tr><th>Effect Name</th><th>Version 2.x</th><th>Version 3.x</th></tr>";
-echo "<tr><td > BARS</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
+echo "<tr><td >BARS</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> BUTTERFLY</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> COLORWASH</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> COUNTDOWN</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF8888\">No</td></tr>";
 echo "<tr><td> FIRE</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> GARLANDS</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
-echo "<tr><td> GIF</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF8888\">No</td></tr>";
+echo "<tr><td> GIF</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> LIFE</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> METEORS</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> PICTURES</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
@@ -154,7 +154,7 @@ echo "<tr><td> LOR: *.lcb</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88F
 echo "<tr><td> HLS: *.hlsnc</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> LSP: *.msq</td><td bgcolor=\"#FF8888\">No</td><td bgcolor=\"#FF8888\">No</td></tr>";
 echo "<tr><td> LSP: *.asq</td><td bgcolor=\"#FF8888\">No</td><td bgcolor=\"#FF8888\">No</td></tr>";
-echo "<tr><td> LSP: UserPatterns.xml</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#FF8888\">No</td></tr>";
+echo "<tr><td> LSP: UserPatterns.xml</td><td bgcolor=\"#88FF88\">Yes</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> xLights: *.xseq</td><td bgcolor=\"#FF8888\">No</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "<tr><td> Conductor: *.seq</td><td bgcolor=\"#FF8888\">No</td><td bgcolor=\"#88FF88\">Yes</td></tr>";
 echo "</table>";
