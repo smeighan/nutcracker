@@ -61,8 +61,11 @@ I have written an beginners tutorial on setting up xLights/Nutcracker. This proc
 <li><a href=https://vimeo.com/61690739>3.0.6 Release of Nutcracker with Spirograph effect</a></li>
 <li><a href=https://vimeo.com/63256211>Mar 28th Tutorial. Using Pictures in Nutcracker</a></li>
 <li><a href=https://vimeo.com/64391490>Apr 18th Tutorial. Intro, Vixen, LOR</a></li>
+<li><a href=https://vimeo.com/64869234>Apr 25th LSP UserPatterns.cml,  Audacity marking up music phrases</a></li>
+<li><a href=https://vimeo.com/66620695>May 9th Fireworks Effect. Changes coming to targets</a></li>
+<li><a href=https://vimeo.com/66620693>May 16th animated gifs, text rotation</a></li>
 </ul>
- 
+
  
 <h2>For Developers only (C++)</h2>
 <ul>
