@@ -64,6 +64,7 @@ I have written an beginners tutorial on setting up xLights/Nutcracker. This proc
 <li><a href=https://vimeo.com/64869234>Apr 25th LSP UserPatterns.cml,  Audacity marking up music phrases</a></li>
 <li><a href=https://vimeo.com/66620695>May 9th Fireworks Effect. Changes coming to targets</a></li>
 <li><a href=https://vimeo.com/66620693>May 16th animated gifs, text rotation</a></li>
+<li><a href=https://vimeo.com/67364522>May 30th text,strobe,exchanging sequences with one another</a></li>
 </ul>
 
  
