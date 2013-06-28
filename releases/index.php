@@ -1,16 +1,6 @@
 
 <h1>Releases for Nutcracker</h1>
-<pre>
-Version 1.0 of Nutcracker was released Feb 2012. This was only a web based tool to create animated effects for RGB devices.
-Version 2.0 was released summer of 2012. Version 2.0 supported a local install of Nutcracker using either WAMP or XAMPP.
-This version also introduced Projects.
-Version 3.0 of Nutcracker was released Feb 2013. This complete rewrite has the following changes
-</pre>
-<ol>
-<li>Code rewrite into C++ instead of PHP.
-<li>Will not need XAMPP/WAMP
-<li>Gives feedback immediately.
-</ol>
+
 
 <?php
 /*
@@ -28,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Tun update gallery database
 create_gallery.php?INSERT_NEW_GIFS=1
-*/
+ */
 set_time_limit(0);
 //ini_set("memory_limit","2024M");
 
@@ -37,7 +27,43 @@ $n=0;
 $dir="../releases";
 echo "<table border=1>";
 echo "<tr><th>Version</th><th>File to download</th><th>File Size</th></tr>\n";
-$n=getFilesFromDir($dir,$n);
+$files=array();
+
+#$n=getFilesFromDir($dir,$n);
+$files = directoryToArray("./", false);
+
+foreach($files as $n=>$filename)
+{
+	$filename2 = str_replace('./','',$filename);
+	$noext = explode('.',$filename2);	
+
+	if($noext[1]=="exe")
+	{
+		$tokens=explode("_",$noext[0]);
+		#$version=$v1 . "_" . $v2 . "_" . $v3;
+		#echo "c=$c, v1,v2,v3=$v1,$v2,$v3,version=$version\n";
+
+		$version  = substr($tokens[2]+100,1,2) . "_" . substr($tokens[3]+100,1,2) . "_" . substr($tokens[4]+100,1,2) ;
+		$newname = $tokens[0] . '_' . $tokens[1] . '_' . $version . '.exe';
+		$newfiles[] = $newname;
+		$version_array[$newname] =  substr($tokens[2]+100,1,2) . "." . substr($tokens[3]+100,1,2) . "." . substr($tokens[4]+100,1,2) ;
+		$orig_filename[$newname]=$filename2;
+	}
+
+}
+
+rsort($newfiles);
+echo "<ol>";
+foreach($newfiles as $n=>$filename)
+{
+	$name=$orig_filename[$filename];
+
+	$sizebytes=filesize($name);
+	$sizestring=human_filesize($sizebytes);
+	$version=$version_array[$filename];
+	echo "<tr><td>$version</td><td><a href=" . $name . ">" .  $filename . "</a></td><td>$sizestring</td></tr>\n" ;
+}
+
 echo "</table>";
 echo "<a href=README.txt>README of release notes</a>";
 echo "<br/><h2>Tutorials to describe Nutcracker Version 3.0</h2>\n";
@@ -67,7 +93,7 @@ I have written an beginners tutorial on setting up xLights/Nutcracker. This proc
 <li><a href=https://vimeo.com/67364522>May 30th text,strobe,exchanging sequences with one another</a></li>
 </ul>
 
- 
+
 <h2>For Developers only (C++)</h2>
 <ul>
 	<li><a href=https://vimeo.com/61068045>DEVELOPERS: Tutorial1 setting up windows development</a></li>
@@ -175,77 +201,80 @@ echo "</table>";
 echo "</td></tr>";
 echo "</table>";
 
-function getFilesFromDir($dir,$n){
-	require_once('../conf/config.php');
-	//Connect to mysql server
-	$files=array();
-	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link){
-		die('Failed to connect to server: ' . mysql_error());
-	}
-	//Select database
-	$db = mysql_select_db(DB_DATABASE);
-	if(!$db){
-		die("Unable to select database");
-	}
-	$line=$line0=0;
-	if($handle = opendir($dir)){
-		while(false !== ($file = readdir($handle))){
-			if($file != "." && $file != ".." ){
-				if(is_dir($dir.'/'.$file)){
-					$dir2 = $dir.'/'.$file; 
-					$n=getFilesFromDir($dir2,$n);
-				}
-				else{ 
-					$path_parts = pathinfo($file);  // workspaces/nuelemma/MEGA_001+SEAN_d_22.dat
-					$dirname   = $path_parts['dirname']; // workspaces/nuelemma
-					$basename  = $path_parts['basename']; // MEGA_001+SEAN_d_22.dat
-					$extension =$path_parts['extension']; // .dat
-					$filename  = $path_parts['filename']; // MEGA_001+SEAN_d_22
-					$tokens=explode("/",$dirname);
-					echo "<pre>";
-				//	print_r($path_parts);
-				
-					echo "</pre>";
-					$tokens=explode("_",$filename);
-					$c=count($tokens);
-					if($c==5)
-					{
-					$version = $tokens[2] . "." . $tokens[3] . "." . $tokens[4];
-					if($c==5 and $tokens[2]>=3)
-					{
-						
-					$sizebytes=filesize($basename);
-					$sizestring=human_filesize($sizebytes);
-					$files[]=$basename;
-					}
-					}
-					//	0 = workspaces
-					//	1 = nuelemma or id
-					//
-					
-				} // processing a file, not a directory
-			} // if ($file != "." && $file != ".." )
-		} // while (false !== ($file = readdir($handle)))
-	}
-	closedir($handle);
-	rsort($files);
-	foreach ($files as $basename)
+function getFilesFromDir($files)
+{
+
+
+/*	
+[0] => ./xLights_Nutcracker_3_0_15.exe
+    [1] => ./xLights_Nutcracker_3_0_1.exe
+    [2] => ./xLights_Nutcracker_3_0_0.exe
+    [3] => ./xLights_Nutcracker_3_0_5.exe
+    [4] => ./xLights_Nutcracker_3_0_14.exe
+    [5] => ./rgb_configurator.xls
+}*/
+	foreach($files as $filename)
 	{
-	$tok_file=explode(".exe",$basename);
-	$filename=$tok_file[0];
-	$tokens=explode("_",$filename);
-					$c=count($tokens);
-					
-					$version = $tokens[2] . "." . $tokens[3] . "." . $tokens[4];
-		$sizebytes=filesize($basename);
-		$sizestring=human_filesize($sizebytes);
-		echo "<tr><td>$version</td><td><a href=$basename>$basename</a></td><td>$sizestring</td></tr>\n";
+		$noext = explode(".",$filename);	
+
+		$tokens=explode("_",$noext[0]);
+		print_r($tokens);
+		$c=count($tokens);
+		#	Give 3.0.14 means v1=3, v2=0, v3=14
+		$v1=string ((int)$tokens[2]+100);
+		$v2=string ((int)$tokens[3]+100);
+		$v3=string ((int)$tokens[4]+100);
+		echo "c=$c, v1,v2,v3=$v1,$v2,$v3";
+		echo "</pre>";
+
+		if($tokens[2]>=3 and $tokens[2]<=9)
+		{
+			$version = substr($v1,1,2) . "." . substr($v2,1,2) . "." . substr($v3,1,2);
+
+			$sizebytes=filesize($basename);
+			$sizestring=human_filesize($sizebytes);
+			$files_array[]=$version;  # was basename
+
+		}
+
+
+		rsort($files_array);
+		foreach ($files_array as $basename)
+		{
+			$basename = $basename . ".exe";
+			$sizebytes=filesize($basename);
+			$sizestring=human_filesize($sizebytes);
+			echo "<tr><td>$version</td><td><a href=$basename>$basename</a></td><td>$sizestring</td></tr>\n";
+		}
 	}
-	return $n;
 }
+
+function directoryToArray($directory, $recursive) {
+	$array_items = array();
+	if ($handle = opendir($directory)) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != "..") {
+				if (is_dir($directory. "/" . $file)) {
+					if($recursive) {
+						$array_items = array_merge($array_items, directoryToArray($directory. "/" . $file, $recursive));
+					}
+					$file = $directory . "/" . $file;
+					$array_items[] = preg_replace("/\/\//si", "/", $file);
+				} else {
+					$file = $directory . "/" . $file;
+					$array_items[] = preg_replace("/\/\//si", "/", $file);
+				}
+			}
+		}
+		closedir($handle);
+	}
+	return $array_items;
+}
+
+
 function human_filesize($bytes, $decimals = 2) {
-  $sz = 'BKMGTP';
-  $factor = floor((strlen($bytes) - 1) / 3);
-  return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+	$sz = 'BKMGTP';
+	$factor = floor((strlen($bytes) - 1) / 3);
+	return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
 }
+

@@ -13,7 +13,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once('../conf/header.php');
+require_once('../conf/header_no_auth.php');
 //
 require("../effects/read_file.php");
 set_time_limit(60*60);
