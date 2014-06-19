@@ -1,25 +1,3 @@
-<script language="JavaScript" type="text/JavaScript">
-function Toggle() {
-    if (document.getElementById('fields').style.display=='none') {
-		document.getElementById('fields').style.display='';
-		document.getElementById('buttons').style.display='';
-		document.getElementById('show').style.display='none';
-		document.getElementById('hideem').style.display='';
-    } else {
-		document.getElementById('fields').style.display='none';
-		document.getElementById('buttons').style.display='none';
-		document.getElementById('show').style.display='';
-		document.getElementById('hideem').style.display='none';
-    }
-}
-
-function AllOff() {
-    document.getElementById('fields').style.display='none';
-	document.getElementById('buttons').style.display='none';
-	document.getElementById('hideem').style.display='none';
-	document.getElementById('show').style.display='';
-}
-</script>
 <?php
 require_once('../conf/auth.php');
 require_once('../conf/barmenu.php');
@@ -41,7 +19,6 @@ require_once ("../effects/f_single_strand.php");
 require_once ("../effects/f_snowflakes.php");
 require_once ("../effects/f_twinkle.php");
 require_once ("../effects/f_layer.php");
-require_once ("../effects/f_tree.php");
 require_once ("project_loader.php");
 require_once ("dbcontrol.php");
 require_once ("gen_vixen.php");
@@ -55,7 +32,6 @@ ini_set("memory_limit","512M");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <script type="text/javascript" src="../js/barmenu.js"></script>
-<script type="text/javascript" src="../effects/jscolor.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Nutcracker: RGB Effects Builder</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -70,13 +46,12 @@ ini_set("memory_limit","512M");
 <link rel="stylesheet" type="text/css" href="../css/barmenu.css">
 <link href="../css/ncFormDefault.css" rel="stylesheet" type="text/css" />
 </head>
-<body onload="AllOff();">
+<body>
 	
 <?php show_barmenu();
 //
 require("../effects/read_file.php");
-set_time_limit(0);
-	ini_set("memory_limit","1024M"); //  raise the default memory for this program to 1 gig, from 256mrg
+set_time_limit(60*60);
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];
 extract($_GET);
@@ -146,58 +121,28 @@ if (isset($type)) {
 		$tok=preg_split("/~+/", trim($PhraseFile));
 		$prettyFilename=$tok[1];
 		$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, project.username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
-		$result=nc_query($sql,"project.php","127");
+		$result=nc_query($sql);
 		$row=mysql_fetch_array($result,MYSQL_ASSOC);
 		$song_name=$row['song_name'];
 		$artist=$row['artist'];
 		$model_name=$row['model_name'];
 		$msg_str="loaded phrase file ".$prettyFilename." for project ".$song_name."/".$model_name;
 	}
-	if (isset($EffectSave)) {
-		$project_id=$_POST["project_id"];
-		$model_name=$_POST["model_name"];
-		$fieldArray=PostVarToArray($_POST);
-		// save the effect changes and return a listing of effects that have changed
-		$changedEffectArray=saveEffectVars($fieldArray, $username);
-		$effectList="";
-		$sepStr="";
-		// from this list of changed effects, regen each effect -- mainly to regen the thumbnail.
-		foreach($changedEffectArray as $key=>$val) {
-			$effect_name=$key;
-			$effectList.=$sepStr.$effect_name;
-			// regen effect after save
-			echo "Regening effect ". $effect_name. " for model ". $model_name;
-			regenEffect($model_name, $effect_name, $username, $project_id);
-			$sepStr=",";
-		}
-		$type=2;
-		$msg_str="Saving effect parameters for ".$effectList. edit_song($project_id);
-
-	}
 	if (isset($MasterNCSubmit)) {
 		if ($debug) echo "In Generate Phase<br>";
-		if (!isset($project_id)) {
-			if (isset($_GET['project_id'])) $project_id=$_GET['project_id'];
-			if (isset($_POST['project_id'])) $project_id=$_POST['project_id'];
-		}
 		$sql="UPDATE project SET last_compile_date=NOW() WHERE project_id=".$project_id;
-		nc_query($sql,"project.php","162");
+		nc_query($sql);
 		if ($outputType!='xml') {
-			if ($debug) echo "getPhraseArray<br />";
 			$myarray=getPhraseArray($project_id);
-			if ($debug) echo "setupNCfiles<br />";
 			$projectArray=setupNCfiles($project_id,$myarray);
-			if ($debug) echo "prepMasterNCFile<br />";
 			$myNCarray=prepMasterNCfile($project_id);
 			$numEntries=count($myNCarray);
-			if ($debug) echo "checkValidNCFiles<br />";
 			$myarray=checkValidNCFiles($myarray, $numEntries, $project_id);
 		} else {
 			$myarray=array();
 			$projectArray=array();
 			$myNCarray=array();
 		}
-		if ($debug) echo "processMsatNCfile<br />";
 		processMasterNCfile($project_id, $projectArray, $myarray, $outputType, $myNCarray);
 	}
 	if (isset($EffectEdit)) {
@@ -207,9 +152,9 @@ if (isset($type)) {
 				$project_id=$value;
 			if ($key=="effect_name")
 				$effect_name=$value;
-			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name") && ($key!="model_name")) {
-				$sql='UPDATE effects_user_dtl SET param_value="'.clean($value).'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
-				nc_query($sql,"project.php","190");
+			if (($key!="EffectEdit") && ($key!="project_id") && ($key!="type") && ($key!="effect_name")) {
+				$sql='UPDATE effects_user_dtl SET param_value="'.$value.'" WHERE username="'.$username.'" AND effect_name= "' .$effect_name . '" AND param_name="'.$key.'"';
+				nc_query($sql);
 			}
 		}
 		$msg_str="Effect Edited<br />".edit_song($project_id);
@@ -240,7 +185,7 @@ list($usec, $sec) = explode(' ', microtime()); // <scm>
 <?php
 	$sql = "SELECT project_id, song.song_id as song_id, song_name, artist, song_url, frame_delay, model_name FROM project LEFT JOIN song ON project.song_id = song.song_id WHERE project.username='$username' ORDER BY song_name, model_name";
 	//echo "$sql <br />";
-	$result = nc_query($sql,"project.php","221");
+	$result = nc_query($sql);
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 		if ($cnt%2==0)

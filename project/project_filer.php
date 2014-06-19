@@ -154,7 +154,7 @@ function array2File($outfile,$outarray)
 function createHeader($outfile,$model_name, $username, $project_id, $sepStr=" ")
 {
 	$sql="SELECT member_id FROM members WHERE username='".$username."'";
-	$result=nc_query($sql,"project_filer.php","157");
+	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
@@ -184,7 +184,7 @@ function getHeader($model_name, $username, $project_id, $sepStr=" ")
 {
 	$sql="SELECT member_id FROM members WHERE username='".$username."'";
 	$stripHeader = true;
-	$result=nc_query($sql,"project_filer.php","187");
+	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$member_id=$row['member_id'];
 	$mydir='../targets/'.$member_id.'/';
@@ -212,7 +212,7 @@ function getHeader($model_name, $username, $project_id, $sepStr=" ")
 function getMemberID($username)
 {
 	$sql = "select member_id from members where username='$username'";
-	$result = nc_query($sql,"project_filer.php","215");
+	$result = nc_query($sql);
 	$retval = "";
 	if ($row=mysql_fetch_assoc($result))
 		$retval=$row['member_id'];
@@ -225,11 +225,8 @@ function showThumbs($project_id)
 	. "LEFT JOIN project AS p ON p.project_id=pd.project_id\n"
 	. "LEFT JOIN effects_user_hdr as ue ON ue.effect_name=pd.effect_name AND ue.username=p.username \n"
 	. "WHERE pd.project_id=$project_id ORDER BY pd.start_secs;";
-	//echo "SQL : " . $sql . "<br />";
-	echo "<table>\n";
-	echo "<tr>";
-	$EffectParams="";
-	$result=nc_query($sql,"project_filer.php","231");
+	echo "<table><tr>";
+	$result=nc_query($sql);
 	while ($row=mysql_fetch_assoc($result))
 	{
 		extract($row);
@@ -244,7 +241,7 @@ function showThumbs($project_id)
 			$editEffect="<a href=\"effect_popup.php?project_id=$project_id&effect_name=$effect_name&username=$username\">";
 			$editEffectClose='</a>';
 			$sql="SELECT member_id FROM members WHERE username=\"$username\";";
-			$result2=nc_query($sql,"project_filer.php","246");
+			$result2=nc_query($sql);
 			$row=mysql_fetch_assoc($result2);
 			$member_id=$row['member_id'];
 			$fileLoc="../effects/workspaces/$member_id/".$model_name."~".$effect_name."_th.gif";
@@ -258,124 +255,9 @@ function showThumbs($project_id)
 			else
 			$gifLoc="../images/noThumb.gif";
 		}
-		//
-		// Display effect values here
-		//
 		echo "<td class=\"smallText\">".$editEffect."<img  height=\"100\" width=\"50\" title=\"".$phrase_name."\n".$effect_name."\" alt=\"".$phrase_name.":".$effect_name."\" src=\"".$gifLoc."\"><br />".$phrase_name."</td>".$editEffectClose."\n";
-		$EffectParams.="<td  valign=\"top\">".DisplayEffectVars($effect_name, $username, $project_id)."</td>";
 	}
-	echo "</tr>\n";
-	echo "<tr id=\"hideem\" onClick=\"Toggle();\"><td>- hide fields</td></tr>\n";
-	echo "<tr id=\"show\" onClick=\"Toggle();\"><td>+ show fields</td></tr>\n";
-	echo "<form action=\"project.php\" method=\"post\">\n";
-	echo "<tr id=\"fields\">\n";
-	echo "<input type=\"hidden\" name=\"project_id\" value=\"".$project_id."\">\n";
-	echo "<input type=\"hidden\" name=\"model_name\" value=\"".$model_name."\">\n";
-	echo $EffectParams;
-	echo "</tr>\n";
-	echo "<tr id=\"buttons\"><td><input type=\"submit\" value=\"Save Parameters in Grid\" name=\"EffectSave\" class=\"submit\"> (note: each changed effect will be regenerated after save.  This may take some time, dependent on the number and type of effect you have changed)</td></tr>";
-	echo "</form>\n";
-	echo "</table>\n";
-}
-function DisplayEffectVars($effect_name, $username, $project_id) {
-	$sql = "SELECT ed.param_name, ed.param_value, param_prompt, param_desc, param_range FROM `effects_user_hdr` AS e\n"
-	. " LEFT JOIN effects_user_dtl AS ed ON e.username=ed.username AND e.effect_name=ed.effect_name\n"
-	. " LEFT JOIN effects_dtl as ed2 ON e.effect_class=ed2.effect_class AND ed.param_name=ed2.param_name\n"
-	. " WHERE e.effect_name='".$effect_name."' AND e.username='".$username."'\n"
-	. " ORDER BY ed2.sequence";
-	$result=nc_query($sql,"project_filer.php","283");
-	$cnt=0;
-	$retVal="<table>";
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
-	{
-		extract($row);
-		if (($param_name!='frame_delay') && ($param_name!='effect_name') && ($param_name!='seq_duration') && ($param_name!='window_degrees')) {
-			$findme="color";
-			$trStr="<tr>";
-			$pos = strpos($param_name, $findme);
-			if ($pos === false)
-			{
-				$classStr=" class=\"input2\" ";
-			}
-			else {
-				$classStr=" class=\"color {hash:true} {pickerMode:'HSV'};\" ";
-			}
-			$field_name=$effect_name."~".$param_name;
-			$fieldstr=$trStr.'<td><input type="text" name="'.$field_name.'" '.$classStr.' value="'.$param_value.'"><div class=input2label>'.$param_name.'</div></td></tr>'."\n";
-			$retVal.=$fieldstr;
-			$cnt++;
-		} 
-	}	
-	$retVal.="</table>\n";
-	return($retVal);
-}	
-
-function getEffectVarsFromDB($effect_name, $username) {
-/*
-	Function pulls the parameter values from the database based on username and effect name given.  Returns an array of these parameters.
-*/
-	$retVal=array();  
-	$sql = "SELECT ed.param_name, ed.param_value, param_prompt, param_desc, param_range FROM `effects_user_hdr` AS e\n"
-	. " LEFT JOIN effects_user_dtl AS ed ON e.username=ed.username AND e.effect_name=ed.effect_name\n"
-	. " LEFT JOIN effects_dtl as ed2 ON e.effect_class=ed2.effect_class AND ed.param_name=ed2.param_name\n"
-	. " WHERE e.effect_name='".$effect_name."' AND e.username='".$username."'\n"
-	. " ORDER BY ed2.sequence";
-	$result=nc_query($sql,"project_filer.php","320");
-	while($row = mysql_fetch_array($result, MYSQL_ASSOC))
-	{
-		extract($row);
-		if (($param_name!='frame_delay') && ($param_name!='effect_name') && ($param_name!='seq_duration') && ($param_name!='window_degrees')) {
-			$retVal[$param_name]=$param_value;
-		} 
-	}	
-	return($retVal);
-}
-
-function saveEffectVars($fieldArray, $username) {
-	$retVal=array();
-	foreach($fieldArray as $key=>$val) {
-		$currEffName=$key;
-		$testArray=getEffectVarsFromDB($currEffName,$username);
-		foreach($val as $key2=>$val2) {
-			$currParamName=$key2;
-			$currParamVal=$val2;
-			if ($testArray[$currParamName]!=$currParamVal) {
-				$retVal[$currEffName]="YES"; // build the array of effects that have changed to return
-				$sql="UPDATE effects_user_dtl SET param_value = '".$currParamVal."' WHERE username='".$username."' AND effect_name='".$currEffName."' AND param_name='".$currParamName."';";
-				//echo $sql."</br>";
-				nc_query($sql,"project_filer.php","343"); // run the update
-			}
-		}
-	}
-	return($retVal);
-}
-
-function PostVarToArray($postin) {
-/*
-	Function reads the post variable from a form submit in project details and returns an array of arrays of the form:
-	     array[effectname]=array[param_name]=[param value]
-*/
-		$currEffect="XYZXYRSDEFH";
-		$effectVals=array();
-		$currVals=array();
-		foreach ($postin as $key=>$val)
-		{
-			$tok = preg_split("/~+/", trim($key));
-			$effect_name=$tok[0];
-			if (($effect_name != "project_id") && ($effect_name != "EffectSave") && ($effect_name != "model_name")) 	{
-				$fieldname=$tok[1];
-				if ($effect_name<>$currEffect) {
-					if ($currEffect!="XYZXYRSDEFH") {
-						$effectVals[$currEffect]=$currVals;
-						$currVals=array();
-					}
-				}
-				$currVals[$fieldname]=$val;
-				$currEffect=$effect_name;
-			}
-		}
-		$effectVals[$currEffect]=$currVals;
-		return($effectVals);
+	echo "</tr></table>";
 }
 
 function createThumb($model_name, $effect_name, $member_id)
@@ -410,7 +292,7 @@ function getUserEffect($target,$effect,$username)
 	and hdr.effect_name = dtl.effect_name
 	and hdr.username='".$username."'
 	and upper(hdr.effect_name)=upper('$effect')";
-	$result = nc_query($sql,"project_filer.php","410");
+	$result = nc_query($sql);
 	$cnt=0;
 	$string="";
 	while ($row = mysql_fetch_assoc($result))
@@ -434,14 +316,14 @@ function save_phrases($inphp)
 			case "project_id":
 			$project_id = $val;
 			$sql="UPDATE project SET last_update_date=NOW() WHERE project_id=".$project_id;
-			$result=nc_query($sql,"project_filer.php","434");
+			$result=nc_query($sql);
 			break;
 			case "frame_delay":
 			$frame_delay = $val;
 			if (isset($project_id))
 			{
 				$sql="UPDATE project SET frame_delay=".$frame_delay." WHERE project_id=".$project_id;
-				$result=nc_query($sql,"project_filer.php","441");
+				$result=nc_query($sql);
 			}
 			break;
 			case "SavePhraseEdit":
@@ -454,12 +336,12 @@ function save_phrases($inphp)
 				case "en-":
 				$key=(substr($key,3));
 				$sql="UPDATE project_dtl SET end_secs=".$val." WHERE project_dtl_id=".$key;
-				$result=nc_query($sql,"project_filer.php","454");
+				$result=nc_query($sql);
 				break;
 				case "st-":
 				$key=(substr($key,3));				
 				$sql="UPDATE project_dtl SET start_secs=".$val." WHERE project_dtl_id=".$key;
-				$result=nc_query($sql,"project_filer.php","459");
+				$result=nc_query($sql);
 				break;
 				default:
 				if (strlen($val)==0)
@@ -469,8 +351,8 @@ function save_phrases($inphp)
 				else {
 					$val="'".$val."'";
 				}
-				$sql="UPDATE project_dtl SET effect_name=".$val." WHERE project_dtl_id=".$key;
-				$result=nc_query($sql,"project_filer.php","470");
+				$sql="UPDATE project_dtl SET effect_id=".$val." WHERE project_dtl_id=".$key;
+				$result=nc_query($sql);
 			}
 		}
 	}
@@ -478,24 +360,25 @@ function save_phrases($inphp)
 
 function get_effects($username)
 {
-	$sql = "SELECT effect_name, effect_class FROM effects_user_hdr WHERE username='$username' AND effect_name IS NOT NULL ORDER BY effect_name";
+	$sql = "SELECT effect_name, effect_id, effect_class FROM effects_user_hdr WHERE username='$username' AND effect_name IS NOT NULL ORDER BY effect_name";
 	$effect=array();
 	$efftype=array();
 	$effid=array();
-	$result=nc_query($sql,"project_filer.php","482");
+	$result=nc_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC))
 	{
 		$effect[]=$row['effect_name'];
 		$efftype[]=$row['effect_class'];
+		$effid[]=$row['effect_id'];
 	}
-	$retVal=array($effect, $efftype);
+	$retVal=array($effect, $efftype, $effid);
 	return($retVal);
 }
 
 function edit_song($project_id)
 {
 	$sql = "SELECT model_name, song_name, artist, song_url, frame_delay, project.username, last_update_date, last_compile_date FROM project LEFT JOIN song ON project.song_id=song.song_id WHERE project_id=".$project_id;
-	$result=nc_query($sql,"project_filer.php","495");
+	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$frame_delay=$row['frame_delay'];
 	$username=$row['username'];
@@ -508,7 +391,8 @@ function edit_song($project_id)
 	$effectArr=get_effects($username);
 	$effect=$effectArr[0];
 	$effType=$effectArr[1];
-	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
+	$effid=$effectArr[2];
+	$sql = "SELECT project_dtl_id, phrase_name, start_secs, end_secs, effect_id, effect_name FROM project_dtl WHERE project_id=".$project_id." ORDER BY start_secs";
 	?>
 	<h2>Edit Project Details for "<?php echo $song_name;?>" by <?php echo $artist;?> (Model: <?php echo $model_name;?>)</h2>
 	<table border="0" cellspacing="1" cellpadding="1">
@@ -522,27 +406,22 @@ function edit_song($project_id)
 	<table class="Gallery">
 	<tr><th>Phrase</th><th>Start Time (sec)</th><th>End Time (sec)</th><th>Duration</th><th>Frames</th><th>Effect Assigned</th></tr>
 	<?php
-	$result3=nc_query($sql,"project_filer.php","522");
-	$cnt=show_phrases($result3,$effect, $effType, $frame_delay);
+	$result3=nc_query($sql);
+	$cnt=show_phrases($result3,$effect, $effType, $frame_delay, $effid);
 	if ($cnt==0)
 	{
 		// if there currently are no phrases attached to project get them from the library
 		insert_proj_detail_from_library($project_id);
-		$result3=nc_query($sql,"project_filer.php","528");
-		$newcnt=show_phrases($result3,$effect, $effType, $frame_delay);
+		$result3=nc_query($sql);
+		$newcnt=show_phrases($result3,$effect, $effType, $frame_delay, $effid);
 	}
 	?>
 	</table>
 	<input type="submit" name="SavePhraseEdit"  class="SubmitButton" value="Save these values">&nbsp;&nbsp;&nbsp;<input type="submit"  class="SubmitButton" name="CancelPhraseEdit" value="Hide Detail">
 	<p /><input type="submit"  class="SubmitButton" name="LoadPhraseFile" value="Load Phrases from Audacity save file">
 	<p />
-	</form>
 	<h2>Time Line of Effects</h2>
 	<?php showThumbs($project_id); ?>
-	<p />
-	<h2>Select Output</h2>
-	<form name="project_edit2" id="project_edit2" action="project.php" method="post">
-	<input type="hidden" name="project_id" value=<?php echo $project_id?>>
 	<table border="0" cellpadding="1" cellspacing="1">
 	<tr><td>
 	<select class="FormFieldName" name="outputType" id="outputType">
@@ -562,20 +441,21 @@ function edit_song($project_id)
 	return;
 }
 
-function show_phrases($inresult,$effect, $effType, $frame_delay)
+function show_phrases($inresult,$effect, $effType, $frame_delay, $effid)
 {
 	$cnt=0;
 	while ($row = mysql_fetch_array($inresult, MYSQL_ASSOC))
 	{
 		$cnt +=1;
 		$project_dtl_id = $row['project_dtl_id'];
+		$effect_id=$row['effect_id'];
 		$phrase_name = $row['phrase_name'];
 		$start_secs = $row['start_secs'];
 		$end_secs = $row['end_secs'];
 		$duration = $end_secs - $start_secs;
 		$frames = sec2frame($duration, $frame_delay);
 		$effect_name = $row['effect_name'];
-		$effect_str=effect_select($effect,$effect_name,$project_dtl_id, $effType);
+		$effect_str=effect_select($effect,$effect_name,$project_dtl_id, $effType, $effect_id, $effid);
 		if ($cnt%2==0)
 			$trStr="<tr class=\"alt\">";
 		else
@@ -590,7 +470,7 @@ function show_phrases($inresult,$effect, $effType, $frame_delay)
 	return($cnt);
 }
 
-function effect_select($effect_array, $ineffect, $project_dtl_id, $effType)
+function effect_select($effect_array, $ineffect, $project_dtl_id, $effType, $effect_id,$effid)
 {
 	$retStr='<select class="FormFieldName" name='.$project_dtl_id.' id='.$project_dtl_id.'>';
 	if (strlen($ineffect)==0)
@@ -605,14 +485,15 @@ function effect_select($effect_array, $ineffect, $project_dtl_id, $effType)
 	{
 		$effect=$effect_array[$x];
 		$effect_class=$effType[$x];
-		if ($effect == $ineffect)
+		$curreffid=$effid[$x];
+		if ($curreffid == $effect_id)
 		{
 			$defstr = " selected";
 		}
 		else {
 			$defstr = "";
 		}
-		$retStr.='<option value="'.$effect.'"'.$defstr.'>'.$effect.' ('.$effect_class.')</option>';
+		$retStr.='<option value="'.$curreffid.'"'.$defstr.'>'.$effect.' ('.$effect_class.')</option>';
 	}
 	$retStr.='</select>';
 	return($retStr);
@@ -621,12 +502,12 @@ function effect_select($effect_array, $ineffect, $project_dtl_id, $effType)
 function insert_proj_detail_from_library($project_id)
 {
 	$sql = "SELECT song_id FROM project WHERE project_id = ".$project_id;
-	$result=nc_query($sql,"project_filer.php","622");
+	$result=nc_query($sql);
 	$row = mysql_fetch_array($result, MYSQL_ASSOC);
 	$song_id=$row['song_id'];
 	$sql = "SELECT phrase_name, start_secs, end_secs FROM song_dtl where song_id = ".$song_id;
 	$cnt=0;
-	$result2=nc_query($sql,"project_filer.php","627");
+	$result2=nc_query($sql);
 	while ($row = mysql_fetch_array($result2, MYSQL_ASSOC))
 	{
 		$cnt +=1;
@@ -634,7 +515,7 @@ function insert_proj_detail_from_library($project_id)
 		$start_secs = $row['start_secs'];
 		$end_secs = $row['end_secs'];
 		$sql="INSERT INTO project_dtl (phrase_name, start_secs, end_secs, project_id) VALUES ('".$phrase_name."',".$start_secs.",".$end_secs.",".$project_id.")";
-		$result3=nc_query($sql,"project_filer.php","635");
+		$result3=nc_query($sql);
 	}
 	echo "Inserted $cnt new records into project detail<br />";
 	return;
@@ -643,14 +524,14 @@ function insert_proj_detail_from_library($project_id)
 function remove_song($project_id)
 {
 	$sql = "SELECT song_id, model_name FROM project where project_id=".$project_id;
-	$result2 = nc_query($sql,"project_filer.php","644");
+	$result2 = nc_query($sql);
 	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
 	$song_id = $row['song_id'];
 	$model_name = $row['model_name'];
 	$sql = "DELETE FROM project_dtl WHERE project_id=$project_id";
-	$result=nc_query($sql,"project_filer.php","649");
+	$result=nc_query($sql);
 	$sql = "DELETE FROM project WHERE project_id=$project_id";
-	$result = nc_query($sql,"project_filer.php","651");
+	$result = nc_query($sql);
 	$song_name=getSongName($song_id);
 	return("Song '$song_name' and Model '$model_name' removed");
 }
@@ -660,14 +541,14 @@ function add_song($song_id, $username, $frame_delay, $model_name)
 	$song_name=getSongName($song_id);
 	$sql2 = 'Select count(*) as songcnt from project WHERE song_id='.$song_id.' AND username="'.$username.'" AND model_name="'.$model_name.'"';
 	$sql = "REPLACE INTO project (song_id, username,frame_delay, model_name) VALUES (".$song_id.",'".$username."',".$frame_delay.",\"".$model_name."\")";
-	$result2 = nc_query($sql2,"project_filer.php","661");
+	$result2 = nc_query($sql2);
 	$row = mysql_fetch_array($result2, MYSQL_ASSOC);
 	if ($row['songcnt'] > 0)
 	{
 		return("*** Add Canceled *** Song '$song_name' and Model '$model_name' already exists!");
 	}
 	else {
-		$result =nc_query($sql,"project_filer.php","668");
+		$result =nc_query($sql);
 		return("Song '$song_name' and Target '$model_name' added");
 	}
 }
@@ -676,7 +557,7 @@ function getSongName($song_id)
 {
 	$retVal = "Error occured";
 	$sql = "SELECT song_name FROM song WHERE song_id='$song_id'";
-	$result = nc_query($sql,"project_filer.php","677");
+	$result = nc_query($sql);
 	if ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	{
 		$retVal=$row['song_name'];
@@ -696,7 +577,7 @@ function select_song($username)
 	. "HAVING MaxTime>0 AND song.username IN ('f','".$username."')";
 	//echo $sql . "<br />";
 	$sql2 = "SELECT object_name, model_type FROM models WHERE username='".$username."'";
-	$result = nc_query($sql,"project_filer.php","697");
+	$result = nc_query($sql);
 	?>
 	<h2>Available Songs</h2>
 	<table class="TableProp">
@@ -729,7 +610,7 @@ function select_song($username)
 	<td class="FormFieldName"><div align="right">Target</div></td>
 	<td class="FormFieldName">
 	<?php	
-	$result2 =nc_query($sql2,"project_filer.php","730");
+	$result2 =nc_query($sql2);
 	echo parseTargetSelect($result2); ?> 
 	</td>
 	</tr>
@@ -776,12 +657,11 @@ function parseSongs($result)
 		$song_name=$row['song_name'];
 		$song_id=$row['song_id'];
 		$song_url=$row['song_url'];
-		$artist=$row['artist'];
 		$MinTime=$row['MinTime'];
 		$MaxTime=$row['MaxTime'];
 		$song_length = round(($MaxTime-$MinTime),2);
 		$song_length_min = round(($song_length/60),2);
-		$retStr1.='<option value='.$song_id.'>'.$song_name.' ('.$artist.')</option>';
+		$retStr1.='<option value='.$song_id.'>'.$song_name.'</option>';
 		if ($cnt%2==0) 
 		$trStr='<tr>';
 		else
@@ -811,6 +691,7 @@ function joinPhraseArray($inArray)
 	$savest_phrase=$inArray[0][5];
 	$saveend_phrase=$inArray[0][6];
 	$saveeffect_name=$inArray[0][7];
+	$saveeffect_id=$inArray[0][8];
 	$cnt=0;
 	$retArray=array();
 	foreach($inArray as $phrase)
@@ -825,6 +706,7 @@ function joinPhraseArray($inArray)
 			$st_phrase=$phrase[5];
 			$end_phrase=$phrase[6];
 			$effect_name=$phrase[7];
+			$effect_id=$phrase[8];
 			if ($saveeffect_name==$effect_name)
 			{
 				$saveend_time=$end_time;
@@ -833,7 +715,7 @@ function joinPhraseArray($inArray)
 				$saveframe_cnt+=$frame_cnt;
 			}
 			else {
-				$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name);
+				$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name, $saveeffect_id);
 				$retArray[]=$arrayEntry;
 				$savephrase_name=$phrase_name;
 				$savest_time=$st_time;
@@ -843,31 +725,32 @@ function joinPhraseArray($inArray)
 				$savest_phrase=$st_phrase;
 				$saveend_phrase=$end_phrase;
 				$saveeffect_name=$effect_name;
+				$saveeffect_id=$effect_id;
 			}
 		}
 		$cnt++;
 	}
-	$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name);
+	$arrayEntry=array($savephrase_name,$savest_time,$saveend_time, $saveduration, $saveframe_cnt, $savest_phrase, $saveend_phrase, $saveeffect_name, $saveeffect_id);
 	$retArray[]=$arrayEntry;
 	return($retArray);
 }
 
 function getPhraseArray($project_id, $join_phrase=true)
 {
-	$sql="SELECT DISTINCT pd.phrase_name, pd.start_secs, pd.end_secs, ue.effect_name, p.frame_delay, p.username, p.model_name, m.member_id \n"
-	. "FROM `project_dtl` as pd ,effects_user_dtl as ue, project p, members m \n"
-	. "WHERE p.project_id=pd.project_id \n"
-	. "AND m.username=p.username \n"
-	. "AND  ue.effect_name=pd.effect_name \n"
-	. "AND p.username=ue.username \n"
-	. "AND pd.project_id=".$project_id." \n"
+	$sql = "SELECT DISTINCT pd.phrase_name, pd.start_secs, pd.end_secs, pd.effect_id, ue.effect_name, p.frame_delay, p.username, p.model_name, m.member_id \n"
+	. "FROM `project_dtl` as pd \n"
+	. "LEFT JOIN project as p ON p.project_id=pd.project_id \n"
+	. "LEFT JOIN members as m ON m.username=p.username \n"
+	. "LEFT JOIN effects_user_dtl as ue ON ue.effect_id=pd.effect_id \n"
+	. "WHERE pd.project_id = ".$project_id." \n"
 	. "ORDER BY pd.start_secs";
 	//echo "SQL in getPhraseArray : ".$sql."<br />";
-	$result=nc_query($sql,"project_filer.php","864");
-	// echo "GOT to getPhraseArray<br />";
+	$result=nc_query($sql);
+	//echo "GOT to getPhraseArray<br />";
 	$retArray=array();
 	while ($row=mysql_fetch_array($result,MYSQL_ASSOC))
 	{
+		$effect_id=$row['effect_id'];
 		$phrase_name=$row['phrase_name'];
 		$st_secs=$row['start_secs'];
 		$frame_delay=$row['frame_delay'];
@@ -880,7 +763,7 @@ function getPhraseArray($project_id, $join_phrase=true)
 		$frame_cnt=sec2frame($dur_secs, $frame_delay);
 		$frame_st=sec2frame($st_secs, $frame_delay);
 		$frame_end=$frame_st+$frame_cnt;
-		$phraseArray=array($phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name);
+		$phraseArray=array($phrase_name,$st_secs, $end_secs, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name, $effect_id);
 		$retArray[]=$phraseArray;
 	}
 	if ($join_phrase)
@@ -921,6 +804,7 @@ function checkPhraseArray($phraseArray, $frame_delay)
 		$ph_st_time=$phrase[1];
 		$ph_end_time=$phrase[2];
 		$ph_end_phrase=$phrase[6];
+		$effect_id=$phrase[8];
 		if ($end_time < $ph_st_time)
 		{
 			// gap exists.  Must fill with zero counts
@@ -932,9 +816,10 @@ function checkPhraseArray($phraseArray, $frame_delay)
 			$frame_st=sec2frame($new_st, $frame_delay);
 			$frame_end=$frame_st+$frame_cnt;
 			$effect_name="None";
+			$effect_id=0;
 			if ($frame_cnt>0)
 			{
-				$phraseArray=array($phrase_name,$new_st, $new_end, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name);
+				$phraseArray=array($phrase_name,$new_st, $new_end, $dur_secs, $frame_cnt, $frame_st, $frame_end, $effect_name, $effect_id);
 				$retArray[]=$phraseArray;
 				$cnt++;
 			}
@@ -1125,7 +1010,7 @@ function getProjDetails($project_id)
 	. "LEFT JOIN members as m ON m.username=p.username \n"
 	. "WHERE p.project_id = $project_id\n";
 	$retArray=array();
-	$result=nc_query($sql,"project_filer.php","1126");
+	$result=nc_query($sql);
 	$retArray=array();
 	if ($row=mysql_fetch_array($result,MYSQL_ASSOC))
 	{
@@ -1170,6 +1055,7 @@ function setupNCfiles($project_id,$phrase_array)
 		$frame_st=$curr_array[5];
 		$frame_end=$curr_array[6];
 		$effect_name=$curr_array[7];
+		$effect_id=$curr_array[8];
 		echo "<tr><td>$phrase_name</td>";
 		list($usec, $sec) = explode(' ', microtime()); // <scm>
 		$script_start = (float) $sec + (float) $usec; // ,scm>
@@ -1180,7 +1066,7 @@ function setupNCfiles($project_id,$phrase_array)
 		}
 		else {
 			echo "<td>Generating ". $effect_name . "</td>";
-			$outstr=createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $st_secs, $end_secs, $project_id, $frame_delay);
+			$outstr=createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $st_secs, $end_secs, $project_id, $frame_delay, $effect_id);
 		}
 		list($usec, $sec) = explode(' ', microtime()); // <scm>
 		$script_end = (float) $sec + (float) $usec;    // <scm>
@@ -1226,24 +1112,24 @@ function showMessage($outStr)
 	return;
 }
 
-function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $st, $end, $project_id, $frame_delay)
+function createSingleNCfile($username, $model_name, $eff, $frame_cnt, $st, $end, $project_id, $frame_delay, $effect_id)
 {
 
 	// this function will create the batch call to the effects to create the individual nc files
 	$workdir="workarea/";
-	$outfile=$workdir."$username~$model_name~$effect_name~$frame_cnt.nc";
+	$outfile=$workdir."$username~$model_name~$eff~$frame_cnt.nc";
 	$isValid=true;
 	if (file_exists($outfile))
 	{
-		$inHash=getProjHash($project_id, $effect_name, $username);
-		$checkHasher=checkHash($inHash,$project_id, $effect_name, $username);
-		// echo "<pre>File ".$outfile." already is here.  Now I gotta check it!<br />";
+		$inHash=getProjHash($project_id, $effect_id);
+		$checkHasher=checkHash($inHash,$project_id, $effect_id);
+		//echo "<pre>File ".$outfile." already is here.  Now I gotta check it!<br />";
 		if (!$checkHasher)
 		{
 			$isValid=false;
 			// Check to see if the values of the effect have changed, if so, we need to regen the effect (remove the existing nc file if it exists)
 			removeNCFiles($outfile);
-			echo "<td>Looks like the effect ".$effect_name." has changed since the NC file created</td>";
+			echo "<td>Looks like the effect ".$eff." has changed since the NC file created</td>";
 		}
 		if (($isValid) && (!isValidNC($outfile)))
 		{
@@ -1268,7 +1154,7 @@ function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $s
 	else {
 		echo "<td>No file found</td><td bgcolor=#8CA7FF>Generating $outfile</td>";
 		$batch_type=3;
-		$get=getUserEffect($model_name,$effect_name,$username);
+		$get=getUserEffect($model_name,$eff,$username);
 		$get['batch']=$batch_type;
 		$get['username']=$username;
 		$get['user_target']=$model_name;
@@ -1278,12 +1164,12 @@ function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $s
 		$member_id=getMemberID($username);
 		// need code to grab the 360 value from the model -- right now the model does not contain 360 info (but will for the future)
 			//$get['windows_degrees']=360;  // default the degrees to 360.  This will have to change for the future.
-		$from_file="../effects/workspaces/$member_id/$model_name~$effect_name.nc";
-		$to_file="../project/workarea/$username~$model_name~$effect_name~$frame_cnt.nc";
-		$sql='UPDATE effects_user_dtl SET param_value='.($end-$st).' WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="seq_duration"';
-		nc_query($sql,"project_filer.php","1282");
-		$sql='UPDATE effects_user_dtl SET param_value='.$frame_delay.' WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="frame_delay"';
-		nc_query($sql,"project_filer.php","1284");
+		$from_file="../effects/workspaces/$member_id/$model_name~$eff.nc";
+		$to_file="../project/workarea/$username~$model_name~$eff~$frame_cnt.nc";
+		$sql='UPDATE effects_user_dtl SET param_value='.($end-$st).' WHERE username="'.$username.'" AND effect_name="'.$eff.'" AND param_name="seq_duration"';
+		nc_query($sql);
+		$sql='UPDATE effects_user_dtl SET param_value='.$frame_delay.' WHERE username="'.$username.'" AND effect_name="'.$eff.'" AND param_name="frame_delay"';
+		nc_query($sql);
 		$ranNC=false;
 		switch ($effect_class)
 		{
@@ -1355,10 +1241,6 @@ function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $s
 				f_twinkle($get);
 				$ranNC=true;
 				break;
-			case ('tree') :
-				f_tree($get);
-				$ranNC=true;
-				break;
 			default :
 				echo "$effect_class not handled yet<br />";
 		}
@@ -1375,100 +1257,9 @@ function createSingleNCfile($username, $model_name, $effect_name, $frame_cnt, $s
 			}
 		}
 	}
-	updateHash($project_id,$effect_name, $username);
+	updateHash($project_id,$effect_id);
 	return($outfile); // this will be the file created 
 }
-
-function regenEffect($model_name, $effect_name, $username, $project_id) {
-	$batch_type=3;
-	$get=getUserEffect($model_name,$effect_name,$username);
-	$get['batch']=$batch_type;
-	$get['username']=$username;
-	$get['user_target']=$model_name;
-	$get['seq_duration']=5;
-	$frame_delay=$get['frame_delay'];
-	$member_id=getMemberID($username);
-	//$get['frame_delay']=$frame_delay;
-	// Remove old gif files
-	$workdir = "../effects/workspaces/".$member_id."/";
-	$projfiler=$model_name."~".$effect_name;
-	$projfiles= $workdir.$projfiler."*.*";
-	//$datfiles= $workdir.$projfiler."*.dat";
-	//$gpfiles = $workdir.$projfiler."*.gp";
-	array_map('unlink', glob($projfiles));
-	//array_map('unlink', glob($datfiles));	
-	//array_map('unlink', glob($gpfiles));
-	//echo $giffiles . "<br />";
-	//echo $datfiles . "<br />";
-	//echo $gpfiles . "<br />";
-	// Regen effect
-	$effect_class=$get['effect_class'];
-	$sql='UPDATE effects_user_dtl SET param_value=5 WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="seq_duration"';
-	nc_query($sql,"project_filer.php","1405");
-	$sql='UPDATE effects_user_dtl SET param_value='.$frame_delay.' WHERE username="'.$username.'" AND effect_name="'.$effect_name.'" AND param_name="frame_delay"';
-	nc_query($sql,"project_filer.php","1407");
-	switch ($effect_class)
-	{
-		case ('spirals') :
-			f_spirals($get);
-			break;
-		case ('fire') :
-			f_fire($get);;
-			break;
-		case ('butterfly') :
-			f_butterfly($get);
-			break;
-		case ('bars') :
-			f_bars($get);
-			break;
-		case ('garlands') :
-			f_garlands($get);
-			break;
-		case ('text') :
-			f_text($get);
-			break;
-		case ('gif') :
-			f_gif($get);
-			break;
-		case ('meteors') :
-			f_meteors($get);
-			break;
-		case ('life') :
-			f_life($get);
-			break;
-		case ('color_wash') :
-			f_color_wash($get);
-			break;
-		case ('user_defined') :
-			f_user_defined($get);
-			break;
-		case ('snowstorm') :
-			f_snowstorm($get);
-			break;
-		case ('pictures') :
-			f_pictures($get);
-			break;
-		case ('single_strand') :
-			f_single_strand($get);
-			break;
-		case ('layer') :
-			f_layer($get);
-			break;
-		case ('snowflakes') :
-			f_snowflakes($get);
-			break;
-		case ('twinkle') :
-			f_twinkle($get);
-			break;
-		case ('tree') :
-			f_tree($get);
-			break;
-		default :
-			echo "$effect_class not handled yet<br />";
-	}
-	updateHash($project_id,$effect_name, $username);
-}
-
 
 function prepMasterNCfile($project_id)
 {
@@ -1492,7 +1283,7 @@ function checkDir($inDir)
 function getSongTime($project_id)
 {
 	$sql = "SELECT max(end_secs) AS totLength FROM project_dtl WHERE project_id=$project_id";
-	$result=nc_query($sql,"project_filer.php","1493");
+	$result=nc_query($sql);
 	$row=mysql_fetch_array($result,MYSQL_ASSOC);
 	$retval=intval($row['totLength']);
 	return($retval);
@@ -1665,6 +1456,7 @@ function checkValidNCFiles($myarray, $numEntries, $project_id)
 		$frame_st=$curr_array[5];
 		$frame_end=$curr_array[6];
 		$effect_name=$curr_array[7];
+		$effect_id=$curr_array[8];
 		$fileName=$modStr.$effect_name."~".$frame_cnt.".nc";
 		if (is_file($fileName))
 		{
@@ -1699,12 +1491,12 @@ function checkValidNCFiles($myarray, $numEntries, $project_id)
 	return($myarray);
 }
 
-function getHash($effect_name, $username)
+function getHash($effect_id)
 {
-	$sql = "SELECT param_value FROM effects_user_dtl WHERE effect_name='".$effect_name."' AND username='".$username."'";
+	$sql = "SELECT param_value FROM effects_user_dtl WHERE effect_id=".$effect_id;
 	
 	//echo "SQL from getHash : ".$sql."<br />";
-	$result=nc_query($sql,"project_filer.php","1705");
+	$result=nc_query($sql);
 	$valStr="";
 	while ($row=mysql_fetch_assoc($result))
 	{
@@ -1714,12 +1506,10 @@ function getHash($effect_name, $username)
 	return($checksum);
 }
 
-function getProjHash($project_id, $effect_name, $username)
+function getProjHash($project_id, $effect_id)
 {
-	$sql = "SELECT check_sum FROM project_dtl WHERE project_id=".$project_id." AND effect_name='".$effect_name."'";
-	//echo "SQL : $sql<br />";
-	$result=nc_query($sql,"project_filer.php","1719");
-	//echo "GOT HERE in ProjHash<br />";
+	$sql = "SELECT check_sum FROM project_dtl WHERE project_id=".$project_id." AND effect_id=".$effect_id;
+	$result=nc_query($sql);
 	$valStr="";
 	if ($row=mysql_fetch_assoc($result))
 	{
@@ -1730,7 +1520,7 @@ function getProjHash($project_id, $effect_name, $username)
 			$retVal=$check_hash;
 		}
 		else { // hash exists but doesn't have value
-			$retVal=updateHash($project_id, $effect_name, $username);
+			$retVal=updateHash($project_id, $effect_id);
 		}
 		} else { // This project ID doesn't exist
 		$retVal="XXX";
@@ -1745,19 +1535,20 @@ function removeNCFiles($testFile)
 	return;
 }
 
-function updateHash($project_id, $effect_name, $username)
+function updateHash($project_id, $effect_id)
 {
-	$hashVal=getHash($effect_name, $username);
-	$sql="UPDATE project_dtl SET check_sum='".$hashVal."' WHERE project_id=$project_id and effect_name='".$effect_name."'";
-	$result=nc_query($sql,"project_filer.php","1750");
+	$hashVal=getHash($effect_id);
+	$sql="UPDATE project_dtl SET check_sum='".$hashVal."' WHERE project_id=$project_id and effect_id=".$effect_id;
+	$result=nc_query($sql);
 	return($hashVal);
 }
 
-function checkHash($inHash, $project_id, $effect_name, $username)
+function checkHash($inHash, $project_id, $effect_id)
 {
 	$retVal=false;
-	$retVal=($inHash == getHash($effect_name, $username));
+	$retVal=($inHash == getHash($effect_id));
 	/*echo "Incoming Hash : ".$inHash."<br />";
+	echo "Hash check : ".getHash($effect_id)."<br />";
 	if ($retVal)
 		echo "They match <br />";
 	else

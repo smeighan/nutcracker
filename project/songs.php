@@ -210,7 +210,6 @@ purchased, and have an audacity phrase file available for setting the default ph
 		$sql = "SELECT song_id, song_name, artist, song_url, username FROM song WHERE username IN ('".$username."','f') ORDER BY song_name";
 	else
 		$sql = "SELECT song_id, song_name, artist, song_url, username FROM song ORDER BY song_name";	
-	//echo "SQL : $sql <br />";
 	$result = nc_query($sql);
 	$cnt=0;
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -230,12 +229,12 @@ purchased, and have an audacity phrase file available for setting the default ph
 		else
 			$trStr='<tr class="alt">';
 	echo $trStr;?>
-	<td><?php echo $song_name;?></a></td>
-	<td><?php echo $artist;?></td>
-	<td><a href="<?php echo $song_url;?>"><?php echo $song_url;?></a></td>
-	<td><?php echo $song_owner;?></td>
+	<td><?=$song_name?></a></td>
+	<td><?=$artist?></td>
+	<td><a href="<?=$song_url?>"><?=$song_url?></a></td>
+	<td><?=$song_owner?></td>
 	<?php if (($username=='f') || ($song_owner!='f')) {?>
-	<td><a href="song_edit.php?song_id=<?php echo $song_id;?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="song_del.php?song_id=<?php echo $song_id;?>" "><img src="../images/delete.png">Remove</a></td>
+	<td><a href="song_edit.php?song_id=<?=$song_id?>"><img src="../images/edit.png">Edit</a>&nbsp;&nbsp;&nbsp;<a href="song_del.php?song_id=<?=$song_id?>" "><img src="../images/delete.png">Remove</a></td>
 	<?php } else {?>
 	<td>Global song - No edit</td>
 	<?php } ?>

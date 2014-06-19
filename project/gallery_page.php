@@ -66,91 +66,72 @@ function ajaxFunction(val)
 			var myObject = JSON.parse(httpxml.responseText);
 			var trstr="";
 			var varstring="";
-			var cnt=0;
-			var oldvarstring="XXXXXX";
 			var str="<table class=Gallery><tr><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th><th>Effect Details</th><th>Image</th></tr>";
 			for(i=0;i<myObject.data.length;i++)
 			{
-				varstring = myObject.data[i].username + "~" + myObject.data[i].effname;
-				if (oldvarstring != varstring) 
+				if(i%8==0)
 				{
-					if(cnt%8==0)
-					{
-						str = str + "</tr>"
+					str = str + "</tr>"
 					} else { 
-						if(cnt%4==0)
-						{
-						trstr="</tr><tr class=alt>" 
-						} else { 
-						trstr="" 
-						}
+					if(i%4==0)
+					{
+					trstr="</tr><tr class=alt>" } else { trstr="" }
 					}
-
-						//alert(varstring);
-						str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
-						str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
-						str = str + "<br /> Member ID: <a href=\"/nutcracker/effects/image_library.php?member_id="+ myObject.data[i].member_id+"\" target=\"_new\">" + myObject.data[i].member_id + "</a>";
-						//str = str + "<br />Gif Image : " + myObject.data[i].gifname;
-						str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
-						str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
-						str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
-						str = str + "<br />Effect Name";
-						str = str + "</td>";
-						var gifloc = "/nutcracker/effects/gifs/"+myObject.data[i].member_id+"/"+myObject.data[i].gifname;
-						//	<scm> start
-						/*$fpath2 =  "/nutcracker/effects/"  . myObject.data[i].fullpath;
-						if(!file_exists($fpath)) $fpath2 = "/nutcracker/images/noThumb.gif";*/
-						//	<scm> end
-						if (myObject.data[i].gifname) 
-						{
-							str = str + "<td><a href=\""+gifloc+"\" target=\"_new\"><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"height=\150\" width=\"75\"></a></td>";
-						} else {
-							str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></td>";
-						}
-						//str = str + "<td><img src=\"" . $fpath ."\"  height=\"100\" width=\"50\"></td>";
-					cnt++;
+					varstring = myObject.data[i].username + "~" + myObject.data[i].effname;
+					//alert(varstring);
+					str = str + trstr + "<td>Class&nbsp;&nbsp;: " + myObject.data[i].effclass;
+					str = str + "<br />User&nbsp;&nbsp;&nbsp;: " + myObject.data[i].username ;
+					str = str +  "<br />Effect&nbsp;: " + myObject.data[i].effname + "<br />";
+					str = str + "<br /><input type=\"checkbox\" name=\"copyeffect[]\" class\"GalleryFormField\" value=\""+ varstring + "\"> Use effect";
+					str = str + "<br /><input type=\"text\" name=\"" + varstring + "\" id=\"" + varstring + "\" class=\"GalleryFormField\">"; 
+					str = str + "<br />Effect Name";
+					str = str + "</td>";
+					//	<scm> start
+					/*$fpath2 =  "/nutcracker/effects/"  . myObject.data[i].fullpath;
+					if(!file_exists($fpath)) $fpath2 = "/nutcracker/images/noThumb.gif";*/
+					//	<scm> end
+					str = str + "<td><img src=\"/nutcracker/effects/" + myObject.data[i].fullpath +"\"  height=\150\" width=\"75\"></td>";
+					//str = str + "<td><img src=\"" . $fpath ."\"  height=\"100\" width=\"50\"></td>";
 				}
-				oldvarstring=varstring;
+				var endrecord=myObject.value.endrecord 
+				str = str + "<tr><td colspan=6>" + myObject.value.nume + " records found</td></tr>"
+				myForm.st.value=endrecord;
+				if(myObject.value.end =="yes")
+				{
+					document.getElementById("fwd").style.display='inline';
+				}
+				else{document.getElementById("fwd").style.display='none';
+				}
+				if(myObject.value.startrecord =="yes")
+				{
+					document.getElementById("back").style.display='inline';
+				}
+				else{document.getElementById("back").style.display='none';
+				}
+				str = str + "</table>" 
+				document.getElementById("txtHint").innerHTML=str;
 			}
-			var endrecord=myObject.value.endrecord 
-			str = str + "<tr><td colspan=6>" + myObject.value.nume + " records found</td></tr>"
-			myForm.st.value=endrecord;
-			if(myObject.value.end =="yes")
-			{
-				document.getElementById("fwd").style.display='inline';
-			}
-			else{document.getElementById("fwd").style.display='none';
-			}
-			if(myObject.value.startrecord =="yes")
-			{
-				document.getElementById("back").style.display='inline';
-			}
-			else{document.getElementById("back").style.display='none';
-			}
-			str = str + "</table>" 
-			document.getElementById("txtHint").innerHTML=str;
 		}
+		var url="gallery_page_check.php";
+		var myendrecord=myForm.st.value;
+		var mylimit=myForm.mylimit.value;
+		var mysort=myForm.mysort.value;
+		var myfilter=myForm.myfilter.value;
+		var filterusername=myForm.filterusername.value;
+		var filtereffect=myForm.filtereffect.value;
+		url=url+"?endrecord="+myendrecord;
+		url=url+"&direction="+val;
+		url=url+"&mylimit="+mylimit;
+		url=url+"&mysort="+mysort;
+		url=url+"&myfilter="+myfilter;
+		url=url+"&filterusername="+filterusername;
+		url=url+"&filtereffect="+filtereffect;
+		url=url+"&sid="+Math.random();
+		httpxml.onreadystatechange=stateChanged;
+		httpxml.open("GET",url,true);
+		httpxml.send(null);
+		document.getElementById("txtHint").innerHTML="Please Wait....";
 	}
-	var url="gallery_page_check.php";
-	var myendrecord=myForm.st.value;
-	var mylimit=myForm.mylimit.value;
-	var mysort=myForm.mysort.value;
-	var myfilter=myForm.myfilter.value;
-	var filterusername=myForm.filterusername.value;
-	var filtereffect=myForm.filtereffect.value;
-	url=url+"?endrecord="+myendrecord;
-	url=url+"&direction="+val;
-	url=url+"&mylimit="+mylimit;
-	url=url+"&mysort="+mysort;
-	url=url+"&myfilter="+myfilter;
-	url=url+"&filterusername="+filterusername;
-	url=url+"&filtereffect="+filtereffect;
-	url=url+"&sid="+Math.random();
-	httpxml.onreadystatechange=stateChanged;
-	httpxml.open("GET",url,true);
-	httpxml.send(null);
-	document.getElementById("txtHint").innerHTML="Please Wait....";
-}
 	</script>
 	</head>
 	<body onLoad="ajaxFunction('fw')";>

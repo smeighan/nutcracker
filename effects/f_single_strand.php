@@ -502,7 +502,7 @@ function save_effects_user_segment($username,$effect_name,$matrix,$direction_arr
 			$replace = "replace into effects_user_segment
 			(username,effect_name,segment,param_name,param_value) values
 			('$username','$effect_name','$segment','$param_name','$param_value')";
-			echo "<pre>save_effects_user_segment: query=$replace</pre>\n";
+			//if($batch==0) echo "<pre>save_effects_user_segment: query=$replace</pre>\n";
 			$result=mysql_query($replace) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $replace . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 		}
 	}

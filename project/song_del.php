@@ -44,12 +44,12 @@ ini_set("memory_limit","512M");
 	$song_name = $row['song_name'];
 	$song_url = $row['song_url'];	
  ?>
-<h2>Song Delete - <?php echo $song_name?></h2>
+<h2>Song Delete - <?=$song_name?></h2>
 <p class="WarnText">If you delete this song, it will delete all references to this song including any projects that are attached to this song!  If you click yes below, it is is IRREVERSBILE.  Proceed with caution!</p>
-<p><h3>Are you sure you wish to delete "<?php echo $song_name?>" ?</h3></p>
+<p><h3>Are you sure you wish to delete "<?=$song_name?>" ?</h3></p>
 <form action="songs.php" id="myform" method="POST"> 
-<input type="hidden" name="song_id" value="<?php echo $song_id?>">
-<input type="hidden" name="song_name" value="<?php echo $song_name?>">
+<input type="hidden" name="song_id" value="<?=$song_id?>">
+<input type="hidden" name="song_name" value="<?=$song_name?>">
 <table>
 <tr><td align="right"><input type="submit" name="deleteSong" value="Yes - Delete" class="SubmitButton"></td><td align="left"><input type="submit" name="cancelSongDelete" value="Cancel Delete" class="SubmitButton"></td></tr>
 </table>
