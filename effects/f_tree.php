@@ -14,9 +14,9 @@ function f_tree($get)
 	require_once("../effects/read_file.php");
 	//
 	//
-	echo "<pre>";
+/*	echo "<pre>";
 	print_r($_SERVER);
-	echo "</pre>\n";
+	echo "</pre>\n";*/
 	$member_id=get_member_id($username);
 	set_time_limit(0);
 	if(!isset($batch)) $batch=0;
@@ -86,7 +86,6 @@ function f_tree($get)
 	$color1_tree_rgb = hexdec($color1_tree);
 	$color2_tree_rgb = hexdec($color2_tree);
 	//
-	echo "<pre>number_branches,pixels_per_branch = $number_branches,$pixels_per_branch</pre>\n";
 	for($f=1;$f<=$maxFrame;$f++)
 	{
 		$x_dat = $base . "_d_". $f . ".dat"; // for spirals we will use a dat filename starting "S_" and the tree model

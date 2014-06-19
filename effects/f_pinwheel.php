@@ -12,9 +12,7 @@ function f_pinwheel($get)
 	extract ($get);
 	require_once("../conf/setup.php"); // override some apache caching.
 	//   for ($i = 0; $i < ob_get_level(); $i++)
-	{
-		ob_end_flush();
-	}
+
 	//   ob_implicit_flush(1);
 	require_once("../effects/read_file.php");
 	//

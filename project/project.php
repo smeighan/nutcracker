@@ -50,7 +50,7 @@ ini_set("memory_limit","512M");
 	
 <?php show_barmenu();
 //
-require("../effects/read_file.php");
+require_once("../effects/read_file.php");
 set_time_limit(60*60);
 $member_id=$_SESSION['SESS_MEMBER_ID'];
 $username=$_SESSION['SESS_LOGIN'];

@@ -50,10 +50,7 @@ function color_wash($get)
 	$file      =$arr[7];
 	$min_max   =$arr[8];
 	$strand_pixel=$arr[9];
-	echo "<pre>";
-	//print_r($arr);
-	echo "minStrand,minPixel,maxStrand,maxPixel=$minStrand,$minPixel,$maxStrand,$maxPixel\n";
-	echo "</pre>";
+	
 	$path="../effects/workspaces/". $member_id;
 	$window_array = getWindowArray($minStrand,$maxStrand,$window_degrees);
 	$sparkles_array = create_sparkles($sparkles,$maxStrand,$maxPixel);

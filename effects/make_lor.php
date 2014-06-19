@@ -44,8 +44,7 @@ $username=get_username($member_id);
 //echo "<pre>sequencer=$sequencer</pre>\n";
 $supported = array('vixen','hls','lors2','lors3','lor_lcb');
 
-if(!in_array($sequencer,$supported))
-{
+if(!in_array($sequencer,$supported)){
 	echo "<pre>";
 	echo "Your sequencer is not yet supported.\n";
 	echo "-----------------------------------\n";
@@ -126,8 +125,7 @@ $maxString=$target_array['total_strings'];
 $maxPixel=$target_array['pixel_count'];
 $effect_user_dtl_array=get_effect_user_dtl($username,$effect_name);
 $frame_delay=$sequence_duration=0;
-foreach($effect_user_dtl_array as $i=>$effect_array)
-{
+foreach($effect_user_dtl_array as $i=>$effect_array){
 	/*echo"<pre>i=$i";
 	print_r($effect_array);
 	echo "</pre>\n";*/
@@ -153,10 +151,8 @@ $name_clip=$base;
 // uneeded now, eacf effect builds buff file:   $filename_buff=make_buff($username,$member_id,$base,$frame_delay,$seq_duration); 
 $filename_buff= $dirname . "/" . $base . ".nc";
 $old_pixel=$old_string=0;
-if($frame_delay>0)
-	$maxFrame= ($seq_duration*1000)/$frame_delay;
-else
-die ("frame_delay is zero, we cannot export any data");
+if($frame_delay>0)	$maxFrame= ($seq_duration*1000)/$frame_delay;
+else die ("frame_delay is zero, we cannot export any data");
 echo "<h3>$seq_duration seconds of animation with a $frame_delay ms frame timing = $maxFrame frames of animation</h3>\n";
 $centiseconds=intval($maxFrame*$frame_delay);
 $savedIndex=0;
@@ -172,28 +168,23 @@ echo "BLUE:" . hexdec("#0000FF");*/
 //	tok3 = frame#
 //	tok4 = rgb value
 //
-if($file_type=="lms")
-{
+if($file_type=="lms"){
 	lor_lms_header($fh_lor);
 	/*fwrite($fh_lor,sprintf ("<pre>lor_lms_header($fh_lor);	</pre>\n"));*/
 }
 //
 $name_clip=$base;
-if($file_type=="lcb")
-{
+if($file_type=="lcb"){
 	lor_lcb_header($fh_lor,$name_clip);
 	/*fwrite($fh_lor,sprintf ("<pre>lor_lcb_header($fh_lor,$name_clip);</pre>\n"));*/
 }
-if($frame_delay>0)
-	$TotalFrames= ($seq_duration*1000)/$frame_delay;
-else
-die ("frame_delay = 0, unable to create any output");
-if($file_type=="lcb")
-{
+if($frame_delay<1) $frame_delay=100;
+if($frame_delay>0)	$TotalFrames= ($seq_duration*1000)/$frame_delay;
+else die ("frame_delay = 0, unable to create any output");
+if($file_type=="lcb"){
 	fwrite($fh_lor,sprintf("<cellDemarcations>\n"));
 	printf("<cellDemarcations>\n");
-	for($f=1;$f<=$TotalFrames;$f++)
-	{
+	for($f=1;$f<=$TotalFrames;$f++){
 		$centisecond=intval(($f-1)*$frame_delay/10);
 		fwrite($fh_lor,sprintf("<cellDemarcation centisecond=\"%d\"/>\n",$centisecond));
 	
@@ -213,15 +204,13 @@ echo "<pre>";
 $fh_buff=fopen($filename_buff,"r") or die("Unable to open $filename_buff");
 $loop=$channels=$savedIndex=0;
 $MaxPixel=$pixel_count;
-while (!feof($fh_buff))
-{
+while(!feof($fh_buff)){
 	$line = fgets($fh_buff);
 	$tok=preg_split("/ +/", $line);
 	$l=strlen($line);
 	$c= count($tok);
 	//echo "c=$c line=$line\n";
-	if($tok[0]=='S' and $tok[2]=='P')
-	{
+	if($tok[0]=='S' and $tok[2]=='P'){
 		$string=$tok[1];
 		$pixel=$tok[3];
 		$channel_savedIndex[$string][$pixel]['1']=$savedIndex;
@@ -256,21 +245,16 @@ while (!feof($fh_buff))
 </rgbChannel>
 */
 $firstRGBIndex=$lastRGBIndex=-1;
-if($file_type=="lms")
-{
+if($file_type=="lms"){
 	/*echo "<pre>";
 	print_r($channel_savedIndex);
 	echo "for(string=1;string<=$maxString;string++)\n";
 	echo "for(pixel=1;pixel<=$maxPixel;pixel++)\n";
 	echo "</pre>\n";*/
-	for($string=1;$string<=$maxString;$string++)
-	{
-		for($pixel=1;$pixel<=$maxPixel;$pixel++)
-		{
-			if (!isset($rgbChannel_name[$string][$pixel]) ||$rgbChannel_name[$string][$pixel] == null)
-				;
-			else
-			{
+	for($string=1;$string<=$maxString;$string++){
+		for($pixel=1;$pixel<=$maxPixel;$pixel++){
+			if(!isset($rgbChannel_name[$string][$pixel]) ||$rgbChannel_name[$string][$pixel] == null)				;
+			else{
 				$name=$rgbChannel_name[$string][$pixel];
 				if($firstRGBIndex==-1) $firstRGBIndex=$savedIndex;
 				$lastRGBIndex=$savedIndex;
@@ -280,18 +264,12 @@ if($file_type=="lms")
 				//if($SCM==1)
 				{
 					fwrite($fh_lor,sprintf("   <channels>\n"));
-					if(!isset($channel_savedIndex[$string][$pixel]['1']) or $channel_savedIndex[$string][$pixel]['1']==null)
-						;//	echo "<pre>Error1: Unknown entry for string=$string, pixel=$pixel [1]</pre>";
-					else
-					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['1']));
-					if(!isset($channel_savedIndex[$string][$pixel]['2']) or $channel_savedIndex[$string][$pixel]['2']==null)
-						;//	echo "<pre>Error2: Unknown entry for string=$string, pixel=$pixel [2]</pre>";
-					else
-					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['2']));
-					if(!isset($channel_savedIndex[$string][$pixel]['3']) or $channel_savedIndex[$string][$pixel]['3']==null)
-						;//	echo "<pre>Error3: Unknown entry for string=$string, pixel=$pixel [3]</pre>";
-					else
-					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['3']));
+					if(!isset($channel_savedIndex[$string][$pixel]['1']) or $channel_savedIndex[$string][$pixel]['1']==null)						;//	echo "<pre>Error1: Unknown entry for string=$string, pixel=$pixel [1]</pre>";
+					else					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['1']));
+					if(!isset($channel_savedIndex[$string][$pixel]['2']) or $channel_savedIndex[$string][$pixel]['2']==null)						;//	echo "<pre>Error2: Unknown entry for string=$string, pixel=$pixel [2]</pre>";
+					else					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['2']));
+					if(!isset($channel_savedIndex[$string][$pixel]['3']) or $channel_savedIndex[$string][$pixel]['3']==null)						;//	echo "<pre>Error3: Unknown entry for string=$string, pixel=$pixel [3]</pre>";
+					else					fwrite($fh_lor,sprintf("      <channel savedIndex=\"%d\"/>\n",$channel_savedIndex[$string][$pixel]['3']));
 					fwrite($fh_lor,sprintf("   </channels>\n"));
 				}
 				fwrite($fh_lor,sprintf("</rgbChannel>\n"));
@@ -330,8 +308,7 @@ if($file_type=="lms")
 	fwrite($fh_lor,sprintf("	<tracks>\n"));
 	fwrite($fh_lor,sprintf("		<track totalCentiseconds=\"%d\" timingGrid=\"0\">\n",$centiseconds));
 	fwrite($fh_lor,sprintf("			<channels>\n"));
-	for($RGBsavedIndex=$firstRGBIndex;$RGBsavedIndex<=$lastRGBIndex;$RGBsavedIndex++)
-	{
+	for($RGBsavedIndex=$firstRGBIndex;$RGBsavedIndex<=$lastRGBIndex;$RGBsavedIndex++){
 		fwrite($fh_lor,sprintf("				<channel savedIndex=\"%d\"/>\n",$RGBsavedIndex));
 	}
 	fwrite($fh_lor,sprintf("			</channels>\n"));
@@ -342,17 +319,14 @@ if($file_type=="lms")
 	fwrite($fh_lor,sprintf("   <animation rows=\"40\" columns=\"60\" image=\"\" hideControls=\"false\"/>\n"));
 	fwrite($fh_lor,sprintf("</sequence>\n"));
 }
-else if($file_type=="lcb")
-{
+elseif($file_type=="lcb"){
 	fwrite($fh_lor,sprintf("</channels>\n"));
 	fwrite($fh_lor,sprintf("</channelsClipboard>\n"));
 }
 fclose($fh_lor);
-if($frame_delay>0)
-	$TotalFrames= ($seq_duration*1000)/$frame_delay;
-if($sequencer=="lors2")
-{
-echo "<table border=1>";
+if($frame_delay>0)	$TotalFrames= ($seq_duration*1000)/$frame_delay;
+if($sequencer=="lors2"){
+	echo "<table border=1>";
 	printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $TotalFrames frames have been created for LOR lms file</h2></td>\n");
 	echo "<td>Instructions</td></tr>";
 	printf ("<tr><td bgcolor=#98FF73><h2><a href=\"%s\">Right Click here for  LOR lms file. %s</a>.</h2></td>\n",$lor_lms,$lor_lms);
@@ -360,8 +334,7 @@ echo "<table border=1>";
 	echo "</table>";
 	
 }
-if($sequencer=="lor_lcb")
-{
+if($sequencer=="lor_lcb"){
 	
 	echo "<table border=1>";
 	printf ("<tr><td bgcolor=lightgreen><h2>$channels channels and $TotalFrames frames have been created for LOR lcb file</h2></td>\n");
@@ -380,7 +353,7 @@ list($usec, $sec) = explode(' ', microtime());
 $script_end = (float) $sec + (float) $usec;
 $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 //if($description = 'Total Elapsed time for this effect:')
-	printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
+printf ("<pre>%-40s Elapsed time = %10.5f seconds</pre>\n",$description,$elapsed_time);
 ?>
 <a href="../index.html">Home</a> | <a href="../login/member-index.php">Target Generator</a> | 
 <a href="effect-form.php">Effects Generator</a> | <a href="../login/logout.php">Logout</a>
@@ -391,21 +364,18 @@ $elapsed_time = round($script_end - $script_start, 5); // to 5 decimal places
 <channels>
 */
 
-function lor_lms_header($fh_lor)
-{
+function lor_lms_header($fh_lor){
 	fwrite($fh_lor,sprintf ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"));
 	fwrite($fh_lor,sprintf ("<sequence saveFileVersion=\"7\" createdAt=\"8/10/2006 12:16:28 AM\" >\n"));
 	fwrite($fh_lor,sprintf ("<channels>\n"));
 }
 
-function lor_lcb_header($fh_lor,$name_clip)
-{
+function lor_lcb_header($fh_lor,$name_clip){
 	fwrite($fh_lor,sprintf ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"));
 	fwrite($fh_lor,sprintf ("<channelsClipboard version=\"1\" name=\"%s\">\n",$name_clip));
 }
 
-function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$InputsavedIndex,$loop,$pixel_count)
-{
+function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$InputsavedIndex,$loop,$pixel_count){
 	//	echo "<pre>string,old_string,pixel,old_pixel=$string,$old_string    $pixel,$old_pixel\n";
 	//	printf("S%d-P%d\n",$old_string,$old_pixel);
 	//	print_r($outBuffer);
@@ -419,23 +389,19 @@ function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$Inputsaved
 	$old_string=$string;
 	$old_pixel=$pixel;
 	$rgbChannel_name[$string][$pixel]=sprintf("S%d-P%d",$string,$pixel); // save for later use
-//	printf("<pre>S%d-P%d</pre>\n",$string,$pixel);
+	//	printf("<pre>S%d-P%d</pre>\n",$string,$pixel);
 	$cnt=count($tok);
-	for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++)
-	{
+	for($rgbLoop=1;$rgbLoop<=3;$rgbLoop++){
 		//echo "rgbloop=$rgbLoop, i=$i,rgb=$rgb\n";
 		/*(16711680,65280,255)*/
 		$savedIndex=$InputsavedIndex-1+$rgbLoop;
-		if($rgbLoop==1)
-		{
+		if($rgbLoop==1){
 			$c='R';$color=255;
 		}
-		if($rgbLoop==2)
-		{
+		if($rgbLoop==2){
 			$c='G';$color=65280;
 		}
-		if($rgbLoop==3)
-		{
+		if($rgbLoop==3){
 			$c='B';$color=16711680;
 		}
 		//	RED:16711680  GREEN:65280   BLUE:255
@@ -457,8 +423,7 @@ function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$Inputsaved
 		$channelName=sprintf("S%d-P%d",$old_string,$old_pixel);
 		$unit=$old_string;
 		$circuit=$rgbLoop+($old_pixel-1)*3;
-		if($file_type=="lms")
-		{
+		if($file_type=="lms"){
 			fwrite($fh_lor,sprintf("<channel name=\"%s-%s\" color=\"%d\" centiseconds=\"%d\" deviceType=\"LOR\" unit=\"%s\" circuit=\"%d\" network=\"%d\" savedIndex=\"%d\">\n",$channelName,$c,$color,$centiseconds,$unit,$circuit,$network,$savedIndex));
 			//	printf("<pre>channel name=\"%s-%s\" color=\"%d\" centiseconds=\"%d\" deviceType=\"LOR\" unit=\"%s\" circuit=\"%d\" network=\"%d\" savedIndex=\"%d\"</pre>\n",$channelName,$c,$color,$centiseconds,$circuit,$unit,$network,$savedIndex);
 		}
@@ -469,13 +434,11 @@ function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$Inputsaved
 		//     </channel>
 		//printf("%3d-%3d-%s ",$old_string,$old_pixel,$c);
 		$i=4;
-		while ($i<$cnt)
-		{
+		while($i<$cnt){
 			$rgb = $tok[$i];      
 			$j=$i;
 			$rgb = $tok[$i];
-			while ($j<$cnt and $rgb == $tok[$j])
-			{
+			while($j<$cnt and $rgb == $tok[$j]){
 				//echo "<pre>j loop:  i=$i, j=$j rgb=" . $tok[$i] . "</pre>\n";
 				$j++;
 			}
@@ -488,23 +451,18 @@ function write_buffer($tok,$file_type,$fh_lor,$maxFrame,$frame_delay,$Inputsaved
 			$r1 = 255 <<16;
 			$g1 = 255<<8;
 			$b1 =255;
-			if($rgbLoop==1)
-			{
+			if($rgbLoop==1){
 				$val=$r;
 			}
-			if($rgbLoop==2)
-			{
+			if($rgbLoop==2){
 				$val=$g;
 			}
-			if($rgbLoop==3)
-			{
+			if($rgbLoop==3){
 				$val=$b;
 			}
 			$Intensity = intval((100*$val)/255);
-			if($Intensity>=0)
-			{
-				if($Intensity>0)
-				{
+			if($Intensity>=0){
+				if($Intensity>0){
 					fwrite($fh_lor,sprintf("<effect type=\"intensity\" startCentisecond=\"%d\" endCentisecond=\"%d\" intensity=\"%d\" />\n",$startCentisecond,$endCentisecond,$Intensity));
 					/*printf("<pre>2:[effect type=\"intensity\" startCentisecond=\"%d\" endCentisecond=\"%d\" intensity=\"%d\" rgb=(%d,%d,%d)(%d,%d,%d))) /]</pre>\n",$startCentisecond,$endCentisecond,$Intensity,$r,$g,$b,$r1,$g1,$b1);*/
 				}

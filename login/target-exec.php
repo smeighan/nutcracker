@@ -19,9 +19,7 @@ require("../effects/read_file.php");
 // http://localhost/nutcracker/login/target-exec.php?model=AA22?user=f
 // 
 extract($_GET);
-echo "<pre>";
-print_r($_GET);
-echo "</pre>\n";
+
 set_time_limit(0);
 $username = str_replace("%20"," ",$username);
 //get_models('f','ZZ');
@@ -29,26 +27,23 @@ get_models($username,$model_name);
 echo "</body>\n";
 echo "</html>\n";
 
-function get_models($username,$model_name)
-{
+function get_models($username,$model_name){
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
+	if(!$link){
 		die('Failed to connect to server: ' . mysql_error());
 	}
 	//Select database
 	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
+	if(!$db){
 		die("Unable to select database");
 	}
 	/*
 	
 	function get_models(f,ZZ)
-		query=select * from models where username='f' and object_name='ZZ'
+	query=select * from models where username='f' and object_name='ZZ'
 	Array
 	(
 	[username] => f
@@ -68,20 +63,18 @@ function get_models($username,$model_name)
 	[topography] => UP_DOWN_NEXT
 	[topography] => BOT_TOP
 	)
-		*/
+	*/
 	//	
 	$query ="select * from models where username='$username' and object_name='$model_name'";
 	echo "query=$query\n";
 	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
-	if (!$result)
-	{
+	if(!$result){
 		$message  = 'Invalid query: ' . mysql_error() . "\n";
 		$message .= 'Whole query: ' . $query;
 		die($message);
 	}
 	$NO_DATA_FOUND=0;
-	if (mysql_num_rows($result) == 0)
-	{
+	if(mysql_num_rows($result) == 0){
 		$NO_DATA_FOUND=1;
 	}
 	$query_rows=array();
@@ -90,39 +83,33 @@ function get_models($username,$model_name)
 	// Note: If you put extract($row); inside the following loop, you'll
 	//       then create $userid, $fullname, and $userstatus
 	//
-	while ($row = mysql_fetch_assoc($result))
-	{
+	while($row = mysql_fetch_assoc($result)){
 		extract($row);
 	}
 	echo "Start Bottom = " . $start_bottom . "<br />";
 	$pixel_count_even=$folds * intval($pixel_count/$folds); // this is the total pixels that are evenly divisible.
-	if($folds==1)
-	{
+	if($folds==1){
 		$maxPixels=$pixel_count;
 		$maxStrands=$total_strings;
 	}
-	else
-	{
+	else{
 		$maxPixels = intval($pixel_count/$folds); // 
 		$maxStrands=intval(0.5+($total_strings*$pixel_count)/$maxPixels);
-		if(strtoupper($start_bottom)=='Y')
-		{
+		if(strtoupper($start_bottom)=='Y'){
 			$maxStrands=intval(0.5 + ($total_strings*$pixel_count_even)/$maxPixels);
 		}
 	}
 	echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
 	$directory ="../targets";
-	if (file_exists($directory))
-	{
-		} else {
+	if(file_exists($directory)){
+	}else{
 		echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
 	$member_id=get_member_id($username);
 	$directory ="../targets/" . $member_id;
-	if (file_exists($directory))
-	{
-		} else {
+	if(file_exists($directory)){
+	}else{
 		echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
@@ -131,33 +118,28 @@ function get_models($username,$model_name)
 	//echo "<tr><th></th>";
 	//for($p=1;$p<=$maxPixels;$p++)
 	//{
-		//echo "<th><b>n$p</b></th>";
+	//echo "<th><b>n$p</b></th>";
 	//}
 	//echo "</tr>";
 	$target_array=array();
 	$n=0;
 	$p=0;
 	echo "<table border=1>";
-	for($string=1;$string<=$total_strings;$string++)
-	{
+	for($string=1;$string<=$total_strings;$string++){
 		$pixel_countN=$pixel_count;
-		if(strtoupper($start_bottom)=='Y')
-		{
+		if(strtoupper($start_bottom)=='Y'){
 			$pixel_countN=$pixel_count_even;
 		
-			for($user_pixel=1;$user_pixel<=$pixel_countN;$user_pixel++)
-			{
+			for($user_pixel=1;$user_pixel<=$pixel_countN;$user_pixel++){
 				$n++;
 				$mod=($n%$maxPixels);
 				$s=intval(($n-1)/$maxPixels)+1;
-				if($mod==1)
-				{
-					if($folds==1)
-					{
+				if($mod==1){
+					if($folds==1){
 						$inc=-1;
 						$p=$maxPixels+1;
 					}
-					else if ($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
+					elseif($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
 					{
 						if($folds==1 or $s%2==1) // Odd strands
 						{
@@ -170,14 +152,13 @@ function get_models($username,$model_name)
 							$p=0;
 						}
 					}
-					else if($mod==1)  // we have an odd number of folds
+					elseif($mod==1)  // we have an odd number of folds
 					{
 						if($folds==1 or $s%2==1) // Odd strands
 						{
 							$inc=1;
 							$p=0;
-							if($s%$folds==1 and $string%2==0 and $mod==1)
-							{
+							if($s%$folds==1 and $string%2==0 and $mod==1){
 								$inc=-1;
 								$p=$maxPixels+1;
 							}
@@ -186,8 +167,7 @@ function get_models($username,$model_name)
 						{
 							$inc=-1;
 							$p=$maxPixels+1;
-							if($s%$folds==1 and $string%2==0 )
-							{
+							if($s%$folds==1 and $string%2==0 ){
 								$inc=-1;
 								$p=$maxPixels+1;
 							}
@@ -195,30 +175,27 @@ function get_models($username,$model_name)
 					}
 				}
 				$p+=$inc;
-			/*	if($s%2==1) $color="lightgreen";
-			else $color="lightblue";
-			echo "<tr><td >str=$string</td><td>userp=$user_pixel</td><td bgcolor=\"$color\">s=$s</td><td><b>p=$p</b></td>";
-			echo "<td>inc=$inc</td><td>mod=$mod</td><td>n=$n</td>";
-			echo "</tr>";*/
-			$target_array[$s][$p]['string'] =$string;
-			$target_array[$s][$p]['user_pixel'] =$user_pixel;
+				/*	if($s%2==1) $color="lightgreen";
+				else $color="lightblue";
+				echo "<tr><td >str=$string</td><td>userp=$user_pixel</td><td bgcolor=\"$color\">s=$s</td><td><b>p=$p</b></td>";
+				echo "<td>inc=$inc</td><td>mod=$mod</td><td>n=$n</td>";
+				echo "</tr>";*/
+				$target_array[$s][$p]['string'] =$string;
+				$target_array[$s][$p]['user_pixel'] =$user_pixel;
 			}
-		} else {
+		}else{
 			$pixel_countN=$pixel_count_even;
 		
-			for($user_pixel=$pixel_countN;$user_pixel>0;$user_pixel--)
-			{
+			for($user_pixel=$pixel_countN;$user_pixel>0;$user_pixel--){
 				$n++;
 				$mod=($n%$maxPixels);
 				$s=intval(($n-1)/$maxPixels)+1;
-				if($mod==1)
-				{
-					if($folds==1)
-					{
+				if($mod==1){
+					if($folds==1){
 						$inc=-1;
 						$p=$maxPixels+1;
 					}
-					else if ($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
+					elseif($string%2==1 or $folds%2==0)	// if we have even number of folds or odd strand
 					{
 						if($folds==1 or $s%2==1) // Odd strands
 						{
@@ -231,14 +208,13 @@ function get_models($username,$model_name)
 							$p=0;
 						}
 					}
-					else if($mod==1)  // we have an odd number of folds
+					elseif($mod==1)  // we have an odd number of folds
 					{
 						if($folds==1 or $s%2==1) // Odd strands
 						{
 							$inc=1;
 							$p=0;
-							if($s%$folds==1 and $string%2==0 and $mod==1)
-							{
+							if($s%$folds==1 and $string%2==0 and $mod==1){
 								$inc=-1;
 								$p=$maxPixels+1;
 							}
@@ -247,8 +223,7 @@ function get_models($username,$model_name)
 						{
 							$inc=-1;
 							$p=$maxPixels+1;
-							if($s%$folds==1 and $string%2==0 )
-							{
+							if($s%$folds==1 and $string%2==0 ){
 								$inc=-1;
 								$p=$maxPixels+1;
 							}
@@ -256,13 +231,13 @@ function get_models($username,$model_name)
 					}
 				}
 				$p+=$inc;
-			/*	if($s%2==1) $color="lightgreen";
-			else $color="lightblue";
-			echo "<tr><td >str=$string</td><td>userp=$user_pixel</td><td bgcolor=\"$color\">s=$s</td><td><b>p=$p</b></td>";
-			echo "<td>inc=$inc</td><td>mod=$mod</td><td>n=$n</td>";
-			echo "</tr>";*/
-			$target_array[$s][$p]['string'] =$string;
-			$target_array[$s][$p]['user_pixel'] =$user_pixel;
+				/*	if($s%2==1) $color="lightgreen";
+				else $color="lightblue";
+				echo "<tr><td >str=$string</td><td>userp=$user_pixel</td><td bgcolor=\"$color\">s=$s</td><td><b>p=$p</b></td>";
+				echo "<td>inc=$inc</td><td>mod=$mod</td><td>n=$n</td>";
+				echo "</tr>";*/
+				$target_array[$s][$p]['string'] =$string;
+				$target_array[$s][$p]['user_pixel'] =$user_pixel;
 			}
 
 		}
@@ -272,28 +247,22 @@ function get_models($username,$model_name)
 	$string=1;
 	$n2=0;
 	echo "pixel_count=$pixel_count, pixel_count_even=$pixel_count_even, maxStrands=$maxStrands, maxPixels=$maxPixels</pre>";
-	for($p=1;$p<=$maxPixels;$p++)
-	{
-		for($s=1;$s<=$maxStrands;$s++)
-		{
+	for($p=1;$p<=$maxPixels;$p++){
+		for($s=1;$s<=$maxStrands;$s++){
 			$n2++;
-			if(strtoupper($start_bottom)=='Y' or $n2<=$n)
-			{
-				if(isset($target_array[$s][$p]['string']))
-				{
+			if(strtoupper($start_bottom)=='Y' or $n2<=$n){
+				if(isset($target_array[$s][$p]['string'])){
 					$string=$target_array[$s][$p]['string'] ;
 					if($string%2==1) $color="lightblue";
 					else $color="lightgreen";
 					$user_pixel=$target_array[$s][$p]['user_pixel'];
 				}
-				else
-				{
+				else{
 					$user_pixel=0;
 					$color="lightgray";
 				}
 			}
-			else
-			{
+			else{
 				$user_pixel=0;
 				$color="lightgray";
 			}
@@ -304,44 +273,40 @@ function get_models($username,$model_name)
 	echo "<tr>";
 	$window_array=getWindowArray(1,$maxStrands,$window_degrees);
 	echo "<pre>getWindowArray(1,$maxStrands,$window_degrees);";
-	for($s=1;$s<=$maxStrands;$s++)
-	{
+	for($s=1;$s<=$maxStrands;$s++){
 		$s_mod=$s%$folds;
 		$color="#FFFFFF";
-		if(in_array($s,$window_array))
-			$color="#FFFF00"; 
+		if(in_array($s,$window_array)){
+			$color="#FFFF00"; // YELLOW
+		}
 		echo "<td bgcolor=$color>s=$s<br/>$s_mod</td>\n";
 	}
 	echo "</tr>";
 	echo "<tr>";
-	for($string=1;$string<=$total_strings;$string++)
-	{
+	for($string=1;$string<=$total_strings;$string++){
 		$string_mod=$string%2;
 		echo "<td colspan=$folds >string=$string<br/>$string_mod</td>\n";
 	}
 	echo "</tr>";
 	echo "</table>";
 	$target_array2= array($target_array,$username,$model_name) ;
-	if($model_type=="MTREE")
-	{
+	if($model_type=="MTREE"){
 		$full_path=megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2);
 	}
-	else if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY")
-	{
+	elseif($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX" or $model_type=="RAY"){
 		$full_path=matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
 	}
-	else if($model_type=="SINGLE_STRAND")
-	{
+	elseif($model_type=="SINGLE_STRAND"){
 		$full_path=single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2);
 	}
-	else
-	{
+	else{
 		echo "<pre>ERROR! Model type $model_type is unknown</pre>\n";
 	}
-	echo "<pre>";
-	//display_file($full_path);
-	//print_r($target_array);
-	//	insert_target_array($target_array,$username,$model_name,$maxStrands,$maxPixels);
+	
+	
+	configure($username,"E682",$maxStrands,$maxPixels,$model_name);
+	configure($username,"Pixelnet",$maxStrands,$maxPixels,$model_name);
+	configure($username,"ECG-P12R",$maxStrands,$maxPixels,$model_name);
 	?>
 	<a href="../index.html">Home</a> | <a href="../login/member-index.php">Target Generator</a> | 
 	<a href="../effects/effect-form.php">Effects Generator</a> | <a href="../login/logout.php">Logout</a>
@@ -349,51 +314,82 @@ function get_models($username,$model_name)
 	return ($query_rows);
 }
 
-function insert_target_array($target_array,$username,$model_name,$maxStrand,$maxPixel)
-{
+function configure($username,$controller,$maxStrands,$maxPixels,$model){
+	echo "<table border=1>";
+	
+	$computer = "../images/computer.jpg";
+	$switch = "../images/Ethernet_switch.jpg";
+	$cable = "../images/Ethernet_Cable.jpg";
+	$etherdongle = "../images/Etherdongle.jpg";
+	$interface_title="Ethernet Switch";
+	
+	$color="#EEEEEE"; // light gray
+	$interface = $switch; // this is for e682 and p12r
+	$image="?";
+	if($controller=="Pixelnet"){
+		$interface = $etherdongle;
+		$interface_title="Etherdongle";
+		$color="#AAAAFF"; // light blue
+	}
+	$image="Hub-Finished2.jpg";
+	if($controller=="E682") $image="IMG_334.jpg";
+	if($controller=="ECG-P12R") $image="DSC-0400.jpg";
+	$image = "../images/" .  $image;
+
+	echo "<tr><th>Controller</th><th>Computer</th><th>Cat5 Cable</th><th>$interface_title</th><th>Cat5 Cable</th><th>$controller</th></tr>";
+	echo "<tr><td bgcolor=\"$color\">$controller</td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$computer\" alt=\"image of $computer\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\">><img src=\"$cable\" alt=\"image of $cable\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$interface\" alt=\"image of $interface\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$cable\" alt=\"image of $cable\" height=\"142\" width=\"142\"></td>";
+	echo "<td bgcolor=\"$color\"><img src=\"$image\" alt=\"image of $controller\" height=\"142\" width=\"142\"></td>";
+	echo "</tr>\n";
+	echo "</table>";
+	$model_array= get_models_array($username,$model);
+	extract($model_array[0]);
+	/*echo "<pre>";
+	echo "$total_strings x $pixel_count\n";
+	echo "maxStrands,maxPixels,model=$maxStrands,$maxPixels,$model\n";
+	print_r($model_array);
+	echo "</pre>\n";*/
+}
+function insert_target_array($target_array,$username,$model_name,$maxStrand,$maxPixel){
 	echo "<pre> insert_target_array($target_array,$username,$model_name,$maxStrand,$maxPixel)</pre>\n";
 	//delete_rows($username, $model_name);
 	//Include database connection details
 	require_once('../conf/config.php');
 	//Connect to mysql server
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if(!$link)
-	{
+	if(!$link){
 		die('Failed to connect to server: ' . mysql_error());
 	}
 	//Select database
 	$db = mysql_select_db(DB_DATABASE);
-	if(!$db)
-	{
+	if(!$db){
 		die("Unable to select database");
 	}
 	$delete = "delete from model_dtl where username='$username' and object_name='$model_name'";
 	mysql_query($delete) or die ("Error on $insert");
-	for($s=1;$s<=$maxStrand;$s++)
-		for($p=1;$p<=$maxPixel;$p++)
-	{
+	for($s=1;$s<=$maxStrand;$s++)for($p=1;$p<=$maxPixel;$p++){
 		$string = $target_array[$s][$p]['string'];
 		$user_pixel = $target_array[$s][$p]['user_pixel'];
 		$insert = "insert into model_dtl( username,object_name,strand,pixel,string,user_pixel,last_upd)
-			values ('$username','$model_name',$s,$p,$string,$user_pixel,now())";
+		values ('$username','$model_name',$s,$p,$string,$user_pixel,now())";
 		mysql_query($insert) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $insert . "<br />\nError: (" . mysql_errno() . ") " . mysql_error());
 	}
 }
 
-function display_file($full_path)
-{
+function display_file($full_path){
 	$lines = file($full_path);
 	echo "<pre>";
 	// Loop through our array, show HTML source as HTML source; and line numbers too.
-	foreach ($lines as $line_num => $line)
-	{
+	foreach($lines as $line_num => $line){
 		echo "$line";
 	}
 	echo "</pre>";
 }
 
-function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2)
-{
+function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$target_array2){
 	#
 	#	output files are created for each segment
 	#	8 segment = t1_8.dat output file
@@ -428,9 +424,7 @@ function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory
 	//
 	//$window_degrees=360;
 	$window_array=getWindowArray(1,$maxStrands,$window_degrees);
-	echo "<pre>getWindowArray(1,$maxStrands,$window_degrees);";
-	print_r($window_array);
-	echo "</pre>";
+	
 	//	if(in_array($new_s,$window_array)) // Is this strand in our window?, If yes, then we output lines to the dat file
 	//
 	//
@@ -452,14 +446,12 @@ function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory
 	fwrite($fh,"#            ** Optional fields\n");
 	$pixels=$maxPixels;
 	$side = sqrt($height*$height + $bottom_radius*$bottom_radius);
-	if($maxPixels>0)
-	{
+	if($maxPixels>0){
 		//	$pixel_spacing = $pixel_length/$maxPixels;
 		$pixel_length = $pixel_spacing * $maxPixels;
 		$pixel_should_be = $side/$maxPixels;
 	}
-	else
-	{
+	else{
 		echo "<pre>ERROR! Something looks wrong. we have zero for pixels per strand</pre>\n";
 		$pixel_spacing=1;
 		$pixel_should_be = 1;
@@ -470,11 +462,9 @@ function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory
 	$h_dx = cos($rad)*$pixel_spacing;
 	$height_sb = $h_dx*$maxPixels;
 	$degree_per_segment = 360/$maxStrands;
-	for ($s=1;$s<=$maxStrands;$s++)
-	{
+	for($s=1;$s<=$maxStrands;$s++){
 		$hyp=0;
-		for ($p=1;$p<=$maxPixels;$p++)
-		{
+		for($p=1;$p<=$maxPixels;$p++){
 			$hyp=$p*$pixel_spacing;
 			$h = $height - cos($rad)*$hyp;
 			//$h = $height - ($p * $h_dx);
@@ -494,10 +484,8 @@ function megatree($window_degrees,$maxStrands,$maxPixels,$pixel_count,$directory
 	return $dat_file;
 }
 
-function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
-{
-	echo "<pre>function matrix($folds,$maxStrands,$maxPixels,
-	$pixel_count,$directory,$object_name,$model_type,$target_array2)</pre\n";
+function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2){
+
 	#
 	#	output files are created for each segment
 	#	8 segment = t1_8.dat output file
@@ -535,31 +523,24 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	fwrite($fh,"# \n");
 	$pixels=$maxPixels;
 	$x_spacing=$x_spacing_top=$pixel_spacing;
-	if($model_type=="RAY")
-		$x_spacing_top=$width_top/$maxStrands;
-	for ($s=1;$s<=$maxStrands;$s++)
-	{
+	if($model_type=="RAY")		$x_spacing_top=$width_top/$maxStrands;
+	for($s=1;$s<=$maxStrands;$s++){
 		$hyp=0;
 		$s2=$maxStrands/2;
 		$s_delta = $s2-$s;
 		$x2=$s_delta*$x_spacing;
 		$x2_top=$s_delta*$x_spacing;
-		if($model_type=="RAY")
-		{
+		if($model_type=="RAY"){
 			$x2_top= $s_delta*$x_spacing_top;
 		}
 		$y2=0;
-		for ($p=1;$p<=$maxPixels;$p++)
-		{
+		for($p=1;$p<=$maxPixels;$p++){
 			$mod=($p%$maxStrands)+1;
 			$mod2 = $maxPixels-$mod+1;
 			$mod2 = $maxPixels-$p;
-			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")
-				$h= ($mod2*$x_spacing);
-			else 	if($model_type=="RAY")
-				$h= ($mod2*$x_spacing) - $x_spacing;
-			if(isset($target_array[$s][$p]['string']))
-			{
+			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")				$h= ($mod2*$x_spacing);
+			elseif($model_type=="RAY")				$h= ($mod2*$x_spacing) - $x_spacing;
+			if(isset($target_array[$s][$p]['string'])){
 				fwrite($fh,sprintf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name));
 				/*echo "<pre>";
 				printf ("%s %3d %3d %7.3f %7.3f %7.3f 0 %5d %5d %s %s\n", $object_name,$s,$p,$x2,$y2,$h,$target_array[$s][$p]['string'] ,$target_array[$s][$p]['user_pixel'], $username ,$model_name);
@@ -572,8 +553,7 @@ function matrix($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_na
 	return $dat_file;
 }
 
-function single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2)
-{
+function single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$object_name,$model_type,$target_array2){
 	#
 	#	output files are created for each segment
 	#	8 segment = t1_8.dat output file
@@ -614,40 +594,31 @@ function single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$ob
 	echo "<pre>";
 	echo "x_spacing=x_spacing_top=pixel_spacing;\n";
 	echo "$x_spacing=$x_spacing_top=$pixel_spacing;\n";
-	if($model_type=="RAY")
-		$x_spacing_top=$width_top/$maxStrands;
+	if($model_type=="RAY")		$x_spacing_top=$width_top/$maxStrands;
 	echo "<pre>";
 	echo "model_type=$model_type";
 	echo "maxStrands=$maxStrands,maxPixels=$maxPixels\n ";
-	for ($s=1;$s<=$maxStrands;$s++)
-	{
+	for($s=1;$s<=$maxStrands;$s++){
 		$hyp=0;
 		$s2=$maxStrands/2;
 		$s_delta = $s2-$s;
 		$x2=$s_delta*$x_spacing;
 		$x2_top=$s_delta*$x_spacing;
-		if($model_type=="RAY")
-		{
+		if($model_type=="RAY"){
 			$x2_top= $s_delta*$x_spacing_top;
 		}
 		$y2=0;
-		for ($p=1;$p<=$maxPixels;$p++)
-		{
+		for($p=1;$p<=$maxPixels;$p++){
 			$mod=($p%$maxStrands)+1;
 			$mod2 = $maxPixels-$mod+1;
 			$mod2 = $maxPixels-$p;
-			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")
-				$h= ($mod2*$x_spacing);
-			else 	if($model_type=="RAY")
-				$h= ($mod2*$x_spacing) - $x_spacing;
-			if(isset($target_array[$s][$p]['string']))
-			{
+			if($model_type=="MATRIX" or $model_type=="HORIZ_MATRIX")				$h= ($mod2*$x_spacing);
+			elseif($model_type=="RAY")				$h= ($mod2*$x_spacing) - $x_spacing;
+			if(isset($target_array[$s][$p]['string'])){
 				$s_orig=$s; $p_orig=$p;
 				$s0=$s; $p0=$p;
-				if($model_type=="HORIZ_MATRIX")
-				{
-					if($s_orig%$folds==1)
-					{
+				if($model_type=="HORIZ_MATRIX"){
+					if($s_orig%$folds==1){
 						$s0=$p;
 					}
 					else{
@@ -670,8 +641,7 @@ function single_strand($folds,$maxStrands,$maxPixels,$pixel_count,$directory,$ob
 	return $dat_file;
 }
 
-function getx($r,$degree)
-{
+function getx($r,$degree){
 	$PI = pi();
 	$DTOR = $PI/180;
 	$RTOD = 180/$PI;
@@ -682,8 +652,7 @@ function getx($r,$degree)
 	return $x;
 }
 
-function gety($r,$degree)
-{
+function gety($r,$degree){
 	$PI = pi();
 	$DTOR = $PI/180;
 	$RTOD = 180/$PI;
@@ -693,29 +662,25 @@ function gety($r,$degree)
 	return $y;
 }
 
-function drop_and_create($db,$table,$query)
-{
+function drop_and_create($db,$table,$query){
 	$drop_query = "drop table " . $table;
 	//mysql_query($drop_query,$db) or die("Error on '$drop_query'");
 	mysql_query($drop_query,$db);
 	mysql_query($query,$db) or die ("Error on $query");
 }
 
-function insert_target_model($db,$file)
-{
+function insert_target_model($db,$file){
 	$fh = fopen($file, 'r') or die("can't open file");
 	$line=0;
 	$row=0;
 	echo "<table border=1>";
-	while (!feof($fh))
-	{
+	while(!feof($fh)){
 		$line = fgets($fh);
 		#echo "<pre>$line<br/></pre>";
 		//$tok=preg_split("/ +/", $line);
 		$tok=preg_split('/\t/', $line);
 		$row++;
-		if(strlen($tok[0])>0)
-		{
+		if(strlen($tok[0])>0){
 			$insert="INSERT into members (username,role,joined,posts) values ('" . $tok[0] . "','". $tok[1]  . "','FEB-12-2012',0)";
 			//echo "<td>$insert</td>";
 			mysql_query($insert,$db) or die ("Failed executing $insert");
@@ -730,11 +695,47 @@ function insert_target_model($db,$file)
 	$i=0;
 	echo "<table border=1>";
 	$row=0;
-	while ($myrow = mysql_fetch_row($result))
-	{
+	while($myrow = mysql_fetch_row($result)){
 		$row++;
 		printf("<tr><td>$row</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>n", 
-		$myrow[0], $myrow[1], $myrow[2], $myrow[3], $myrow[4]);
+			$myrow[0], $myrow[1], $myrow[2], $myrow[3], $myrow[4]);
 	}
 	echo "</table>";
+}
+function get_models_array($username,$model){
+	//Include database connection details
+	require_once('../conf/config.php');
+	// str_replace ( mixed $search , mixed $replace , mixed $subject [, int &$count ] )
+	
+	//Connect to mysql server
+	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+	if(!$link){
+		die('Failed to connect to server: ' . mysql_error());
+	}
+	//Select database
+	$db = mysql_select_db(DB_DATABASE);
+	if(!$db){
+		die("Unable to select database");
+	}
+	$query ="select * from models where object_name='$model' and username = '$username'";
+	//echo "<pre>get_effect_user_dtl: query=$query</pre>\n";
+	$result=mysql_query($query) or die("<b>A fatal MySQL error occured</b>.\n<br />Query: " . $query . "<br />\nError: (" . mysql_errno() . ") " . mysql_error()); 
+	if(!$result){
+		$message  = 'Invalid query: ' . mysql_error() . "\n";
+		$message .= 'Whole query: ' . $query;
+		die($message);
+	}
+	$NO_DATA_FOUND=0;
+	if(mysql_num_rows($result) == 0){
+		$NO_DATA_FOUND=1;
+	}
+	$model_array=array();
+	if(!$NO_DATA_FOUND){
+		// LSP1_8	LSP2_0	LOR_S2	LOR_S3	VIXEN211	VIXEN25	VIXEN3	OTHER	
+		while($row = mysql_fetch_assoc($result)){
+			extract($row);
+			$model_array[]=$row;
+		}
+	}
+	return $model_array;
 }

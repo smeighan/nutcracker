@@ -1,8 +1,7 @@
 <?php
 //
 
-function f_text($get)
-{
+function f_text($get){
 	list($usec, $sec) = explode(' ', microtime());
 	$script_start = (float) $sec + (float) $usec;
 	//
@@ -23,9 +22,8 @@ function f_text($get)
 	$path ="../effects/workspaces/$member_id";
 	$gifpath ="gifs/$member_id";
 	$directory=$path;
-	if (!file_exists($directory))
-	{
-		if($batch==0) if($batch==0) echo "The directory $directory does not exist, creating it";
+	if(!file_exists($directory)){
+		if($batch==0)if($batch==0) echo "The directory $directory does not exist, creating it";
 		mkdir($directory, 0777);
 	}
 	$base = $user_target . "~" . $effect_name;
@@ -54,27 +52,20 @@ function f_text($get)
 	//	this returns the $letter array, this is a 9x5 array. with 0,1. 1 indicates a pixel to be lit
 	//
 	if($batch==0) echo "<pre>";
-	while (!feof($fh))
-	{
+	while(!feof($fh)){
 		// load up the dotmatrix file into the $letter array
 		$line = fgets($fh);
-		if(substr($line,0,1) == "=")
-		{
+		if(substr($line,0,1) == "="){
 			$char = substr($line,1,1);
 			$row=0;
-			for($i=1;$i<=5;$i++)
-				for($j=1;$j<=9;$j++)
-				$letter[$j][$i]=0;
+			for($i=1;$i<=5;$i++)for($j=1;$j<=9;$j++)				$letter[$j][$i]=0;
 		}
-		else
-		{
+		else{
 			$row++;
 			$strLength = strlen($line);
-			for($i=0;$i<=$strLength;$i++)
-			{
+			for($i=0;$i<=$strLength;$i++){
 				$val=0;
-				if(substr($line,$i,1)=="x")
-					$val=1;
+				if(substr($line,$i,1)=="x")					$val=1;
 				$letter[$row][$i+1]=$val;
 				$c[$char]=$letter;
 			}
@@ -85,8 +76,7 @@ function f_text($get)
 	$maxK=999;
 	for($j=1;$j<=9;$j++)  // prefill scroll array with zeroes
 	{
-		for($k=1;$k<=$maxK;$k++)
-		{
+		for($k=1;$k<=$maxK;$k++){
 			$scroll[$j][$k]=0;
 			$scroll2[$j][$k]=0;
 			$scroll3[$j][$k]=0;
@@ -98,16 +88,12 @@ function f_text($get)
 	for($j=1;$j<=9;$j++) //	File the scroll buffer with all characters passed in
 	{
 		$k=0;
-		for($l=0;$l<$strLength;$l++)
-		{
+		for($l=0;$l<$strLength;$l++){
 			$char = substr($text1,$l,1);
-			if($char==' ')
-				$k+=6;
-			else
-			{
+			if($char==' ')				$k+=6;
+			else{
 				$letter = $c[$char];
-				for($i=1;$i<=5;$i++)
-				{
+				for($i=1;$i<=5;$i++){
 					$k++;
 					$scroll[$j][$k] = $letter[$j][$i];
 				}
@@ -121,21 +107,15 @@ function f_text($get)
 	for($j=1;$j<=9;$j++) //	File the scroll buffer with all characters passed in
 	{
 		$k=0;
-		for($l=0;$l<$strLength2;$l++)
-		{
+		for($l=0;$l<$strLength2;$l++){
 			$char = substr($text2,$l,1);
-			if($char==' ')
-				$k+=6;
-			else
-			{
-				if(empty($c[$char]))
-				{
+			if($char==' ')				$k+=6;
+			else{
+				if(empty($c[$char])){
 					if($batch==0) echo "<pre> char [$char] is not in array c</pre>\n";
 				}
-				else
-				$letter = $c[$char];
-				for($i=1;$i<=5;$i++)
-				{
+				else				$letter = $c[$char];
+				for($i=1;$i<=5;$i++){
 					$k++;
 					$scroll2[$j][$k] = $letter[$j][$i];
 				}
@@ -147,18 +127,17 @@ function f_text($get)
 	$maxK=max($maxK1,$maxK2);
 	/*for($s=1;$s<=$maxStrand;$s++) // if($batch==0) print out the blank rows we are not using.
 	{
-		for($p=1;$p<$topPixel;$p++)
-		{
-			$x=' ';
-			if($batch==0) printf ("%s",$x);
-		}
-		if($batch==0) print "\n";
+	for($p=1;$p<$topPixel;$p++)
+	{
+	$x=' ';
+	if($batch==0) printf ("%s",$x);
+	}
+	if($batch==0) print "\n";
 	}
 	*/
 	for($j=1;$j<=9;$j++)	//	 display text1
 	{
-		for($k=1;$k<=$maxK;$k++)
-		{
+		for($k=1;$k<=$maxK;$k++){
 			if( $scroll[$j][$k] ==1) $x='x';
 			else $x=' ';
 			if($batch==0) printf ("%s",$x);
@@ -167,8 +146,7 @@ function f_text($get)
 	}
 	for($j=1;$j<=9;$j++)	//	 display text2
 	{
-		for($k=1;$k<=$maxK2;$k++)
-		{
+		for($k=1;$k<=$maxK2;$k++){
 			if( $scroll2[$j][$k] ==1) $x='x';
 			else $x=' ';
 			if($batch==0) printf ("%s",$x);
@@ -178,12 +156,12 @@ function f_text($get)
 	/*$last_p=$topPixel+18;
 	for($s=1;$s<=$maxStrand;$s++) // print out the blank rows we are not using.
 	{
-		for($p=$last_p+1;$p<=$topPixel;$p++)
-		{
-			$x=' ';
-			if($batch==0) printf ("%s",$x);
-		}
-		if($batch==0) print "\n";
+	for($p=$last_p+1;$p<=$topPixel;$p++)
+	{
+	$x=' ';
+	if($batch==0) printf ("%s",$x);
+	}
+	if($batch==0) print "\n";
 	}
 	*/
 	//$window_array=getWindowArray($minStrand,$maxStrand,$window_degrees);
@@ -215,13 +193,13 @@ function f_text($get)
 	$link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
 	if(!$link)
 	{
-		die('Failed to connect to server: ' . mysql_error());
+	die('Failed to connect to server: ' . mysql_error());
 	}
 	//Select database
 	$db = mysql_select_db(DB_DATABASE);
 	if(!$db)
 	{
-		die("Unable to select database");
+	die("Unable to select database");
 	}
 	$tree_rgb
 	//
@@ -231,18 +209,17 @@ function f_text($get)
 	if(!isset($speed)) $speed=1;
 	if(!isset($direction)) $direction="left";
 	if(strtolower($direction)=="up") $direction="up";
-	else if(strtolower($direction)=="down") $direction="down";
-	else if(strtolower($direction)=="left") $direction="left";
+	elseif(strtolower($direction)=="down") $direction="down";
+	elseif(strtolower($direction)=="left") $direction="left";
 	else $direction="left";
 	$scaley=1;
-	for($f=1;$f<=$maxFrame;$f++)
-	{
+	$p=$p2=0;
+	for($f=1;$f<=$maxFrame;$f++){
 		for($j=1;$j<=9;$j++)	//	 display text1. Vertical
 		{
 			for($k=1;$k<=$f;$k++) // Horizontal
 			{
-				if($direction=="left")
-				{
+				if($direction=="left"){
 					$p= ($j-1)*$scaley + $topPixel +1;
 					$p2= ($j-1)*$scaley + $topPixel +10*$scaley + 1;
 					if($speed<1) $k1=intval($k*$speed);
@@ -253,8 +230,7 @@ function f_text($get)
 					else $rgb_val=0;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					for($ptmp=1;$ptmp<=$scaley;$ptmp++)
-					{
+					for($ptmp=1;$ptmp<=$scaley;$ptmp++){
 						$pnew = $p + ($ptmp-1);
 						$pnew2 = $p2 + ($ptmp-1);
 						$tree_rgb[$s][$pnew]=$rgb_val;
@@ -263,8 +239,7 @@ function f_text($get)
 						//[$j,$k],$rgb_val,$rgb_val2, ptmp=$ptmp</pre>\n";
 					}
 				}
-				else if($direction=="up")
-				{
+				elseif($direction=="up"){
 					$s= ($maxStrand-$topPixel) - $j;
 					$s2= ($maxStrand-$topPixel) - $j -10;
 					$p = $maxPixel-intval(($f-$k)*$speed);
@@ -274,8 +249,7 @@ function f_text($get)
 					else $rgb_val=0;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					for($ptmp=1;$ptmp<=$scaley;$ptmp++)
-					{
+					for($ptmp=1;$ptmp<=$scaley;$ptmp++){
 						$pnew = $p + ($ptmp-1);
 						$tree_rgb[$s][$pnew]=$rgb_val;
 						$tree_rgb[$s2][$pnew]=$rgb_val2;
@@ -283,8 +257,7 @@ function f_text($get)
 					//	$tree_rgb[$s][$p]=$rgb_val;
 					//	$tree_rgb[$s2][$p]=$rgb_val;
 				}
-				else if($direction=="down")
-				{
+				elseif($direction=="down"){
 					$s= 1+$topPixel + $j;
 					$s2= 1+$topPixel + $j + 10;
 					$p = 1+ intval(($f-$k)*$speed);
@@ -294,8 +267,7 @@ function f_text($get)
 					else $rgb_val=0;
 					if(isset($scroll2[$j][$k1]) and $scroll2[$j][$k1] ==1) $rgb_val2=$text2_color;
 					else $rgb_val2=0;
-					for($ptmp=1;$ptmp<=$scaley;$ptmp++)
-					{
+					for($ptmp=1;$ptmp<=$scaley;$ptmp++){
 						$pnew = $p + ($ptmp-1);
 						$pnew2 = $p2 + ($ptmp-1);
 						$tree_rgb[$s][$pnew]=$rgb_val;
@@ -318,13 +290,13 @@ function f_text($get)
 		/*echo "<table border=1>";
 		for($p=1;$p<=$maxPixel;$p++)
 		{
-			echo "<tr>";
-			for($s=1;$s<=$maxStrand;$s++)
-			{
-				$color=$tree_rgb[$s][$p];
-				echo "<td bgcolor=$color>&nbsp;</td>";
-			}
-			echo "</tr>\n";
+		echo "<tr>";
+		for($s=1;$s<=$maxStrand;$s++)
+		{
+		$color=$tree_rgb[$s][$p];
+		echo "<td bgcolor=$color>&nbsp;</td>";
+		}
+		echo "</tr>\n";
 		}
 		echo "</table>\n";*/
 	}
@@ -338,25 +310,19 @@ function f_text($get)
 	if($batch==0) elapsed_time($script_start);
 }
 
-function write_frame($get,$tree_rgb,$f,$maxFrame)
-{
+function write_frame($get,$tree_rgb,$f,$maxFrame){
 	extract ($get);
 	/*echo "<pre>frame=$f";
 	print_r($tree_rgb);*/
 	$show_display=0;
-	if($show_display)
-	{
+	if($show_display){
 		echo "<table border=1>";
-		for($p=1;$p<=$maxPixel;$p++)
-		{
+		for($p=1;$p<=$maxPixel;$p++){
 			echo "<tr><td>f:p $f:$p</td>";
-			for($s=1;$s<=$maxStrand;$s++)
-			{
+			for($s=1;$s<=$maxStrand;$s++){
 				$color=$tree_rgb[$s][$p];
-				if($color<>0)
-					echo "<td bgcolor=$color>$s,$p</td>";
-				else
-				echo "<td bgcolor=$color>&nbsp;</td>";
+				if($color<>0)					echo "<td bgcolor=$color>$s,$p</td>";
+				else				echo "<td bgcolor=$color>&nbsp;</td>";
 			}
 			echo "</tr>\n";
 		}
@@ -367,19 +333,23 @@ function write_frame($get,$tree_rgb,$f,$maxFrame)
 	$dat_file[$f] = $path . "/" .  $x_dat;
 	$filename=$dat_file[$f];
 	$dat_file_array[]=$dat_file[$f];
-	$fh_dat [$f]= fopen($dat_file[$f], 'w') or die("can't open file");
+	$fil_err = "can't open file" . $dat_file[$f];
+	$fh_dat [$f]= fopen($dat_file[$f], 'w');
+	if( !$fh_dat [$f] ){
+	
+		echo "$fil_err,  $php_errormsg;\n";
+		exit;
+	}
 	fwrite($fh_dat[$f],"#    " . $dat_file[$f] . "\n");
-	for($s=1;$s<=$maxStrand;$s++)
-	{
-		for($p=1;$p<=$maxPixel;$p++)
-		{
+	for($s=1;$s<=$maxStrand;$s++){
+		for($p=1;$p<=$maxPixel;$p++){
 			$string=$user_pixel=0;
 			$seq_number++;
 			$rgb_val=hexdec($tree_rgb[$s][$p]);
 			$xyz=$tree_xyz[$s][$p]; // get x,y,z location from the model.
 			fwrite($fh_dat [$f],sprintf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],
-			$rgb_val, $string, $user_pixel,$strand_pixel[$s][$p][0],
-			$strand_pixel[$s][$p][1],$f,$seq_number));
+					$rgb_val, $string, $user_pixel,$strand_pixel[$s][$p][0],
+					$strand_pixel[$s][$p][1],$f,$seq_number));
 			//
 			/*printf ("t1 %4d %4d %9.3f %9.3f %9.3f %d %d %d %d %d\n",$s,$p,$xyz[0],$xyz[1],$xyz[2],
 			$rgb_val, $string, $user_pixel,$strand_pixel[$s][$p][0],

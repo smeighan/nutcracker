@@ -315,6 +315,7 @@ function create_spiral($get,$arr)
 	$color1=hexdec("#FF0000");
 	$color2=hexdec("#00FF00");
 	$color3=hexdec("#FFFF00");
+	if(!isset($window_degrees) or $window_degrees<1 ) $window_degrees=360;
 	$maxStrandLoops = ($maxStrand* (360/$window_degrees)*$number_rotations);
 	$maxStrandLoops = ($maxStrand* (360/$window_degrees));
 	if($maxStrandLoops<0) $maxStrandLoops=1;
@@ -427,6 +428,7 @@ function make_array_segments($s,$p,$get)
 function find_color($loop,$s,$p,$get)
 {
 	extract ($get);
+	if($number_spirals<1) $number_spirals=1;
 	$ns=intval(($s-1)/($maxStrand/$number_spirals))+0; // figure out which spiral segment we are
 	$y=intval($maxStrand/$number_spirals);
 	if($y<1) $y=0;
