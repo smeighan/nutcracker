@@ -1,5 +1,5 @@
 
-<h1>Releases for Nutcracker</h1>
+<h1>Useful Links</h1>
 
 
 <?php
@@ -27,6 +27,16 @@ $n=0;
 $dir="../releases";
 echo "<table border=1>";
 echo "<tr><th>Version</th><th>File to download</th><th>File Size</th></tr>\n";
+echo "<ul>";
+echo "<li><a href=Papagayo.exe>Windows Papagayo.exe v 1.3.5.3</a>";
+echo "<li><a href=index.pdf>xLights/Nutcracker PDF Document</a>";
+echo "<li><a href=Vamp_Plugin.exe>Queen Mary Vamp plugins for Audacity, Windows self install</a>";
+echo "<li><a href=http://isophonics.net/QMVampPlugins>Queen Mary Vamp plugins for Audacity, Linux link</a>";
+echo "<li><a href=Lame_v3.99.3_for_Windows.exe>ffmpeg plugin for Audacity, Windows self install . This allows Audacity to open the sound track from mp4 movies</a>";
+echo "<li><a href=http://lame.buanzo.org/>ffmpeg plugin for Audacity, Linux link . This allows Audacity to open the sound track from mp4 movies</a>";
+echo "</ul>";
+
+echo "<br/><h1>Releases for Nutcracker</h1>";
 $files=array();
 
 #$n=getFilesFromDir($dir,$n);
